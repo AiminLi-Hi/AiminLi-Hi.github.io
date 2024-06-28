@@ -7,15 +7,15 @@ redirect_from:
   - /about.html
 ---
 
-Welcome to my homepage! I am currently a four-year Ph.D. student at the [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China, under the supervision of *Prof. Shaohua Wu*. Currently, I am also a visiting student at [Institute for Infocomm Research (I2R), Agency for Science, Technology and Research (A*STAR)](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by *Prof. Sumei Sun*. 
+Welcome to my homepage! I am currently a four-year Ph.D. student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China, under the supervision of *Prof. Shaohua Wu*. Currently, I am also a visiting student at [Institute for Infocomm Research (I2R), Agency for Science, Technology and Research (A*STAR)](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by *Prof. Sumei Sun*. 
 
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at University of California (Riverside) in USA in 2017.
 
 Research Interest
 ======
 1. Performance analysis of channel coding in the Finite Block-Length (FBL) regime. My research work about **Spinal codes** has been published in *IEEE ISIT*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications*, and *IEEE Transactions on Vehicular Technology*.
-2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in Age of Information (AoI) analysis and optimizations. My research work about **AoI** has been published in *IEEE Globecom* and *IEEE Transactions on Communications*.
-3. Goal-oriented and semantic communications. My research work about goal-oriented and semantic communications has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, and *IEEE WCNC*.
+2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom* and *IEEE Transactions on Communications*.
+3. Goal-oriented and semantic communications. My research work about **goal-oriented and semantic communications** has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, and *IEEE WCNC*.
 
 Contact
 ======
