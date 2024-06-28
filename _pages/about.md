@@ -1,13 +1,13 @@
 ---
 permalink: /
-title: "Academic Pages is a ready-to-fork GitHub Pages template for academic personal websites"
+title: "Aimin Li"
 author_profile: true
 redirect_from: 
   - /about/
   - /about.html
 ---
 
-Welcome to my homepage! I am currently a fourth-year Ph.D. student at the Harbin Institute of Technology (Shenzhen), China, under the supervision of Prof. Shaohua Wu. Currently, I am also a visiting student at Institute for Infocomm Research, Agency for Science, Technology and Research (A*STAR) in Singapore, where I am supervised by Prof. Sumei Sun. 
+Welcome to my homepage! I am currently a fourth-year Ph.D. student at the Harbin Institute of Technology (Shenzhen), China, under the supervision of Prof. Shaohua Wu. Currently, I am also a visiting student at Institute for Infocomm Research (I2R), Agency for Science, Technology and Research (A*STAR) in Singapore, where I am supervised by Prof. Sumei Sun. 
 
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I am also a visiting student 
 
