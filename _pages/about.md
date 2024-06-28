@@ -9,13 +9,13 @@ redirect_from:
 
 Welcome to my homepage! I am currently a fourth-year Ph.D. student at the Harbin Institute of Technology (Shenzhen), China, under the supervision of Prof. Shaohua Wu. Currently, I am also a visiting student at Institute for Infocomm Research (I2R), Agency for Science, Technology and Research (A*STAR) in Singapore, where I am supervised by Prof. Sumei Sun. 
 
-I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I am also a visiting student 
+I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I am also a visiting student at University of California (Riverside) in USA in 2017.
 
-A data-driven personal website
+Research Interest
 ======
-Like many other Jekyll-based GitHub Pages templates, Academic Pages makes you separate the website's content from its form. The content & metadata of your website are in structured markdown files, while various other files constitute the theme, specifying how to transform that content & metadata into HTML pages. You keep these various markdown (.md), YAML (.yml), HTML, and CSS files in a public GitHub repository. Each time you commit and push an update to the repository, the [GitHub pages](https://pages.github.com/) service creates static HTML pages based on these files, which are hosted on GitHub's servers free of charge.
-
-Many of the features of dynamic content management systems (like Wordpress) can be achieved in this fashion, using a fraction of the computational resources and with far less vulnerability to hacking and DDoSing. You can also modify the theme to your heart's content without touching the content of your site. If you get to a point where you've broken something in Jekyll/HTML/CSS beyond repair, your markdown files describing your talks, publications, etc. are safe. You can rollback the changes or even delete the repository and start over -- just be sure to save the markdown files! Finally, you can also write scripts that process the structured data on the site, such as [this one](https://github.com/academicpages/academicpages.github.io/blob/master/talkmap.ipynb) that analyzes metadata in pages about talks to display [a map of every location you've given a talk](https://academicpages.github.io/talkmap.html).
+1. Performance analysis of practical channel coding in the Finite Block-Length (FBL) regime. My research work about **Spinal codes** has been published in ***IEEE ISIT***, ***IEEE Transactions on Communications***, ***IEEE Transactions on Wireless Communications***, and ***IEEE Transactions on Vehicular Technology***.
+2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in Age of Information (AoI) analysis and optimizations. My research work about **AoI** has been published in ***IEEE Transactions on Communications***.
+3. Goal-oriented and semantic communications. My research work about **AoI** has been published in ***IEEE Transactions on Communications*** and ***IEEE Wireless Communications***.
 
 Getting started
 ======
