@@ -19,8 +19,10 @@ Research Interest
 
 Contact
 ======
-Harbin Institute of Technology (Shenzhen), 518055, Shenzhen, China\\
-I2R, A*STAR, 138532, Singapore\\
+Harbin Institute of Technology (Shenzhen), 518055, Shenzhen, China
+
+I2R, A*STAR, 138532, Singapore
+
 E-mail: (liaimin@stu.hit.edu.cn)
 
 
