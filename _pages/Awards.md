@@ -23,6 +23,7 @@ Projects
 ===
 1. *Fundamental Research Funds for the Central Universities*, 2023-2024.
    - **Only one PhD student is selected from EE Department.**
+   - **This project provides funds of S$4000 for doctoral students' research.**
 
   
 
