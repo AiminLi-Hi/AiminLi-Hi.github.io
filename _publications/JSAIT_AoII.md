@@ -1,7 +1,7 @@
 ---
 title: "[JSAIT] Toward Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime"
 collection: publications
-permalink: /publication/NETWORK
+permalink: /publication/JSAIT_AoII
 excerpt: 'This paper analyzes and optimizes the average AoII under the FBL regime.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
