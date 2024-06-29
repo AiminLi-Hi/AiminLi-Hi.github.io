@@ -22,20 +22,6 @@ Research Interest
 2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications* and *IEEE Journal on Selected Areas of Information Theory*.
 3. Goal-oriented and semantic communications. My research work about **goal-oriented and semantic communications** has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, and *IEEE WCNC*.
 
-Reviewer
-======
-I have long been the reviewer for the following journals and conferences:
-1. IEEE International Symposium on Information Theory (IEEE ISIT).
-2. IEEE Transactions on Wireless Communications (IEEE TWC).
-3. IEEE Transactions on Neural Networking and Learning System (IEEE TNNLS).
-4. IEEE Communications Letters (IEEE CL).
-5. IEEE Transactions on Vehicular Technology (IEEE TVT).
-6. IEEE Vehicular Technology Conference (IEEE VTC).
-7. IEEE International Conference on Communications (IEEE ICC).
-8. IEEE Global Communications Conference (IEEE Globecom).
-9. IEEE Wireless Communications and Networking Conference (IEEE WCNC).
-10. IEEE International Conference on Computer Communications (IEEE Infocom).
-
 Contact
 ======
 Harbin Institute of Technology (Shenzhen), 518055, Shenzhen, China
