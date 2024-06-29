@@ -11,9 +11,9 @@ redirect_from:
 
 Education
 ======
-* Ph.D candidate in Communication and Information Theory, Harbin Institute of Technology (Shenzhen), 2020-2025, China
-* Visiting Ph.D student in Institute for Infocomm Research, A\*STAR, 2023-2024, Singapore 
-* B.S. in Communication and Information Theory, Harbin Institute of Technology (Shenzhen), 2016-2020, China (**Highest Honor**)
+* Ph.D candidate in Communication and Information Theory, Harbin Institute of Technology (Shenzhen), 2020-2025, China (Advisor: Prof. Shaohua Wu).
+* Visiting Ph.D student in Institute for Infocomm Research, A\*STAR, 2023-2024, Singapore (Advisor: Prof. Sumei Sun)
+* B.S. in Communication and Information Theory, Harbin Institute of Technology (Shenzhen), 2016-2020, China (**Highest Honor**, (Advisor: Prof. Shaohua Wu))
 
 Publications
 ======
