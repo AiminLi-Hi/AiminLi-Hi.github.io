@@ -1,7 +1,7 @@
 ---
 title: "[WCM] Towards goal-oriented semantic communications: New metrics, open challenges, and future research directions"
 collection: publications
-permalink: /publication/2010-10-01-paper-title-number-5
+permalink: /publication/WCM_GoT
 excerpt: 'This paper reviews three avenues of goal-oriented semantic communications. Some potential challenges and directions are also discussed in this paper.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
