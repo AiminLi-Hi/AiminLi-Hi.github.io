@@ -24,7 +24,7 @@ Research Interest
 
 Selected First-author Papers
 =====
-{% for post in site.publications reversed %} {% include archive-single-cv.html %} {% endfor %}
+1. [TCOM] **Aimin Li**, age 
 
 Contact
 ======
