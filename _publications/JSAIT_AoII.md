@@ -3,8 +3,8 @@ title: "[JSAIT] Toward Goal-Oriented Semantic Communications: AoII Analysis of C
 collection: publications
 permalink: /publication/JSAIT_AoII
 excerpt: 'This paper analyzes and optimizes the average AoII under the FBL regime.'
-date: 2022-10-26
-venue: 'IEEE Transactions on Communications'
+date: 2023-10-26
+venue: 'IEEE Journal on Selected Area of Information Theory'
 authors: 'Siqi Meng, Shaohua Wu, <strong>Aimin Li</strong>, and Qinyu Zhang, in IEEE Journal on Selected Area of Information Theory, 2023.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10365552'
