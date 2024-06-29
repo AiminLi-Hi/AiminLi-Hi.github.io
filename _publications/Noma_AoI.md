@@ -2,7 +2,7 @@
 title: "[TWC] Minimizing Age-of-Information in HARQ-CC Aided NOMA Systems"
 collection: publications
 permalink: /publication/Spinal_TCOM
-excerpt: #'This paper establishes tight upper bounds on the block error rate (BLER) of Spinal codes. The derived bounds are tighter than existing results relying on 1965 Gallager random coding bound.'
+excerpt: 'This paper examines the timeliness performance of a downlink NOMA wireless communication system. An adaptive transmission policy under HARQ-CC-aided NOMA is proposed. A low-complexity near-AoI-optimal policy is also discussed.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
 authors: 'Shaohua Wu, Zhihong Deng, <strong>Aimin Li</strong>, Jian Jiao, Ning Zhang, and Qinyu Zhang, IEEE Transactions on Wireless Communications, 2022.'
