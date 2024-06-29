@@ -2,7 +2,7 @@
 title: "[WCM] Towards goal-oriented semantic communications: New metrics, open challenges, and future research directions"
 collection: publications
 permalink: /publication/2010-10-01-paper-title-number-5
-excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Different types of delay are considered in the systems. Theoretical results and optimization solutions show that proactive HARQ draws its strength from both age performance and system robustness, thus enabling the potential to provide new system advancement of a freshness-critical status update system.'
+excerpt: 'This paper reviews three avenues of goal-oriented semantic communications. Some potential challenges and directions are also discussed in this paper.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Siqi Meng, Rongxing Lu, Sumei Sun, and Qinyu Zhang, in IEEE Wireless Communications (Accepted), 2024.'
