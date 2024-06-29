@@ -16,9 +16,9 @@ Awards
    - <font color="#e36c09">**Only 2 students are selected within EE Department, HITSZ**</font>
 4. *China Scholarship Council*, 2023.
    - <font color="#e36c09">**National-level scholarship from the Chinese Government**</font>
-5. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
+5. *Chinese First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
    - <font color="#e36c09">**National-level Mathematics Competition**</font>
-6. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
+6. *Chinese First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
    - <font color="#e36c09">**National-level Mathematics Competition**</font>
 
 Projects
