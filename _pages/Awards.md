@@ -5,8 +5,6 @@ permalink: /Awards/
 author_profile: true
 ---
 
-Awards
-======
 1. *Chinese National Scholarship*, 2020.
    - <font color="#52AEC8">**Chinese Highest-Level Scholarship, Top 1%**</font>
 2. *Distinguished Doctoral Scholarship*, 2020.
