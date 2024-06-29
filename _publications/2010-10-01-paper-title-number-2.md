@@ -2,7 +2,7 @@
 title: "Age of information with hybrid-ARQ: A unified explicit result"
 collection: publications
 permalink: /publication/2010-10-01-paper-title-number-2
-excerpt: 'This paper is about the number 2. The number 3 is left for future work.'
+excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Theoretical results and optimization solutions show that proactive HARQ draws its strength from both age performance and system robustness, thus enabling the potential to provide new system advancement of a freshness-critical status update system.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Jian Jiao, Ning Zhang, Qinyu Zhang'
