@@ -9,7 +9,7 @@ redirect_from:
 
 Welcome to my homepage! I am currently a fourth year Ph.D student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China. In HITSZ, my research is supervised by Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua). Currently, I am also a visiting student at [Institute for Infocomm Research, A\*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei). 
 
-I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017. I am a positive young volunteer for many IEEE events and a reviewer for many IEEE top-tier journals and conferences.  
+I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017. I am a positive young volunteer for many IEEE events, such as ; and a reviewer for many IEEE top-tier journals and conferences, such as IEEE TWC, IEEE ISIT, IEEE TNNLS, IEEE CL, etc.
 
 <p style="background-color: yellow; color: red; font-style: italic; font-weight: bold;">
 Currently, I am actively exploring job opportunities and post-doctoral positions.
