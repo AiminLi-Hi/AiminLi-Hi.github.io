@@ -3,8 +3,8 @@ title: "[WCM] Towards goal-oriented semantic communications: New metrics, open c
 collection: publications
 permalink: /publication/WCM_GoT
 excerpt: 'This paper reviews three avenues of goal-oriented semantic communications. Some potential challenges and directions are also discussed in this paper.'
-date: 2022-10-26
-venue: 'IEEE Transactions on Communications'
+date: 2024-10-26
+venue: 'IEEE Wireless Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Siqi Meng, Rongxing Lu, Sumei Sun, and Qinyu Zhang, in IEEE Wireless Communications (Accepted), 2024.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/abstract/document/9931172/'
