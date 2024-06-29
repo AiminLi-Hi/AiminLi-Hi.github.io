@@ -33,6 +33,10 @@ First-author Papers
 7. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE WCNC**, Dubai, 2022.
 8. [<font color="#245bdb">VTC</font>] **Aimin Li**, Shaohua Wu, Ying Wang, Jian Jiao, and Qinyu Zhang. "[Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design](https://ieeexplore.ieee.org/abstract/document/9128415)" in **IEEE VTC-Spring 2020**, Belgium, 2020.
 
+Collaborative Papers
+=====
+1. [<font color="#245bdb">TWC</font>] Shaohua Wu, Zhihong Deng, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Minimizing age-of-information in HARQ-CC aided NOMA systems" 
+
 Contact
 ======
 Harbin Institute of Technology (Shenzhen), 518055, Shenzhen, China
