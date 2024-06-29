@@ -1,5 +1,5 @@
 ---
-title: "(TWC) Spinal codes over fading channel: Error probability analysis and encoding structure improvement"
+title: "[TWC] Spinal codes over fading channel: Error probability analysis and encoding structure improvement"
 collection: publications
 permalink: /publication/2009-10-01-paper-title-number-1
 excerpt: 'An approximate frame error rate (FER) upper bound for Spinal codes over the Rayleigh fading channel in the finite block length (FBL) regime is derived and an improved encoding structure, named self-concatenation structure, is proposed to reduce the FER of Spinal code.'
