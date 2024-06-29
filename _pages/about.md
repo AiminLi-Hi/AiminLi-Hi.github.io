@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-Welcome to my homepage! I am currently a four-year Ph.D. student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China, under the supervision of *Prof. Shaohua Wu*. Currently, I am also a visiting student at [Institute for Infocomm Research, A*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by *Prof. Sumei Sun*. 
+Welcome to my homepage! I am currently a four-year Ph.D. student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China, under the supervision of *Prof. Shaohua Wu*. Currently, I am also a visiting student at [Institute for Infocomm Research, A\*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by *Prof. Sumei Sun*. 
 
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at University of California (Riverside) in USA in 2017.
 
