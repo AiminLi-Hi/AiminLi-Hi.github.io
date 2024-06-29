@@ -14,7 +14,7 @@ I received my Bachelor's degree in the Department of Electronic Engineering, Har
 Research Interest
 ======
 1. Performance analysis of channel coding in the Finite Block-Length (FBL) regime. My research work about **Spinal codes** has been published in *IEEE ISIT*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications*, and *IEEE Transactions on Vehicular Technology*.
-2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom*, *IEEE Transactions on Communications* and *IEEE Journal on Selected Areas of Information Theory*.
+2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications* and *IEEE Journal on Selected Areas of Information Theory*.
 3. Goal-oriented and semantic communications. My research work about **goal-oriented and semantic communications** has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, and *IEEE WCNC*.
 
 Contact
