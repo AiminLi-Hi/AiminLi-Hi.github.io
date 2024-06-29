@@ -5,7 +5,7 @@ permalink: /publication/TCOM_AoI.md
 excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Different types of delay are considered. Theoretical results show that proactive HARQ draws its strength from both age performance and system robustness.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
-authors: '<strong>Aimin Li</strong>, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang, IEEE Transactions on Communications (Minor Revision), 2024.'
+authors: '<strong>Aimin Li</strong>, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang, in IEEE Transactions on Communications, 2022.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/abstract/document/9931172/'
 citation: #'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
