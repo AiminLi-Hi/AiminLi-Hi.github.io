@@ -5,7 +5,7 @@ permalink: /publication/ISIT_Spinal
 excerpt: 'This paper analyzes tight upper bounds on the BLER of Spinal codes over fading channels in the FBL regime.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
-authors: '<strong>Xiaomeng Cheng, Aimin Li(co-first)</strong>, in IEEE International Symposium on Information Theory (IEEE ISIT), 2023.'
+authors: '<strong>Xiaomeng Cheng, Aimin Li(co-first)</strong>, and Shaohua Wu, in IEEE International Symposium on Information Theory (IEEE ISIT), 2023.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10206448'
 citation: #'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
