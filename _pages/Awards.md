@@ -15,7 +15,7 @@ Awards
    - **Only 10 students are selected within HITSZ in 2020**
    - **Only 2 students are selected within EE Department, HITSZ**
 4. *China Scholarship Council*, 2023.
-   -**National-level scholarship from China**
+   - **National-level scholarship from China**
 6. *First Prize of Chinese College Students Mathematics Competition*, 2017.
 7. *First Prize of Chinese College Students Mathematics Competition*, 2018.
 
