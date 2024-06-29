@@ -1,7 +1,7 @@
 ---
 title: "[NL] A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks"
 collection: publications
-permalink: /publication/ISIT_Spinal
+permalink: /publication/NL_Satellite
 excerpt: 'This paper analyzes tight upper bounds on the BLER of Spinal codes over fading channels in the FBL regime.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
