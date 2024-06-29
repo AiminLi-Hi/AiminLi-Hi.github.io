@@ -22,11 +22,11 @@ repository               : "academicpages/academicpages.github.io"
 author:
   # Biographic information
   avatar           : "image_converted.png"
-  name             : "Aimin"
+  name             : "Aimin Li"
   pronouns         : # example: "she/her"  
-  bio              : "PhD student at HITSZ and ASTAR"
+  bio              : "PhD student at HITSZ and A*STAR"
   location         : "Singapore"
-  employer         : "I2R, ASTAR and HITSZ"
+  employer         : "I2R, A*STAR and HITSZ"
   uri              : # URL
   email            : "liaimin@stu.hit.edu.cn" 
 
