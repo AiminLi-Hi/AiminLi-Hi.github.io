@@ -26,6 +26,9 @@ Projects
 1. *Fundamental Research Funds for the Central Universities*, 2023-2024.
    - **Only one PhD student is selected from EE Department of HITSZ.**
    - **This project provides funds of about S$4000 to support Phd students' research.**
+2. *Candidate of the National Natural Science Foundation (NSFC) Youth Student Basic Research Projects (Doctoral Students)*, 2024.
+   - **Only two PhD students are selected as candidates from EE Departments of HITSZ, HIT, and HITWH.**
+
 
   
 
