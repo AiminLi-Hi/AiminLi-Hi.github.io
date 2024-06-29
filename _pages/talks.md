@@ -12,8 +12,6 @@ I am fortunate to have the chance to serve for the following IEEE events:
 2. IEEE 6G Summit 2023 Singapore.
 3. IEEE 6G Summit 2024 Singapore.
 
-
-
 Reviewer
 ======
 I have long been the reviewer for the following journals and conferences:
