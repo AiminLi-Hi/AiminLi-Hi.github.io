@@ -22,7 +22,7 @@ author_profile: true
 Projects
 ===
 1. *Fundamental Research Funds for the Central Universities*, 2023-2024.
-   - **Or**
+   - **Only one PhD student is selected from EE Department.**
 
   
 
