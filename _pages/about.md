@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Aimin Li"
+title: "Hi! I am Aimin Li"
 author_profile: true
 redirect_from: 
   - /about/
