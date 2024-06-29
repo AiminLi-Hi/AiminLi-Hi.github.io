@@ -2,10 +2,10 @@
 title: "[JSAIT] Toward Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime"
 collection: publications
 permalink: /publication/NETWORK
-excerpt: 'This paper examines the timeliness performance of a downlink NOMA wireless communication system. An adaptive transmission policy under HARQ-CC-aided NOMA is proposed. A low-complexity near-AoI-optimal policy is also discussed.'
+excerpt: 'This paper analyzes and optimizes the average AoII under the FBL regime.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
-authors: 'Siqi Meng, Shaohua Wu, Hanyu Wu, <strong>Aimin Li</strong>, and Qinyu Zhang, in IEEE Journal on Selected Area of Information Theory, 2023.'
+authors: 'Siqi Meng, Shaohua Wu, <strong>Aimin Li</strong>, and Qinyu Zhang, in IEEE Journal on Selected Area of Information Theory, 2023.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10365552'
 citation: #'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
