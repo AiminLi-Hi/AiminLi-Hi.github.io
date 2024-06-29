@@ -3,17 +3,18 @@ main:
   - title: "Publications"
     url: /publications/
 
+  - title: "Awards"
+    url: /Awards/  
+
+  - title: "CV"
+    url: /cv/
+
   - title: "Volunteers&Reviewers"
     url: /talks/    
 
   - title: "Teaching"
     url: /teaching/    
     
-  - title: "Awards"
-    url: /Awards/        
-    
-  - title: "CV"
-    url: /cv/
     
   #- title: "Guide"
    # url: /markdown/
