@@ -11,6 +11,11 @@ Welcome to my homepage! I am currently a fourth year Ph.D student at [Harbin Ins
 
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017.
 
+<p style="background-color: yellow; color: red; font-style: italic; font-weight: bold;">
+Currently, I am actively persuing a post-doctoral position.
+</p>
+
+
 Research Interest
 ======
 1. Performance analysis of channel coding in the **Finite Block-Length (FBL)** regime. My research work about **Spinal codes** has been published in *IEEE ISIT*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications*, and *IEEE Transactions on Vehicular Technology*.
