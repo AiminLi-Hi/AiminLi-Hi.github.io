@@ -1,8 +1,8 @@
 ---
 title: "[TCOM] Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel"
 collection: publications
-permalink: /publication/2010-10-01-paper-title-number-2
-excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Theoretical results and optimization solutions show that proactive HARQ draws its strength from both age performance and system robustness, thus enabling the potential to provide new system advancement of a freshness-critical status update system.'
+permalink: /publication/Spinal_TCOM
+excerpt: 'This paper establishes tight upper bounds on the block error rate (BLER) of Spinal codes. The derived bounds are tighter than existing results relying on 1965 Gallager random coding bound.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Xiaomeng Chen, and Sumei Sun, IEEE Transactions on Communications (Minor Revision), 2024.'
