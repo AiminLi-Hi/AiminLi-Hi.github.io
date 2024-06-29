@@ -18,7 +18,7 @@ author_profile: true
    - <font color="#52AEC8">National-level Mathematics Competition</font>
 6. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
    - <font color="#52AEC8">National-level Mathematics Competition</font>
-7. *Heilongjiang Province Merit Student*
+7. *Heilongjiang Province Merit Student*, 2018.
    - <font color="#52AEC8">Province-level Honors, Top 1% in Heilongjiang Province</font>.
 
 Projects
