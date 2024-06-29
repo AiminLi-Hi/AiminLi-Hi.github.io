@@ -4,7 +4,7 @@ collection: publications
 permalink: /publication/TVT_Spinal.md
 excerpt: 'This paper analyzes and optimizes the average AoII under the FBL regime.'
 date: 2022-10-26
-venue: 'IEEE Transactions on Communications'
+venue: 'IEEE Transactions on Vehicular Technology'
 authors: 'Siqi Meng, Shaohua Wu, <strong>Aimin Li</strong>, Jian Jiao, Ning Zhang, and Qinyu Zhang, in IEEE Transactions on Vehicular Technology, 2022.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10365552'
