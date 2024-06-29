@@ -30,7 +30,7 @@ First-author Papers
 4. [<font color="#245bdb">WCM</font>] **Aimin Li**, Shaohua Wu, Rongxing Lu, Sumei Sun, and Qinyu Zhang. "[Towards goal-oriented semantic communications: New metrics, open challenges, and future research directions](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Wireless Communications** (IF: 10.9, Q1), 2024.
 5. [<font color="#245bdb">ISIT</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
 6. [<font color="#245bdb">Globecom</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE Globecom**, Brazil, 2022.
-7. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE WCNC**, Dubai, 2022.
+7. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "[Goal-oriented Tensor: Beyond AoI Towards Semantics-Empowered Goal-Oriented Communications](https://arxiv.org/pdf/2305.04083)" in **IEEE WCNC**, Dubai, 2022.
 8. [<font color="#245bdb">VTC</font>] **Aimin Li**, Shaohua Wu, Ying Wang, Jian Jiao, and Qinyu Zhang. "[Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design](https://ieeexplore.ieee.org/abstract/document/9128415)" in **IEEE VTC-Spring 2020**, Belgium, 2020.
 
 First-author Preprint
