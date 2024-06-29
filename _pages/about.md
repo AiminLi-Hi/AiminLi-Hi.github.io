@@ -24,7 +24,8 @@ Research Interest
 
 Selected First-author Papers
 =====
-1. [TCOM] **Aimin Li**, age 
+1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Age of information with Hybrid-ARQ: A unified explicit result](https://ieeexplore.ieee.org/abstract/document/9931172/)" in **IEEE Transactions on Communications**.
+2. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications" in **IEEE Transactions on Communications**.
 
 Contact
 ======
