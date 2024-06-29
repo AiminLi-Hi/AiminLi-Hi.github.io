@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Your Name / Site Title"
+title                    : "Aimin Li's Website"
 title_separator          : "-"
-name                     : &name "Your Name"
+name                     : &name "Aimin Li"
 description              : &description "personal description"
 url                      : https://AiminLi-Hi.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -24,9 +24,9 @@ author:
   avatar           : "image_converted.png"
   name             : "Aimin"
   pronouns         : # example: "she/her"  
-  bio              : "Phd students at HITSZ and ASTAR"
+  bio              : "PhD student at HITSZ and ASTAR"
   location         : "Singapore"
-  employer         : "I2R, A*STAR and HITSZ"
+  employer         : "I2R, ASTAR and HITSZ"
   uri              : # URL
   email            : "liaimin@stu.hit.edu.cn" 
 
