@@ -3,7 +3,7 @@ title: "Spinal codes over fading channel: Error probability analysis and encodin
 collection: publications
 permalink: /publication/2009-10-01-paper-title-number-1
 excerpt: 'An approximate frame error rate (FER) upper bound for Spinal codes over the Rayleigh fading channel in the finite block length (FBL) regime is derived and an improved encoding structure, named self-concatenation structure, is proposed to reduce the FER of Spinal code.'
-date: 2021-10-01
+date: 2021-06-30
 venue: 'IEEE Transactions on Wireless Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Jian Jiao, Ning Zhang, Qinyu Zhang'
 slidesurl: #'http://academicpages.github.io/files/slides1.pdf'
