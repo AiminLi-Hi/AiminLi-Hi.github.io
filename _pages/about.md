@@ -12,7 +12,7 @@ Welcome to my homepage! I am currently a fourth year Ph.D student at [Harbin Ins
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017.
 
 <p style="background-color: yellow; color: red; font-style: italic; font-weight: bold;">
-Currently, I am actively persuing a post-doctoral position.
+Currently, I am actively exploring job opportunities and post-doctoral positions.
 </p>
 
 
