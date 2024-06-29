@@ -9,8 +9,8 @@ Young Volunteer for IEEE Events
 ======
 I am fortunate to have the chance to serve for the following IEEE events:
 1. [IEEE VTC-Spring 2024 Singapore](https://events.vtsociety.org/vtc2024-spring/).
-2. IEEE 6G Summit 2023 Singapore.
-3. IEEE 6G Summit 2024 Singapore.
+2. [IEEE 6G Summit Singapore 2023](https://sg6gws2023.ieee-sg6gws.org/).
+3. [IEEE 6G Summit Singapore 2024](https://sg6gws2024.ieee-sg6gws.org/)
 
 Reviewer
 ======
