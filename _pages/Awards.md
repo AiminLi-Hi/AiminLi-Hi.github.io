@@ -25,7 +25,7 @@ Projects
 ===
 1. *Fundamental Research Funds for the Central Universities*, 2023-2024.
    - **Only one PhD student is selected from EE Department of HITSZ.**
-   - **This project provides funds of about S$4000 to support doctoral students' research.**
+   - **This project provides funds of about S$4000 to support Phd students' research.**
 
   
 
