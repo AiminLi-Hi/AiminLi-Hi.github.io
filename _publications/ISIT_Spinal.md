@@ -3,8 +3,8 @@ title: "[ISIT] Tight Upper Bounds on the Error Probability of Spinal Codes over 
 collection: publications
 permalink: /publication/ISIT_Spinal
 excerpt: 'This paper analyzes tight upper bounds on the BLER of Spinal codes over fading channels in the FBL regime.'
-date: 2022-10-26
-venue: 'IEEE Transactions on Communications'
+date: 2023-10-26
+venue: 'IEEE International Symposium on Information Theory'
 authors: '<strong>Xiaomeng Cheng, Aimin Li(co-first)</strong>, and Shaohua Wu, in IEEE International Symposium on Information Theory (IEEE ISIT), 2023.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10206448'
