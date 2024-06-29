@@ -5,7 +5,7 @@ permalink: /publication/2010-10-01-paper-title-number-2
 excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Theoretical results and optimization solutions show that proactive HARQ draws its strength from both age performance and system robustness, thus enabling the potential to provide new system advancement of a freshness-critical status update system.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
-authors: '<strong>Aimin Li</strong>, Shaohua Wu, Sumei Sun, and Jie Cao, in IEEE Transactions on Communications, 2024'
+authors: '<strong>Aimin Li</strong>, Shaohua Wu, Sumei Sun, and Jie Cao, in IEEE Transactions on Communications, 2024.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10562359'
 citation: #'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
