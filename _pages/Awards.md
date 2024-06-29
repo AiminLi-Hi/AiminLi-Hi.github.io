@@ -15,9 +15,11 @@ author_profile: true
 4. *China Scholarship Council*, 2023.
    - <font color="#52AEC8">National-level scholarship from the Chinese Government</font>
 5. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
-   - <font color="#52AEC8">Chinese National-level Mathematics Competition</font>
+   - <font color="#52AEC8">National-level Mathematics Competition</font>
 6. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
-   - <font color="#52AEC8">Chinese National-level Mathematics Competition</font>
+   - <font color="#52AEC8">National-level Mathematics Competition</font>
+7. *Heilongjiang Province Merit Student*
+   - - <font color="#52AEC8">Province-level Honors, Top 1% in Heilongjiang Province</font>.
 
 Projects
 ===
