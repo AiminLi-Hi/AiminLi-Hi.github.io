@@ -45,7 +45,7 @@ Collaborative Papers
 3. [<font color="#245bdb">NETM</font>] Siqi Meng, Shaohua Wu, Hanyu Wu, **Aimin Li**, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Network** (IF: 6.8, Q1), 2022.
 4. [<font color="#245bdb">JSAIT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, and Qinyu Zhang. "[Towards Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Journal on Selected Areas of Information Theory**, 2023.
 5. [<font color="#245bdb">TVT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes Over Rayleigh Fading Channel](https://ieeexplore.ieee.org/abstract/document/9741327)" in **IEEE Transactions on Vehicular Technology**, 2022.
-6. [<font color="#245bdb">TVT</font>] Xiyu Lv, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks](https://ieeexplore.ieee.org/document/9787786)" in **IEEE Networking Letters**, 2022.
+6. [<font color="#245bdb">NETL</font>] Xiyu Lv, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks](https://ieeexplore.ieee.org/document/9787786)" in **IEEE Networking Letters**, 2022.
 
 Contact
 ======
