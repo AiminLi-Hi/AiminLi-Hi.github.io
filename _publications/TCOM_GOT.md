@@ -2,7 +2,7 @@
 title: "[TCOM] Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications"
 collection: publications
 permalink: /publication/2010-10-01-paper-title-number-2
-excerpt: 'This paper analyzes the average Age of Information for reactive HARQ and proactive HARQ. Theoretical results and optimization solutions show that proactive HARQ draws its strength from both age performance and system robustness, thus enabling the potential to provide new system advancement of a freshness-critical status update system.'
+excerpt: 'This paper proposes a new unified metric, named Goal-oriented Tensor (GoT) to characterize the effectiveness of communications. We formulate a two-agent Decentralized Partially Observable Markov Decision Process (Dec-POMDP) problem to conjointly deduce the optimal sampling policy and remote decision-making policy.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Sumei Sun, and Jie Cao, in IEEE Transactions on Communications, 2024.'
