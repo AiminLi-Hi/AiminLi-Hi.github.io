@@ -35,7 +35,7 @@ First-author Papers
 
 First-author Preprint
 =====
-1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (Minor Revision), 2024.
+1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
 2. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
 
 Collaborative Papers
