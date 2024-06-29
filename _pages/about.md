@@ -28,7 +28,7 @@ Selected First-author Papers
 2. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "[Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications](https://ieeexplore.ieee.org/abstract/document/10562359)" in **IEEE Transactions on Communications**(IF: 7.2, Q1), 2024.
 3. [<font color="#245bdb">TWC</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "[Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Transactions on Wireless Communications**(IF: 8.9, Q1), 2021.
 4. [<font color="#245bdb">WCM</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "[Towards goal-oriented semantic communications: New metrics, open challenges, and future research directions](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Wireless Communications**(IF: 10.9, Q1), 2024.
-5. [<font color="#245bdb">WCM</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE ISIT**, 2023.
+5. [<font color="#245bdb">WCM</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
 
 Contact
 ======
