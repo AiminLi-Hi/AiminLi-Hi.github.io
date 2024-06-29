@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "Volunteers"
+title: "Volunteers and Reviewers"
 permalink: /talks/
 author_profile: true
 ---
