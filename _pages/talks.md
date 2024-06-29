@@ -5,7 +5,7 @@ permalink: /talks/
 author_profile: true
 ---
 
-Young Volunteers for IEEE Events
+Young Volunteer for IEEE Events
 ======
 I am fortunate to have the chance to serve for the following IEEE events:
 1. IEEE VTC-Spring 2024 Singapore.
