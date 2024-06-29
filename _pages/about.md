@@ -36,11 +36,14 @@ First-author Papers
 First-author Preprint
 =====
 1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (Minor Revision), 2024.
-2. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
+2. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
 
 Collaborative Papers
 =====
-1. [<font color="#245bdb">TWC</font>] Shaohua Wu, Zhihong Deng, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Minimizing age-of-information in HARQ-CC aided NOMA systems" 
+1. [<font color="#245bdb">TWC</font>] Shaohua Wu, Zhihong Deng, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Minimizing age-of-information in HARQ-CC aided NOMA systems"  in **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2022.
+2. [<font color="#245bdb">TCOM</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022.
+3. [<font color="#245bdb">TCOM</font>] Siqi Meng, Shaohua Wu, Hanyu Wu, **Aimin Li**, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Network** (IF: 6.8, Q1), 2022.
+4. [<font color="#245bdb">JSAIT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, and Qinyu Zhang. "[Towards Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Journal on Selected Areas of Information Theory**, 2023.
 
 Contact
 ======
