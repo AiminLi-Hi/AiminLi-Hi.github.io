@@ -8,7 +8,7 @@ author_profile: true
 Awards
 ======
 1. *Chinese National Scholarship*, 2020.
-   <font color="#e36c09">**Chinese Highest-Level Scholarship, Top 1%**</font>
+   - <font color="#e36c09">**Chinese Highest-Level Scholarship, Top 1%**</font>
 2. *Distinguished Doctoral Scholarship*, 2020.
    - **Only one student is selected within HITSZ in 2020**
 3. *Highest Honor of Undergraduate Thesis*, 2020.
