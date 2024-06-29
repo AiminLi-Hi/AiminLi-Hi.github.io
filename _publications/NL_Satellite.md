@@ -5,7 +5,7 @@ permalink: /publication/NL_Satellite
 excerpt: 'This paper analyzes tight upper bounds on the BLER of Spinal codes over fading channels in the FBL regime.'
 date: 2022-10-26
 venue: 'IEEE Networking Letters'
-authors: 'Xiyu Lv, Shaohua Wu, <strong>Aimin Li(co-first)</strong>, Jian Jiao, Ning Zhang, and Qinyu Zhang, in IEEE Networking Letters, 2022.'
+authors: 'Xiyu Lv, Shaohua Wu, <strong>Aimin Li</strong>, Jian Jiao, Ning Zhang, and Qinyu Zhang, in IEEE Networking Letters, 2022.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
 paperurl: 'https://ieeexplore.ieee.org/document/10206448'
 citation: #'Your Name, You. (2010). &quot;Paper Title Number 2.&quot; <i>Journal 1</i>. 1(2).'
