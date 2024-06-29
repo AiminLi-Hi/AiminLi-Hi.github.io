@@ -8,4 +8,4 @@ date: 2022-01-01
 location: "Shenzhen, China"
 ---
 
-Teaching Assistant with Prof. Shaohua Wu.
+**Teaching Assistant with Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).**
