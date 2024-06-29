@@ -3,7 +3,7 @@ title: "Information Theory"
 collection: teaching
 type: "Workshop"
 permalink: /teaching/2015-spring-teaching-1
-venue: "University 1, Department"
+venue: "Harbin Institute of Technology, Department of Electronic Engineering"
 date: 2022-01-01
 location: "Shenzhen, China"
 ---
