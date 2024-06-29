@@ -3,7 +3,7 @@ title: "[TCOM] Goal-Oriented Tensor: Beyond Age of Information Towards Semantics
 collection: publications
 permalink: /publication/TCOM_GOT
 excerpt: 'This paper proposes a new unified metric, named Goal-oriented Tensor (GoT) to characterize the effectiveness of communications. We formulate a two-agent Decentralized Partially Observable Markov Decision Process (Dec-POMDP) problem to conjointly deduce the optimal sampling policy and remote decision-making policy.'
-date: 2022-10-26
+date: 2024-10-26
 venue: 'IEEE Transactions on Communications'
 authors: '<strong>Aimin Li</strong>, Shaohua Wu, Sumei Sun, and Jie Cao, in IEEE Transactions on Communications, 2024.'
 slidesurl: #'http://academicpages.github.io/files/slides2.pdf'
