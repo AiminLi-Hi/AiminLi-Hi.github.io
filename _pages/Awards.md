@@ -14,16 +14,16 @@ author_profile: true
    - <font color="#52AEC8">Only 2 students are selected within EE Department, HITSZ</font>
 4. *China Scholarship Council*, 2023.
    - <font color="#52AEC8">National-level scholarship from the Chinese Government</font>
-5. *Chinese First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
-   - <font color="#52AEC8">National-level Mathematics Competition</font>
-6. *Chinese First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
-   - <font color="#52AEC8">National-level Mathematics Competition</font>
+5. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
+   - <font color="#52AEC8">Chinese National-level Mathematics Competition</font>
+6. *First Prize of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
+   - <font color="#52AEC8">Chinese National-level Mathematics Competition</font>
 
 Projects
 ===
 1. *Fundamental Research Funds for the Central Universities*, 2023-2024.
-   - **Only one PhD student is selected from EE Department.**
-   - **This project provides funds of S$4000 for doctoral students' research.**
+   - **Only one PhD student is selected from EE Department of HITSZ.**
+   - **This project provides funds of about S$4000 to support doctoral students' research.**
 
   
 
