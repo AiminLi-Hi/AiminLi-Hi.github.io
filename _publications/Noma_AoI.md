@@ -1,7 +1,7 @@
 ---
 title: "[TWC] Minimizing Age-of-Information in HARQ-CC Aided NOMA Systems"
 collection: publications
-permalink: /publication/Spinal_TCOM
+permalink: /publication/Noma_AoI
 excerpt: 'This paper examines the timeliness performance of a downlink NOMA wireless communication system. An adaptive transmission policy under HARQ-CC-aided NOMA is proposed. A low-complexity near-AoI-optimal policy is also discussed.'
 date: 2022-10-26
 venue: 'IEEE Transactions on Communications'
