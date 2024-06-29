@@ -46,6 +46,8 @@ Collaborative Papers
 4. [<font color="#245bdb">JSAIT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, and Qinyu Zhang. "[Towards Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Journal on Selected Areas of Information Theory**, 2023.
 5. [<font color="#245bdb">TVT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes Over Rayleigh Fading Channel](https://ieeexplore.ieee.org/abstract/document/9741327)" in **IEEE Transactions on Vehicular Technology**, 2022.
 6. [<font color="#245bdb">NETL</font>] Xiyu Lv, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks](https://ieeexplore.ieee.org/document/9787786)" in **IEEE Networking Letters**, 2022.
+7. [<font color="#245bdb">INFOCOM WKSHPS</font>] Kunpeng Liu, **Aimin Li**, and Shaohua Wu. "[Deep Reinforcement Learning-Assisted Age-optimal Transmission Policy for HARQ-aided NOMA Networks](https://ieeexplore.ieee.org/abstract/document/10225923)" in **IEEE INFOCOM PERAI 6G**, 2023.
+8. [<font color="#245bdb">VTC</font>] Jiaming Zhang, Shaohua Wu, **Aimin Li**, Jian Jiao, and Qinyu Zhang. "[Analysis of GEO Satellite Relay Coded Systems](https://ieeexplore.ieee.org/abstract/document/10012755)" in **IEEE VTC-2022 Fall**, USA, 2022.
 
 Contact
 ======
