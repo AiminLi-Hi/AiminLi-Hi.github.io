@@ -15,7 +15,6 @@ Education
 * Visiting Ph.D student in Institute for Infocomm Research, A\*STAR, 2023-2024, Singapore 
 * B.S. in Communication and Information Theory, Harbin Institute of Technology (Shenzhen), 2016-2020, China (**Highest Honor**)
 
-
 Publications
 ======
   <ul>{% for post in site.publications reversed %}
