@@ -55,7 +55,7 @@ Awards
 =====
 1. *National Scholarship of China*, 2020.
    - **<font color="#e36c09">The Highest-Level Scholarship</font>** Funded by Chinese Government.
-   - **<font color="#e36c09">Rate Top 0.2% Within China.</font>**
+   - **<font color="#e36c09">Rate Top 0.1% Within China.</font>**
 2. *Distinguished Doctoral Scholarship*, 2020.
    - **<font color="#e36c09">Only one</font>** student was selected within HITSZ in 2020.
 3. *Highest Honor of Undergraduate Thesis*, 2020.
