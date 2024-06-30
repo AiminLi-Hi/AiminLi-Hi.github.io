@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Hi! I am Aimin Li (黎爱民)"
+title: "Aimin Li (黎爱民)"
 author_profile: true
 redirect_from: 
   - /about/
