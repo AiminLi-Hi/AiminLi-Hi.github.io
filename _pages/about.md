@@ -65,12 +65,12 @@ Awards
 4. *China Scholarship Council*, 2023.
    - **<font color="#245bdb">National-level scholarship</font>** from the Chinese Government.
    - **<font color="#245bdb">More than 20000$</font>** was funded.
-5. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2017.
-   - **<font color="#245bdb">First Price of National-level</font>** Mathematics Competition in China.
-6. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2018.
-   - **<font color="#245bdb">First Price of National-level</font>** Mathematics Competition in China.
+5. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2017.
+   - First Price of National-level Mathematics Competition in China.
+6. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2018.
+   - First Price of National-level Mathematics Competition in China.
 7. *Heilongjiang Province Merit Student*, 2018.
-   - Province-level Honors. **<font color="#e36c09">Rate top 1% in Heilongjiang Province</font>**.
+   - Province-level Honors. **<font color="#245bdb">Rate top 1% in Heilongjiang Province</font>**.
    
 Contact
 ======
