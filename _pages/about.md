@@ -54,7 +54,8 @@ Collaborative Papers/Preprint
 Awards
 =====
 1. *National Scholarship of China*, 2020.
-   - <font color="#52AEC8"><font color="#e36c09">The Highest-Level Scholarship</font> Funded by Chinese Government.</font> <font color="#e36c09">Rate top 0.2% within China.</font>
+   - <font color="#52AEC8"><font color="#e36c09">The Highest-Level Scholarship</font> Funded by Chinese Government.</font>
+   - **<font color="#e36c09">Rate Top 0.2% within China.</font>**
 2. *Distinguished Doctoral Scholarship*, 2020.
    - <font color="#52AEC8"><font color="#e36c09">Only one</font> student was selected within HITSZ in 2020.</font>
 3. *Highest Honor of Undergraduate Thesis*, 2020.
