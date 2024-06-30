@@ -30,7 +30,7 @@ Projects
    - **<font color="#e36c09">Only one</font>** PhD student is selected from EE Department of HITSZ.
    - This project funds about 4000$ to support PhD students' research.
 2. *Candidate of the National Natural Science Foundation (NSFC) Youth Student Basic Research Projects (Doctoral Students)*, 2024.
-   - **<font color="#e36c09">Two PhD students</font> are selected as candidates from EE Departments of HIT Shenzhen (哈工大深圳), HIT(哈工大本部), and HIT Weihai(哈工大威海).**
+   - **<font color="#e36c09">Two PhD students</font> are selected as candidates from EE Departments of HIT Shenzhen (哈工大深圳), HIT (哈工大本部), and HIT Weihai (哈工大威海).**
 
 
   
