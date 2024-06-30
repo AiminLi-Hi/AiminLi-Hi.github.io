@@ -54,20 +54,21 @@ Collaborative Papers/Preprint
 Awards
 =====
 1. *National Scholarship of China*, 2020.
-   - <font color="#52AEC8">The <font color="#e36c09">Highest-Level Scholarship</font> Funded by Chinese Government.</font> <font color="#e36c09">Rate top 0.2% within China.</font>
+   - <font color="#52AEC8"><font color="#e36c09">The Highest-Level Scholarship</font> Funded by Chinese Government.</font> <font color="#e36c09">Rate top 0.2% within China.</font>
 2. *Distinguished Doctoral Scholarship*, 2020.
    - <font color="#52AEC8"><font color="#e36c09">Only one</font> student was selected within HITSZ in 2020.</font>
 3. *Highest Honor of Undergraduate Thesis*, 2020.
    - <font color="#52AEC8">10 students were selected within HITSZ in 2020.</font>
-   - <font color="#52AEC8">2 students were selected from within the EE Department, HITSZ. **Rate Top 2% within HITSZ**.</font>
+   - <font color="#52AEC8">2 students were selected from within the EE Department, HITSZ.</font> <font color="#e36c09">Rate Top 2% within HITSZ.</font>
 4. *China Scholarship Council*, 2023.
    - <font color="#52AEC8">National-level scholarship from the Chinese Government</font>
+   - <font color="#e36c09">More than 20000$ were funded.</font>
 5. ***First Prize** of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
-   - <font color="#52AEC8">**First Price of National-level** Mathematics Competition in China.</font>
+   - <font color="#52AEC8"><font color="#e36c09">First Price of National-level</font> Mathematics Competition in China.</font>
 6. ***First Prize** of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
-   - <font color="#52AEC8">**First Price of National-level** Mathematics Competition in China.</font>
+   - <font color="#52AEC8"><font color="#e36c09">First Price of National-level</font> Mathematics Competition in China.</font>
 7. *Heilongjiang Province Merit Student*, 2018.
-   - <font color="#52AEC8">Province-level Honors. **Rate top 1% in Heilongjiang Province**</font>.
+   - <font color="#52AEC8">Province-level Honors. <font color="#e36c09">Rate top 1% in Heilongjiang Province</font></font>.
    
 Contact
 ======
