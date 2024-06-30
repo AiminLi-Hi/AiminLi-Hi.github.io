@@ -54,21 +54,21 @@ Collaborative Papers/Preprint
 Awards
 =====
 1. *National Scholarship of China*, 2020.
-   - **<font color="#e36c09">The Highest-Level Scholarship</font>** Funded by Chinese Government.
-   - **<font color="#e36c09">Rate Top 0.1% Within China.</font>**
+   - **<font color="#245bdb">The Highest-Level Scholarship</font>** Funded by Chinese Government.
+   - **<font color="#245bdb">Rate Top 0.1% Within China.</font>**
 2. *Distinguished Doctoral Scholarship*, 2020.
-   - **<font color="#e36c09">Only one</font>** student was selected within HITSZ in 2020.
+   - **<font color="#245bdb">Only one</font>** student was selected within HITSZ in 2020.
 3. *Highest Honor of Undergraduate Thesis*, 2020.
    - 10 students were selected within HITSZ in 2020.
    - 2 students were selected from within the EE Department, HITSZ.
-   - **<font color="#e36c09">Rate Top 2% Within HITSZ.</font>**
+   - **<font color="#245bdb">Rate Top 2% Within HITSZ.</font>**
 4. *China Scholarship Council*, 2023.
-   - **<font color="#e36c09">National-level scholarship</font>** from the Chinese Government.
-   - **<font color="#e36c09">More than 20000$</font>** was funded.
-5. **<font color="#52ADC8">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2017.
-   - **<font color="#e36c09">First Price of National-level</font>** Mathematics Competition in China.
-6. **<font color="#52ADC8">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2018.
-   - **<font color="#e36c09">First Price of National-level</font>** Mathematics Competition in China.
+   - **<font color="#245bdb">National-level scholarship</font>** from the Chinese Government.
+   - **<font color="#245bdb">More than 20000$</font>** was funded.
+5. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2017.
+   - **<font color="#245bdb">First Price of National-level</font>** Mathematics Competition in China.
+6. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#52ADC8">Mathematics Competition</font>**, 2018.
+   - **<font color="#245bdb">First Price of National-level</font>** Mathematics Competition in China.
 7. *Heilongjiang Province Merit Student*, 2018.
    - Province-level Honors. **<font color="#e36c09">Rate top 1% in Heilongjiang Province</font>**.
    
