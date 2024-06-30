@@ -53,21 +53,21 @@ Collaborative Papers/Preprint
 
 Awards
 =====
-1. *Chinese National Scholarship*, 2020.
-   - <font color="#52AEC8">Chinese Highest-Level Scholarship, Top 1%</font>
+1. *National Scholarship of China*, 2020.
+   - <font color="#52AEC8">The Highest-Level Scholarship Funded by Chinese Government. **Rate top 0.2% within China**.</font>
 2. *Distinguished Doctoral Scholarship*, 2020.
-   - <font color="#52AEC8">Only one student is selected within HITSZ in 2020</font>
+   - <font color="#52AEC8">Only one student was selected within HITSZ in 2020.</font>
 3. *Highest Honor of Undergraduate Thesis*, 2020.
-   - <font color="#52AEC8">Only 10 students are selected within HITSZ in 2020</font>
-   - <font color="#52AEC8">Only 2 students are selected within EE Department, HITSZ</font>
+   - <font color="#52AEC8">10 students were selected within HITSZ in 2020.</font>
+   - <font color="#52AEC8">2 students were selected from within the EE Department, HITSZ. **Rate Top 2% within HITSZ**.</font>
 4. *China Scholarship Council*, 2023.
    - <font color="#52AEC8">National-level scholarship from the Chinese Government</font>
 5. ***First Prize** of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2017.
-   - <font color="#52AEC8">National-level Mathematics Competition</font>
+   - <font color="#52AEC8">**First Price of National-level** Mathematics Competition.</font>
 6. ***First Prize** of Chinese College Students <font color="#245bdb">Mathematics Competition</font>*, 2018.
-   - <font color="#52AEC8">National-level Mathematics Competition</font>
+   - <font color="#52AEC8">**First Price of National-level** Mathematics Competition.</font>
 7. *Heilongjiang Province Merit Student*, 2018.
-   - <font color="#52AEC8">Province-level Honors, Top 1% in Heilongjiang Province</font>.
+   - <font color="#52AEC8">Province-level Honors. **Rate top 1% in Heilongjiang Province**</font>.
    
 Contact
 ======
