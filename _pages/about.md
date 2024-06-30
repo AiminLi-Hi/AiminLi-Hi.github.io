@@ -56,7 +56,7 @@ Awards
 1. *National Scholarship of China*, 2020.
    - <font color="#52AEC8">The <font color="#e36c09">Highest-Level Scholarship</font> Funded by Chinese Government.</font> <font color="#e36c09">Rate top 0.2% within China.</font>
 2. *Distinguished Doctoral Scholarship*, 2020.
-   - <font color="#52AEC8">**Only one** student was selected within HITSZ in 2020.</font>
+   - <font color="#52AEC8"><font color="#e36c09">Only one</font> student was selected within HITSZ in 2020.</font>
 3. *Highest Honor of Undergraduate Thesis*, 2020.
    - <font color="#52AEC8">10 students were selected within HITSZ in 2020.</font>
    - <font color="#52AEC8">2 students were selected from within the EE Department, HITSZ. **Rate Top 2% within HITSZ**.</font>
