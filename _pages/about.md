@@ -64,7 +64,7 @@ Awards
    - **<font color="#e36c09">Rate Top 2% Within HITSZ.</font>**
 4. *China Scholarship Council*, 2023.
    - **<font color="#e36c09">National-level scholarship</font>** from the Chinese Government.
-   - **<font color="#e36c09">More than 20000$</font>** were funded.
+   - **<font color="#e36c09">More than 20000$</font>** was funded.
 5. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2017.
    - **<font color="#e36c09">First Price of National-level</font>** Mathematics Competition in China.
 6. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2018.
