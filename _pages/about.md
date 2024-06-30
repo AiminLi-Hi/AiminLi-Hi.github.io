@@ -35,19 +35,21 @@ First-author Papers
 
 First-author Preprint
 =====
-1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
-2. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
+1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Xiaomeng Chen, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
+2. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications**, 2023.
+3. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
 
-Collaborative Papers
+Collaborative Papers/Preprint
 =====
 1. [<font color="#245bdb">TWC</font>] Shaohua Wu, Zhihong Deng, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Minimizing age-of-information in HARQ-CC aided NOMA systems](https://ieeexplore.ieee.org/abstract/document/9875026)" in **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2022.
 2. [<font color="#245bdb">TCOM</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022.
 3. [<font color="#245bdb">NET</font>] Siqi Meng, Shaohua Wu, Hanyu Wu, **Aimin Li**, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Network** (IF: 6.8, Q1), 2022.
 4. [<font color="#245bdb">JSAIT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, and Qinyu Zhang. "[Towards Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Journal on Selected Areas of Information Theory**, 2023.
-5. [<font color="#245bdb">TVT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes Over Rayleigh Fading Channel](https://ieeexplore.ieee.org/abstract/document/9741327)" in **IEEE Transactions on Vehicular Technology**, 2022.
+5. [<font color="#245bdb">TVT</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes Over Rayleigh Fading Channel](https://ieeexplore.ieee.org/abstract/document/9741327)" in **IEEE Transactions on Vehicular Technology** (IF: 6.1, Q1), 2022.
 6. [<font color="#245bdb">NL</font>] Xiyu Lv, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks](https://ieeexplore.ieee.org/document/9787786)" in **IEEE Networking Letters**, 2022.
 7. [<font color="#245bdb">INFOCOM WKSHPS</font>] Kunpeng Liu, **Aimin Li**, and Shaohua Wu. "[Deep Reinforcement Learning-Assisted Age-optimal Transmission Policy for HARQ-aided NOMA Networks](https://ieeexplore.ieee.org/abstract/document/10225923)" in **IEEE INFOCOM PERAI 6G**, 2023.
 8. [<font color="#245bdb">VTC</font>] Jiaming Zhang, Shaohua Wu, **Aimin Li**, Jian Jiao, and Qinyu Zhang. "[Analysis of GEO Satellite Relay Coded Systems](https://ieeexplore.ieee.org/abstract/document/10012755)" in **IEEE VTC-2022 Fall**, USA, 2022.
+9. [<font color="#245bdb">ITW</font>] **Aimin Li**, Xiaomeng Chen, and Shaohua Wu. "[Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System](https://arxiv.org/pdf/2405.02924)", submitted to **IEEE Information Theory Workshop**, 2024.
 
 Awards
 =====
