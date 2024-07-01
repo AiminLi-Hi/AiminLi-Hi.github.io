@@ -24,7 +24,7 @@ Research Interest
 
 First-author Papers
 =====
-### Journals
+## Journals
 1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Age of information with Hybrid-ARQ: A unified explicit result](https://ieeexplore.ieee.org/abstract/document/9931172/)" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022.
 2. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "[Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications](https://ieeexplore.ieee.org/abstract/document/10562359)" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2024.
 3. [<font color="#245bdb">TWC</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2021.
@@ -32,7 +32,7 @@ First-author Papers
 5. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Xiaomeng Chen, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
 6. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications**, 2023.
 
-### Conferences
+## Conferences
 1. [<font color="#245bdb">ISIT</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
 2. [<font color="#245bdb">Globecom</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE Globecom**, Brazil, 2022.
 3. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "[Goal-oriented Tensor: Beyond AoI Towards Semantics-Empowered Goal-Oriented Communications](https://arxiv.org/pdf/2305.04083)" in **IEEE WCNC**, Dubai, 2024.
