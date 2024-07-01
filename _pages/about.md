@@ -33,14 +33,14 @@ First-author Papers
 6. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications**, 2023.
 
 ### Conferences
-1.[<font color="#245bdb">ISIT</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
+1. [<font color="#245bdb">ISIT</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
 2. [<font color="#245bdb">Globecom</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE Globecom**, Brazil, 2022.
 3. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "[Goal-oriented Tensor: Beyond AoI Towards Semantics-Empowered Goal-Oriented Communications](https://arxiv.org/pdf/2305.04083)" in **IEEE WCNC**, Dubai, 2024.
 4. [<font color="#245bdb">VTC</font>] **Aimin Li**, Shaohua Wu, Ying Wang, Jian Jiao, and Qinyu Zhang. "[Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design](https://ieeexplore.ieee.org/abstract/document/9128415)" in **IEEE VTC-Spring 2020**, Belgium, 2020.
 5. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
 
 
-Collaborative Papers/Preprint
+Collaborative Papers
 =====
 1. [<font color="#245bdb">TWC</font>] Shaohua Wu, Zhihong Deng, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Minimizing age-of-information in HARQ-CC aided NOMA systems](https://ieeexplore.ieee.org/abstract/document/9875026)" in **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2022.
 2. [<font color="#245bdb">TCOM</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analysis and optimization of the HARQ-based spinal coded timely status update system](https://ieeexplore.ieee.org/abstract/document/9854876)"  in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022.
