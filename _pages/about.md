@@ -31,7 +31,7 @@ First-author Papers
 4. [<font color="#245bdb">WCM</font>] **Aimin Li**, Shaohua Wu, Siqi Meng, Rongxing Lu, Sumei Sun, and Qinyu Zhang. "[Towards goal-oriented semantic communications: New metrics, open challenges, and future research directions](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Wireless Communications** (IF: 10.9, Q1), 2024.
 5. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Xiaomeng Chen, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
 6. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications**, 2023.
-===
+
 ### Conferences
 1.[<font color="#245bdb">ISIT</font>] **Xiaomeng Chen, Aimin Li(Co-first)**, and Shaohua Wu. "[Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels](https://ieeexplore.ieee.org/abstract/document/10206448)" in **IEEE ISIT**, Taipei, 2023.
 2. [<font color="#245bdb">Globecom</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result](https://ieeexplore.ieee.org/abstract/document/10001126)" in **IEEE Globecom**, Brazil, 2022.
