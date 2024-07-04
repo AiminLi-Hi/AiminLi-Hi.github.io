@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-Welcome to my world! I am currently a fourth-year Ph.D student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China. In HITSZ, my research is supervised by Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua). Currently, I am also a visiting student at [Institute for Infocomm Research (I2R), A\*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei). 
+Welcome to my homepage! I am currently a fourth-year Ph.D student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China. In HITSZ, my research is supervised by Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua). Currently, I am also a visiting student at [Institute for Infocomm Research (I2R), A\*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei). 
 
 I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017. I am a positive young volunteer for some IEEE events, such as [IEEE VTC-Spring 2024 Singapore](https://events.vtsociety.org/vtc2024-spring/), [IEEE 6G Summit Singapore 2023](https://sg6gws2023.ieee-sg6gws.org/), and [IEEE 6G Summit Singapore 2024](https://sg6gws2024.ieee-sg6gws.org/); and a reviewer for some IEEE top-tier journals and conferences, such as IEEE TWC, IEEE ISIT, IEEE TNNLS, IEEE TVT, IEEE CL, etc.
 
@@ -17,17 +17,19 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 
 Education
 ======
- - 2016.09 - 2020.06: B.Sc in Electrical and Computer Engineering (**Highest Honor**)
+ - 2016.09 - 2020.06
+   - B.Sc in Electrical and Computer Engineering (**Highest Honor**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
- - 2020.09 - 2025.06: Ph.D Candidate in Electrical and Computer Engineering
+ - 2020.09 - 2025.06
+   - Ph.D. candidate in Electrical and Computer Engineering
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
- - 2023.10 - 2024.10: Co-training Ph.D at Institute for Infocomm Research (I2R)
+ - 2023.10 - 2024.10
+   - Co-training Ph.D. at Institute for Infocomm Research (I2R)
    - [Agency for Science, Technology and Research (A\*STAR), Singapore](https://www.a-star.edu.sg/i2r)
    - Supervisor: Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)
  
-
 
 Research Interest
 ======
