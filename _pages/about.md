@@ -18,14 +18,14 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 Education
 ======
  - 2016.09 - 2020.06: B.Sc in Electrical and Computer Engineering (**Highest Honor**)
-   - Harbin Institute of Technology, Shenzhen (HITSZ), China
+   - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2017.07 - 2017.08: Visiting Student at [University of California (Riverside)](https://www.ucr.edu)
  - 2023.10 - 2024.10: Co-training P.h.D Student at Institute for Infocomm Research (I2R)
-   - Agency for Science, Technology and Research (A\*STAR), Singapore
+   - [Agency for Science, Technology and Research (A\*STAR), Singapore](https://www.a-star.edu.sg/i2r)
    - Supervisor: Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)
  - 2020.09 - 2025.06: Ph.D Candidate in Electrical and Computer Engineering
-   - Harbin Institute of Technology, Shenzhen (HITSZ), China
+   - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
 
 
