@@ -19,7 +19,7 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 
 Education
 ======
- - 2016-2020 Bachelor Degree
+ - 2016-2020 Bachelor Degree               a;slkdjf
  - 2023.10 - 2024.10 Co-training Student
  - 2020-2025 Ph.D Candidate 
 
