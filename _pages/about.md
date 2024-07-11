@@ -70,9 +70,9 @@ Collaborative Papers
 
 Awards
 =====
-1. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2017.
+1. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#e36c09">Mathematics Competition</font>**, 2017.
    - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
-2. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2018.
+2. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#e36c09">Mathematics Competition</font>**, 2018.
    - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
 3. *National Scholarship of China*, 2020.
    - **<font color="#e36c09">The Highest-Level Scholarship</font>** Funded by Chinese Government.
