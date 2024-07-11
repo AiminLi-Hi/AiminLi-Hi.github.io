@@ -70,25 +70,25 @@ Collaborative Papers
 
 Awards
 =====
-1. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2017.
-   - First Price of **National-level** Mathematics Competition in China.
-2. **<font color="#245bdb">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2018.
-   - First Price of **National-level** Mathematics Competition in China.
+1. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2017.
+   - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
+2. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#245bdb">Mathematics Competition</font>**, 2018.
+   - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
 3. *National Scholarship of China*, 2020.
-   - **<font color="#245bdb">The Highest-Level Scholarship</font>** Funded by Chinese Government.
-   - **<font color="#245bdb">Rate Top 0.1% Within China.</font>**
+   - **<font color="#e36c09">The Highest-Level Scholarship</font>** Funded by Chinese Government.
+   - **<font color="#e36c09">Rate Top 0.1% Within China.</font>**
 4. *Distinguished Doctoral Scholarship*, 2020.
-   - **<font color="#245bdb">Only one</font>** student was selected **<font color="#245bdb">within HITSZ</font>** in 2020.
+   - **<font color="#e36c09">Only one</font>** student was selected **<font color="#e36c09">within HITSZ</font>** in 2020.
 5. *Highest Honor of Undergraduate Thesis*, 2020.
    - 10 students were selected within HITSZ in 2020.
    - 2 students were selected from within the EE Department, HITSZ.
-   - **<font color="#245bdb">Rate Top 2% Within HITSZ.</font>**
+   - **<font color="#e36c09">Rate Top 2% Within HITSZ.</font>**
 6. *China Scholarship Council*, 2023.
-   - **<font color="#245bdb">National-level scholarship</font>** from the Chinese Government.
-   - **<font color="#245bdb">More than 20000$</font>** was funded.
+   - **<font color="#e36c09">National-level scholarship</font>** from the Chinese Government.
+   - **<font color="#e36c09">More than 20000$</font>** was funded.
 7. *Heilongjiang Province Merit Student*, 2018.
    - Province-level Honors.
-   - **<font color="#245bdb">Rate top 1% in Heilongjiang Province</font>**.
+   - **<font color="#e36c09">Rate top 1% in Heilongjiang Province</font>**.
    
 Contact
 ======
