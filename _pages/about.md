@@ -53,7 +53,7 @@ First-author Preprint
 =====
 1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Xiaomeng Chen, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", submitted to **IEEE Transactions on Communications** (**Minor Revision**), 2024.
 2. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "[A Unified Expression for Upper Bounds on the BLER of Spinal Codes over Fading Channels](https://arxiv.org/pdf/2407.03741)", submitted to **IEEE Transactions on Wireless Communications**, 2023.
-3. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", submitted to **IEEE Transactions on Vehicular Technology**, 2024.
+3. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", submitted to **IEEE Transactions on Vehicular Technology**, 2024.
 4. [<font color="#245bdb">ITW</font>] **Aimin Li**, Shaohua Wu, Gary C.F. Lee,  Xiaomeng Chen, and Sumei Sun. "[Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process](https://arxiv.org/pdf/2405.02042)", submitted to **IEEE Information Theory Workshop**, 2024.
 
 Collaborative Papers
