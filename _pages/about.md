@@ -39,7 +39,7 @@ Research Interest
 
 First-author Papers
 =====
-1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Age of information with Hybrid-ARQ: A unified explicit result](files/Age of Information With Hybrid-ARQ A Unified Explicit Result.pdf)" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022.
+1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Age of information with Hybrid-ARQ: A unified explicit result" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022. [PDF](files/Age of Information With Hybrid-ARQ A Unified Explicit Result.pdf)
 2. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Sumei Sun, and Jie Cao. "[Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications](https://ieeexplore.ieee.org/abstract/document/10562359)" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2024.
 3. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Xiaomeng Chen, and Sumei Sun. "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel", **IEEE Transactions on Communications** (**Accepted**, IF: 7.2, Q1), 2024.
 4. [<font color="#245bdb">TWC</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "[Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement](https://ieeexplore.ieee.org/abstract/document/9468924)" in **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2021.
