@@ -18,11 +18,11 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 Education
 ======
  - 2016.09 - 2020.06
-   - B.Sc in Electrical and Computer Engineering (**Highest Honor**)
+   - B.Sc in Electrical and Computer Engineering (**Highest Honor, Top 2%**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2020.09 - 2025.06
-   - Ph.D. candidate in Electrical and Computer Engineering
+   - Ph.D. candidate in Electrical and Computer Engineering (**Direct PhD program from undergraduate**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2023.10 - 2024.10
