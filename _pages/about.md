@@ -68,6 +68,7 @@ Collaborative Papers
 8. [<font color="#245bdb">VTC</font>] Jiaming Zhang, Shaohua Wu, **Aimin Li**, Jian Jiao, and Qinyu Zhang. "Analysis of GEO Satellite Relay Coded Systems" in **IEEE VTC**, USA, 2022. [(PDF)](files/Analysis of GEO Satellite Relay Coded Systems.pdf)
 9. [<font color="#245bdb">ITW</font>] Xiaomeng Chen, **Aimin Li**, and Shaohua Wu. "Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System", **IEEE Information Theory Workshop**, 2024. [(PDF)](https://arxiv.org/pdf/2405.02924)
 10. [<font color="#245bdb">ICCW</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, Qinyu Zhang. "Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective", **IEEE ICC Workshops**, Montreal, 2021.[(PDF)](files/Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective.pdf)
+11. [<font color="#245bdb">ICCT</font>] Mingxiao Sun, Di Zhang, Shaobo Jia, **Aimin Li**, "Packet Managemet of AoI in The Finite Block-length Regime", IEEE ICCT, Chengdu, 2024.
 
 Awards
 =====
