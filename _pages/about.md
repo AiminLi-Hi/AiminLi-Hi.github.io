@@ -18,15 +18,16 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 Education
 ======
  - 2016.09 - 2020.06
-   - B.Sc in Electrical and Computer Engineering (**Highest Honor, Top 2%**)(**Awarded Best Thesis: Finite Block-Length Analysis and Optimization for Spinal Codes**)
+   - B.Sc in Electrical and Computer Engineering (**Highest Honor, Top 2%**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
+   - (**Awarded Best Thesis: Finite Block-Length Analysis and Optimization for Spinal Codes**)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2020.09 - 2025.06
    - Ph.D. candidate in Electrical and Computer Engineering (**Direct PhD program from undergraduate**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2023.10 - 2024.10
-   - Co-training Ph.D. at Institute for Infocomm Research (I2R)
+   - Visiting Researcher at Institute for Infocomm Research (I2R)
    - [Agency for Science, Technology and Research (A\*STAR), Singapore](https://www.a-star.edu.sg/i2r)
    - Supervisor: Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)
  
@@ -36,6 +37,38 @@ Research Interest
 1. Performance analysis of channel coding in the **Finite Block-Length (FBL)** regime. My research work about **Spinal codes** has been published in *IEEE ISIT*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications*, and *IEEE Transactions on Vehicular Technology*.
 2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications* and *IEEE Journal on Selected Areas of Information Theory*.
 3. Goal-oriented and semantic communications. My research work about **goal-oriented and semantic communications** has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, *IEEE Proc. ITW*, and *IEEE WCNC*.
+
+Awards
+=====
+1. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
+   - (**Top 15 Ph.d Students Worldwide.**)
+   - (**Title: Age and Value of Information for Remote Wireless Network**)
+2. National Scholarship of China, Nov. 2024.
+   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+3. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
+   - (**Only 1 Phd Student in EE Department, HITSZ.**)
+   - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
+4. HITSZ ''Idea'' Research Student Program, Nov. 2023.
+   -(**Only 1 Phd Student in EE Department, HITSZ.**)
+5. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
+6. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
+7. Special Merit Doctoral Scholarship, Nov. 2020.
+   -(**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
+8. National Scholarship of China, Nov. 2024.
+   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+9. Best Thesis Award, Jul. 2020.
+   -(**Top 2 Students in EE Department, HITSZ.**)
+10. Gongjin Scholarship for Overall Excellence, Dec. 2018.
+   -(**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
+11. Award for Heilongjiang Provincial Merit Student, Nov. 2018.
+   -(**Rate top 1% in Heilongjiang Province, China.**)
+12. First Prize of Chinese College Student Mathematics Competitions, Dec. 2017.
+   -(**First Prize of National-level Mathematics Competitions in China.**) 
+14. First Class Scholarship for Comprehensive Excellence, HITSZ, Dec. 2017.
+   -(**Rate top 5% in HITSZ.**)
+15. First Prize of Chinese College Student Mathematics Competitions, Dec. 2016.
+   -(**First Prize of National-level Mathematics Competitions in China.**) 
+
 
 First-author Papers
 =====
@@ -70,27 +103,6 @@ Collaborative Papers
 10. [<font color="#245bdb">ICCW</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, Qinyu Zhang. "Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective", **IEEE ICC Workshops**, Montreal, 2021.[(PDF)](files/Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective.pdf)
 11. [<font color="#245bdb">ICCT</font>] Mingxiao Sun, Di Zhang, Shaobo Jia, **Aimin Li**, "Packet Managemet of AoI in The Finite Block-length Regime", IEEE ICCT, Chengdu, 2024.
 
-Awards
-=====
-1. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#e36c09">Mathematics Competition</font>**, 2017.
-   - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
-2. **<font color="#e36c09">First Prize</font>** *of Chinese College Students* **<font color="#e36c09">Mathematics Competition</font>**, 2018.
-   - First Price of **<font color="#e36c09">National-level</font>** Mathematics Competition in China.
-3. *National Scholarship of China*, 2020.
-   - **<font color="#e36c09">The Highest-Level Scholarship</font>** Funded by Chinese Government.
-   - **<font color="#e36c09">Rate Top 0.1% Within China.</font>**
-4. *Distinguished Doctoral Scholarship*, 2020.
-   - **<font color="#e36c09">Only one</font>** student was selected **<font color="#e36c09">within HITSZ</font>** in 2020.
-5. *Highest Honor of Undergraduate Thesis*, 2020.
-   - 10 students were selected within HITSZ in 2020.
-   - 2 students were selected from within the EE Department, HITSZ.
-   - **<font color="#e36c09">Rate Top 2% Within HITSZ.</font>**
-6. *China Scholarship Council*, 2023.
-   - **<font color="#e36c09">National-level scholarship</font>** from the Chinese Government.
-   - **<font color="#e36c09">More than 20000$</font>** was funded.
-7. *Heilongjiang Province Merit Student*, 2018.
-   - Province-level Honors.
-   - **<font color="#e36c09">Rate top 1% in Heilongjiang Province</font>**.
    
 Contact
 ======
