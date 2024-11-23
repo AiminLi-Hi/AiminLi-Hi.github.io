@@ -49,25 +49,25 @@ Awards
    - (**Only 1 Phd Student in EE Department, HITSZ.**)
    - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
 4. HITSZ ''Idea'' Research Student Program, Nov. 2023.
-   -(**Only 1 Phd Student in EE Department, HITSZ.**)
+   - (**Only 1 Phd Student in EE Department, HITSZ.**)
 5. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
 6. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
 7. Special Merit Doctoral Scholarship, Nov. 2020.
-   -(**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
+   - (**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
 8. National Scholarship of China, Nov. 2024.
-   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
 9. Best Thesis Award, Jul. 2020.
-   -(**Top 2 Students in EE Department, HITSZ.**)
+   - (**Top 2 Students in EE Department, HITSZ.**)
 10. Gongjin Scholarship for Overall Excellence, Dec. 2018.
-   -(**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
+   - (**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
 11. Award for Heilongjiang Provincial Merit Student, Nov. 2018.
-   -(**Rate top 1% in Heilongjiang Province, China.**)
+   - (**Rate top 1% in Heilongjiang Province, China.**)
 12. First Prize of Chinese College Student Mathematics Competitions, Dec. 2017.
-   -(**First Prize of National-level Mathematics Competitions in China.**) 
+   - (**First Prize of National-level Mathematics Competitions in China.**) 
 14. First Class Scholarship for Comprehensive Excellence, HITSZ, Dec. 2017.
-   -(**Rate top 5% in HITSZ.**)
+   - (**Rate top 5% in HITSZ.**)
 15. First Prize of Chinese College Student Mathematics Competitions, Dec. 2016.
-   -(**First Prize of National-level Mathematics Competitions in China.**) 
+   - (**First Prize of National-level Mathematics Competitions in China.**) 
 
 
 First-author Papers
