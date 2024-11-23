@@ -74,10 +74,9 @@ Collaborative Papers
 Awards
 =====
 1. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
-   - (**Top 15 Ph.d Students Worldwide.**)
-   - (**Title: Age and Value of Information for Remote Wireless Network**)
+   - (**Top 15 Ph.d Students Worldwide.**) (**Title: Age and Value of Information for Remote Wireless Network**)
 2. National Scholarship of China, Nov. 2024.
-   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
 3. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
    - (**Only 1 Phd Student in EE Department, HITSZ.**)
    - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
