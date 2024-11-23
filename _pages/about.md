@@ -18,7 +18,7 @@ Currently, I am actively exploring job opportunities and post-doctoral positions
 Education
 ======
  - 2016.09 - 2020.06
-   - B.Sc in Electrical and Computer Engineering (**Highest Honor, Top 2%**)
+   - B.Sc in Electrical and Computer Engineering (**Highest Honor, Top 2%**)(**Awarded Best Thesis: Finite Block-Length Analysis and Optimization for Spinal Codes**)
    - [Harbin Institute of Technology, Shenzhen (HITSZ), China](https://www.hitsz.edu.cn/index.html)
    - Supervisor: Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua)
  - 2020.09 - 2025.06
