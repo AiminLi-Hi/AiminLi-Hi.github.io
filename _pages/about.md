@@ -38,38 +38,6 @@ Research Interest
 2. Performance modeling and optimization of URLLC-oriented physical-layer communications, with a specific interest in **Age of Information (AoI)** analysis and optimizations. My research work about AoI has been published in *IEEE Globecom*, *IEEE Transactions on Communications*, *IEEE Transactions on Wireless Communications* and *IEEE Journal on Selected Areas of Information Theory*.
 3. Goal-oriented and semantic communications. My research work about **goal-oriented and semantic communications** has been published in *IEEE Transactions on Communications*, *IEEE Wireless Communications*, *IEEE Proc. ITW*, and *IEEE WCNC*.
 
-Awards
-=====
-1. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
-   - (**Top 15 Ph.d Students Worldwide.**)
-   - (**Title: Age and Value of Information for Remote Wireless Network**)
-2. National Scholarship of China, Nov. 2024.
-   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
-3. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
-   - (**Only 1 Phd Student in EE Department, HITSZ.**)
-   - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
-4. HITSZ ''Idea'' Research Student Program, Nov. 2023.
-   - (**Only 1 Phd Student in EE Department, HITSZ.**)
-5. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
-6. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
-7. Special Merit Doctoral Scholarship, Nov. 2020.
-   - (**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
-8. National Scholarship of China, Nov. 2024.
-   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
-9. Best Thesis Award, Jul. 2020.
-   - (**Top 2 Students in EE Department, HITSZ.**)
-10. Gongjin Scholarship for Overall Excellence, Dec. 2018.
-   - (**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
-11. Award for Heilongjiang Provincial Merit Student, Nov. 2018.
-   - (**Rate top 1% in Heilongjiang Province, China.**)
-12. First Prize of Chinese College Student Mathematics Competitions, Dec. 2017.
-   - (**First Prize of National-level Mathematics Competitions in China.**) 
-14. First Class Scholarship for Comprehensive Excellence, HITSZ, Dec. 2017.
-   - (**Rate top 5% in HITSZ.**)
-15. First Prize of Chinese College Student Mathematics Competitions, Dec. 2016.
-   - (**First Prize of National-level Mathematics Competitions in China.**) 
-
-
 First-author Papers
 =====
 1. [<font color="#245bdb">TCOM</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Age of information with Hybrid-ARQ: A unified explicit result" in **IEEE Transactions on Communications** (IF: 7.2, Q1), 2022. [(PDF)](files/Age of Information With Hybrid-ARQ A Unified Explicit Result.pdf)
@@ -102,6 +70,38 @@ Collaborative Papers
 9. [<font color="#245bdb">ITW</font>] Xiaomeng Chen, **Aimin Li**, and Shaohua Wu. "Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System", **IEEE Information Theory Workshop**, 2024. [(PDF)](https://arxiv.org/pdf/2405.02924)
 10. [<font color="#245bdb">ICCW</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, Qinyu Zhang. "Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective", **IEEE ICC Workshops**, Montreal, 2021.[(PDF)](files/Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective.pdf)
 11. [<font color="#245bdb">ICCT</font>] Mingxiao Sun, Di Zhang, Shaobo Jia, **Aimin Li**, "Packet Managemet of AoI in The Finite Block-length Regime", IEEE ICCT, Chengdu, 2024.
+
+Awards
+=====
+1. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
+   - (**Top 15 Ph.d Students Worldwide.**)
+   - (**Title: Age and Value of Information for Remote Wireless Network**)
+2. National Scholarship of China, Nov. 2024.
+   -(**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+3. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
+   - (**Only 1 Phd Student in EE Department, HITSZ.**)
+   - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
+4. HITSZ ''Idea'' Research Student Program, Nov. 2023.
+   - (**Only 1 Phd Student in EE Department, HITSZ.**)
+5. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
+6. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
+7. Special Merit Doctoral Scholarship, Nov. 2020.
+   - (**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
+8. National Scholarship of China, Nov. 2024.
+   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
+9. Best Thesis Award, Jul. 2020.
+   - (**Top 2 Students in EE Department, HITSZ.**)
+10. Gongjin Scholarship for Overall Excellence, Dec. 2018.
+   - (**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
+11. Award for Heilongjiang Provincial Merit Student, Nov. 2018.
+   - (**Rate top 1% in Heilongjiang Province, China.**)
+12. First Prize of Chinese College Student Mathematics Competitions, Dec. 2017.
+   - (**First Prize of National-level Mathematics Competitions in China.**) 
+14. First Class Scholarship for Comprehensive Excellence, HITSZ, Dec. 2017.
+   - (**Rate top 5% in HITSZ.**)
+15. First Prize of Chinese College Student Mathematics Competitions, Dec. 2016.
+   - (**First Prize of National-level Mathematics Competitions in China.**) 
+
 
    
 Contact
