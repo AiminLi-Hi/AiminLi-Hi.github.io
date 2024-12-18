@@ -7,7 +7,7 @@ main:
     url: /Awards/  
 
   - title: "CV"
-    url: /files/CV.pdf
+    url: /assets/CV.pdf
 
   - title: "Volunteers&Reviewers"
     url: /talks/    
