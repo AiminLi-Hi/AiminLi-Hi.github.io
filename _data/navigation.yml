@@ -6,8 +6,8 @@ main:
   - title: "Awards"
     url: /Awards/  
 
-  #- title: "CV"
-  #  url: /cv/
+  - title: "CV"
+    url: /cv/
 
   - title: "Volunteers&Reviewers"
     url: /talks/    
