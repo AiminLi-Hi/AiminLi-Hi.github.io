@@ -9,11 +9,7 @@ redirect_from:
 
 Welcome to Aimin Li's website! I am currently a fourth-year Ph.D student at [Harbin Institute of Technology (Shenzhen)](https://www.hitsz.edu.cn/index.html), China. In HITSZ, my research is supervised by Prof. [Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua). Currently, I am also a visiting student at [Institute for Infocomm Research (I2R), A\*STAR](https://www.a-star.edu.sg/i2r) in Singapore, where I am supervised by Prof. [Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei). 
 
-I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017. I am a positive young volunteer for some IEEE events, such as [IEEE VTC-Spring 2024 Singapore](https://events.vtsociety.org/vtc2024-spring/), [IEEE 6G Summit Singapore 2023](https://sg6gws2023.ieee-sg6gws.org/), and [IEEE 6G Summit Singapore 2024](https://sg6gws2024.ieee-sg6gws.org/); and a reviewer for some IEEE top-tier journals and conferences, such as IEEE JSAC, IEEE TWC, IEEE ISIT, IEEE TNNLS, IEEE TVT, IEEE Communications Letters, etc.
-
-<p style="background-color: yellow; color: red; font-style: italic; font-weight: bold;">
-Currently, I am actively exploring job opportunities and post-doctoral positions.
-</p>
+I received my Bachelor's degree in the Department of Electronic Engineering, Harbin Institute of Technology (Shenzhen) in 2020. I was also a visiting student at [University of California (Riverside)](https://www.ucr.edu) in USA in 2017. I am a positive young volunteer for some IEEE events, such as [IEEE VTC-Spring 2024 Singapore](https://events.vtsociety.org/vtc2024-spring/), [IEEE 6G Summit Singapore 2023](https://sg6gws2023.ieee-sg6gws.org/), and [IEEE 6G Summit Singapore 2024](https://sg6gws2024.ieee-sg6gws.org/); and a reviewer for some IEEE top-tier journals and conferences, such as IEEE TIT, IEEE JSAC, IEEE TWC, IEEE ISIT, IEEE TNNLS, IEEE TVT, IEEE Communications Letters, etc.
 
 Education
 ======
@@ -55,7 +51,7 @@ First-author Papers
 First-author Preprint
 =====
 1. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "A Unified Expression for Upper Bounds on the BLER of Spinal Codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2023. [(PDF)](https://arxiv.org/pdf/2407.03741)
-2. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", submitted to **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2024.
+2. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", submitted to **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2024. [(PDF)](https://arxiv.org/pdf/2501.04989)
 
 Collaborative Papers
 =====
@@ -73,33 +69,35 @@ Collaborative Papers
 
 Awards
 =====
-1. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
-   - (**Top 15 Ph.d Students Worldwide.**) (**Title: Age and Value of Information for Remote Wireless Network**)
-2. National Scholarship of China, Nov. 2024.
-   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
-3. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
-   - (**Only 1 Phd Student in EE Department, HITSZ.**)
+1. 3rd Prize of IEEE Globecom 4MT Thesis Competition, Nov. 2024.
+   - (**Rank <font color="#245bdb">5 of 15</font> Final Round Competitors**) 
+2. IEEE Globecom 4MT Thesis Competition Travel Grant, Nov. 2024.
+   - (**<font color="#245bdb">Top 15 Ph.d</font> Students Worldwide.**) (**Title: Age and Value of Information for Remote Wireless Network**)
+3. National Scholarship of China, Nov. 2024.
+   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate <font color="#245bdb">Top 0.2%</font> in China**)
+4. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
+   - (**</font>Only 1</font> Phd Student in EE Department, HITSZ.**)
    - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
-4. HITSZ ''Idea'' Research Student Program, Nov. 2023.
-   - (**Only 1 Phd Student in EE Department, HITSZ.**)
-5. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
-6. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
-7. Special Merit Doctoral Scholarship, Nov. 2020.
-   - (**Awarded by the University President. Only 1 Student Across All Disciplines in HITSZ.**)
-8. National Scholarship of China, Nov. 2024.
-   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate Top 0.2% in China**)
-9. Best Thesis Award, Jul. 2020.
-   - (**Top 2 Students in EE Department, HITSZ.**)
-10. Gongjin Scholarship for Overall Excellence, Dec. 2018.
-   - (**Awarded by the University President, top 3 students in EE Department, HITSZ.**)
+5. HITSZ ''Idea'' Research Student Program, Nov. 2023.
+   - (**</font>Only 1</font> Phd Student in EE Department, HITSZ.**)
+6. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
+7. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
+8. Special Merit Doctoral Scholarship, Nov. 2020.
+   - (**Awarded by the University President. </font>Only 1</font> Student Across All Disciplines in HITSZ.**)
+9. National Scholarship of China, Nov. 2020.
+   - (**The Highest-Level Scholarship Funded by Government.**) (**Rate <font color="#245bdb">Top 0.2%</font> in China**)
+10. Best Thesis Award of HIT, Jul. 2020.
+   - (**<font color="#245bdb">Top 2</font> Students in EE Department, HITSZ.**)
+11. Gongjin Scholarship for Overall Excellence, Dec. 2018.
+   - (**Awarded by the University President, <font color="#245bdb">Top 3</font> students in EE Department, HITSZ.**)
 11. Award for Heilongjiang Provincial Merit Student, Nov. 2018.
-   - (**Rate top 1% in Heilongjiang Province, China.**)
+   - (**Rate <font color="#245bdb">Top 1%</font> in Heilongjiang Province, China.**)
 12. First Prize of Chinese College Student Mathematics Competitions, Dec. 2017.
-   - (**First Prize of National-level Mathematics Competitions in China.**) 
+   - (**<font color="#245bdb">First Prize</font> of National-level Mathematics Competitions in China.**) 
 14. First Class Scholarship for Comprehensive Excellence, HITSZ, Dec. 2017.
-   - (**Rate top 5% in HITSZ.**)
+   - (**Rate <font color="#245bdb">top 5%</font> in HITSZ.**)
 15. First Prize of Chinese College Student Mathematics Competitions, Dec. 2016.
-   - (**First Prize of National-level Mathematics Competitions in China.**) 
+   - (**<font color="#245bdb">First Prize</font> of National-level Mathematics Competitions in China.**) 
 
 
    
