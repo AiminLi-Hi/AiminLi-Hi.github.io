@@ -76,10 +76,10 @@ Awards
 3. National Scholarship of China, Nov. 2024.
    - (**The Highest-Level Scholarship Funded by Government.**) (**Rate <font color="#245bdb">Top 0.2%</font> in China**)
 4. Candidate for the National Natural Science Foundation Youth Project of China, Jan. 2024.
-   - (**</font>Only 1</font> Phd Student in EE Department, HITSZ.**)
+   - (**</font color="#245bdb">Only 1</font> Phd Student in EE Department, HITSZ.**)
    - (**One of Fewer than 600 PhD Students Across All Disciplines in China.**)
 5. HITSZ ''Idea'' Research Student Program, Nov. 2023.
-   - (**</font>Only 1</font> Phd Student in EE Department, HITSZ.**)
+   - (**</font color="#245bdb">Only 1</font> Phd Student in EE Department, HITSZ.**)
 6. Chinese Government Scholarship by China Scholarship Council, Jul. 2023.
 7. Award for Excellent Students in Academic and Applied Endeavors, Dec. 2021.
 8. Special Merit Doctoral Scholarship, Nov. 2020.
