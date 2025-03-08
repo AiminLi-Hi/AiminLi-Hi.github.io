@@ -35,7 +35,7 @@ I have long been a reviewer for the following journals and conferences:
 Session Chair
 ======
 1. Age of Information Session Chair, IEEE Information Theory Workshop 2024 (Shenzhen).
-2. Fedrated Learning Session Chair, IEEE Globecom 2024 (Capetown).
+2. Federated Learning Session Chair, IEEE Globecom 2024 (Capetown).
 
   
 
