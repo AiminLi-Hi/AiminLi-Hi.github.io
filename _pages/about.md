@@ -46,6 +46,8 @@ First-author Papers
 8. [<font color="#245bdb">Globecom</font>] **Aimin Li**, Shaohua Wu, Jian Jiao, Ning Zhang, and Qinyu Zhang. "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result" in **IEEE Globecom**, Brazil, 2022. [(PDF)](files/Analyzing Age Performance of Hybrid-ARQ A Unified Explicit Result.pdf)
 9. [<font color="#245bdb">WCNC</font>] **Aimin Li**, Shaohua Wu, and Sunmei Sun. "Goal-oriented Tensor: Beyond AoI Towards Semantics-Empowered Goal-Oriented Communications" in **IEEE WCNC**, Dubai, 2024. [(PDF)](files/Goal-Oriented Tensor Beyond AoI Towards Semantics-Empowered Goal-Oriented Communications.pdf)[(Slides)](files/WCNCPPT - Aimin Li.pdf)
 10. [<font color="#245bdb">VTC</font>] **Aimin Li**, Shaohua Wu, Ying Wang, Jian Jiao, and Qinyu Zhang. "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design" in **IEEE VTC-Spring 2020**, Belgium, 2020. [(PDF)](files/Spinal Codes over BSC Error Probability Analysis and the Puncturing Design.pdf)
+11. [<font color="#245bdb">Allerton</font>] **Aimin Li** and Elif Uysal. "Optimal Sampling and Scheduling for Remote
+Fusion Estimation of Correlated Wiener Processes" in **61st Allerton Conference on Communication, Control, and Computing**, 2025. [(PDF)](files/Allerton2025.pdf)
    
 
 First-author Preprint
