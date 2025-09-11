@@ -48,8 +48,9 @@ First-author Papers
 10. [<font color="#245bdb">VTC</font>] **Aimin Li**, Shaohua Wu, Ying Wang, Jian Jiao, and Qinyu Zhang. "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design" in **IEEE VTC-Spring 2020**, Belgium, 2020. [(PDF)](files/Spinal Codes over BSC Error Probability Analysis and the Puncturing Design.pdf)
 11. [<font color="#245bdb">Allerton</font>] **Aimin Li** and Elif Uysal. "Optimal Sampling and Scheduling for Remote
 Fusion Estimation of Correlated Wiener Processes" in **61st Allerton Conference on Communication, Control, and Computing**, 2025. [(PDF)](files/Allerton2025.pdf)
-12. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "A Unified Expression for Upper Bounds on the BLER of Spinal Codes over Fading Channels", submitted to **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2023. [(PDF)](https://arxiv.org/pdf/2407.03741)
-13. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", submitted to **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2024. [(PDF)](https://arxiv.org/pdf/2501.04989)
+12. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels", **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2025. [(PDF)](https://arxiv.org/pdf/2407.03741)
+13. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
+14. [<font color="#245bdb">TIT</font>] **Aimin Li**, Shaohua Wu, Gary. C.F. Lee and Sumei Sun. "From Freshness to Effectiveness: Goal-Oriented Sampling for Remote Decision Making", submitted to **IEEE Transactions on Information Theory** (Major Revision), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
 
 Collaborative Papers
 =====
