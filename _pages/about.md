@@ -49,6 +49,7 @@ First-author Papers
 11. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels", **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2025. [(PDF)](https://arxiv.org/pdf/2407.03741)
 12. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
 13. [<font color="#245bdb">TIT</font>] **Aimin Li**, Shaohua Wu, Gary. C.F. Lee and Sumei Sun. "From Freshness to Effectiveness: Goal-Oriented Sampling for Remote Decision Making", submitted to **IEEE Transactions on Information Theory** (Major Revision), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
+14. [(PDF)](files/Journal_intermittent_routes_energy_cns.pdf)
 
 Collaborative Papers
 =====
