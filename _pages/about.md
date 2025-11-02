@@ -49,7 +49,7 @@ First-author Papers
 11. [<font color="#245bdb">TWC</font>] **Aimin Li**, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, and Sumei Sun. "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels", **IEEE Transactions on Wireless Communications** (IF: 8.9, Q1), 2025. [(PDF)](https://arxiv.org/pdf/2407.03741)
 12. [<font color="#245bdb">TVT</font>] **Aimin Li**, Shaohua Wu, and Sumei Sun. "Error Floor of Spinal Codes under ML Decoding", **IEEE Transactions on Vehicular Technology** (IF: 6.1 Q1), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
 13. [<font color="#245bdb">TIT</font>] **Aimin Li**, Shaohua Wu, Gary. C.F. Lee and Sumei Sun. "From Freshness to Effectiveness: Goal-Oriented Sampling for Remote Decision Making", submitted to **IEEE Transactions on Information Theory** (Major Revision), 2025. [(PDF)](https://arxiv.org/pdf/2501.04989)
-14. [(PDF)](files/Journal_intermittent_routes_energy_cns.pdf)
+14. [<font color="#245bdb">Allerton</font>] **Aimin Li** and Elif Uysal. "Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes", **61st Allerton Conference on Communication, Control, and Computin (Allerton Conference)**, 2025. [(PDF)](https://arxiv.org/pdf/2510.22288)
 
 Collaborative Papers
 =====
@@ -64,6 +64,9 @@ Collaborative Papers
 9. [<font color="#245bdb">ITW</font>] Xiaomeng Chen, **Aimin Li**, and Shaohua Wu. "Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System", **IEEE Information Theory Workshop**, 2024. [(PDF)](https://arxiv.org/pdf/2405.02924)
 10. [<font color="#245bdb">ICCW</font>] Siqi Meng, Shaohua Wu, **Aimin Li**, Jian Jiao, Ning Zhang, Qinyu Zhang. "Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective", **IEEE ICC Workshops**, Montreal, 2021.[(PDF)](files/Analysis and Optimization of Spinal Codes over the BSC from the AoI Perspective.pdf)
 11. [<font color="#245bdb">ICCT</font>] Mingxiao Sun, Di Zhang, Shaobo Jia, **Aimin Li**, "Packet Management of AoI in The Finite Block-length Regime", IEEE ICCT, Chengdu, 2024.
+12. [<font color="#245bdb">Mobihoc</font>] Adem Utku Atasayar, Aimin Li, Cagri Ari, and Elif Uysal. "Fresh Data Delivery:
+Joint Sampling and Routing for Minimizing the Age of Information?", ACM Mobihoc, Houston, USA, 2025. ([<font color="#ff0000">Acceptance Rate: 20%</font>])
+13. [<font color="#245bdb">ICC</font>] Kunpeng Liu⋆, Shaohua Wu⋆, Aimin Li, and Qinyu Zhang. "Joint Transmission and Control in a Goal-oriented NOMA Network", IEEE ICC, 2025.
 
 Awards
 =====
