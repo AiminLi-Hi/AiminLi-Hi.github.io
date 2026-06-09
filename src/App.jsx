@@ -579,14 +579,14 @@ const DATA = {
     news: [
       { date: "2026-06", label: "TMC", content: "Paper titled <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "Paper titled <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>.", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
-      { date: "2026-03", label: "VTC 2026", content: "Paper titled <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT 2026", content: "Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
-      { date: "2026-02-06", label: "TIT", content: "Paper titled <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> was accepted by <strong>IEEE Transactions on Information Theory (TIT)</strong>.", link: "/papers/paper26TIT.pdf" },
+      { date: "2026-03", label: "VTC", content: "Paper titled <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
+      { date: "2026-01", label: "ISIT", content: "Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
+      { date: "2026-02", label: "TIT", content: "Paper titled <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> was accepted by <strong>IEEE Transactions on Information Theory (TIT)</strong>.", link: "/papers/paper26TIT.pdf" },
       { date: "2025-11", label: "Award", content: "Won the <strong>Best Dissertation Nomination Award</strong> at Harbin Institute of Technology (the only recipient from the EE Department).", link: "#awards" },
-      { date: "2025-11", label: "Allerton 2025", content: "Paper titled <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> was accepted. Welcome discussions and collaborations.", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc 2025", content: "Paper titled <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> was accepted (<strong>39 papers accepted worldwide in 2025</strong>). Welcome discussions and collaborations.", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
-      { date: "2024-12", label: "Competition", content: "Won the 3rd Prize in IEEE Globecom 4MT Thesis Competition.", link: "#awards" },
-      { date: "2024-12", label: "Scholarship", content: "Won the National Scholarship for PhD students.", link: "#awards" }
+      { date: "2025-11", label: "Allerton", content: "Paper titled <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> was accepted. Welcome discussions and collaborations.", link: "https://arxiv.org/pdf/2510.22288" },
+      { date: "2025-11", label: "Mobihoc", content: "Paper titled <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> was accepted (<strong>39 papers accepted worldwide in 2025</strong>). Welcome discussions and collaborations.", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2024-12", label: "4MT", content: "Won the 3rd Prize in IEEE Globecom 4MT Thesis Competition.", link: "#awards" },
+      { date: "2024-12", label: "Scholar", content: "Won the National Scholarship for PhD students.", link: "#awards" }
     ],
     timeline: [
       { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
@@ -679,14 +679,14 @@ const DATA = {
     news: [
       { date: "2026-06", label: "TMC", content: "论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
-      { date: "2026-03", label: "VTC 2026", content: "论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT 2026", content: "论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
-      { date: "2026-02-06", label: "TIT", content: "论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。", link: "/papers/paper26TIT.pdf" },
+      { date: "2026-03", label: "VTC", content: "论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
+      { date: "2026-01", label: "ISIT", content: "论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
+      { date: "2026-02", label: "TIT", content: "论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。", link: "/papers/paper26TIT.pdf" },
       { date: "2025-11", label: "荣誉", content: "获得哈尔滨工业大学最佳学位论文提名奖。", link: "#awards" },
-      { date: "2025-11", label: "Allerton 2025", content: "论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。欢迎交流与合作。", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc 2025", content: "论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 ACM Mobihoc 2025 录用（<strong>全球2025录用39篇</strong>）。欢迎交流与合作。", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
-      { date: "2024-12", label: "竞赛", content: "获得IEEE Globecom四分钟博士学位论文竞赛三等奖。", link: "#awards" },
-      { date: "2024-12", label: "奖学金", content: "获得博士研究生国家奖学金。", link: "#awards" }      
+      { date: "2025-11", label: "Allerton", content: "论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。欢迎交流与合作。", link: "https://arxiv.org/pdf/2510.22288" },
+      { date: "2025-11", label: "Mobihoc", content: "论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 ACM Mobihoc 2025 录用（<strong>全球2025录用39篇</strong>）。欢迎交流与合作。", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2024-12", label: "4MT", content: "获得IEEE Globecom四分钟博士学位论文竞赛三等奖。", link: "#awards" },
+      { date: "2024-12", label: "国奖", content: "获得博士研究生国家奖学金。", link: "#awards" }      
     ],
     timeline: [
       { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
@@ -1244,17 +1244,17 @@ export default function AcademicProfile() {
                  </h3>
                  <div className={`divide-y ${darkMode ? 'divide-slate-700/60' : 'divide-gray-100'}`}>
                    {content.news.map((item, idx) => (
-                     <div key={idx} className="grid grid-cols-[4.75rem_minmax(0,1fr)] sm:grid-cols-[4.85rem_auto_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1 text-[13px] leading-snug items-start">
-                        <span className="font-mono text-[11px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
+                     <div key={idx} className="grid grid-cols-[4.35rem_3.9rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1 text-[12px] leading-snug items-start">
+                        <span className="font-mono text-[10px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
                         <div className="contents">
-                             <span className={`text-[10px] leading-4 font-bold px-1.5 py-0.5 rounded-full w-fit shrink-0 whitespace-nowrap ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
+                             <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
-                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={item.content.replace(/<[^>]+>/g, '')} className={`min-w-0 sm:col-auto col-start-2 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group overflow-hidden ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
-                                  <span className="block min-w-0 truncate" dangerouslySetInnerHTML={{__html: item.content}} />
+                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={item.content.replace(/<[^>]+>/g, '')} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
+                                  <span className="block min-w-0 whitespace-normal break-words" dangerouslySetInnerHTML={{__html: item.content}} />
                                   {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
                              ) : (
-                               <span className="block min-w-0 truncate sm:col-auto col-start-2" title={item.content.replace(/<[^>]+>/g, '')} dangerouslySetInnerHTML={{__html: item.content}} />
+                               <span className="block min-w-0 whitespace-normal break-words" title={item.content.replace(/<[^>]+>/g, '')} dangerouslySetInnerHTML={{__html: item.content}} />
                              )}
                         </div>
                      </div>
