@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Moon, Sun, Globe, MapPin, Mail, Linkedin, 
+  Moon, Sun, MapPin, Mail, Linkedin, 
   Github, GraduationCap, Briefcase, FileText, 
   Award, ExternalLink, BookOpen, ChevronRight,
-  Download, Play, Youtube, Copy, BarChart2,
+  Download, Play, Youtube, Copy,
   Quote, Search, Filter, Star, Trophy, Video,
   School, ChevronDown, ChevronUp, Layers, User, Users,
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
@@ -49,7 +49,35 @@ const ArxivIcon = ({ size = 24, className }) => (
 const getIEEEUrl = (title) => `https://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&queryText=${encodeURIComponent(title)}`;
 
 const PUBLICATIONS = [
-  // --- Journal Articles (16 papers) ---
+  // --- Journal Articles ---
+  {
+    id: "j17",
+    year: 2026,
+    title: "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
+    authors: "Hanyu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang",
+    venue: "IEEE Transactions on Mobile Computing",
+    venue_short: "IEEE TMC",
+    type: "Journal",
+    tag: "Co-Author",
+    featured: true,
+    keywords: ["Age of Information", "UAV Swarms", "MARL", "Routing"],
+    summary: "Develops an AoI-aware joint sampling, buffering, and routing optimization framework for autonomous UAV swarms using multi-agent reinforcement learning.",
+    url: "https://ieeexplore.ieee.org/abstract/document/11547874/"
+  },
+  {
+    id: "j18",
+    year: 2026,
+    title: "Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems",
+    authors: "Xiaomeng Chen, Aimin Li, Yajing Deng, Shaohua Wu",
+    venue: "IEEE Internet of Things Journal",
+    venue_short: "IEEE IoTJ",
+    type: "Journal",
+    tag: "Co-Author",
+    featured: true,
+    keywords: ["Remote Estimation", "Internet of Things", "Entropy", "Uncertainty of Information"],
+    summary: "Uses uncertainty of information to guide sampling for remote estimation over randomly delayed IoT systems.",
+    url: "https://doi.org/10.1109/JIOT.2026.3663721"
+  },
   {
     id: "j5",
     year: 2024,
@@ -312,7 +340,34 @@ const PUBLICATIONS = [
     url: getIEEEUrl("Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement")
   },
 
-  // --- Conference Proceedings (13 papers) ---
+  // --- Conference Proceedings ---
+  {
+    id: "c14",
+    year: 2026,
+    title: "Taming the Heavy Tail: Age-Optimal Preemption",
+    authors: "Aimin Li, Yiğit İnce, Elif Uysal",
+    venue: "IEEE International Symposium on Information Theory",
+    venue_short: "IEEE ISIT",
+    type: "Conference",
+    tag: "First Author",
+    featured: true,
+    keywords: ["Age of Information", "Preemption", "Heavy-Tailed Delay", "Impulse Control"],
+    summary: "Studies age-optimal sampling and preemption under general, especially heavy-tailed, service-time distributions.",
+    url: "https://arxiv.org/abs/2601.16624"
+  },
+  {
+    id: "c15",
+    year: 2026,
+    title: "Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications",
+    authors: "Aiwei Lei, Di Zhang, Aimin Li, Evgeny Khorov",
+    venue: "IEEE Vehicular Technology Conference",
+    venue_short: "IEEE VTC-Spring",
+    type: "Conference",
+    tag: "Co-Author",
+    keywords: ["Satellite Communications", "Weibull Fading", "SAGIN", "Capacity Analysis"],
+    summary: "Analyzes channel capacity under Weibull fading for satellite-ground integrated communication systems.",
+    url: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/"
+  },
   {
     id: "c1",
     year: 2025,
@@ -369,7 +424,6 @@ const PUBLICATIONS = [
     venue_short: "IEEE WCNC",
     type: "Conference",
     tag: "First Author",
-    image: "/images/TWCSpinal.png",
     keywords: ["Semantic Comm"],
     image: "/images/TCOMGOT.gif",
     summary: "Conference version of the goal-oriented tensor work.",
@@ -523,6 +577,10 @@ const DATA = {
     },
     nav: { about: "About", news: "News", timeline: "Timeline", awards: "Honors", publications: "Publications", service: "Academic Service", teaching: "Teaching", contact: "Contact" },
     news: [
+      { date: "2026-06", label: "TMC", content: "Paper titled <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
+      { date: "2026-05", label: "IoTJ", content: "Paper titled <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>.", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
+      { date: "2026-03", label: "VTC 2026", content: "Paper titled <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
+      { date: "2026-01", label: "ISIT 2026", content: "Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2026-02-06", label: "TIT", content: "Paper titled <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> was accepted by <strong>IEEE Transactions on Information Theory (TIT)</strong>.", link: "/papers/paper26TIT.pdf" },
       { date: "2025-11", label: "Award", content: "Won the <strong>Best Dissertation Nomination Award</strong> at Harbin Institute of Technology (the only recipient from the EE Department).", link: "#awards" },
       { date: "2025-11", label: "Allerton 2025", content: "Paper titled <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> was accepted. Welcome discussions and collaborations.", link: "https://arxiv.org/pdf/2510.22288" },
@@ -619,6 +677,10 @@ const DATA = {
     },
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", awards: "荣誉奖项", publications: "发表论文", service: "学术服务", teaching: "教学经历", contact: "联系方式" },
     news: [
+      { date: "2026-06", label: "TMC", content: "论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
+      { date: "2026-05", label: "IoTJ", content: "论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
+      { date: "2026-03", label: "VTC 2026", content: "论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
+      { date: "2026-01", label: "ISIT 2026", content: "论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2026-02-06", label: "TIT", content: "论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。", link: "/papers/paper26TIT.pdf" },
       { date: "2025-11", label: "荣誉", content: "获得哈尔滨工业大学最佳学位论文提名奖。", link: "#awards" },
       { date: "2025-11", label: "Allerton 2025", content: "论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。欢迎交流与合作。", link: "https://arxiv.org/pdf/2510.22288" },
@@ -753,7 +815,7 @@ const HighlightText = ({ text, darkMode }) => {
   );
 };
 
-const ActionButton = ({ icon: Icon, label, href, onClick, type = "default", darkMode }) => {
+const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }) => {
   if (!href && !onClick) return null;
   const styles = {
     pdf: darkMode ? "bg-red-900/20 text-red-400 border-red-800/50 hover:bg-red-900/40" : "bg-red-50 text-red-700 border-red-100 hover:bg-red-100",
@@ -774,12 +836,12 @@ const ActionButton = ({ icon: Icon, label, href, onClick, type = "default", dark
       rel={href ? "noreferrer" : undefined} 
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border cursor-pointer ${colorClass}`}
     >
-      <Icon size={14} />{label}
+      {React.createElement(icon, { size: 14 })}{label}
     </Component>
   );
 };
 
-const SocialButton = ({ icon: Icon, href, label, colorType, darkMode }) => {
+const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   const colors = {
     email: darkMode ? "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426]" : "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426] shadow-sm",
     scholar: darkMode ? "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6]" : "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6] shadow-sm",
@@ -789,59 +851,10 @@ const SocialButton = ({ icon: Icon, href, label, colorType, darkMode }) => {
   const activeColor = colors[colorType] || (darkMode ? "bg-slate-800 text-white border-slate-700" : "bg-white text-slate-700 border-gray-200");
   return (
     <a href={href} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label}>
-      <Icon size={22} />
+      {React.createElement(icon, { size: 22 })}
     </a>
   );
 };
-
-const VisitorMap = ({ darkMode }) => (
-  <section className="mb-16">
-    <div className={`rounded-3xl overflow-hidden border ${darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-white border-gray-100 shadow-lg shadow-blue-500/5'}`}>
-      <div className={`p-6 md:p-7 border-b flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${darkMode ? 'border-slate-700' : 'border-gray-100'}`}>
-        <div className="flex items-center gap-4">
-          <div className={`p-3 rounded-xl ${darkMode ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
-            <Globe size={24} />
-          </div>
-          <div>
-            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Global Visitors</h2>
-            <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-              Approximate visitor locations by country.
-            </p>
-          </div>
-        </div>
-        <a
-          href="https://info.flagcounter.com/Ad32"
-          target="_blank"
-          rel="noreferrer"
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition-all self-start md:self-auto ${darkMode ? 'bg-slate-900/60 border-slate-700 text-slate-300 hover:text-white hover:border-blue-500' : 'bg-white border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-200'}`}
-        >
-          <BarChart2 size={14} />
-          View Stats
-        </a>
-      </div>
-
-      <div className={`p-5 md:p-8 ${darkMode ? 'bg-slate-900/20' : 'bg-slate-50/60'}`}>
-        <a
-          href="https://info.flagcounter.com/Ad32"
-          target="_blank"
-          rel="noreferrer"
-          className={`block rounded-2xl border p-4 md:p-5 transition-all ${darkMode ? 'bg-slate-950/40 border-slate-700 hover:border-blue-500/60' : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-md'}`}
-          aria-label="Open global visitor statistics"
-        >
-          <img
-            src="https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/"
-            alt="Global visitor map"
-            loading="lazy"
-            className="mx-auto max-w-full rounded-xl"
-          />
-        </a>
-        <p className={`mt-4 text-center text-xs leading-relaxed ${darkMode ? 'text-slate-500' : 'text-gray-500'}`}>
-          Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.
-        </p>
-      </div>
-    </div>
-  </section>
-);
 
 const BibtexModal = ({ content, onClose, darkMode }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose}>
@@ -945,9 +958,12 @@ const AcademicLineage = ({ lineage, darkMode }) => {
 // ==========================================
 
 export default function AcademicProfile() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => (
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ));
   const [lang, setLang] = useState('en');
-  const [mounted, setMounted] = useState(false);
   const [activeBibtex, setActiveBibtex] = useState(null);
   const [activeSection, setActiveSection] = useState('about');
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -1028,17 +1044,10 @@ export default function AcademicProfile() {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  useEffect(() => {
-    setMounted(true);
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setDarkMode(true);
-  }, []);
-
-  if (!mounted) return null;
-
   const PublicationCard = ({ pub, isFeatured }) => {
     const isExpanded = expandedPaperId === pub.id;
     
-    const handleCardClick = (e) => {
+    const handleCardClick = () => {
       // If the user clicks the card, open the article URL
       if (pub.url) {
         window.open(pub.url, '_blank', 'noopener,noreferrer');
@@ -1127,8 +1136,9 @@ export default function AcademicProfile() {
                </div>
              )}
              <div className="flex gap-3 mt-auto pt-2" onClick={e => e.stopPropagation()}>
-               <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />
-               {pub.links.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
+               {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
+               {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
+               {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
                <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
              </div>
           </div>
@@ -1227,24 +1237,24 @@ export default function AcademicProfile() {
                 <div className={`prose prose-lg max-w-none leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}><p><HighlightText text={content.bio} darkMode={darkMode} /></p></div>
               </div>
               
-              <div id="news" className={`p-5 rounded-2xl border ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-gray-100 shadow-sm'}`}>
-                 <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>
+              <div id="news" className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-gray-100 shadow-sm'}`}>
+                 <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>
                    <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>
                    {content.nav.news}
                  </h3>
-                 <div className="space-y-2">
+                 <div className={`divide-y ${darkMode ? 'divide-slate-700/60' : 'divide-gray-100'}`}>
                    {content.news.map((item, idx) => (
-                     <div key={idx} className="flex gap-3 text-sm items-start">
-                        <span className="font-mono font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
-                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1">
-                             <span className={`text-xs font-bold px-2 py-0.5 rounded w-fit shrink-0 ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
+                     <div key={idx} className="grid grid-cols-[4.75rem_minmax(0,1fr)] sm:grid-cols-[4.85rem_auto_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1 text-[13px] leading-snug items-start">
+                        <span className="font-mono text-[11px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
+                        <div className="contents">
+                             <span className={`text-[10px] leading-4 font-bold px-1.5 py-0.5 rounded-full w-fit shrink-0 whitespace-nowrap ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
-                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" className={`hover:underline decoration-1 underline-offset-2 flex items-start gap-1 group ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
-                                  <span dangerouslySetInnerHTML={{__html: item.content}} />
-                                  {!item.link.startsWith('#') && <ExternalLink size={10} className="mt-1 opacity-50 group-hover:opacity-100" />}
+                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={item.content.replace(/<[^>]+>/g, '')} className={`min-w-0 sm:col-auto col-start-2 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group overflow-hidden ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
+                                  <span className="block min-w-0 truncate" dangerouslySetInnerHTML={{__html: item.content}} />
+                                  {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
                              ) : (
-                               <span dangerouslySetInnerHTML={{__html: item.content}} />
+                               <span className="block min-w-0 truncate sm:col-auto col-start-2" title={item.content.replace(/<[^>]+>/g, '')} dangerouslySetInnerHTML={{__html: item.content}} />
                              )}
                         </div>
                      </div>
@@ -1486,11 +1496,6 @@ export default function AcademicProfile() {
           )}
 
           <div className="space-y-4">
-             {(featuredPubs.length > 0 && otherPubs.length > 0) && (
-               <h3 className={`text-sm font-bold uppercase tracking-widest flex items-center gap-2 mt-12 mb-4 ${darkMode ? 'text-slate-400' : 'text-gray-400'}`}>
-                  {visiblePubs < otherPubs.length ? `Recent Publications` : `All Other Publications`}
-               </h3>
-             )}
              <div className="grid gap-6">
                 {otherPubs.slice(0, visiblePubs).map(pub => <PublicationCard key={pub.id} pub={pub} isFeatured={false} />)}
              </div>
@@ -1646,8 +1651,6 @@ export default function AcademicProfile() {
             </p>
           </div>
         </div>
-
-        <VisitorMap darkMode={darkMode} />
 
         {/* Footer */}
         <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>
