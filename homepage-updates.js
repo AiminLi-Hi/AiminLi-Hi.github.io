@@ -2,6 +2,7 @@
   const VISITOR_MAP_STATS_URL = 'https://info.flagcounter.com/Ad32';
   const VISITOR_MAP_IMAGE_URL = 'https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/?v=20260609c';
   const TOTAL_PUBLICATIONS = 33;
+  let darkModeObserver = null;
 
   const EXTRA_NEWS = [
     {
@@ -110,6 +111,29 @@
       .homepage-inline-summary { color: rgb(100 116 139); font-size: .85rem; line-height: 1.55; margin-bottom: .75rem; }
       .homepage-inline-keywords { display: flex; flex-wrap: wrap; gap: .35rem; }
       .homepage-inline-keywords span { font-size: .68rem; border: 1px solid rgb(226 232 240); color: rgb(71 85 105); border-radius: 9999px; padding: .15rem .5rem; background: rgb(248 250 252); }
+      .homepage-publication-card { background: white; border: 1px solid rgb(243 244 246); border-radius: 1rem; overflow: hidden; cursor: pointer; transition: all .3s ease; position: relative; }
+      .homepage-publication-card:hover { border-color: rgb(233 213 255); box-shadow: 0 10px 24px rgba(15,23,42,.08); }
+      .homepage-publication-card:hover .homepage-publication-title { color: rgb(147 51 234); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+      .homepage-publication-hover { position: absolute; top: .75rem; right: .75rem; color: rgb(148 163 184); opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+      .homepage-publication-card:hover .homepage-publication-hover { opacity: 1; }
+      .homepage-publication-content { padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; }
+      .homepage-publication-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+      .homepage-publication-title { margin: 0; color: rgb(17 24 39); font-size: 1.125rem; line-height: 1.35; font-weight: 800; transition: color .2s ease; }
+      .homepage-publication-toggle { flex: none; color: rgb(148 163 184); border-radius: 9999px; padding: .15rem .25rem; font-size: 1.15rem; line-height: 1; }
+      .homepage-publication-authors { color: rgb(71 85 105); font-size: .875rem; line-height: 1.55; }
+      .homepage-publication-authors strong { color: rgb(17 24 39); text-decoration: underline; text-decoration-color: rgba(168,85,247,.35); }
+      .homepage-publication-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+      .homepage-publication-venue { border: 1px solid rgb(229 231 235); background: rgb(243 244 246); color: rgb(55 65 81); border-radius: .375rem; padding: .25rem .5rem; font-size: .75rem; font-weight: 800; }
+      .homepage-publication-fullvenue { color: rgb(100 116 139); font-size: .75rem; font-style: italic; font-weight: 500; }
+      .homepage-publication-year { color: rgb(100 116 139); background: rgba(0,0,0,.1); border-radius: .25rem; padding: .125rem .375rem; font: 600 .625rem ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      .homepage-publication-summary { color: rgb(100 116 139); font-size: .875rem; line-height: 1.55; font-style: italic; border-left: 2px solid rgb(233 213 255); padding-left: .75rem; }
+      .homepage-publication-keywords { display: flex; flex-wrap: wrap; gap: .5rem; }
+      .homepage-publication-keywords span { border: 1px solid rgb(243 244 246); background: rgb(249 250 251); color: rgb(156 163 175); border-radius: .25rem; padding: .125rem .375rem; font-size: .625rem; }
+      .homepage-publication-actions { display: flex; gap: .75rem; padding-top: .5rem; }
+      .homepage-publication-link { display: inline-flex; align-items: center; gap: .375rem; border: 1px solid rgb(219 234 254); background: rgb(239 246 255); color: rgb(37 99 235); border-radius: .5rem; padding: .375rem .75rem; font-size: .75rem; font-weight: 700; text-decoration: none; transition: all .2s ease; }
+      .homepage-publication-link:hover { background: rgb(219 234 254); }
+      .homepage-dynamic-venue-button { border: 1px solid rgb(229 231 235) !important; background: white !important; color: rgb(75 85 99) !important; border-radius: .5rem !important; padding: .375rem .75rem !important; font-size: .75rem !important; font-weight: 800 !important; transition: all .2s ease !important; }
+      .homepage-dynamic-venue-button:hover { background: rgb(249 250 251) !important; }
       .homepage-visitor-map { margin-bottom: 4rem; border: 1px solid rgb(229 231 235); border-radius: 1.5rem; overflow: hidden; background: white; box-shadow: 0 18px 45px rgba(59,130,246,.06); }
       .homepage-visitor-head { padding: 1.5rem 1.75rem; border-bottom: 1px solid rgb(243 244 246); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
       .homepage-visitor-title { display: flex; align-items: center; gap: 1rem; }
@@ -132,6 +156,20 @@
       body.homepage-dynamic-dark .homepage-visitor-title p,
       body.homepage-dynamic-dark .homepage-visitor-note { color: rgb(148 163 184); }
       body.homepage-dynamic-dark .homepage-inline-keywords span { background: rgba(30,41,59,.8); color: rgb(203 213 225); border-color: rgb(51 65 85); }
+      body.homepage-dynamic-dark .homepage-publication-card { background: rgba(30,41,59,.4); border-color: rgba(51,65,85,.5); box-shadow: none; }
+      body.homepage-dynamic-dark .homepage-publication-card:hover { border-color: rgba(168,85,247,.35); }
+      body.homepage-dynamic-dark .homepage-publication-title { color: rgb(241 245 249); }
+      body.homepage-dynamic-dark .homepage-publication-card:hover .homepage-publication-title { color: rgb(192 132 252); }
+      body.homepage-dynamic-dark .homepage-publication-authors,
+      body.homepage-dynamic-dark .homepage-publication-fullvenue,
+      body.homepage-dynamic-dark .homepage-publication-summary { color: rgb(148 163 184); }
+      body.homepage-dynamic-dark .homepage-publication-authors strong { color: rgb(226 232 240); }
+      body.homepage-dynamic-dark .homepage-publication-venue { background: rgba(51,65,85,.5); border-color: rgb(71 85 105); color: rgb(203 213 225); }
+      body.homepage-dynamic-dark .homepage-publication-year { background: rgba(255,255,255,.1); color: rgb(148 163 184); }
+      body.homepage-dynamic-dark .homepage-publication-summary { border-color: rgb(71 85 105); }
+      body.homepage-dynamic-dark .homepage-publication-keywords span { border-color: rgb(51 65 85); color: rgb(100 116 139); background: transparent; }
+      body.homepage-dynamic-dark .homepage-dynamic-venue-button { background: rgb(30 41 59) !important; border-color: rgb(51 65 85) !important; color: rgb(148 163 184) !important; }
+      body.homepage-dynamic-dark .homepage-dynamic-venue-button:hover { background: rgb(51 65 85) !important; color: rgb(203 213 225) !important; }
       body.homepage-dynamic-dark .homepage-visitor-head { border-color: rgb(51 65 85); }
       body.homepage-dynamic-dark .homepage-visitor-icon { background: rgba(30,64,175,.28); color: rgb(96 165 250); }
       body.homepage-dynamic-dark .homepage-visitor-action { background: rgba(15,23,42,.6); border-color: rgb(51 65 85); color: rgb(203 213 225); }
@@ -148,6 +186,16 @@
   function syncDarkModeFlag() {
     const root = document.querySelector('#root > div');
     document.body.classList.toggle('homepage-dynamic-dark', !!root && root.className.includes('bg-[#0b1121]'));
+  }
+
+  function installDarkModeObserver() {
+    if (darkModeObserver || document.body.dataset.homepageDarkObserver === 'true') return;
+    const root = document.querySelector('#root > div');
+    if (!root || typeof MutationObserver === 'undefined') return;
+    syncDarkModeFlag();
+    darkModeObserver = new MutationObserver(syncDarkModeFlag);
+    darkModeObserver.observe(root, { attributes: true, attributeFilter: ['class'] });
+    document.body.dataset.homepageDarkObserver = 'true';
   }
 
   function createNewsItem(item) {
@@ -178,20 +226,36 @@
 
   function createPublicationCard(pub) {
     const card = document.createElement('article');
-    card.className = 'homepage-inline-card';
+    const highlightedAuthors = pub.authors
+      .split(',')
+      .map(author => {
+        const trimmed = author.trim();
+        return trimmed === 'Aimin Li' ? `<strong>${trimmed}</strong>` : trimmed;
+      })
+      .join(', ');
+
+    card.className = 'homepage-publication-card';
     card.dataset.homepagePublication = pub.key;
     card.addEventListener('click', () => window.open(pub.href, '_blank', 'noopener,noreferrer'));
     card.innerHTML = `
-      <div class="homepage-inline-meta">
-        <span class="homepage-inline-year">${pub.year}</span>
-        <span class="homepage-inline-pill">${pub.shortVenue}</span>
-        <span class="homepage-inline-pill">${pub.type}</span>
-        <span class="homepage-inline-pill">${pub.tag}</span>
+      <div class="homepage-publication-hover">↗</div>
+      <div class="homepage-publication-content">
+        <div class="homepage-publication-head">
+          <h3 class="homepage-publication-title">${pub.title}</h3>
+          <div class="homepage-publication-toggle" aria-hidden="true">⌄</div>
+        </div>
+        <div class="homepage-publication-authors">${highlightedAuthors}</div>
+        <div class="homepage-publication-meta">
+          <span class="homepage-publication-venue">${pub.shortVenue}</span>
+          <span class="homepage-publication-fullvenue">${pub.venue}</span>
+          <span class="homepage-publication-year">${pub.year}</span>
+        </div>
+        <div class="homepage-publication-summary">"${pub.summary}"</div>
+        <div class="homepage-publication-keywords">${pub.keywords.slice(0, 3).map(keyword => `<span>#${keyword}</span>`).join('')}</div>
+        <div class="homepage-publication-actions" onclick="event.stopPropagation()">
+          <a class="homepage-publication-link" href="${pub.href}" target="_blank" rel="noreferrer">Link ↗</a>
+        </div>
       </div>
-      <h3 class="homepage-inline-title"><a href="${pub.href}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">${pub.title}</a></h3>
-      <div class="homepage-inline-authors">${pub.authors}</div>
-      <div class="homepage-inline-summary">${pub.summary}</div>
-      <div class="homepage-inline-keywords">${pub.keywords.map(keyword => `<span>${keyword}</span>`).join('')}</div>
     `;
     return card;
   }
@@ -208,15 +272,21 @@
       'IEEE IoTJ': 1
     };
     const venueRow = allButton?.parentElement;
+    const dynamicVenueClass = 'homepage-dynamic-venue-button';
     Object.entries(venueCounts).forEach(([venue, count]) => {
       const existing = [...section.querySelectorAll('button')].find(button => button.textContent.trim().replace(/\s*\(\d+\)\s*$/, '') === venue);
       if (existing) {
         existing.textContent = `${venue} (${count})`;
+        if (venue === 'IEEE TMC' || venue === 'IEEE IoTJ') {
+          existing.className = dynamicVenueClass;
+          existing.dataset.homepageVenueButton = venue;
+        }
       } else if (venueRow) {
         const button = document.createElement('button');
         button.type = 'button';
         button.textContent = `${venue} (${count})`;
-        button.className = allButton?.className || 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white border-gray-200 text-gray-600 hover:bg-gray-50';
+        button.className = dynamicVenueClass;
+        button.dataset.homepageVenueButton = venue;
         venueRow.appendChild(button);
       }
     });
@@ -266,6 +336,7 @@
   function apply() {
     addStyles();
     syncDarkModeFlag();
+    installDarkModeObserver();
     return patchNews() && patchPublications() && insertVisitorMap();
   }
 

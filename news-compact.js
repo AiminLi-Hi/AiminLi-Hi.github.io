@@ -45,6 +45,34 @@
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
     }
+    body.homepage-dynamic-dark #news {
+      background: rgba(30,41,59,.5) !important;
+      border-color: rgb(51 65 85) !important;
+      box-shadow: none !important;
+    }
+    body.homepage-dynamic-dark #news h3 {
+      color: rgb(192 132 252) !important;
+    }
+    body.homepage-dynamic-dark #news .space-y-2 > div + div {
+      border-top-color: rgba(51,65,85,.72) !important;
+    }
+    body.homepage-dynamic-dark #news .space-y-2 > div > span:first-child {
+      color: rgb(148 163 184) !important;
+      opacity: 1 !important;
+    }
+    body.homepage-dynamic-dark #news .space-y-2 > div > div > span:first-child {
+      background: rgba(88,28,135,.45) !important;
+      color: rgb(216 180 254) !important;
+      border: 1px solid rgba(168,85,247,.35) !important;
+    }
+    body.homepage-dynamic-dark #news .space-y-2 > div a,
+    body.homepage-dynamic-dark #news .space-y-2 > div a > span {
+      color: rgb(203 213 225) !important;
+    }
+    body.homepage-dynamic-dark #news .space-y-2 > div a:hover,
+    body.homepage-dynamic-dark #news .space-y-2 > div a:hover > span {
+      color: rgb(192 132 252) !important;
+    }
 
     @media (max-width: 640px) {
       #news .space-y-2 > div {
