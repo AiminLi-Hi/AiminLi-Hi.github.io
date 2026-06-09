@@ -6,10 +6,10 @@
     pageviews: 39,
     countries: 4,
     ranking: [
-      { code: 'US', name: 'United States', count: 4 },
-      { code: 'TR', name: 'Türkiye', count: 2 },
-      { code: 'SG', name: 'Singapore', count: 1 },
-      { code: 'CN', name: 'China', count: 1 }
+      { code: 'US', name: 'United States', count: 4, x: 24, y: 43 },
+      { code: 'TR', name: 'Türkiye', count: 2, x: 55, y: 42 },
+      { code: 'SG', name: 'Singapore', count: 1, x: 72, y: 63 },
+      { code: 'CN', name: 'China', count: 1, x: 72, y: 45 }
     ]
   };
   const TOTAL_PUBLICATIONS = 33;
@@ -157,19 +157,19 @@
       .homepage-visitor-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(17rem, .65fr); gap: 1rem; align-items: stretch; }
       .homepage-visitor-panel { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
       .homepage-visitor-panel-title { margin: 0; color: rgb(51 65 85); font-size: .72rem; line-height: 1.2; text-transform: uppercase; letter-spacing: .06em; font-weight: 900; }
-      .homepage-visitor-frame { display: flex; align-items: center; justify-content: center; border: 1px solid rgb(241 245 249); border-radius: 1rem; padding: 1rem; background: white; transition: all .2s ease; min-height: 8.5rem; }
-      .homepage-visitor-map-frame { min-height: 15rem; }
+      .homepage-visitor-frame { position: relative; display: flex; align-items: center; justify-content: center; border: 1px solid rgb(241 245 249); border-radius: 1rem; padding: 1rem; background: white; transition: all .2s ease; min-height: 8.5rem; text-decoration: none; }
+      .homepage-visitor-map-frame { min-height: 15rem; padding: 0; overflow: hidden; }
       .homepage-visitor-frame:hover { border-color: rgb(191 219 254); box-shadow: 0 10px 28px rgba(15,23,42,.08); }
-      .homepage-visitor-frame img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: .75rem; }
       .homepage-visitor-ranking { display: flex; align-items: center; justify-content: center; min-height: 100%; }
-      .homepage-visitor-ranking img { width: auto; max-width: 100%; height: auto; }
-      .homepage-visitor-fallback { display: none; width: 100%; color: rgb(71 85 105); }
-      .homepage-visitor-image-blocked img { display: none !important; }
-      .homepage-visitor-image-blocked .homepage-visitor-fallback { display: block; }
-      .homepage-visitor-fallback-card { display: grid; gap: .75rem; place-items: center; text-align: center; padding: 1rem; }
-      .homepage-visitor-fallback-icon { width: 2.75rem; height: 2.75rem; display: grid; place-items: center; border-radius: .85rem; background: rgb(239 246 255); color: rgb(37 99 235); font-size: 1.35rem; font-weight: 800; }
-      .homepage-visitor-fallback-title { color: rgb(15 23 42); font-size: .9rem; font-weight: 900; }
-      .homepage-visitor-fallback-text { max-width: 26rem; color: rgb(100 116 139); font-size: .76rem; line-height: 1.55; }
+      .homepage-world-map { position: relative; width: 100%; aspect-ratio: 2.18 / 1; min-height: 15rem; overflow: hidden; border-radius: 1rem; background: linear-gradient(135deg, rgb(239 246 255), rgb(248 250 252) 48%, rgb(236 253 245)); }
+      .homepage-world-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .homepage-map-ocean-grid { opacity: .18; }
+      .homepage-map-land { fill: rgba(96,165,250,.28); stroke: rgba(37,99,235,.28); stroke-width: 1.1; }
+      .homepage-map-route { fill: none; stroke: rgba(37,99,235,.28); stroke-width: 1; stroke-dasharray: 5 7; }
+      .homepage-map-marker { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); display: flex; align-items: center; gap: .35rem; color: rgb(30 64 175); font-size: .65rem; font-weight: 900; letter-spacing: .03em; }
+      .homepage-map-marker::before { content: ""; width: .62rem; height: .62rem; border-radius: 9999px; background: rgb(37 99 235); box-shadow: 0 0 0 .3rem rgba(37,99,235,.14), 0 0 0 .55rem rgba(37,99,235,.07); }
+      .homepage-map-marker span { border: 1px solid rgba(191,219,254,.9); background: rgba(255,255,255,.86); color: rgb(30 64 175); border-radius: 9999px; padding: .18rem .42rem; box-shadow: 0 6px 16px rgba(37,99,235,.08); }
+      .homepage-map-summary { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .5rem; }
       .homepage-visitor-snapshot { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-top: .1rem; }
       .homepage-visitor-snapshot span { border: 1px solid rgb(226 232 240); background: rgb(248 250 252); color: rgb(51 65 85); border-radius: 9999px; padding: .25rem .55rem; font-size: .72rem; font-weight: 800; }
       .homepage-visitor-country-list { display: grid; gap: .5rem; width: 100%; }
@@ -177,6 +177,7 @@
       .homepage-visitor-country-code { color: rgb(37 99 235); font-size: .75rem; font-weight: 900; letter-spacing: .04em; }
       .homepage-visitor-country-name { color: rgb(51 65 85); font-size: .78rem; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .homepage-visitor-country-count { color: rgb(15 23 42); font-size: .8rem; font-weight: 900; }
+      .homepage-visitor-tracker { position: absolute !important; left: -9999px !important; top: auto !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
       .homepage-visitor-note { margin: 1rem 0 0 0; text-align: center; color: rgb(100 116 139); font-size: .75rem; line-height: 1.5; }
       body.homepage-dynamic-dark .homepage-inline-card,
       body.homepage-dynamic-dark .homepage-visitor-map { background: rgba(15,23,42,.5); border-color: rgb(51 65 85); box-shadow: none; }
@@ -207,11 +208,13 @@
       body.homepage-dynamic-dark .homepage-visitor-body { background: rgba(15,23,42,.24); }
       body.homepage-dynamic-dark .homepage-visitor-frame { background: rgba(2,6,23,.36); border-color: rgb(51 65 85); }
       body.homepage-dynamic-dark .homepage-visitor-panel-title { color: rgb(203 213 225); }
-      body.homepage-dynamic-dark .homepage-visitor-fallback { color: rgb(148 163 184); }
-      body.homepage-dynamic-dark .homepage-visitor-fallback-icon { background: rgba(30,64,175,.28); color: rgb(96 165 250); }
-      body.homepage-dynamic-dark .homepage-visitor-fallback-title,
       body.homepage-dynamic-dark .homepage-visitor-country-count { color: rgb(241 245 249); }
-      body.homepage-dynamic-dark .homepage-visitor-fallback-text { color: rgb(148 163 184); }
+      body.homepage-dynamic-dark .homepage-world-map { background: linear-gradient(135deg, rgba(15,23,42,.94), rgba(30,41,59,.82) 52%, rgba(20,83,45,.45)); }
+      body.homepage-dynamic-dark .homepage-map-land { fill: rgba(59,130,246,.28); stroke: rgba(147,197,253,.25); }
+      body.homepage-dynamic-dark .homepage-map-route { stroke: rgba(147,197,253,.28); }
+      body.homepage-dynamic-dark .homepage-map-marker { color: rgb(147 197 253); }
+      body.homepage-dynamic-dark .homepage-map-marker::before { background: rgb(96 165 250); box-shadow: 0 0 0 .3rem rgba(96,165,250,.18), 0 0 0 .55rem rgba(96,165,250,.08); }
+      body.homepage-dynamic-dark .homepage-map-marker span { background: rgba(15,23,42,.72); border-color: rgb(51 65 85); color: rgb(191 219 254); }
       body.homepage-dynamic-dark .homepage-visitor-snapshot span,
       body.homepage-dynamic-dark .homepage-visitor-country-list div { background: rgba(30,41,59,.55); border-color: rgb(51 65 85); color: rgb(203 213 225); }
       body.homepage-dynamic-dark .homepage-visitor-country-code { color: rgb(96 165 250); }
@@ -220,6 +223,8 @@
         .homepage-visitor-head { padding: 1.25rem; align-items: flex-start; flex-direction: column; }
         .homepage-visitor-title h2 { font-size: 1.25rem; }
         .homepage-visitor-grid { grid-template-columns: 1fr; }
+        .homepage-world-map { min-height: 12rem; }
+        .homepage-map-marker span { display: none; }
       }
     `;
     document.head.appendChild(style);
@@ -364,6 +369,38 @@
     `;
   }
 
+  function createVisitorMarkers() {
+    return VISITOR_SNAPSHOT.ranking.map(country => `
+      <div class="homepage-map-marker" style="--x: ${country.x}; --y: ${country.y}">
+        <span>${country.code} ${country.count}</span>
+      </div>
+    `).join('');
+  }
+
+  function createVisitorWorldMap() {
+    return `
+      <div class="homepage-world-map">
+        <svg viewBox="0 0 720 330" role="img" aria-label="World map visitor snapshot" focusable="false">
+          <defs>
+            <pattern id="homepage-map-grid" width="42" height="42" patternUnits="userSpaceOnUse">
+              <path d="M42 0H0V42" fill="none" stroke="currentColor" stroke-width="1" />
+            </pattern>
+          </defs>
+          <rect class="homepage-map-ocean-grid" width="720" height="330" fill="url(#homepage-map-grid)" />
+          <path class="homepage-map-land" d="M74 105c28-39 86-49 124-31 24 11 38 31 67 32 38 1 55 25 45 54-9 28-45 30-67 47-30 24-45 63-87 55-35-7-21-48-45-66-27-20-65-14-74-45-5-17 14-27 37-46Z" />
+          <path class="homepage-map-land" d="M202 210c30 11 54 36 52 68-2 36-29 63-48 45-19-19-14-48-35-70-12-13 2-51 31-43Z" />
+          <path class="homepage-map-land" d="M323 96c36-31 89-32 132-17 56 19 96-2 148 23 44 21 65 62 46 93-18 31-73 17-99 40-30 27-39 67-87 60-44-7-39-52-76-63-35-11-72 7-96-24-24-32-4-81 32-112Z" />
+          <path class="homepage-map-land" d="M365 185c31-8 73 9 80 43 7 37-11 88-45 84-37-4-29-53-48-77-17-22-16-43 13-50Z" />
+          <path class="homepage-map-land" d="M579 233c30-15 76-6 91 20 15 27-15 48-49 48-38 0-69-44-42-68Z" />
+          <path class="homepage-map-route" d="M173 142 C265 92 354 89 456 138 S596 176 626 207" />
+          <path class="homepage-map-route" d="M456 138 C501 153 530 150 549 137" />
+        </svg>
+        ${createVisitorMarkers()}
+        <div class="homepage-map-summary homepage-visitor-snapshot">${createVisitorSnapshotPills()}</div>
+      </div>
+    `;
+  }
+
   function insertVisitorMap() {
     const footer = document.querySelector('footer');
     if (!footer || document.querySelector('[data-homepage-visitor-map]')) return !!footer;
@@ -386,75 +423,22 @@
           <div class="homepage-visitor-panel">
             <h3 class="homepage-visitor-panel-title">Visitor Map</h3>
             <a class="homepage-visitor-frame homepage-visitor-map-frame" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open global visitor statistics">
-              <img src="${VISITOR_MAP_IMAGE_URL}" alt="Global visitor map" loading="eager" decoding="async" width="600" height="291" referrerpolicy="no-referrer" />
-              <div class="homepage-visitor-fallback">
-                <div class="homepage-visitor-fallback-card">
-                  <div class="homepage-visitor-fallback-icon" aria-hidden="true">◎</div>
-                  <div class="homepage-visitor-fallback-title">Visitor map snapshot</div>
-                  <div class="homepage-visitor-fallback-text">Your browser is hiding the live FlagCounter map. Open stats for the real-time map.</div>
-                  <div class="homepage-visitor-snapshot">${createVisitorSnapshotPills()}</div>
-                </div>
-              </div>
+              ${createVisitorWorldMap()}
+              <img class="homepage-visitor-tracker" src="${VISITOR_MAP_IMAGE_URL}" alt="" loading="eager" decoding="async" width="1" height="1" referrerpolicy="no-referrer" aria-hidden="true" />
             </a>
           </div>
           <div class="homepage-visitor-panel">
             <h3 class="homepage-visitor-panel-title">Top Visitor Countries</h3>
             <a class="homepage-visitor-frame homepage-visitor-ranking" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open visitor country ranking">
-              <img src="${VISITOR_RANKING_IMAGE_URL}" alt="Top visitor countries ranking" loading="eager" decoding="async" referrerpolicy="no-referrer" />
-              <div class="homepage-visitor-fallback">
-                <div class="homepage-visitor-country-list">${createVisitorCountryRows()}</div>
-              </div>
+              <div class="homepage-visitor-country-list">${createVisitorCountryRows()}</div>
+              <img class="homepage-visitor-tracker" src="${VISITOR_RANKING_IMAGE_URL}" alt="" loading="eager" decoding="async" width="1" height="1" referrerpolicy="no-referrer" aria-hidden="true" />
             </a>
           </div>
         </div>
-        <p class="homepage-visitor-note">Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.</p>
+        <p class="homepage-visitor-note">Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here. View Stats opens the live counter page.</p>
       </div>
     `;
     footer.parentElement.insertBefore(section, footer);
-    return true;
-  }
-
-  function isVisitorImageVisible(image) {
-    if (!image) return false;
-    const style = window.getComputedStyle(image);
-    const rect = image.getBoundingClientRect();
-    return image.complete &&
-      image.naturalWidth > 20 &&
-      image.naturalHeight > 20 &&
-      rect.width > 20 &&
-      rect.height > 20 &&
-      style.display !== 'none' &&
-      style.visibility !== 'hidden' &&
-      style.opacity !== '0';
-  }
-
-  function updateVisitorFrameState(frame) {
-    const image = frame.querySelector('img');
-    const hadBlockedClass = frame.classList.contains('homepage-visitor-image-blocked');
-    if (hadBlockedClass) frame.classList.remove('homepage-visitor-image-blocked');
-    frame.classList.toggle('homepage-visitor-image-blocked', !isVisitorImageVisible(image));
-  }
-
-  function installVisitorFallbacks() {
-    const frames = [...document.querySelectorAll('[data-homepage-visitor-map] .homepage-visitor-frame')];
-    if (!frames.length) return false;
-    frames.forEach(frame => {
-      if (frame.dataset.homepageVisitorFallbackInstalled === 'true') {
-        updateVisitorFrameState(frame);
-        return;
-      }
-      frame.dataset.homepageVisitorFallbackInstalled = 'true';
-      const image = frame.querySelector('img');
-      if (!image) {
-        frame.classList.add('homepage-visitor-image-blocked');
-        return;
-      }
-      image.addEventListener('load', () => updateVisitorFrameState(frame));
-      image.addEventListener('error', () => frame.classList.add('homepage-visitor-image-blocked'));
-      [500, 1500, 3000, 6000].forEach(delay => {
-        window.setTimeout(() => updateVisitorFrameState(frame), delay);
-      });
-    });
     return true;
   }
 
@@ -465,11 +449,8 @@
     const newsReady = patchNews();
     const publicationsReady = patchPublications();
     const visitorReady = insertVisitorMap();
-    installVisitorFallbacks();
     return newsReady && publicationsReady && visitorReady;
   }
-
-  window.homepageInstallVisitorFallbacks = installVisitorFallbacks;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', apply, { once: true });
