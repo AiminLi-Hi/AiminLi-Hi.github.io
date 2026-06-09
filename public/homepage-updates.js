@@ -6,10 +6,10 @@
     pageviews: 39,
     countries: 4,
     ranking: [
-      { code: 'US', name: 'United States', count: 4, x: 24, y: 43 },
-      { code: 'TR', name: 'Türkiye', count: 2, x: 55, y: 42 },
-      { code: 'SG', name: 'Singapore', count: 1, x: 72, y: 63 },
-      { code: 'CN', name: 'China', count: 1, x: 72, y: 45 }
+      { code: 'US', name: 'United States', count: 4, x: 23.5, y: 42.5, rx: 14, ry: 8, delay: 0 },
+      { code: 'TR', name: 'Türkiye', count: 2, x: 55.6, y: 41.2, rx: 6.5, ry: 4.2, delay: 0.4 },
+      { code: 'SG', name: 'Singapore', count: 1, x: 72.8, y: 64.5, rx: 4.5, ry: 3.4, delay: 0.8 },
+      { code: 'CN', name: 'China', count: 1, x: 73.2, y: 44.8, rx: 11, ry: 7.5, delay: 1.2 }
     ]
   };
   const TOTAL_PUBLICATIONS = 33;
@@ -161,15 +161,26 @@
       .homepage-visitor-map-frame { min-height: 15rem; padding: 0; overflow: hidden; }
       .homepage-visitor-frame:hover { border-color: rgb(191 219 254); box-shadow: 0 10px 28px rgba(15,23,42,.08); }
       .homepage-visitor-ranking { display: flex; align-items: center; justify-content: center; min-height: 100%; }
-      .homepage-world-map { position: relative; width: 100%; aspect-ratio: 2.18 / 1; min-height: 15rem; overflow: hidden; border-radius: 1rem; background: linear-gradient(135deg, rgb(239 246 255), rgb(248 250 252) 48%, rgb(236 253 245)); }
-      .homepage-world-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-      .homepage-map-ocean-grid { opacity: .18; }
-      .homepage-map-land { fill: rgba(96,165,250,.28); stroke: rgba(37,99,235,.28); stroke-width: 1.1; }
-      .homepage-map-route { fill: none; stroke: rgba(37,99,235,.28); stroke-width: 1; stroke-dasharray: 5 7; }
-      .homepage-map-marker { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); display: flex; align-items: center; gap: .35rem; color: rgb(30 64 175); font-size: .65rem; font-weight: 900; letter-spacing: .03em; }
-      .homepage-map-marker::before { content: ""; width: .62rem; height: .62rem; border-radius: 9999px; background: rgb(37 99 235); box-shadow: 0 0 0 .3rem rgba(37,99,235,.14), 0 0 0 .55rem rgba(37,99,235,.07); }
-      .homepage-map-marker span { border: 1px solid rgba(191,219,254,.9); background: rgba(255,255,255,.86); color: rgb(30 64 175); border-radius: 9999px; padding: .18rem .42rem; box-shadow: 0 6px 16px rgba(37,99,235,.08); }
-      .homepage-map-summary { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+      .homepage-world-map { position: relative; width: 100%; aspect-ratio: 2.18 / 1; min-height: 15rem; overflow: hidden; border-radius: 1rem; isolation: isolate; background: radial-gradient(circle at 18% 22%, rgba(34,211,238,.26), transparent 28%), radial-gradient(circle at 78% 32%, rgba(16,185,129,.22), transparent 24%), linear-gradient(135deg, rgb(9 21 43), rgb(13 31 55) 52%, rgb(8 41 49)); box-shadow: inset 0 0 0 1px rgba(148,163,184,.18), inset 0 -50px 90px rgba(2,6,23,.28); }
+      .homepage-world-map::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .34; background-image: linear-gradient(rgba(125,211,252,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(125,211,252,.12) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(circle at center, black 42%, transparent 82%); }
+      .homepage-world-map::after { content: ""; position: absolute; inset: -30% -55%; z-index: 5; pointer-events: none; background: linear-gradient(100deg, transparent 40%, rgba(125,211,252,.18) 48%, rgba(16,185,129,.18) 51%, transparent 60%); transform: translateX(-35%); animation: homepage-map-scan 7s ease-in-out infinite; }
+      .homepage-world-map svg { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; }
+      .homepage-map-ocean-grid { opacity: .22; color: rgb(125 211 252); }
+      .homepage-map-graticule { fill: none; stroke: rgba(125,211,252,.18); stroke-width: .8; stroke-dasharray: 2 9; }
+      .homepage-map-land { fill: rgba(148,163,184,.24); stroke: rgba(191,219,254,.42); stroke-width: 1; vector-effect: non-scaling-stroke; filter: drop-shadow(0 12px 16px rgba(2,6,23,.22)); }
+      .homepage-map-shore { fill: none; stroke: rgba(240,249,255,.18); stroke-width: 2.4; vector-effect: non-scaling-stroke; }
+      .homepage-map-route { fill: none; stroke: rgba(45,212,191,.38); stroke-width: 1.2; stroke-dasharray: 5 8; vector-effect: non-scaling-stroke; animation: homepage-map-dash 7s linear infinite; }
+      .homepage-map-region { position: absolute; z-index: 3; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--rx) * 1%); height: calc(var(--ry) * 1%); transform: translate(-50%, -50%); border-radius: 9999px; background: radial-gradient(circle, rgba(34,211,238,.72) 0%, rgba(16,185,129,.48) 34%, transparent 72%); mix-blend-mode: screen; filter: blur(2px); opacity: .76; animation: homepage-map-region-pulse 3.2s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
+      .homepage-map-marker { position: absolute; z-index: 4; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); display: flex; align-items: center; gap: .4rem; color: rgb(224 242 254); font-size: .65rem; font-weight: 900; letter-spacing: .04em; animation: homepage-map-marker-float 4.5s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
+      .homepage-map-marker::before { content: ""; width: .68rem; height: .68rem; border-radius: 9999px; background: rgb(34 211 238); box-shadow: 0 0 0 .25rem rgba(34,211,238,.22), 0 0 0 .52rem rgba(16,185,129,.12), 0 0 22px rgba(34,211,238,.88); }
+      .homepage-map-marker::after { content: ""; position: absolute; left: .34rem; top: 50%; width: 1.9rem; height: 1.9rem; border: 1px solid rgba(45,212,191,.55); border-radius: 9999px; transform: translate(-50%, -50%); animation: homepage-map-ripple 2.8s ease-out infinite; animation-delay: calc(var(--delay) * 1s); }
+      .homepage-map-marker span { display: inline-flex; align-items: baseline; gap: .28rem; border: 1px solid rgba(125,211,252,.36); background: rgba(15,23,42,.68); color: rgb(224 242 254); border-radius: 9999px; padding: .22rem .5rem; box-shadow: 0 10px 28px rgba(2,6,23,.22); backdrop-filter: blur(10px); }
+      .homepage-map-marker strong { font-size: .66rem; color: rgb(125 211 252); }
+      .homepage-map-marker em { font-style: normal; color: rgb(187 247 208); }
+      .homepage-map-label { position: absolute; z-index: 4; left: 1rem; top: 1rem; display: grid; gap: .18rem; color: rgb(186 230 253); font-size: .65rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+      .homepage-map-label span { color: rgba(203,213,225,.76); font: 600 .62rem ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .04em; text-transform: none; }
+      .homepage-map-summary { position: absolute; z-index: 4; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+      .homepage-world-map .homepage-map-summary span { border-color: rgba(125,211,252,.32); background: rgba(15,23,42,.64); color: rgb(224 242 254); box-shadow: 0 8px 24px rgba(2,6,23,.2); backdrop-filter: blur(10px); }
       .homepage-visitor-snapshot { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-top: .1rem; }
       .homepage-visitor-snapshot span { border: 1px solid rgb(226 232 240); background: rgb(248 250 252); color: rgb(51 65 85); border-radius: 9999px; padding: .25rem .55rem; font-size: .72rem; font-weight: 800; }
       .homepage-visitor-country-list { display: grid; gap: .5rem; width: 100%; }
@@ -179,6 +190,18 @@
       .homepage-visitor-country-count { color: rgb(15 23 42); font-size: .8rem; font-weight: 900; }
       .homepage-visitor-tracker { position: absolute !important; left: -9999px !important; top: auto !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
       .homepage-visitor-note { margin: 1rem 0 0 0; text-align: center; color: rgb(100 116 139); font-size: .75rem; line-height: 1.5; }
+      @keyframes homepage-map-scan { 0%, 18% { transform: translateX(-35%); opacity: 0; } 42%, 70% { opacity: .95; } 100% { transform: translateX(45%); opacity: 0; } }
+      @keyframes homepage-map-dash { to { stroke-dashoffset: -120; } }
+      @keyframes homepage-map-region-pulse { 0%, 100% { opacity: .5; transform: translate(-50%, -50%) scale(.9); } 50% { opacity: .95; transform: translate(-50%, -50%) scale(1.12); } }
+      @keyframes homepage-map-marker-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+      @keyframes homepage-map-ripple { 0% { opacity: .75; scale: .6; } 100% { opacity: 0; scale: 1.9; } }
+      @media (prefers-reduced-motion: reduce) {
+        .homepage-world-map::after,
+        .homepage-map-route,
+        .homepage-map-region,
+        .homepage-map-marker,
+        .homepage-map-marker::after { animation: none; }
+      }
       body.homepage-dynamic-dark .homepage-inline-card,
       body.homepage-dynamic-dark .homepage-visitor-map { background: rgba(15,23,42,.5); border-color: rgb(51 65 85); box-shadow: none; }
       body.homepage-dynamic-dark .homepage-inline-title,
@@ -209,12 +232,10 @@
       body.homepage-dynamic-dark .homepage-visitor-frame { background: rgba(2,6,23,.36); border-color: rgb(51 65 85); }
       body.homepage-dynamic-dark .homepage-visitor-panel-title { color: rgb(203 213 225); }
       body.homepage-dynamic-dark .homepage-visitor-country-count { color: rgb(241 245 249); }
-      body.homepage-dynamic-dark .homepage-world-map { background: linear-gradient(135deg, rgba(15,23,42,.94), rgba(30,41,59,.82) 52%, rgba(20,83,45,.45)); }
-      body.homepage-dynamic-dark .homepage-map-land { fill: rgba(59,130,246,.28); stroke: rgba(147,197,253,.25); }
-      body.homepage-dynamic-dark .homepage-map-route { stroke: rgba(147,197,253,.28); }
-      body.homepage-dynamic-dark .homepage-map-marker { color: rgb(147 197 253); }
-      body.homepage-dynamic-dark .homepage-map-marker::before { background: rgb(96 165 250); box-shadow: 0 0 0 .3rem rgba(96,165,250,.18), 0 0 0 .55rem rgba(96,165,250,.08); }
-      body.homepage-dynamic-dark .homepage-map-marker span { background: rgba(15,23,42,.72); border-color: rgb(51 65 85); color: rgb(191 219 254); }
+      body.homepage-dynamic-dark .homepage-world-map { background: radial-gradient(circle at 18% 22%, rgba(34,211,238,.22), transparent 28%), radial-gradient(circle at 78% 32%, rgba(16,185,129,.18), transparent 24%), linear-gradient(135deg, rgb(2 6 23), rgb(15 23 42) 52%, rgb(6 35 43)); }
+      body.homepage-dynamic-dark .homepage-map-land { fill: rgba(59,130,246,.24); stroke: rgba(147,197,253,.28); }
+      body.homepage-dynamic-dark .homepage-map-route { stroke: rgba(45,212,191,.34); }
+      body.homepage-dynamic-dark .homepage-map-marker span { background: rgba(2,6,23,.72); border-color: rgba(125,211,252,.28); }
       body.homepage-dynamic-dark .homepage-visitor-snapshot span,
       body.homepage-dynamic-dark .homepage-visitor-country-list div { background: rgba(30,41,59,.55); border-color: rgb(51 65 85); color: rgb(203 213 225); }
       body.homepage-dynamic-dark .homepage-visitor-country-code { color: rgb(96 165 250); }
@@ -369,10 +390,16 @@
     `;
   }
 
+  function createVisitorRegions() {
+    return VISITOR_SNAPSHOT.ranking.map(country => `
+      <div class="homepage-map-region" style="--x: ${country.x}; --y: ${country.y}; --rx: ${country.rx}; --ry: ${country.ry}; --delay: ${country.delay}"></div>
+    `).join('');
+  }
+
   function createVisitorMarkers() {
     return VISITOR_SNAPSHOT.ranking.map(country => `
-      <div class="homepage-map-marker" style="--x: ${country.x}; --y: ${country.y}">
-        <span>${country.code} ${country.count}</span>
+      <div class="homepage-map-marker" style="--x: ${country.x}; --y: ${country.y}; --delay: ${country.delay}">
+        <span><strong>${country.code}</strong><em>${country.count}</em></span>
       </div>
     `).join('');
   }
@@ -387,15 +414,31 @@
             </pattern>
           </defs>
           <rect class="homepage-map-ocean-grid" width="720" height="330" fill="url(#homepage-map-grid)" />
-          <path class="homepage-map-land" d="M74 105c28-39 86-49 124-31 24 11 38 31 67 32 38 1 55 25 45 54-9 28-45 30-67 47-30 24-45 63-87 55-35-7-21-48-45-66-27-20-65-14-74-45-5-17 14-27 37-46Z" />
-          <path class="homepage-map-land" d="M202 210c30 11 54 36 52 68-2 36-29 63-48 45-19-19-14-48-35-70-12-13 2-51 31-43Z" />
-          <path class="homepage-map-land" d="M323 96c36-31 89-32 132-17 56 19 96-2 148 23 44 21 65 62 46 93-18 31-73 17-99 40-30 27-39 67-87 60-44-7-39-52-76-63-35-11-72 7-96-24-24-32-4-81 32-112Z" />
-          <path class="homepage-map-land" d="M365 185c31-8 73 9 80 43 7 37-11 88-45 84-37-4-29-53-48-77-17-22-16-43 13-50Z" />
-          <path class="homepage-map-land" d="M579 233c30-15 76-6 91 20 15 27-15 48-49 48-38 0-69-44-42-68Z" />
-          <path class="homepage-map-route" d="M173 142 C265 92 354 89 456 138 S596 176 626 207" />
-          <path class="homepage-map-route" d="M456 138 C501 153 530 150 549 137" />
+          <path class="homepage-map-graticule" d="M0 82H720M0 165H720M0 248H720M120 0V330M240 0V330M360 0V330M480 0V330M600 0V330" />
+          <g>
+            <path class="homepage-map-land" d="M62 93c23-26 63-42 101-35 26 5 39 20 63 19 31-1 62 16 70 40 7 23-12 39-33 49-21 10-22 27-39 43-19 17-47 17-64 1-14-13-28-24-52-25-32-2-70-23-78-53-5-18 12-23 32-39Z" />
+            <path class="homepage-map-land" d="M31 77c17-19 45-24 69-17 16 5 18 20 5 32-18 16-43 11-66 23-18 9-25-20-8-38Z" />
+            <path class="homepage-map-land" d="M171 189c24 0 45 10 61 24 18 16 36 19 54 30 18 11 9 29-12 28-31-2-46-20-72-36-22-14-41-16-53-31-8-10 4-15 22-15Z" />
+            <path class="homepage-map-land" d="M217 229c28 10 48 36 50 67 1 27-19 63-41 61-25-3-20-42-35-63-13-18-34-30-30-51 4-18 28-24 56-14Z" />
+            <path class="homepage-map-land" d="M171 42c22-24 60-28 84-9 18 14 10 33-14 39-26 7-64 9-82-2-9-6 2-18 12-28Z" />
+            <path class="homepage-map-land" d="M330 92c29-24 68-24 102-14 28 8 50 3 78 0 39-4 73 4 106 22 39 22 65 55 61 85-4 32-39 36-70 28-33-9-47 12-70 32-28 25-65 37-91 17-21-16-21-47-48-55-34-10-67 9-91-13-28-26-8-76 23-102Z" />
+            <path class="homepage-map-land" d="M306 114c18-24 45-28 68-15 18 10 13 27-6 31-22 5-37 18-56 8-11-6-15-12-6-24Z" />
+            <path class="homepage-map-land" d="M386 179c29-7 61 6 74 32 15 30 5 75-21 92-24 15-55 2-63-28-8-29-33-45-25-71 5-15 15-21 35-25Z" />
+            <path class="homepage-map-land" d="M472 205c21 1 32 18 45 33 12 15 32 18 45 30 11 11 5 25-14 24-32-2-65-28-83-56-8-13-9-31 7-31Z" />
+            <path class="homepage-map-land" d="M512 202c17-10 28-1 35 14 7 17 1 42-12 52-15 11-25-12-29-30-4-17-7-28 6-36Z" />
+            <path class="homepage-map-land" d="M578 104c29 3 58 18 79 39 21 22 37 54 22 74-17 22-51 7-70-12-18-18-44-18-61-34-22-20-7-72 30-67Z" />
+            <path class="homepage-map-land" d="M581 235c33-16 78-8 96 17 18 24-2 51-43 53-43 2-82-49-53-70Z" />
+            <path class="homepage-map-land" d="M624 146c10-10 26-9 38 0 13 9 9 24-5 29-18 6-38-14-33-29Z" />
+            <path class="homepage-map-land" d="M543 151c11-13 30-17 43-6 14 12 4 30-13 28-19-2-43-8-30-22Z" />
+          </g>
+          <path class="homepage-map-shore" d="M62 93c23-26 63-42 101-35 26 5 39 20 63 19 31-1 62 16 70 40M330 92c29-24 68-24 102-14 28 8 50 3 78 0 39-4 73 4 106 22M386 179c29-7 61 6 74 32M581 235c33-16 78-8 96 17" />
+          <path class="homepage-map-route" d="M169 140 C260 87 358 84 455 136 S591 174 626 207" />
+          <path class="homepage-map-route" d="M455 136 C492 151 526 147 557 137" />
+          <path class="homepage-map-route" d="M455 136 C516 171 563 199 625 207" />
         </svg>
+        ${createVisitorRegions()}
         ${createVisitorMarkers()}
+        <div class="homepage-map-label">Active visitor regions<span>aggregate country-level signal</span></div>
         <div class="homepage-map-summary homepage-visitor-snapshot">${createVisitorSnapshotPills()}</div>
       </div>
     `;
