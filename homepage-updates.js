@@ -1,6 +1,7 @@
 (() => {
   const VISITOR_MAP_STATS_URL = 'https://info.flagcounter.com/Ad32';
   const VISITOR_MAP_IMAGE_URL = 'https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/?v=20260609c';
+  const VISITOR_RANKING_IMAGE_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260609a';
   const TOTAL_PUBLICATIONS = 33;
   let darkModeObserver = null;
 
@@ -24,7 +25,7 @@
     {
       key: 'vtc-weibull-2026',
       date: '2026-03',
-      label: 'VTC 2026',
+      label: 'VTC',
       title: 'Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications',
       html: 'Paper titled <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.',
       href: 'https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/'
@@ -32,7 +33,7 @@
     {
       key: 'isit-heavy-tail-2026',
       date: '2026-01',
-      label: 'ISIT 2026',
+      label: 'ISIT',
       title: 'Taming the Heavy Tail: Age-Optimal Preemption',
       html: 'Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.',
       href: 'https://arxiv.org/abs/2601.16624'
@@ -143,9 +144,14 @@
       .homepage-visitor-action { display: inline-flex; align-items: center; border: 1px solid rgb(226 232 240); border-radius: 9999px; padding: .55rem .9rem; color: rgb(71 85 105); font-size: .75rem; font-weight: 800; text-decoration: none; transition: all .2s ease; }
       .homepage-visitor-action:hover { color: rgb(37 99 235); border-color: rgb(191 219 254); }
       .homepage-visitor-body { padding: 1.25rem; background: rgba(248,250,252,.76); }
+      .homepage-visitor-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(17rem, .65fr); gap: 1rem; align-items: stretch; }
+      .homepage-visitor-panel { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+      .homepage-visitor-panel-title { margin: 0; color: rgb(51 65 85); font-size: .72rem; line-height: 1.2; text-transform: uppercase; letter-spacing: .06em; font-weight: 900; }
       .homepage-visitor-frame { display: block; border: 1px solid rgb(241 245 249); border-radius: 1rem; padding: 1rem; background: white; transition: all .2s ease; }
       .homepage-visitor-frame:hover { border-color: rgb(191 219 254); box-shadow: 0 10px 28px rgba(15,23,42,.08); }
       .homepage-visitor-frame img { display: block; max-width: 100%; height: auto; margin: 0 auto; border-radius: .75rem; }
+      .homepage-visitor-ranking { display: flex; align-items: center; justify-content: center; min-height: 100%; }
+      .homepage-visitor-ranking img { width: auto; max-width: 100%; height: auto; }
       .homepage-visitor-note { margin: 1rem 0 0 0; text-align: center; color: rgb(100 116 139); font-size: .75rem; line-height: 1.5; }
       body.homepage-dynamic-dark .homepage-inline-card,
       body.homepage-dynamic-dark .homepage-visitor-map { background: rgba(15,23,42,.5); border-color: rgb(51 65 85); box-shadow: none; }
@@ -175,9 +181,11 @@
       body.homepage-dynamic-dark .homepage-visitor-action { background: rgba(15,23,42,.6); border-color: rgb(51 65 85); color: rgb(203 213 225); }
       body.homepage-dynamic-dark .homepage-visitor-body { background: rgba(15,23,42,.24); }
       body.homepage-dynamic-dark .homepage-visitor-frame { background: rgba(2,6,23,.36); border-color: rgb(51 65 85); }
+      body.homepage-dynamic-dark .homepage-visitor-panel-title { color: rgb(203 213 225); }
       @media (max-width: 640px) {
         .homepage-visitor-head { padding: 1.25rem; align-items: flex-start; flex-direction: column; }
         .homepage-visitor-title h2 { font-size: 1.25rem; }
+        .homepage-visitor-grid { grid-template-columns: 1fr; }
       }
     `;
     document.head.appendChild(style);
@@ -216,7 +224,7 @@
   }
 
   function patchNews() {
-    const newsList = document.querySelector('#news .space-y-2');
+    const newsList = document.querySelector('#news .space-y-2, #news .divide-y');
     if (!newsList) return false;
     [...EXTRA_NEWS].reverse().forEach(item => {
       if (!newsList.textContent.includes(item.title)) newsList.prepend(createNewsItem(item));
@@ -323,9 +331,20 @@
         <a class="homepage-visitor-action" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer">View Stats</a>
       </div>
       <div class="homepage-visitor-body">
-        <a class="homepage-visitor-frame" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open global visitor statistics">
-          <img src="${VISITOR_MAP_IMAGE_URL}" alt="Global visitor map" loading="eager" decoding="async" width="600" height="291" referrerpolicy="no-referrer" />
-        </a>
+        <div class="homepage-visitor-grid">
+          <div class="homepage-visitor-panel">
+            <h3 class="homepage-visitor-panel-title">Visitor Map</h3>
+            <a class="homepage-visitor-frame" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open global visitor statistics">
+              <img src="${VISITOR_MAP_IMAGE_URL}" alt="Global visitor map" loading="eager" decoding="async" width="600" height="291" referrerpolicy="no-referrer" />
+            </a>
+          </div>
+          <div class="homepage-visitor-panel">
+            <h3 class="homepage-visitor-panel-title">Top Visitor Countries</h3>
+            <a class="homepage-visitor-frame homepage-visitor-ranking" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open visitor country ranking">
+              <img src="${VISITOR_RANKING_IMAGE_URL}" alt="Top visitor countries ranking" loading="eager" decoding="async" referrerpolicy="no-referrer" />
+            </a>
+          </div>
+        </div>
         <p class="homepage-visitor-note">Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.</p>
       </div>
     `;
@@ -337,7 +356,10 @@
     addStyles();
     syncDarkModeFlag();
     installDarkModeObserver();
-    return patchNews() && patchPublications() && insertVisitorMap();
+    const newsReady = patchNews();
+    const publicationsReady = patchPublications();
+    const visitorReady = insertVisitorMap();
+    return newsReady && publicationsReady && visitorReady;
   }
 
   if (document.readyState === 'loading') {
