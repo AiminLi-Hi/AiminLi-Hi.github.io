@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "generate:visitor-map": "node scripts/generate-visitor-map-data.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
     "autoprefixer": "^10.4.22",
+    "d3-geo": "^3.1.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
@@ -29,7 +31,9 @@
     "globals": "^16.5.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "vite": "npm:rolldown-vite@7.2.2"
+    "topojson-client": "^3.1.0",
+    "vite": "npm:rolldown-vite@7.2.2",
+    "world-atlas": "^2.0.2"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.2"
