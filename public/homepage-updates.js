@@ -434,7 +434,7 @@
     return getVisitorActiveCountries()
       .filter(country => country.d)
       .map(country => `
-        <path class="homepage-map-country-active" d="${country.d}" style="--delay: ${country.delay || 0}">
+        <path class="homepage-map-country-active" d="${country.d}" data-country-code="${escapeMapAttr(country.code)}" aria-label="${escapeMapAttr(country.name)}: ${country.count} visits" style="--delay: ${country.delay || 0}">
           <title>${escapeMapAttr(country.name)}: ${country.count} visits</title>
         </path>
       `).join('');
@@ -479,7 +479,7 @@
     const viewBox = mapData?.viewBox || { width: 720, height: 330 };
     return `
       <div class="homepage-world-map">
-        <svg viewBox="0 0 ${viewBox.width} ${viewBox.height}" role="img" aria-label="World map visitor snapshot" focusable="false">
+        <svg class="homepage-real-map" viewBox="0 0 ${viewBox.width} ${viewBox.height}" role="img" aria-label="World map visitor snapshot" focusable="false">
           <defs>
             <pattern id="homepage-map-grid" width="42" height="42" patternUnits="userSpaceOnUse">
               <path d="M42 0H0V42" fill="none" stroke="currentColor" stroke-width="1" />
