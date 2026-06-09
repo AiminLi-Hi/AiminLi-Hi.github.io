@@ -1,6 +1,6 @@
 (() => {
   const VISITOR_MAP_STATS_URL = 'https://info.flagcounter.com/Ad32';
-  const VISITOR_MAP_IMAGE_URL = 'https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/';
+  const VISITOR_MAP_IMAGE_URL = 'https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/?v=20260609c';
   const TOTAL_PUBLICATIONS = 33;
 
   const EXTRA_NEWS = [
@@ -254,7 +254,7 @@
       </div>
       <div class="homepage-visitor-body">
         <a class="homepage-visitor-frame" href="${VISITOR_MAP_STATS_URL}" target="_blank" rel="noreferrer" aria-label="Open global visitor statistics">
-          <img src="${VISITOR_MAP_IMAGE_URL}" alt="Global visitor map" loading="lazy" />
+          <img src="${VISITOR_MAP_IMAGE_URL}" alt="Global visitor map" loading="eager" decoding="async" width="600" height="291" referrerpolicy="no-referrer" />
         </a>
         <p class="homepage-visitor-note">Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.</p>
       </div>
