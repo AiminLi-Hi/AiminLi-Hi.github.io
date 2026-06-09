@@ -1,82 +1,92 @@
 (() => {
-  const UPDATES = {
-    news: [
-      {
-        key: 'tmc-uav-marl-2026',
-        date: '2026-06',
-        label: 'TMC',
-        html: 'Paper titled <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> was accepted by <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.',
-        href: 'https://ieeexplore.ieee.org/abstract/document/11547874/'
-      },
-      {
-        key: 'isit-heavy-tail-2026',
-        date: '2026',
-        label: 'ISIT 2026',
-        html: 'Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.',
-        href: 'https://arxiv.org/abs/2601.16624'
-      }
-    ],
-    publications: [
-      {
-        key: 'tmc-uav-marl-2026',
-        year: '2026',
-        tag: 'Co-Author',
-        title: 'AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach',
-        authors: 'Hanyu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang',
-        venue: 'IEEE Transactions on Mobile Computing',
-        shortVenue: 'IEEE TMC',
-        type: 'Journal',
-        keywords: ['Age of Information', 'UAV Swarms', 'MARL', 'Routing'],
-        summary: 'Studies AoI-aware joint sampling, buffering, and routing optimization for autonomous UAV swarms using a multi-agent reinforcement learning approach.',
-        href: 'https://ieeexplore.ieee.org/abstract/document/11547874/'
-      },
-      {
-        key: 'isit-heavy-tail-2026',
-        year: '2026',
-        tag: 'First Author',
-        title: 'Taming the Heavy Tail: Age-Optimal Preemption',
-        authors: 'Aimin Li, Yiğit İnce, Elif Uysal',
-        venue: 'IEEE International Symposium on Information Theory',
-        shortVenue: 'IEEE ISIT',
-        type: 'Conference',
-        keywords: ['Age of Information', 'Preemption', 'Heavy-Tailed Delay', 'Impulse Control'],
-        summary: 'Develops an age-optimal sampling-and-preemption framework for general, especially heavy-tailed, service-time distributions.',
-        href: 'https://arxiv.org/abs/2601.16624'
-      }
-    ]
+  const EXTRA_NEWS = [
+    {
+      key: 'tmc-uav-marl-2026',
+      date: '2026-06',
+      label: 'TMC',
+      html: 'Paper titled <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> was accepted by <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.',
+      href: 'https://ieeexplore.ieee.org/abstract/document/11547874/'
+    },
+    {
+      key: 'isit-heavy-tail-2026',
+      date: '2026',
+      label: 'ISIT 2026',
+      html: 'Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.',
+      href: 'https://arxiv.org/abs/2601.16624'
+    }
+  ];
+
+  const EXTRA_PUBLICATIONS = [
+    {
+      key: 'tmc-uav-marl-2026',
+      year: 2026,
+      tag: 'Co-Author',
+      title: 'AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach',
+      authors: 'Hanyu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang',
+      venue: 'IEEE Transactions on Mobile Computing',
+      shortVenue: 'IEEE TMC',
+      type: 'Journal',
+      keywords: ['Age of Information', 'UAV Swarms', 'MARL', 'Routing'],
+      summary: 'Studies AoI-aware joint sampling, buffering, and routing optimization for autonomous UAV swarms using a multi-agent reinforcement learning approach.',
+      href: 'https://ieeexplore.ieee.org/abstract/document/11547874/'
+    },
+    {
+      key: 'isit-heavy-tail-2026',
+      year: 2026,
+      tag: 'First Author',
+      title: 'Taming the Heavy Tail: Age-Optimal Preemption',
+      authors: 'Aimin Li, Yiğit İnce, Elif Uysal',
+      venue: 'IEEE International Symposium on Information Theory',
+      shortVenue: 'IEEE ISIT',
+      type: 'Conference',
+      keywords: ['Age of Information', 'Preemption', 'Heavy-Tailed Delay', 'Impulse Control'],
+      summary: 'Develops an age-optimal sampling-and-preemption framework for general, especially heavy-tailed, service-time distributions.',
+      href: 'https://arxiv.org/abs/2601.16624'
+    }
+  ];
+
+  const COUNTS = {
+    total: 31,
+    venues: {
+      'IEEE ISIT': 2,
+      'IEEE TMC': 1
+    }
   };
 
   const VISITOR_COUNTER_URL = 'https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Faiminli-hi.github.io&count_bg=%237C3AED&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=Visitors&edge_flat=false';
+  const EXTRA_KEYWORDS = Array.from(new Set(EXTRA_PUBLICATIONS.flatMap(pub => pub.keywords)));
+  const CUSTOM_VENUES = new Set(['IEEE TMC']);
+  const CUSTOM_KEYWORDS = new Set(['UAV Swarms', 'MARL', 'Routing', 'Preemption', 'Heavy-Tailed Delay', 'Impulse Control']);
+  const state = { venue: 'All', keyword: 'All' };
+  let lastPublicationSignature = '';
 
   function addStyles() {
     if (document.getElementById('homepage-dynamic-updates-style')) return;
     const style = document.createElement('style');
     style.id = 'homepage-dynamic-updates-style';
     style.textContent = `
-      .homepage-dynamic-section { margin-top: 1.5rem; }
-      .homepage-dynamic-title { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 1rem; color: rgb(5 150 105); display: flex; align-items: center; gap: .5rem; }
-      .homepage-dynamic-card { border: 1px solid rgb(229 231 235); background: rgba(255,255,255,.92); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 8px 24px rgba(15,23,42,.04); margin-bottom: 1rem; }
-      .homepage-dynamic-card:hover { transform: translateY(-1px); transition: all .2s ease; box-shadow: 0 12px 30px rgba(15,23,42,.08); }
-      .homepage-dynamic-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .75rem; font-size: .7rem; font-weight: 800; letter-spacing: .04em; }
-      .homepage-dynamic-pill { display: inline-flex; align-items: center; border-radius: 9999px; padding: .2rem .55rem; background: rgb(236 253 245); color: rgb(4 120 87); border: 1px solid rgb(209 250 229); }
-      .homepage-dynamic-year { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: rgb(100 116 139); }
-      .homepage-dynamic-card h3 { margin: 0 0 .45rem 0; color: rgb(17 24 39); font-size: 1.05rem; line-height: 1.35; font-weight: 800; }
-      .homepage-dynamic-card h3 a { color: inherit; text-decoration: none; }
-      .homepage-dynamic-card h3 a:hover { color: rgb(5 150 105); text-decoration: underline; text-underline-offset: 3px; }
-      .homepage-dynamic-authors { color: rgb(75 85 99); font-size: .85rem; font-style: italic; margin-bottom: .65rem; }
-      .homepage-dynamic-summary { color: rgb(100 116 139); font-size: .85rem; line-height: 1.55; margin-bottom: .75rem; }
-      .homepage-dynamic-keywords { display: flex; flex-wrap: wrap; gap: .35rem; }
-      .homepage-dynamic-keywords span { font-size: .68rem; border: 1px solid rgb(226 232 240); color: rgb(71 85 105); border-radius: 9999px; padding: .15rem .5rem; background: rgb(248 250 252); }
+      .homepage-inline-card { border: 1px solid rgb(229 231 235); background: rgba(255,255,255,.92); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 8px 24px rgba(15,23,42,.04); cursor: pointer; transition: all .2s ease; }
+      .homepage-inline-card:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
+      .homepage-inline-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .75rem; font-size: .7rem; font-weight: 800; letter-spacing: .04em; }
+      .homepage-inline-pill { display: inline-flex; align-items: center; border-radius: 9999px; padding: .2rem .55rem; background: rgb(236 253 245); color: rgb(4 120 87); border: 1px solid rgb(209 250 229); }
+      .homepage-inline-year { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: rgb(100 116 139); }
+      .homepage-inline-title { margin: 0 0 .45rem 0; color: rgb(17 24 39); font-size: 1.05rem; line-height: 1.35; font-weight: 800; }
+      .homepage-inline-title a { color: inherit; text-decoration: none; }
+      .homepage-inline-title a:hover { color: rgb(5 150 105); text-decoration: underline; text-underline-offset: 3px; }
+      .homepage-inline-authors { color: rgb(75 85 99); font-size: .85rem; font-style: italic; margin-bottom: .65rem; }
+      .homepage-inline-summary { color: rgb(100 116 139); font-size: .85rem; line-height: 1.55; margin-bottom: .75rem; }
+      .homepage-inline-keywords { display: flex; flex-wrap: wrap; gap: .35rem; }
+      .homepage-inline-keywords span { font-size: .68rem; border: 1px solid rgb(226 232 240); color: rgb(71 85 105); border-radius: 9999px; padding: .15rem .5rem; background: rgb(248 250 252); }
       .homepage-visitor-counter { margin-top: .6rem; display: flex; justify-content: center; gap: .5rem; flex-wrap: wrap; align-items: center; }
       .homepage-visitor-note { font-size: .68rem; opacity: .65; }
-      body.homepage-dynamic-dark .homepage-dynamic-title { color: rgb(52 211 153); }
-      body.homepage-dynamic-dark .homepage-dynamic-card { background: rgba(15,23,42,.62); border-color: rgb(51 65 85); box-shadow: none; }
-      body.homepage-dynamic-dark .homepage-dynamic-card h3 { color: rgb(241 245 249); }
-      body.homepage-dynamic-dark .homepage-dynamic-card h3 a:hover { color: rgb(52 211 153); }
-      body.homepage-dynamic-dark .homepage-dynamic-authors { color: rgb(203 213 225); }
-      body.homepage-dynamic-dark .homepage-dynamic-summary { color: rgb(148 163 184); }
-      body.homepage-dynamic-dark .homepage-dynamic-pill { background: rgba(6,78,59,.45); color: rgb(110 231 183); border-color: rgb(6 95 70); }
-      body.homepage-dynamic-dark .homepage-dynamic-keywords span { background: rgba(30,41,59,.8); color: rgb(203 213 225); border-color: rgb(51 65 85); }
+      .homepage-filter-active { background: rgb(168 85 247) !important; border-color: rgb(168 85 247) !important; color: white !important; }
+      body.homepage-dynamic-dark .homepage-inline-card { background: rgba(15,23,42,.62); border-color: rgb(51 65 85); box-shadow: none; }
+      body.homepage-dynamic-dark .homepage-inline-title { color: rgb(241 245 249); }
+      body.homepage-dynamic-dark .homepage-inline-title a:hover { color: rgb(52 211 153); }
+      body.homepage-dynamic-dark .homepage-inline-authors { color: rgb(203 213 225); }
+      body.homepage-dynamic-dark .homepage-inline-summary { color: rgb(148 163 184); }
+      body.homepage-dynamic-dark .homepage-inline-pill { background: rgba(6,78,59,.45); color: rgb(110 231 183); border-color: rgb(6 95 70); }
+      body.homepage-dynamic-dark .homepage-inline-keywords span { background: rgba(30,41,59,.8); color: rgb(203 213 225); border-color: rgb(51 65 85); }
     `;
     document.head.appendChild(style);
   }
@@ -106,56 +116,177 @@
   function patchNews() {
     const newsList = document.querySelector('#news .space-y-2');
     if (!newsList) return false;
-    [...UPDATES.news].reverse().forEach(item => {
-      if (!newsList.querySelector(`[data-homepage-update="${item.key}"]`)) {
+    [...EXTRA_NEWS].reverse().forEach(item => {
+      if (!newsList.querySelector(`[data-homepage-update="${item.key}"]`) && !newsList.textContent.includes(item.html.replace(/<[^>]+>/g, '').slice(0, 40))) {
         newsList.prepend(createNewsItem(item));
       }
     });
     return true;
   }
 
+  function findPublicationsSection() {
+    return document.querySelector('#publications');
+  }
+
+  function getVenueRow(section) {
+    const allPapersButton = [...section.querySelectorAll('button')].find(btn => /^All Papers/.test(btn.textContent.trim()));
+    return allPapersButton?.parentElement || null;
+  }
+
+  function getKeywordRow(section) {
+    const keywordAllButton = [...section.querySelectorAll('button')].find(btn => btn.textContent.trim() === 'All');
+    return keywordAllButton?.parentElement || null;
+  }
+
+  function parseVenueText(text) {
+    return text.replace(/\s*\(\d+\)\s*$/, '').trim();
+  }
+
+  function makeFilterButton(label, sampleButton, onClick) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.className = sampleButton?.className || 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all border bg-white border-gray-200 text-gray-600 hover:bg-gray-50';
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      onClick();
+      setTimeout(applyUpdates, 0);
+    });
+    return button;
+  }
+
+  function patchFilterButtons(section) {
+    const buttons = [...section.querySelectorAll('button')];
+    const allPapersButton = buttons.find(btn => /^All Papers/.test(btn.textContent.trim()));
+    if (allPapersButton) allPapersButton.textContent = `All Papers (${COUNTS.total})`;
+
+    const isitButton = buttons.find(btn => parseVenueText(btn.textContent.trim()) === 'IEEE ISIT');
+    if (isitButton) isitButton.textContent = `IEEE ISIT (${COUNTS.venues['IEEE ISIT']})`;
+
+    const venueRow = getVenueRow(section);
+    if (venueRow && ![...venueRow.querySelectorAll('button')].some(btn => parseVenueText(btn.textContent.trim()) === 'IEEE TMC')) {
+      const sample = [...venueRow.querySelectorAll('button')].find(btn => parseVenueText(btn.textContent.trim()) !== 'All Papers');
+      const tmcButton = makeFilterButton(`IEEE TMC (${COUNTS.venues['IEEE TMC']})`, sample, () => { state.venue = 'IEEE TMC'; });
+      tmcButton.dataset.homepageVenueButton = 'IEEE TMC';
+      venueRow.appendChild(tmcButton);
+    }
+
+    const keywordRow = getKeywordRow(section);
+    if (keywordRow) {
+      const existing = new Set([...keywordRow.querySelectorAll('button')].map(btn => btn.textContent.trim()));
+      const sample = [...keywordRow.querySelectorAll('button')].find(btn => btn.textContent.trim() !== 'All');
+      EXTRA_KEYWORDS.forEach(keyword => {
+        if (!existing.has(keyword)) {
+          const keywordButton = makeFilterButton(keyword, sample, () => { state.keyword = keyword; });
+          keywordButton.dataset.homepageKeywordButton = keyword;
+          keywordRow.appendChild(keywordButton);
+        }
+      });
+    }
+
+    section.querySelectorAll('[data-homepage-venue-button], [data-homepage-keyword-button]').forEach(btn => {
+      const isVenue = btn.dataset.homepageVenueButton && state.venue === btn.dataset.homepageVenueButton;
+      const isKeyword = btn.dataset.homepageKeywordButton && state.keyword === btn.dataset.homepageKeywordButton;
+      btn.classList.toggle('homepage-filter-active', !!(isVenue || isKeyword));
+    });
+  }
+
+  function inferControlsFromDom(section) {
+    const searchInput = section.querySelector('input[placeholder="Search titles or venues..."]');
+    const query = (searchInput?.value || '').trim().toLowerCase();
+    const sortButton = [...section.querySelectorAll('button')].find(btn => /Newest First|Oldest First/.test(btn.textContent));
+    const newestFirst = !sortButton || sortButton.textContent.includes('Newest First');
+    return { query, newestFirst };
+  }
+
+  function publicationMatches(pub, controls) {
+    if (state.venue !== 'All' && pub.shortVenue !== state.venue) return false;
+    if (state.keyword !== 'All' && !pub.keywords.includes(state.keyword)) return false;
+    if (controls.query) {
+      const haystack = `${pub.title} ${pub.venue} ${pub.shortVenue}`.toLowerCase();
+      if (!haystack.includes(controls.query)) return false;
+    }
+    return true;
+  }
+
   function createPublicationCard(pub) {
     const card = document.createElement('article');
-    card.className = 'homepage-dynamic-card';
+    card.className = 'homepage-inline-card';
     card.dataset.homepagePublication = pub.key;
+    card.addEventListener('click', () => window.open(pub.href, '_blank', 'noopener,noreferrer'));
     card.innerHTML = `
-      <div class="homepage-dynamic-meta">
-        <span class="homepage-dynamic-year">${pub.year}</span>
-        <span class="homepage-dynamic-pill">${pub.shortVenue}</span>
-        <span class="homepage-dynamic-pill">${pub.type}</span>
-        <span class="homepage-dynamic-pill">${pub.tag}</span>
+      <div class="homepage-inline-meta">
+        <span class="homepage-inline-year">${pub.year}</span>
+        <span class="homepage-inline-pill">${pub.shortVenue}</span>
+        <span class="homepage-inline-pill">${pub.type}</span>
+        <span class="homepage-inline-pill">${pub.tag}</span>
       </div>
-      <h3><a href="${pub.href}" target="_blank" rel="noreferrer">${pub.title}</a></h3>
-      <div class="homepage-dynamic-authors">${pub.authors}</div>
-      <div class="homepage-dynamic-summary">${pub.summary}</div>
-      <div class="homepage-dynamic-keywords">${pub.keywords.map(k => `<span>${k}</span>`).join('')}</div>
+      <h3 class="homepage-inline-title"><a href="${pub.href}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">${pub.title}</a></h3>
+      <div class="homepage-inline-authors">${pub.authors}</div>
+      <div class="homepage-inline-summary">${pub.summary}</div>
+      <div class="homepage-inline-keywords">${pub.keywords.map(k => `<span>${k}</span>`).join('')}</div>
     `;
     return card;
   }
 
-  function patchPublications() {
-    const section = document.querySelector('#publications');
-    if (!section) return false;
-    let dynamic = section.querySelector('[data-homepage-dynamic-publications]');
-    if (!dynamic) {
-      dynamic = document.createElement('div');
-      dynamic.className = 'homepage-dynamic-section';
-      dynamic.dataset.homepageDynamicPublications = 'true';
-      dynamic.innerHTML = `<div class="homepage-dynamic-title">★ Latest Google Scholar Updates</div><div class="homepage-dynamic-list"></div>`;
-      const insertionPoint = section.querySelector('.space-y-4.animate-fade-in') || section.children[1] || null;
-      section.insertBefore(dynamic, insertionPoint);
+  function getOtherPublicationGrid(section) {
+    const grids = [...section.querySelectorAll('.grid.gap-6')];
+    return grids[grids.length - 1] || null;
+  }
+
+  function setOriginalVisibility(section, hide) {
+    const featuredBlock = section.querySelector('.space-y-4.animate-fade-in');
+    if (featuredBlock) featuredBlock.style.display = hide ? 'none' : '';
+
+    const grid = getOtherPublicationGrid(section);
+    if (grid) {
+      [...grid.children].forEach(child => {
+        if (!child.dataset.homepagePublication) child.style.display = hide ? 'none' : '';
+      });
     }
-    const list = dynamic.querySelector('.homepage-dynamic-list');
-    UPDATES.publications.forEach(pub => {
-      if (!list.querySelector(`[data-homepage-publication="${pub.key}"]`)) {
-        list.appendChild(createPublicationCard(pub));
+
+    [...section.querySelectorAll('div')].forEach(div => {
+      if (div.textContent.trim() === 'No papers found matching your criteria.') {
+        div.style.display = hide ? 'none' : '';
       }
     });
+  }
 
-    const allPapersButton = [...section.querySelectorAll('button')].find(btn => /All Papers \(\d+\)/.test(btn.textContent));
-    if (allPapersButton && !allPapersButton.dataset.homepageCountPatched) {
-      allPapersButton.textContent = allPapersButton.textContent.replace(/All Papers \((\d+)\)/, (_, n) => `All Papers (${Number(n) + UPDATES.publications.length})`);
-      allPapersButton.dataset.homepageCountPatched = 'true';
+  function patchPublications() {
+    const section = findPublicationsSection();
+    if (!section) return false;
+
+    section.querySelectorAll('[data-homepage-dynamic-publications]').forEach(node => node.remove());
+
+    patchFilterButtons(section);
+    const controls = inferControlsFromDom(section);
+    const matches = EXTRA_PUBLICATIONS
+      .filter(pub => publicationMatches(pub, controls))
+      .sort((a, b) => controls.newestFirst ? b.year - a.year : a.year - b.year);
+
+    const customOnly = CUSTOM_VENUES.has(state.venue) || CUSTOM_KEYWORDS.has(state.keyword);
+    setOriginalVisibility(section, customOnly && matches.length > 0);
+
+    const grid = getOtherPublicationGrid(section);
+    const expectedOrder = matches.map(pub => pub.key).join('|');
+    const existingOrder = [...section.querySelectorAll('[data-homepage-publication]')]
+      .map(node => node.dataset.homepagePublication)
+      .join('|');
+    const signature = `${state.venue}|${state.keyword}|${controls.query}|${controls.newestFirst}|${expectedOrder}`;
+    const needsRender = existingOrder !== expectedOrder || lastPublicationSignature !== signature;
+
+    if (needsRender) {
+      section.querySelectorAll('[data-homepage-publication]').forEach(node => node.remove());
+      if (grid && matches.length > 0) {
+        const cards = matches.map(createPublicationCard);
+        if (controls.newestFirst) {
+          cards.reverse().forEach(card => grid.prepend(card));
+        } else {
+          cards.forEach(card => grid.appendChild(card));
+        }
+      }
+      lastPublicationSignature = signature;
     }
     return true;
   }
@@ -190,9 +321,36 @@
     }
   }
 
+  function installControlTracking() {
+    if (document.documentElement.dataset.homepageControlTrackingInstalled) return;
+    document.documentElement.dataset.homepageControlTrackingInstalled = 'true';
+    document.addEventListener('click', event => {
+      const section = findPublicationsSection();
+      if (!(event.target instanceof Element)) return;
+      const button = event.target.closest('#publications button');
+      if (!section || !button) return;
+      const text = button.textContent.trim();
+      const venue = parseVenueText(text);
+
+      if (/^All Papers/.test(text)) state.venue = 'All';
+      else if (text === 'All') state.keyword = 'All';
+      else if (button.dataset.homepageVenueButton) state.venue = button.dataset.homepageVenueButton;
+      else if (button.dataset.homepageKeywordButton) state.keyword = button.dataset.homepageKeywordButton;
+      else if (/^IEEE |^ACM |^Allerton/.test(venue)) state.venue = venue;
+      else if (EXTRA_KEYWORDS.includes(text)) state.keyword = text;
+
+      setTimeout(applyUpdates, 80);
+    }, true);
+
+    document.addEventListener('input', event => {
+      if (event.target instanceof Element && event.target.matches('#publications input')) setTimeout(applyUpdates, 80);
+    }, true);
+  }
+
   function applyUpdates() {
     addStyles();
     syncDarkModeFlag();
+    installControlTracking();
     const ok = [patchNews(), patchPublications(), patchVisitorCounter()].every(Boolean);
     patchAnalyticsPlaceholder();
     return ok;
