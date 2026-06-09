@@ -216,7 +216,7 @@
   }
 
   function patchNews() {
-    const newsList = document.querySelector('#news .space-y-2');
+    const newsList = document.querySelector('#news .space-y-2, #news .divide-y');
     if (!newsList) return false;
     [...EXTRA_NEWS].reverse().forEach(item => {
       if (!newsList.textContent.includes(item.title)) newsList.prepend(createNewsItem(item));
@@ -337,7 +337,10 @@
     addStyles();
     syncDarkModeFlag();
     installDarkModeObserver();
-    return patchNews() && patchPublications() && insertVisitorMap();
+    const newsReady = patchNews();
+    const publicationsReady = patchPublications();
+    const visitorReady = insertVisitorMap();
+    return newsReady && publicationsReady && visitorReady;
   }
 
   if (document.readyState === 'loading') {
