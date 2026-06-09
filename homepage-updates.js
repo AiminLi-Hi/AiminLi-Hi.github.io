@@ -167,8 +167,9 @@
       .homepage-world-map svg { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; }
       .homepage-map-ocean-grid { opacity: .22; color: rgb(125 211 252); }
       .homepage-map-graticule { fill: none; stroke: rgba(125,211,252,.18); stroke-width: .8; stroke-dasharray: 2 9; }
-      .homepage-map-land { fill: rgba(148,163,184,.24); stroke: rgba(191,219,254,.42); stroke-width: 1; vector-effect: non-scaling-stroke; filter: drop-shadow(0 12px 16px rgba(2,6,23,.22)); }
-      .homepage-map-shore { fill: none; stroke: rgba(240,249,255,.18); stroke-width: 2.4; vector-effect: non-scaling-stroke; }
+      .homepage-map-country { fill: rgba(148,163,184,.24); stroke: rgba(191,219,254,.18); stroke-width: .45; vector-effect: non-scaling-stroke; transition: fill .2s ease; }
+      .homepage-map-country-active { fill: rgba(34,211,238,.48); stroke: rgba(125,211,252,.86); stroke-width: .95; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 7px rgba(34,211,238,.75)); animation: homepage-map-country-glow 3.5s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
+      .homepage-map-borders { fill: none; stroke: rgba(240,249,255,.2); stroke-width: .55; vector-effect: non-scaling-stroke; }
       .homepage-map-route { fill: none; stroke: rgba(45,212,191,.38); stroke-width: 1.2; stroke-dasharray: 5 8; vector-effect: non-scaling-stroke; animation: homepage-map-dash 7s linear infinite; }
       .homepage-map-region { position: absolute; z-index: 3; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--rx) * 1%); height: calc(var(--ry) * 1%); transform: translate(-50%, -50%); border-radius: 9999px; background: radial-gradient(circle, rgba(34,211,238,.72) 0%, rgba(16,185,129,.48) 34%, transparent 72%); mix-blend-mode: screen; filter: blur(2px); opacity: .76; animation: homepage-map-region-pulse 3.2s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
       .homepage-map-marker { position: absolute; z-index: 4; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); display: flex; align-items: center; gap: .4rem; color: rgb(224 242 254); font-size: .65rem; font-weight: 900; letter-spacing: .04em; animation: homepage-map-marker-float 4.5s ease-in-out infinite; animation-delay: calc(var(--delay) * 1s); }
@@ -192,12 +193,14 @@
       .homepage-visitor-note { margin: 1rem 0 0 0; text-align: center; color: rgb(100 116 139); font-size: .75rem; line-height: 1.5; }
       @keyframes homepage-map-scan { 0%, 18% { transform: translateX(-35%); opacity: 0; } 42%, 70% { opacity: .95; } 100% { transform: translateX(45%); opacity: 0; } }
       @keyframes homepage-map-dash { to { stroke-dashoffset: -120; } }
+      @keyframes homepage-map-country-glow { 0%, 100% { opacity: .78; } 50% { opacity: 1; } }
       @keyframes homepage-map-region-pulse { 0%, 100% { opacity: .5; transform: translate(-50%, -50%) scale(.9); } 50% { opacity: .95; transform: translate(-50%, -50%) scale(1.12); } }
       @keyframes homepage-map-marker-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
       @keyframes homepage-map-ripple { 0% { opacity: .75; scale: .6; } 100% { opacity: 0; scale: 1.9; } }
       @media (prefers-reduced-motion: reduce) {
         .homepage-world-map::after,
         .homepage-map-route,
+        .homepage-map-country-active,
         .homepage-map-region,
         .homepage-map-marker,
         .homepage-map-marker::after { animation: none; }
@@ -233,7 +236,8 @@
       body.homepage-dynamic-dark .homepage-visitor-panel-title { color: rgb(203 213 225); }
       body.homepage-dynamic-dark .homepage-visitor-country-count { color: rgb(241 245 249); }
       body.homepage-dynamic-dark .homepage-world-map { background: radial-gradient(circle at 18% 22%, rgba(34,211,238,.22), transparent 28%), radial-gradient(circle at 78% 32%, rgba(16,185,129,.18), transparent 24%), linear-gradient(135deg, rgb(2 6 23), rgb(15 23 42) 52%, rgb(6 35 43)); }
-      body.homepage-dynamic-dark .homepage-map-land { fill: rgba(59,130,246,.24); stroke: rgba(147,197,253,.28); }
+      body.homepage-dynamic-dark .homepage-map-country { fill: rgba(59,130,246,.2); stroke: rgba(147,197,253,.16); }
+      body.homepage-dynamic-dark .homepage-map-country-active { fill: rgba(34,211,238,.42); stroke: rgba(125,211,252,.7); }
       body.homepage-dynamic-dark .homepage-map-route { stroke: rgba(45,212,191,.34); }
       body.homepage-dynamic-dark .homepage-map-marker span { background: rgba(2,6,23,.72); border-color: rgba(125,211,252,.28); }
       body.homepage-dynamic-dark .homepage-visitor-snapshot span,
@@ -390,51 +394,103 @@
     `;
   }
 
+  function getVisitorWorldMapData() {
+    return window.HOMEPAGE_VISITOR_WORLD_MAP || null;
+  }
+
+  function escapeMapAttr(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]);
+  }
+
+  function getVisitorActiveCountries() {
+    const mapData = getVisitorWorldMapData();
+    if (!mapData?.activeCountries?.length) {
+      return VISITOR_SNAPSHOT.ranking.map(country => ({
+        ...country,
+        x: 720 * country.x / 100,
+        y: 330 * country.y / 100,
+        d: ''
+      }));
+    }
+    return mapData.activeCountries;
+  }
+
+  function createVisitorCountryPaths(mapData) {
+    if (!mapData?.countries?.length) return '';
+    return mapData.countries.map(country => `
+      <path class="homepage-map-country" d="${country.d}" data-country-id="${escapeMapAttr(country.id)}">
+        <title>${escapeMapAttr(country.name)}</title>
+      </path>
+    `).join('');
+  }
+
+  function createVisitorActiveCountryPaths() {
+    return getVisitorActiveCountries()
+      .filter(country => country.d)
+      .map(country => `
+        <path class="homepage-map-country-active" d="${country.d}" style="--delay: ${country.delay || 0}">
+          <title>${escapeMapAttr(country.name)}: ${country.count} visits</title>
+        </path>
+      `).join('');
+  }
+
+  function createVisitorRoutePaths() {
+    const active = getVisitorActiveCountries();
+    const byCode = new Map(active.map(country => [country.code, country]));
+    const source = byCode.get('TR') || active[0];
+    if (!source) return '';
+    return active
+      .filter(country => country.code !== source.code)
+      .map(country => {
+        const midX = (source.x + country.x) / 2;
+        const lift = Math.max(22, Math.abs(source.x - country.x) * 0.11);
+        const midY = Math.min(source.y, country.y) - lift;
+        return `<path class="homepage-map-route" d="M${source.x},${source.y} Q${midX.toFixed(1)},${midY.toFixed(1)} ${country.x},${country.y}" />`;
+      })
+      .join('');
+  }
+
   function createVisitorRegions() {
-    return VISITOR_SNAPSHOT.ranking.map(country => `
-      <div class="homepage-map-region" style="--x: ${country.x}; --y: ${country.y}; --rx: ${country.rx}; --ry: ${country.ry}; --delay: ${country.delay}"></div>
+    const mapData = getVisitorWorldMapData();
+    const viewBox = mapData?.viewBox || { width: 720, height: 330 };
+    return getVisitorActiveCountries().map(country => `
+      <div class="homepage-map-region" style="--x: ${(country.x / viewBox.width * 100).toFixed(2)}; --y: ${(country.y / viewBox.height * 100).toFixed(2)}; --rx: ${country.code === 'US' ? 13 : country.code === 'CN' ? 10 : 5}; --ry: ${country.code === 'US' ? 8 : country.code === 'CN' ? 7 : 4}; --delay: ${country.delay || 0}"></div>
     `).join('');
   }
 
   function createVisitorMarkers() {
-    return VISITOR_SNAPSHOT.ranking.map(country => `
-      <div class="homepage-map-marker" style="--x: ${country.x}; --y: ${country.y}; --delay: ${country.delay}">
+    const mapData = getVisitorWorldMapData();
+    const viewBox = mapData?.viewBox || { width: 720, height: 330 };
+    return getVisitorActiveCountries().map(country => `
+      <div class="homepage-map-marker" style="--x: ${(country.x / viewBox.width * 100).toFixed(2)}; --y: ${(country.y / viewBox.height * 100).toFixed(2)}; --delay: ${country.delay || 0}">
         <span><strong>${country.code}</strong><em>${country.count}</em></span>
       </div>
     `).join('');
   }
 
   function createVisitorWorldMap() {
+    const mapData = getVisitorWorldMapData();
+    const viewBox = mapData?.viewBox || { width: 720, height: 330 };
     return `
       <div class="homepage-world-map">
-        <svg viewBox="0 0 720 330" role="img" aria-label="World map visitor snapshot" focusable="false">
+        <svg viewBox="0 0 ${viewBox.width} ${viewBox.height}" role="img" aria-label="World map visitor snapshot" focusable="false">
           <defs>
             <pattern id="homepage-map-grid" width="42" height="42" patternUnits="userSpaceOnUse">
               <path d="M42 0H0V42" fill="none" stroke="currentColor" stroke-width="1" />
             </pattern>
           </defs>
-          <rect class="homepage-map-ocean-grid" width="720" height="330" fill="url(#homepage-map-grid)" />
-          <path class="homepage-map-graticule" d="M0 82H720M0 165H720M0 248H720M120 0V330M240 0V330M360 0V330M480 0V330M600 0V330" />
-          <g>
-            <path class="homepage-map-land" d="M62 93c23-26 63-42 101-35 26 5 39 20 63 19 31-1 62 16 70 40 7 23-12 39-33 49-21 10-22 27-39 43-19 17-47 17-64 1-14-13-28-24-52-25-32-2-70-23-78-53-5-18 12-23 32-39Z" />
-            <path class="homepage-map-land" d="M31 77c17-19 45-24 69-17 16 5 18 20 5 32-18 16-43 11-66 23-18 9-25-20-8-38Z" />
-            <path class="homepage-map-land" d="M171 189c24 0 45 10 61 24 18 16 36 19 54 30 18 11 9 29-12 28-31-2-46-20-72-36-22-14-41-16-53-31-8-10 4-15 22-15Z" />
-            <path class="homepage-map-land" d="M217 229c28 10 48 36 50 67 1 27-19 63-41 61-25-3-20-42-35-63-13-18-34-30-30-51 4-18 28-24 56-14Z" />
-            <path class="homepage-map-land" d="M171 42c22-24 60-28 84-9 18 14 10 33-14 39-26 7-64 9-82-2-9-6 2-18 12-28Z" />
-            <path class="homepage-map-land" d="M330 92c29-24 68-24 102-14 28 8 50 3 78 0 39-4 73 4 106 22 39 22 65 55 61 85-4 32-39 36-70 28-33-9-47 12-70 32-28 25-65 37-91 17-21-16-21-47-48-55-34-10-67 9-91-13-28-26-8-76 23-102Z" />
-            <path class="homepage-map-land" d="M306 114c18-24 45-28 68-15 18 10 13 27-6 31-22 5-37 18-56 8-11-6-15-12-6-24Z" />
-            <path class="homepage-map-land" d="M386 179c29-7 61 6 74 32 15 30 5 75-21 92-24 15-55 2-63-28-8-29-33-45-25-71 5-15 15-21 35-25Z" />
-            <path class="homepage-map-land" d="M472 205c21 1 32 18 45 33 12 15 32 18 45 30 11 11 5 25-14 24-32-2-65-28-83-56-8-13-9-31 7-31Z" />
-            <path class="homepage-map-land" d="M512 202c17-10 28-1 35 14 7 17 1 42-12 52-15 11-25-12-29-30-4-17-7-28 6-36Z" />
-            <path class="homepage-map-land" d="M578 104c29 3 58 18 79 39 21 22 37 54 22 74-17 22-51 7-70-12-18-18-44-18-61-34-22-20-7-72 30-67Z" />
-            <path class="homepage-map-land" d="M581 235c33-16 78-8 96 17 18 24-2 51-43 53-43 2-82-49-53-70Z" />
-            <path class="homepage-map-land" d="M624 146c10-10 26-9 38 0 13 9 9 24-5 29-18 6-38-14-33-29Z" />
-            <path class="homepage-map-land" d="M543 151c11-13 30-17 43-6 14 12 4 30-13 28-19-2-43-8-30-22Z" />
-          </g>
-          <path class="homepage-map-shore" d="M62 93c23-26 63-42 101-35 26 5 39 20 63 19 31-1 62 16 70 40M330 92c29-24 68-24 102-14 28 8 50 3 78 0 39-4 73 4 106 22M386 179c29-7 61 6 74 32M581 235c33-16 78-8 96 17" />
-          <path class="homepage-map-route" d="M169 140 C260 87 358 84 455 136 S591 174 626 207" />
-          <path class="homepage-map-route" d="M455 136 C492 151 526 147 557 137" />
-          <path class="homepage-map-route" d="M455 136 C516 171 563 199 625 207" />
+          <rect class="homepage-map-ocean-grid" width="${viewBox.width}" height="${viewBox.height}" fill="url(#homepage-map-grid)" />
+          <path class="homepage-map-graticule" d="M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}" />
+          <g class="homepage-map-countries">${createVisitorCountryPaths(mapData)}</g>
+          ${mapData?.borders ? `<path class="homepage-map-borders" d="${mapData.borders}" />` : ''}
+          <g class="homepage-map-active-countries">${createVisitorActiveCountryPaths()}</g>
+          <g class="homepage-map-routes">${createVisitorRoutePaths()}</g>
         </svg>
         ${createVisitorRegions()}
         ${createVisitorMarkers()}
