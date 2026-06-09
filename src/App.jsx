@@ -794,6 +794,55 @@ const SocialButton = ({ icon: Icon, href, label, colorType, darkMode }) => {
   );
 };
 
+const VisitorMap = ({ darkMode }) => (
+  <section className="mb-16">
+    <div className={`rounded-3xl overflow-hidden border ${darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-white border-gray-100 shadow-lg shadow-blue-500/5'}`}>
+      <div className={`p-6 md:p-7 border-b flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${darkMode ? 'border-slate-700' : 'border-gray-100'}`}>
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-xl ${darkMode ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
+            <Globe size={24} />
+          </div>
+          <div>
+            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Global Visitors</h2>
+            <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              Approximate visitor locations by country.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://info.flagcounter.com/Ad32"
+          target="_blank"
+          rel="noreferrer"
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition-all self-start md:self-auto ${darkMode ? 'bg-slate-900/60 border-slate-700 text-slate-300 hover:text-white hover:border-blue-500' : 'bg-white border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-200'}`}
+        >
+          <BarChart2 size={14} />
+          View Stats
+        </a>
+      </div>
+
+      <div className={`p-5 md:p-8 ${darkMode ? 'bg-slate-900/20' : 'bg-slate-50/60'}`}>
+        <a
+          href="https://info.flagcounter.com/Ad32"
+          target="_blank"
+          rel="noreferrer"
+          className={`block rounded-2xl border p-4 md:p-5 transition-all ${darkMode ? 'bg-slate-950/40 border-slate-700 hover:border-blue-500/60' : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-md'}`}
+          aria-label="Open global visitor statistics"
+        >
+          <img
+            src="https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/"
+            alt="Global visitor map"
+            loading="lazy"
+            className="mx-auto max-w-full rounded-xl"
+          />
+        </a>
+        <p className={`mt-4 text-center text-xs leading-relaxed ${darkMode ? 'text-slate-500' : 'text-gray-500'}`}>
+          Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.
+        </p>
+      </div>
+    </div>
+  </section>
+);
+
 const BibtexModal = ({ content, onClose, darkMode }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose}>
     <div className={`w-full max-w-2xl p-6 rounded-xl shadow-2xl transform transition-all scale-100 ${darkMode ? 'bg-slate-900 border border-slate-700' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
@@ -1597,6 +1646,8 @@ export default function AcademicProfile() {
             </p>
           </div>
         </div>
+
+        <VisitorMap darkMode={darkMode} />
 
         {/* Footer */}
         <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>
