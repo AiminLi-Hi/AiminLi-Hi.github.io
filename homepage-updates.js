@@ -2,7 +2,8 @@
   const VISITOR_MAP_STATS_URL = 'https://info.flagcounter.com/Ad32';
   const VISITOR_MAP_IMAGE_URL = 'https://s01.flagcounter.com/map/Ad32/size_m/txt_334155/border_CBD5E1/pageviews_1/viewers_0/flags_0/?v=20260609c';
   const VISITOR_RANKING_IMAGE_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260609a';
-  const VISITOR_SNAPSHOT = {
+  const SYNC_DATA = window.HOMEPAGE_SYNC_DATA || {};
+  const DEFAULT_VISITOR_SNAPSHOT = {
     pageviews: 39,
     countries: 4,
     ranking: [
@@ -12,10 +13,11 @@
       { code: 'CN', name: 'China', count: 1, x: 73.2, y: 44.8, rx: 11, ry: 7.5, delay: 1.2 }
     ]
   };
-  const TOTAL_PUBLICATIONS = 33;
+  const VISITOR_SNAPSHOT = SYNC_DATA.visitorSnapshot || DEFAULT_VISITOR_SNAPSHOT;
+  const BASE_TOTAL_PUBLICATIONS = 33;
   let darkModeObserver = null;
 
-  const EXTRA_NEWS = [
+  const DEFAULT_EXTRA_NEWS = [
     {
       key: 'tmc-uav-marl-2026',
       date: '2026-06',
@@ -50,7 +52,7 @@
     }
   ];
 
-  const EXTRA_PUBLICATIONS = [
+  const DEFAULT_EXTRA_PUBLICATIONS = [
     {
       key: 'tmc-uav-marl-2026',
       year: 2026,
@@ -104,6 +106,22 @@
       href: 'https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/'
     }
   ];
+
+  function mergeByKey(base, incoming) {
+    const output = [];
+    const seen = new Set();
+    [...base, ...(incoming || [])].forEach(item => {
+      const key = item.key || item.title;
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      output.push(item);
+    });
+    return output;
+  }
+
+  const EXTRA_NEWS = mergeByKey(DEFAULT_EXTRA_NEWS, SYNC_DATA.extraNews);
+  const EXTRA_PUBLICATIONS = mergeByKey(DEFAULT_EXTRA_PUBLICATIONS, SYNC_DATA.extraPublications);
+  const TOTAL_PUBLICATIONS = Math.max(BASE_TOTAL_PUBLICATIONS, BASE_TOTAL_PUBLICATIONS + (SYNC_DATA.extraPublications?.length || 0));
 
   function addStyles() {
     if (document.getElementById('homepage-visitor-map-style')) return;
