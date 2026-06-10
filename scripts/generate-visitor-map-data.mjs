@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const overviewSourcePath = path.join(root, 'node_modules', 'world-atlas', 'countries-110m.json');
 const detailSourcePath = path.join(root, 'node_modules', 'world-atlas', 'countries-50m.json');
+const syncDataPath = path.join(root, 'public', 'homepage-sync-data.js');
 const outputPath = path.join(root, 'public', 'visitor-map-data.js');
 
 const overviewTopo = JSON.parse(fs.readFileSync(overviewSourcePath, 'utf8'));
@@ -23,12 +24,53 @@ const projection = geoNaturalEarth1().fitExtent(
 );
 const pathGenerator = geoPath(projection);
 
-const visitorCountries = [
-  { code: 'US', id: '840', name: 'United States', count: 4, lon: -98.6, lat: 39.8, delay: 0 },
-  { code: 'TR', id: '792', name: 'Türkiye', count: 2, lon: 35.2, lat: 39.0, delay: 0.4 },
-  { code: 'SG', id: '702', name: 'Singapore', count: 1, lon: 103.8, lat: 1.35, delay: 0.8 },
-  { code: 'CN', id: '156', name: 'China', count: 1, lon: 104.2, lat: 35.9, delay: 1.2 }
+const fallbackVisitorCountries = [
+  { code: 'US', name: 'United States', matchName: 'United States', count: 4, delay: 0 },
+  { code: 'TR', name: 'Türkiye', matchName: 'Turkey', count: 2, delay: 0.4 },
+  { code: 'SG', name: 'Singapore', matchName: 'Singapore', count: 1, delay: 0.8 },
+  { code: 'CN', name: 'China', matchName: 'China', count: 1, delay: 1.2 }
 ];
+
+function readVisitorCountries() {
+  if (!fs.existsSync(syncDataPath)) return fallbackVisitorCountries;
+  const source = fs.readFileSync(syncDataPath, 'utf8');
+  const match = source.match(/window\.HOMEPAGE_SYNC_DATA\s*=\s*(\{[\s\S]*\});?\s*$/);
+  if (!match) return fallbackVisitorCountries;
+  try {
+    const data = JSON.parse(match[1]);
+    return data.visitorSnapshot?.ranking?.length ? data.visitorSnapshot.ranking : fallbackVisitorCountries;
+  } catch {
+    return fallbackVisitorCountries;
+  }
+}
+
+function normalizeName(value = '') {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+const countryNameAliases = new Map([
+  ['united states', 'united states of america'],
+  ['usa', 'united states of america'],
+  ['turkiye', 'turkey'],
+  ['czechia', 'czech republic'],
+  ['russia', 'russian federation'],
+  ['south korea', 'korea south'],
+  ['north korea', 'korea north'],
+  ['vietnam', 'viet nam'],
+  ['laos', 'lao pdr'],
+  ['syria', 'syrian arab republic'],
+  ['iran', 'iran islamic republic of'],
+  ['moldova', 'moldova republic of'],
+  ['bolivia', 'bolivia plurinational state of'],
+  ['venezuela', 'venezuela bolivarian republic of'],
+  ['tanzania', 'united republic of tanzania']
+]);
 
 const countryPaths = overviewCountries.features
   .map(country => ({
@@ -42,11 +84,25 @@ const detailCountriesById = new Map(detailCountries.features.map(country => [
   String(country.id).padStart(3, '0'),
   country
 ]));
-const activeCountries = visitorCountries.map(country => {
-  const [x, y] = projection([country.lon, country.lat]);
-  const geometry = detailCountriesById.get(country.id);
+const detailCountriesByName = new Map(detailCountries.features.map(country => [
+  normalizeName(country.properties?.name || ''),
+  country
+]));
+
+function findCountryGeometry(country) {
+  if (country.id && detailCountriesById.has(String(country.id).padStart(3, '0'))) {
+    return detailCountriesById.get(String(country.id).padStart(3, '0'));
+  }
+  const normalized = normalizeName(country.matchName || country.name);
+  return detailCountriesByName.get(countryNameAliases.get(normalized) || normalized);
+}
+
+const activeCountries = readVisitorCountries().map((country, index) => {
+  const geometry = findCountryGeometry(country);
+  const [x, y] = geometry ? pathGenerator.centroid(geometry) : [viewBox.width / 2, viewBox.height / 2];
   return {
     ...country,
+    delay: country.delay ?? Number((index * 0.4).toFixed(1)),
     x: Number(x.toFixed(1)),
     y: Number(y.toFixed(1)),
     d: geometry ? pathGenerator(geometry) : ''

@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "generate:visitor-map": "node scripts/generate-visitor-map-data.mjs",
+    "sync:homepage": "node scripts/sync-homepage-data.mjs && npm run generate:visitor-map",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
@@ -18,6 +19,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
     "@eslint/js": "^9.39.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",

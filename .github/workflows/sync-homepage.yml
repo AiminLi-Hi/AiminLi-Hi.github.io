@@ -1,0 +1,59 @@
+name: Sync homepage data
+
+on:
+  schedule:
+    # 05:17 in Europe/Istanbul, expressed in UTC.
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-homepage-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync visitor and Scholar data
+        run: npm run sync:homepage
+        env:
+          FLAG_COUNTER_ID: Ad32
+          SCHOLAR_USER_ID: nyl1-EMAAAAJ
+
+      - name: Validate app
+        run: |
+          npm run lint
+          npm run build
+
+      - name: Commit synchronized source data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/homepage-sync-data.js public/visitor-map-data.js
+          if git diff --cached --quiet; then
+            echo "No synchronized data changes."
+          else
+            git commit -m "Sync homepage visitor and Scholar data"
+            git push origin HEAD:main
+          fi
+
+      - name: Deploy GitHub Pages
+        run: npx gh-pages -d dist -u "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
