@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const outputPath = path.join(root, 'public', 'homepage-sync-data.js');
-const appPath = path.join(root, 'src', 'App.jsx');
+const dataPath = path.join(root, 'src', 'data', 'homepageData.js');
 
 const FLAG_COUNTER_ID = process.env.FLAG_COUNTER_ID || 'Ad32';
 const SCHOLAR_USER_ID = process.env.SCHOLAR_USER_ID || 'nyl1-EMAAAAJ';
@@ -53,6 +53,14 @@ const VENUE_PATTERNS = [
   [/globecom/i, 'IEEE Globecom', 'Globecom'],
   [/icct/i, 'IEEE ICCT', 'ICCT'],
   [/arxiv/i, 'arXiv', 'arXiv']
+];
+
+const HOMEPAGE_ALLOWED_VENUE_PATTERNS = [
+  /IEEE TMC/i,
+  /IEEE IoTJ/i,
+  /IEEE ISIT/i,
+  /IEEE VTC/i,
+  /IEEE TIT/i
 ];
 
 function readPreviousData() {
@@ -150,6 +158,12 @@ function inferVenue(venueText) {
   return { shortVenue: 'Scholar', newsLabel: 'Scholar' };
 }
 
+function isHomepageCandidate(item, shortVenue = item.shortVenue || item.venue_short || item.newsLabel || '') {
+  if (!item?.title) return false;
+  if (/arxiv/i.test(`${shortVenue} ${item.venue || ''}`)) return false;
+  return HOMEPAGE_ALLOWED_VENUE_PATTERNS.some(pattern => pattern.test(`${shortVenue} ${item.venue || ''} ${item.title}`));
+}
+
 function inferType(venueText) {
   return /conference|symposium|workshop|globecom|infocom|wcnc|vtc|isit|icct|allerton|mobihoc/i.test(venueText)
     ? 'Conference'
@@ -190,8 +204,8 @@ function parseScholarRows(html) {
 }
 
 function readKnownTitles() {
-  if (!fs.existsSync(appPath)) return new Set();
-  const source = fs.readFileSync(appPath, 'utf8');
+  if (!fs.existsSync(dataPath)) return new Set();
+  const source = fs.readFileSync(dataPath, 'utf8');
   const titles = new Set();
   for (const match of source.matchAll(/title:\s*(["'])([\s\S]*?)\1/g)) {
     titles.add(normalizeTitle(match[2]));
@@ -219,7 +233,6 @@ async function fetchScholarData(previous) {
     .filter(item => item.year && item.year >= currentYear - 1)
     .filter(item => !knownTitles.has(normalizeTitle(item.title)))
     .filter(item => !previousExtraTitles.has(normalizeTitle(item.title)))
-    .slice(0, 5)
     .map(item => {
       const { shortVenue, newsLabel } = inferVenue(item.venue);
       return {
@@ -236,7 +249,9 @@ async function fetchScholarData(previous) {
         href: item.href,
         newsLabel
       };
-    });
+    })
+    .filter(item => isHomepageCandidate(item))
+    .slice(0, 5);
 
   const month = new Date().toISOString().slice(0, 7);
   const extraNews = extraPublications.map(pub => ({
@@ -293,8 +308,14 @@ async function main() {
       totalArticles: scholar.totalArticles,
       latest: scholar.latest
     };
-    next.extraPublications = mergeByKey(previous.extraPublications, scholar.extraPublications);
-    next.extraNews = mergeByKey(previous.extraNews, scholar.extraNews);
+    next.extraPublications = mergeByKey(
+      (previous.extraPublications || []).filter(item => isHomepageCandidate(item)),
+      scholar.extraPublications
+    );
+    next.extraNews = mergeByKey(
+      (previous.extraNews || []).filter(item => isHomepageCandidate(item)),
+      scholar.extraNews
+    );
     console.log(`Google Scholar: parsed ${scholar.latest.length} latest rows, ${scholar.extraPublications.length} new homepage candidates.`);
   } catch (error) {
     next.scholar = previous.scholar || FALLBACK_DATA.scholar;

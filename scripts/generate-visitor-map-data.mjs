@@ -73,8 +73,8 @@ const countryNameAliases = new Map([
 ]);
 
 const countryPaths = overviewCountries.features
-  .map(country => ({
-    id: String(country.id).padStart(3, '0'),
+  .map((country, index) => ({
+    id: country.id == null ? `unknown-${index}` : String(country.id).padStart(3, '0'),
     name: country.properties?.name || String(country.id),
     d: pathGenerator(country)
   }))

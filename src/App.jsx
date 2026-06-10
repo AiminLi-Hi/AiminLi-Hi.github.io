@@ -7,10 +7,11 @@ import {
   Quote, Search, Filter, Star, Trophy, Video,
   School, ChevronDown, ChevronUp, Layers, User, Users,
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
-  Map, ArrowUp, Presentation, Send, Tag, Plus, ArrowUpDown,
+  Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus, ArrowUpDown,
   MessageCircle, Plane, Landmark, Network, GitCommit, Languages,
   Menu, X // Added Menu and X icons for mobile navigation
 } from 'lucide-react';
+import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
 
 // ==========================================
 // --- 自定义图标组件 (Custom Icons) ---
@@ -42,726 +43,13 @@ const ArxivIcon = ({ size = 24, className }) => (
 );
 
 // ==========================================
-// --- 数据配置区 (DATA Configuration) ---
-// ==========================================
-
-// Helper to generate search URL for demo purposes
-const getIEEEUrl = (title) => `https://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&queryText=${encodeURIComponent(title)}`;
-
-const PUBLICATIONS = [
-  // --- Journal Articles ---
-  {
-    id: "j17",
-    year: 2026,
-    title: "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
-    authors: "Hanyu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang",
-    venue: "IEEE Transactions on Mobile Computing",
-    venue_short: "IEEE TMC",
-    type: "Journal",
-    tag: "Co-Author",
-    featured: true,
-    keywords: ["Age of Information", "UAV Swarms", "MARL", "Routing"],
-    summary: "Develops an AoI-aware joint sampling, buffering, and routing optimization framework for autonomous UAV swarms using multi-agent reinforcement learning.",
-    url: "https://ieeexplore.ieee.org/abstract/document/11547874/"
-  },
-  {
-    id: "j18",
-    year: 2026,
-    title: "Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems",
-    authors: "Xiaomeng Chen, Aimin Li, Yajing Deng, Shaohua Wu",
-    venue: "IEEE Internet of Things Journal",
-    venue_short: "IEEE IoTJ",
-    type: "Journal",
-    tag: "Co-Author",
-    featured: true,
-    keywords: ["Remote Estimation", "Internet of Things", "Entropy", "Uncertainty of Information"],
-    summary: "Uses uncertainty of information to guide sampling for remote estimation over randomly delayed IoT systems.",
-    url: "https://doi.org/10.1109/JIOT.2026.3663721"
-  },
-  {
-    id: "j5",
-    year: 2024,
-    title: "Toward Goal-Oriented Semantic Communications: New Metrics, Framework, and Open Challenges",
-    authors: "Aimin Li, Shaohua Wu, Siqi Meng, Rongxing Lu, Sumei Sun, Qinyu Zhang",
-    venue: "IEEE Wireless Communications",
-    venue_short: "IEEE WCM",
-    type: "Journal",
-    if: "11.5",
-    jcr: "Q1",
-    tag: "Featured",
-    featured: true,
-    summary: "Establishes a novel framework for goal-oriented semantic communications.",
-    keywords: ["Semantic Comm", "6G", "Framework"],
-    abstract: "Semantic communication is envisioned as a key enabler for 6G networks...",
-    image: "/images/WCM.gif",
-    links: { pdf: "/papers/paper1WCM.pdf" },
-    url: getIEEEUrl("Toward Goal-Oriented Semantic Communications: New Metrics, Framework, and Open Challenges")
-  },
-  {
-    id: "j1",
-    year: 2025,
-    title: "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels",
-    authors: "Aimin Li, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, Sumei Sun",
-    venue: "IEEE Transactions on Wireless Communications",
-    venue_short: "IEEE TWC",
-    type: "Journal",
-    if: "10.7",
-    jcr: "Q1",
-    tag: "First Author",
-    featured: true,
-    image: "/images/TWCSpinal.png",
-    keywords: ["Channel Coding", "Spinal Codes", "Fading Channels"],
-    summary: "Derives the first unified tight upper bound for spinal codes in fading channels.",
-    links: { pdf: "/papers/paper25TWC.pdf" },
-    url: getIEEEUrl("Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels")
-  },
-  {
-    id: "j16",
-    year: 2025,
-    title: "From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making",
-    authors: "Aimin Li, Shaohua Wu, Gary Lee, Sumei Sun",
-    venue: "IEEE Transactions on Information Theory",
-    venue_short: "IEEE TIT",
-    type: "Journal",
-    tag: "First Author",
-    featured: true,
-    keywords: ["Age of Information", "Value of Information", "Markov Decision Process", "Remote Decision Making", "Goal-Oriented Communications", "Effective Communications"],
-    summary: "Proposes an age-aware remote MDP framework and a two-stage QUICK BLP algorithm to jointly optimize sampling and decision-making under random delay and sampling constraints.",
-    links: { pdf: "/papers/paper26TIT.pdf" },
-    url: getIEEEUrl("From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making")
-  },
-  {
-    id: "j15",
-    year: 2025,
-    title: "MARHLO: Hybrid task Offloading in Maritime MEC via Multi-Agent Reinforcement Learning",
-    authors: "Jiahong Ning, Aimin Li, Gary C.F. Lee, Tingting Yang, Sumei Sun",
-    venue: "IEEE Open Journal of the Communications Society",
-    venue_short: "IEEE OJ-COMS",
-    type: "Journal",
-    image: "/images/MARHO.png",
-    tag: "Co-Author",
-    if: "6.1",
-    keywords: ["MEC", "MARL", "Maritime Comm"],
-    summary: "A multi-agent RL approach for efficient task offloading in maritime edge computing environments.",
-    links: { pdf: "/papers/paper28OJCOM.pdf" },
-    url: getIEEEUrl("MARHLO: Hybrid task Offloading in Maritime MEC via Multi-Agent Reinforcement Learning")
-  },
-  {
-    id: "j2",
-    year: 2025,
-    title: "Error Floor of ML-Decoded Spinal Codes in the Finite Blocklength Regime",
-    authors: "Aimin Li, Shaohua Wu, Xiaomeng Chen, Sumei Sun",
-    venue: "IEEE Transactions on Vehicular Technology",
-    venue_short: "IEEE TVT",
-    type: "Journal",
-    if: "7.1",
-    jcr: "Q1",
-    tag: "First Author",
-    keywords: ["Spinal Codes", "Finite Blocklength"],
-    summary: "Analyzes the error floor phenomenon of spinal codes and provides design guidelines to mitigate it.",
-    image: "/images/Spinalcodes.gif",
-    links: { pdf: "/papers/paper8TVT.pdf" },
-    url: getIEEEUrl("Error Floor of ML-Decoded Spinal Codes in the Finite Blocklength Regime")
-  },
-  {
-    id: "j3",
-    year: 2025,
-    title: "Information Freshness and Timeliness Analysis in The Finite Blocklength Regime for Mission-Critical Applications",
-    authors: "Mingxiao Sun, Lulu Song, Di Zhang, Shaobo Jia, Aimin Li, Al-Dulaimi, Shahid Mumtaz",
-    venue: "IEEE Transactions on Communications",
-    venue_short: "IEEE TCOM",
-    type: "Journal",
-    if: "8.9",
-    image: "/images/TCOM3.png",
-    jcr: "Q1",
-    tag: "Co-Author",
-    keywords: ["AoI", "Finite Blocklength", "URLLC"],
-    summary: "Joint analysis of information freshness (AoI) and timeliness (Latency) for mission-critical IoT.",
-    links: { pdf: "/papers/paper23TCOM.pdf" },
-    url: getIEEEUrl("Information Freshness and Timeliness Analysis in The Finite Blocklength Regime for Mission-Critical Applications")
-  },
-  {
-    id: "j4",
-    year: 2024,
-    title: "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel",
-    authors: "Aimin Li, Shaohua Wu, Xiaomeng Chen, Sumei Sun",
-    venue: "IEEE Transactions on Communications",
-    venue_short: "IEEE TCOM",
-    type: "Journal",
-    if: "8.9",
-    jcr: "Q1",
-    tag: "First Author",
-    keywords: ["Channel Coding", "AWGN"],
-    summary: "Provides tight analytical bounds for Spinal codes in AWGN, facilitating low-complexity code design.",
-    image: "/images/AWGNspinal.gif",
-    links: { pdf: "/papers/paper7TCOM.pdf" },
-    url: getIEEEUrl("Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel")
-  },
-  {
-    id: "j6",
-    year: 2024,
-    title: "Goal-Oriented Tensor: Beyond Age of Information Toward Semantics-Empowered Goal-Oriented Communications",
-    authors: "Aimin Li, Shaohua Wu, Sumei Sun, Jie Cao",
-    venue: "IEEE Transactions on Communications",
-    venue_short: "IEEE TCOM",
-    type: "Journal",
-    if: "8.9",
-    jcr: "Q1",
-    tag: "First Author",
-    featured: true,
-    keywords: ["Semantic Comm", "AoI", "Tensor"],
-    image: "/images/TCOMGOT.gif",
-    summary: "Introduces 'Goal-Oriented Tensor' to capture the multidimensional value of information.",
-    links: { pdf: "/papers/paper11TCOM.pdf" },
-    url: getIEEEUrl("Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications")
-  },
-  {
-    id: "j7",
-    year: 2024,
-    title: "Effectiveness-Oriented SAGSIN: Unveiling a Unified Metric and a Comprehensive Framework",
-    authors: "Siqi Meng, Shaohua Wu, Hanyu Wu, Aimin Li, Qinyu Zhang",
-    venue: "IEEE Network",
-    venue_short: "IEEE Network",
-    type: "Journal",
-    if: "6.3",
-    jcr: "Q1",
-    image: "/images/Network1.png",
-    keywords: ["SAGIN", "Network Optimization"],
-    summary: "A unified metric for Space-Air-Ground Integrated Networks focusing on communication effectiveness.",
-    links: { pdf: "/papers/paper12NET.pdf" },
-    url: getIEEEUrl("Effectiveness-Oriented SAGSIN: Unveiling a Unified Metric and a Comprehensive Framework")
-  },
-  {
-    id: "j8",
-    year: 2023,
-    title: "Toward Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime",
-    authors: "Siqi Meng, Shaohua Wu, Aimin Li, Qinyu Zhang",
-    venue: "IEEE Journal on Selected Areas of Information Theory",
-    venue_short: "IEEE JSAIT",
-    type: "Journal",
-    image: "/images/JSAIT1.gif",
-    keywords: ["AoII", "Semantic Comm", "Finite Blocklength"],
-    summary: "Analysis of Age of Incorrect Information (AoII) in coded systems.",
-    links: { pdf: "/papers/paper9JSAIT.pdf" },
-    url: getIEEEUrl("Towards Goal-Oriented Semantic Communications: AoII Analysis of Coded Status Update System Under FBL Regime")
-  },
-  {
-    id: "j9",
-    year: 2022,
-    title: "Age of Information with Hybrid-ARQ: A Unified Explicit Result",
-    authors: "Aimin Li, Shaohua Wu, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Transactions on Communications",
-    venue_short: "IEEE TCOM",
-    type: "Journal",
-    if: "8.9",
-    image: "/images/TCOMAoI.gif",
-    jcr: "Q1",
-    tag: "First Author",
-    keywords: ["AoI", "HARQ", "Reliability"],
-    summary: "Derives a closed-form expression for AoI in HARQ systems, unifying various retransmission protocols.",
-    links: { pdf: "/papers/paper2TCOM.pdf" },
-    url: getIEEEUrl("Age of Information with Hybrid-ARQ: A Unified Explicit Result")
-  },
-  {
-    id: "j10",
-    year: 2022,
-    title: "Minimizing Age-of-Information in HARQ-CC Aided NOMA Systems",
-    authors: "Shaohua Wu, Zhihong Deng, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Transactions on Wireless Communications",
-    venue_short: "IEEE TWC",
-    type: "Journal",
-    if: "8.9",
-    image: "/images/TWCdeng1.gif",
-    jcr: "Q1",
-    keywords: ["AoI", "NOMA", "HARQ"],
-    summary: "Optimizes AoI in NOMA systems with HARQ-CC.",
-    links: { pdf: "/papers/paper3TWC.pdf" },
-    url: getIEEEUrl("Minimizing Age-of-Information in HARQ-CC Aided NOMA Systems")
-  },
-  {
-    id: "j11",
-    year: 2022,
-    title: "Analysis and Optimization of HARQ Based Spinal Coded Timely Status Update System",
-    authors: "Siqi Meng, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Transactions on Communications",
-    venue_short: "IEEE TCOM",
-    type: "Journal",
-    if: "8.9",
-    jcr: "Q1",
-    keywords: ["AoI", "Spinal Codes", "HARQ"],
-    summary: "Joint optimization of HARQ and Spinal codes for timely status updates.",
-    image: "/images/TCOMspinal3.gif",
-    links: { pdf: "/papers/paper16TCOM.pdf" },
-    url: getIEEEUrl("Analysis and Optimization of HARQ Based Spinal Coded Timely Status Update System")
-  },
-  {
-    id: "j12",
-    year: 2022,
-    title: "A Weighted Graph-based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks",
-    authors: "Xiyu Lv, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Networking Letters",
-    venue_short: "IEEE LNET",
-    type: "Journal",
-    image: "/images/NETL1.gif",
-    keywords: ["LEO", "Handover", "Graph Theory"],
-    summary: "Proposes a weighted graph-based handover strategy for LEO satellite networks.",
-    links: { pdf: "/papers/paper10NETL.pdf" },
-    url: getIEEEUrl("A Weighted Graph-based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks")
-  },
-  {
-    id: "j13",
-    year: 2022,
-    title: "Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes over Rayleigh Fading Channel",
-    authors: "Siqi Meng, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Transactions on Vehicular Technology",
-    venue_short: "IEEE TVT",
-    type: "Journal",
-    if: "7.1",
-    jcr: "Q1",
-    keywords: ["Spinal Codes", "Fading Channels"],
-    summary: "Enhances Spinal codes with partial self-concatenation for Rayleigh fading channels.",
-    links: { pdf: "/papers/paper4TVT.pdf" },
-    url: getIEEEUrl("Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes over Rayleigh Fading Channel")
-  },
-  {
-    id: "j14",
-    year: 2021,
-    title: "Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement",
-    authors: "Aimin Li, Shaohua Wu, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Transactions on Wireless Communications",
-    venue_short: "IEEE TWC",
-    type: "Journal",
-    if: "10.7",
-    jcr: "Q1",
-    tag: "First Author",
-    keywords: ["Spinal Codes", "Fading Channels"],
-    summary: "First rigorous error probability analysis of Spinal codes over fading channels.",
-    links: { pdf: "/papers/paper6TWC.pdf" },
-    url: getIEEEUrl("Spinal Codes Over Fading Channel: Error Probability Analysis and Encoding Structure Improvement")
-  },
-
-  // --- Conference Proceedings ---
-  {
-    id: "c14",
-    year: 2026,
-    title: "Taming the Heavy Tail: Age-Optimal Preemption",
-    authors: "Aimin Li, Yiğit İnce, Elif Uysal",
-    venue: "IEEE International Symposium on Information Theory",
-    venue_short: "IEEE ISIT",
-    type: "Conference",
-    tag: "First Author",
-    featured: true,
-    keywords: ["Age of Information", "Preemption", "Heavy-Tailed Delay", "Impulse Control"],
-    summary: "Studies age-optimal sampling and preemption under general, especially heavy-tailed, service-time distributions.",
-    url: "https://arxiv.org/abs/2601.16624"
-  },
-  {
-    id: "c15",
-    year: 2026,
-    title: "Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications",
-    authors: "Aiwei Lei, Di Zhang, Aimin Li, Evgeny Khorov",
-    venue: "IEEE Vehicular Technology Conference",
-    venue_short: "IEEE VTC-Spring",
-    type: "Conference",
-    tag: "Co-Author",
-    keywords: ["Satellite Communications", "Weibull Fading", "SAGIN", "Capacity Analysis"],
-    summary: "Analyzes channel capacity under Weibull fading for satellite-ground integrated communication systems.",
-    url: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/"
-  },
-  {
-    id: "c1",
-    year: 2025,
-    title: "Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes",
-    authors: "Aimin Li, Elif Uysal",
-    venue: "61st Allerton Conference on Communication, Control, and Computing",
-    venue_short: "Allerton",
-    type: "Conference",
-    tag: "First Author",
-    featured: true,
-    keywords: ["Remote Estimation", "Scheduling"],
-    summary: "Optimizing sampling, scheduling, and estimation for correlated processes in remote fusion estimation systems, and proving a separation principle.",
-    image: "/images/Allerton1.png",
-    links: { pdf: "/papers/paper24Allerton.pdf" },
-    url: "https://arxiv.org/pdf/2510.22288"
-  },
-  {
-    id: "c2",
-    year: 2025,
-    title: "Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information",
-    authors: "Adem Utku Atasayar, Aimin Li, Cagri Ari, Elif Uysal",
-    venue: "ACM International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing",
-    venue_short: "ACM Mobihoc",
-    type: "Conference",
-    image: "/images/Mobihoc1.png",
-    featured: true,
-    keywords: ["AoI", "Routing", "Sampling"],
-    summary: "Joint sampling and routing design for AoI minimization in networks with random delay, establishing a remarkably simple threshold-based optimal policy.",
-    links: { pdf: "/papers/paper22Mobihoc.pdf" },
-    url: "https://dl.acm.org/action/doSearch?AllField=Fresh+Data+Delivery%3A+Joint+Sampling+and+Routing+for+Minimizing+the+Age+of+Information" // ACM link fallback
-  },
-  {
-    id: "c3",
-    year: 2024,
-    title: "Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process",
-    authors: "Aimin Li, Shaohua Wu, Gary C.F. Lee, Xiaomeng Chen, Sumei Sun",
-    venue: "IEEE Information Theory Workshop",
-    venue_short: "IEEE ITW",
-    type: "Conference",
-    tag: "First Author",
-    image: "/images/ITW1.gif",
-    featured: true,
-    keywords: ["AoI", "Remote Estimation", "MDP"],
-    summary: "Proposes an age-aware sampling policy for remote MDPs, proving optimality.",
-    links: { pdf: "/papers/paper18ITW.pdf" },
-    url: getIEEEUrl("Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process")
-  },
-  {
-    id: "c4",
-    year: 2024,
-    title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
-    authors: "Aimin Li, Shaohua Wu, Sumei Sun",
-    venue: "IEEE Wireless Communications and Networking Conference",
-    venue_short: "IEEE WCNC",
-    type: "Conference",
-    tag: "First Author",
-    keywords: ["Semantic Comm"],
-    image: "/images/TCOMGOT.gif",
-    summary: "Conference version of the goal-oriented tensor work.",
-    links: { pdf: "/papers/paper27WCNC.pdf" },
-    url: getIEEEUrl("Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications")
-  },
-  {
-    id: "c5",
-    year: 2024,
-    title: "Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System",
-    authors: "Xiaomeng Chen, Aimin Li, Shaohua Wu",
-    venue: "IEEE Information Theory Workshop",
-    venue_short: "IEEE ITW",
-    image: "/images/itw2.gif",
-    type: "Conference",
-    keywords: ["UoI", "Remote Monitoring"],
-    summary: "Focuses on minimizing Uncertainty of Information (UoI) rather than just AoI under random delay.",
-    links: { pdf: "/papers/paper19ITW.pdf" },
-    url: getIEEEUrl("Optimal Sampling for Uncertainty-of-Information Minimization in a Remote Monitoring System")
-  },
-  {
-    id: "c6",
-    year: 2024,
-    title: "Joint Transmission and Control in a Goal-oriented NOMA Network",
-    authors: "Kunpeng Liu, Shaohua Wu, Aimin Li, Qinyu Zhang",
-    venue: "IEEE International Communications Conference",
-    venue_short: "IEEE ICC",
-    type: "Conference",
-    image: "/images/ICC1.gif",
-    keywords: ["NOMA", "Control", "Goal-Oriented"],
-    summary: "Investigates joint transmission and control in NOMA-assisted networks.",
-    links: { pdf: "/papers/paper26ICC.pdf" },
-    url: getIEEEUrl("Joint Transmission and Control in a Goal-oriented NOMA Network")
-  },
-  {
-    id: "c7",
-    year: 2024,
-    title: "Packet Management of AoI in The Finite Block-length Regime",
-    authors: "Mingxiao Sun, Di Zhang, Shaobo Jia, Aimin Li",
-    venue: "IEEE International Conference on Communication Technology",
-    venue_short: "IEEE ICCT",
-    type: "Conference",
-    keywords: ["AoI", "FBL", "Packet Management"],
-    summary: "Studies packet management strategies for AoI under finite blocklength constraints.",
-    links: { pdf: "/papers/paper20ICCT.pdf" },
-    url: getIEEEUrl("Packet Management of AoI in The Finite Block-length Regime")
-  },
-  {
-    id: "c8",
-    year: 2023,
-    title: "Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels",
-    authors: "Xiaomeng Chen, Aimin Li, Shaohua Wu",
-    venue: "IEEE International Symposium on Information Theory",
-    venue_short: "IEEE ISIT",
-    type: "Conference",
-    image: "/images/Spinalcodes.gif",
-    keywords: ["Spinal Codes", "Fading Channels", "Information Theory"],
-    summary: "Presents first tight bounds for Spinal codes in the finite block length (FBL) regime over fading channels.",
-    links: { pdf: "/papers/paper21ISIT.pdf" },
-    url: getIEEEUrl("Tight Upper Bounds on the Error Probability of Spinal Codes over Fading Channels")
-  },
-  {
-    id: "c9",
-    year: 2023,
-    title: "Deep Reinforcement Learning-Assisted Age-optimal Transmission Policy for HARQ-aided NOMA Networks",
-    authors: "Kunpeng Liu, Aimin Li, Shaohua Wu",
-    venue: "IEEE INFOCOM Workshops",
-    venue_short: "IEEE INFOCOM",
-    type: "Conference",
-    image: "/images/INFOCOMWS1.gif",
-    keywords: ["DRL", "AoI", "NOMA"],
-    summary: "Uses DRL to optimize transmission policies for AoI in HARQ-NOMA systems.",
-    links: { pdf: "/papers/paper13INFOCOMWS.pdf" },
-    url: getIEEEUrl("Deep Reinforcement Learning-Assisted Age-optimal Transmission Policy for HARQ-aided NOMA Networks")
-  },
-  {
-    id: "c10",
-    year: 2022,
-    title: "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result",
-    authors: "Aimin Li, Shaohua Wu, Yajing Deng, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE Global Communications Conference",
-    venue_short: "IEEE Globecom",
-    type: "Conference",
-    tag: "First Author",
-    image: "/images/TCOMAoI.gif",
-    keywords: ["AoI", "HARQ"],
-    summary: "Conference version of the unified explicit AoI result for HARQ.",
-    links: { pdf: "/papers/paper14Globecom.pdf" },
-    url: getIEEEUrl("Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result")
-  },
-  {
-    id: "c11",
-    year: 2022,
-    title: "Analysis of GEO Satellite Relay Coded Systems",
-    authors: "Jiaming Zhang, Shaohua Wu, Aimin Li, Jian Jiao, Qinyu Zhang",
-    venue: "IEEE Vehicular Technology Conference",
-    venue_short: "IEEE VTC-Fall",
-    type: "Conference",
-    keywords: ["Satellite", "Relay"],
-    summary: "Performance analysis of coded systems in GEO satellite relay networks.",
-    links: { pdf: "/papers/paper15VTC.pdf" },
-    url: getIEEEUrl("Analysis of GEO Satellite Relay Coded Systems")
-  },
-  {
-    id: "c12",
-    year: 2021,
-    title: "Analysis and Optimization of Spinal Codes over the BSC: from the AoI Perspective",
-    authors: "Siqi Meng, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
-    venue: "IEEE ICC Workshops",
-    venue_short: "IEEE ICC",
-    type: "Conference",
-    keywords: ["Spinal Codes", "AoI", "BSC"],
-    summary: "Optimizes Spinal codes over Binary Symmetric Channels for AoI.",
-    links: { pdf: "/papers/paper17ICCWS.pdf" },
-    url: getIEEEUrl("Analysis and Optimization of Spinal Codes over the BSC: from the AoI Perspective")
-  },
-  {
-    id: "c13",
-    year: 2020,
-    title: "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design",
-    authors: "Aimin Li, Shaohua Wu, Ying Wang, Jian Jiao, Qinyu Zhang",
-    venue: "IEEE Vehicular Technology Conference",
-    venue_short: "IEEE VTC-Spring",
-    type: "Conference",
-    tag: "First Author",
-    keywords: ["Spinal Codes", "Puncturing"],
-    summary: "Early work on the error probability analysis and puncturing design for Spinal codes.",
-    links: { pdf: "/papers/paper5VTC.pdf" },
-    url: getIEEEUrl("Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design")
-  }
-];
-
-const SUBMITTED = [];
-
-const DATA = {
-  en: {
-    meta_title: "Aimin Li | Postdoc Researcher | METU",
-    meta_desc: "Academic profile of Aimin Li, Postdoctoral Researcher at METU, Türkiye.",
-    name: "Aimin Li (黎爱民)",
-    role: "Postdoctoral Researcher",
-    org: "Middle East Technical University (METU)",
-    org_full: "Middle East Technical University (METU)",
-    bio: "Postdoctoral researcher at METU, collaborating with IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/) on the ERC Advanced Grant project **GO-SPACE**. My research interests lie at the intersection of **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**. I received my Ph.D. from Harbin Institute of Technology, Shenzhen, under the supervision of [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and conducted visiting research at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
-    location: "Ankara, Türkiye",
-    social: {
-      scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=en",
-      github: "https://github.com/aiminli-hi",
-      linkedin: "https://linkedin.com", 
-      researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
-      email: "mailto:hitliaimin@163.com"
-    },
-    nav: { about: "About", news: "News", timeline: "Timeline", awards: "Honors", publications: "Publications", service: "Academic Service", teaching: "Teaching", contact: "Contact" },
-    news: [
-      { date: "2026-06", label: "TMC", content: "Paper titled <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
-      { date: "2026-05", label: "IoTJ", content: "Paper titled <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>.", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
-      { date: "2026-03", label: "VTC", content: "Paper titled <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT", content: "Paper titled <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
-      { date: "2026-02", label: "TIT", content: "Paper titled <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> was accepted by <strong>IEEE Transactions on Information Theory (TIT)</strong>.", link: "/papers/paper26TIT.pdf" },
-      { date: "2025-11", label: "Award", content: "Won the <strong>Best Dissertation Nomination Award</strong> at Harbin Institute of Technology (the only recipient from the EE Department).", link: "#awards" },
-      { date: "2025-11", label: "Allerton", content: "Paper titled <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> was accepted. Welcome discussions and collaborations.", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc", content: "Paper titled <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> was accepted (<strong>39 papers accepted worldwide in 2025</strong>). Welcome discussions and collaborations.", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
-      { date: "2024-12", label: "4MT", content: "Won the 3rd Prize in IEEE Globecom 4MT Thesis Competition.", link: "#awards" },
-      { date: "2024-12", label: "Scholar", content: "Won the National Scholarship for PhD students.", link: "#awards" }
-    ],
-    timeline: [
-      { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
-        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI am thrilled to join this family and embark on this new journey.", 
-        lineage: [
-          { name: "Claude Shannon", title: "Information Theory Founder", highlight: false },
-          { name: "Robert Gallager", title: "MIT Professor Emeritus", highlight: false },
-          { name: "Elif Uysal", title: "METU Professor (Advisor)", highlight: true },
-        ],
-        type: "work" },
-      { year: "2023.10 - 2024.10", location: "Singapore", role: "Visiting Researcher", org: "Institute for Infocomm Research (I2R), A*STAR", 
-        desc: "Research on Goal-oriented Semantic Communications. \nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).\nI learned a lot in Singapore and left with precious memories. Deeply grateful for this experience.", 
-        type: "work" },
-      { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Info. & Comm. Eng.", org: "Harbin Institute of Technology, Shenzhen", 
-        desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).\nFive years at my alma mater HIT: a journey of rigorous training, maturing, and growing into an independent researcher.", 
-        type: "edu" },
-      { year: "2017.07 - 2017.08", location: "California, USA", role: "Visiting Student", org: "University of California, Riverside (UCR)", desc: "International exchange program.", type: "edu" },
-      { 
-        year: "2016.09 - 2020.06", 
-        location: "Shenzhen, China", 
-        role: "B.Eng. in Comm. Eng.", 
-        org: "Harbin Institute of Technology, Shenzhen", 
-        desc: "Qualified for postgraduate recommendation to Tsinghua University. Awarded Best Undergraduate Thesis of HIT and Provincial Merit Student of Heilongjiang Province.", 
-        type: "edu" 
-      }
-    ],
-    awards: [
-      { year: "2025", title: "Best Dissertation Award Nomination", desc: "Only 1 in EE Dept.", level: "University", featured: true },
-      { year: "2020 and 2024", title: "National Scholarship of China (Twice)", desc: "Top 0.2% nationwide", level: "National", featured: true },
-      { year: "2025", title: "Provincial Outstanding Graduate Award", desc: "Top 0.4% in Heilongjiang Province", level: "Provincial", featured: true },
-      { year: "2020", title: "Best Undergraduate Thesis Award", desc: "Only 2 recipients in EE Dept", level: "University", featured: true },
-      { year: "2025", title: "Award for HIT Outstanding Graduate Students", desc: "Top 10% in Harbin Institute of Technology", level: "University" },
-      { year: "2024", title: "IEEE Globecom 4MT Thesis Competition (3rd Prize)", desc: "Ranked 5th out of 15 finalists worldwide. Awarded by IEEE ComSoc President.", level: "Global", featured: true },
-      { year: "2024", title: "IEEE Globecom Travel Grant", desc: "Top 15 Ph.D. Students Worldwide", level: "Global" },
-      { year: "2024", title: "Candidate for NSFC Youth Project", desc: "One of <600 PhD Students in China", level: "National" },
-      { year: "2023", title: "HIT 'Dianzi' Research Student Program (Independent PI Project)", desc: "Only 1 Ph.D. Student in EE Dept.", level: "University", featured: true },
-      { year: "2020", title: "Special Merit Doctoral Scholarship", desc: "Awarded by HIT University President (awarded to only 8 PhD students university-wide)", level: "University", featured: true },
-      { year: "2017 and 2019", title: "HIT Outstanding Student Award (Twice)", desc: "Rate top 10% in Harbin Institute of Technlogy", level: "University" },
-      { year: "2019", title: "Outstanding Participant, Tsinghua University Summer Camp", desc: "Qualified postgraduate recommendation to Tsinghua University", level: "University", featured: true },
-      { year: "2018", title: "Gongjin Scholarship for Overall Excellence", desc: "Only 3 recipients in EE Dept.", level: "University" },
-      { year: "2018", title: "Provincial Merit Student", desc: "Rate top 1% in Heilongjiang Province.", level: "Provincial", featured: true },
-      { year: "2016 and 2017", title: "First Prize of Chinese College Student Math Competition (Twice)", desc: "National Level Math Competition.", level: "National" },
-      { year: "2017", title: "First Class Scholarship for Comprehensive Excellence", desc: "Top 5% in Harbin Institute of Technology.", level: "National" },
-    ],
-    service: {
-      reviewer: [ 
-        "IEEE Transactions on Information Theory (TIT)", 
-        "IEEE Journal on Selected Areas in Communications (JSAC)", 
-        "IEEE Transactions on Mobile Computing (TMC)", 
-        "IEEE Transactions on Communications (TCOM)", 
-        "IEEE Transactions on Wireless Communications (TWC)",
-        "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
-        "IEEE Transactions on Vehicular Technology (TVT)",
-        "IEEE Transactions on Cognitive Communications and Networking (TCCN)",
-        "IEEE Communications Letters (CL)",
-        "IEEE Wireless Communications Letters (WCL)",
-        "Elsevier Computer Networks",
-        "IEEE International Symposium on Information Theory (ISIT)",
-        "IEEE Conference on Computer Communications (Infocom)",
-        "IEEE International Conference on Communications (ICC)",
-        "IEEE Global Communications Conference (Globecom)",
-        "IEEE Wireless Communications and Networking Conference (WCNC)",
-        "IEEE Vehicular Technology Conference (VTC)",
-        "IEEE International Wireless Communications and Mobile Computing Conference (IWCMC)"
-      ],
-      chair: [ "Session Chair, IEEE ITW 2024 (AoI Session)", "Session Chair, IEEE Globecom 2024 (Distributed Learning Session)" ],
-      volunteer: [ "IEEE VTC-Spring 2024 Singapore", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
-    },
-    teaching: [
-      { role: "Teaching Assistant", course: "Communication Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2020", desc: "Undergraduate Course" },
-      { role: "Teaching Assistant", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2022", desc: "Graduate Course" }
-    ]
-  },
-  zh: {
-    meta_title: "黎爱民 | 博士后研究员 | 土耳其中东技术大学 (METU)",
-    meta_desc: "黎爱民的个人学术主页。",
-    name: "黎爱民",
-    role: "博士后研究员",
-    org: "土耳其中东技术大学 (METU)",
-    org_full: "土耳其中东技术大学 (METU)",
-    bio: "我是一名目前在土耳其中东技术大学从事博士后研究的中国学者，研究方向聚焦于**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**等前沿领域。目前，我正与 IEEE Fellow [Elif Uysal 教授](https://users.metu.edu.tr/ueelif/) 紧密合作，参与欧盟 ERC Advanced Grant 项目 **GO-SPACE**。我本科与博士期间就读与哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。我亦曾赴新加坡科技研究局（A*STAR I²R）开展访问研究，期间在新加坡工程院院士、IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导下深入探索6G通信前沿。",
-    location: "土耳其安卡拉",
-    social: {
-      scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=zh-CN",
-      github: "https://github.com/aiminli-hi",
-      linkedin: "https://linkedin.com",
-      email: "mailto:hitliaimin@163.com"
-    },
-    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", awards: "荣誉奖项", publications: "发表论文", service: "学术服务", teaching: "教学经历", contact: "联系方式" },
-    news: [
-      { date: "2026-06", label: "TMC", content: "论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
-      { date: "2026-05", label: "IoTJ", content: "论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
-      { date: "2026-03", label: "VTC", content: "论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT", content: "论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
-      { date: "2026-02", label: "TIT", content: "论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。", link: "/papers/paper26TIT.pdf" },
-      { date: "2025-11", label: "荣誉", content: "获得哈尔滨工业大学最佳学位论文提名奖。", link: "#awards" },
-      { date: "2025-11", label: "Allerton", content: "论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。欢迎交流与合作。", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc", content: "论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 ACM Mobihoc 2025 录用（<strong>全球2025录用39篇</strong>）。欢迎交流与合作。", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
-      { date: "2024-12", label: "4MT", content: "获得IEEE Globecom四分钟博士学位论文竞赛三等奖。", link: "#awards" },
-      { date: "2024-12", label: "国奖", content: "获得博士研究生国家奖学金。", link: "#awards" }      
-    ],
-    timeline: [
-      { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
-        desc: "参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我很开心加入这个大家庭，开始这一段旅程。", 
-        lineage: [
-          { name: "Claude Shannon", title: "信息论之父", highlight: false },
-          { name: "Robert Gallager", title: "MIT 荣休教授", highlight: false },
-          { name: "Elif Uysal", title: "METU 教授 (合作导师)", highlight: true },
-        ],
-        type: "work" },
-      { year: "2023.10 - 2024.10", location: "新加坡", role: "访问研究员", org: "新加坡资讯通信研究院 (I2R), A*STAR", 
-        desc: "研究方向：目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。\n在新加坡我学到了很多，留下了美好珍贵的回忆。非常感激这段经历。", 
-        type: "work" },
-      { year: "2020.09 - 2025", location: "中国，深圳", role: "工学博士 (信息与通信工程)", org: "哈尔滨工业大学（深圳）", 
-        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。\n在母校工大的这五年，是历练、成熟与成长的宝贵时光。", 
-        type: "edu" },
-      { year: "2017", location: "美国，加州", role: "访问学生", org: "加州大学河滨分校 (UCR)", desc: "国际交换生项目。", type: "edu" },
-      { year: "2016.09 - 2020.06", location: "中国，深圳", role: "工学学士 (通信工程)", org: "哈尔滨工业大学（深圳）", desc: "获清华大学研究生推荐免试录用资格。获哈尔滨工业大学校优秀毕业论文、黑龙江省三好学生。", type: "edu" }
-    ],
-    awards: [
-      { year: "2025", title: "哈工大最佳博士学位论文提名", desc: "电子系唯一入选者", level: "University", featured: true },
-      { year: "2020 and 2024", title: "博士研究生国家奖学金（2次）", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
-      { year: "2025", title: "黑龙江省普通高校优秀博士毕业生", desc: "黑龙江省前0.4%", level: "Provincial",  featured: true },
-      { year: "2020", title: "哈工大特等博士研究生奖学金", desc: "校长特别颁发（全校博士生仅 8 人）", level: "University", featured: true },
-      { year: "2020", title: "哈工大校优秀本科毕业论文", desc: "电子系仅 2 名", level: "University",  featured: true },
-      { year: "2025", title: "哈工大优秀博士毕业生", desc: "哈尔滨工业大学博士生前10%", level: "University" },
-      { year: "2024", title: "IEEE Globecom 4MT 论文竞赛 (三等奖)", desc: "全球决赛第 5 名。由 IEEE ComSoc 主席颁奖", level: "International", featured: true },
-      { year: "2024", title: "IEEE Globecom 旅行奖", desc: "全球共 15 名博士生。", level: "International" },
-      { year: "2024", title: "国家自然科学基金青年学生项目候选人", desc: "电子系唯一入选，首批全国少于 600 名博士生进入候选", level: "National" },
-      { year: "2023", title: "哈工大“点子”基金项目负责人 (PI)", desc: "获得独立科研经费资助", level: "University", featured: true },
-      { year: "2017 and 2019", title: "哈工大年度优秀学生（2次）", desc: "校前10%", level: "University" },
-      { year: "2019", title: "清华大学电子系推免夏令营优秀营员", desc: "获清华大学研究生推荐免试录用资格。", level: "University", featured: true },
-      { year: "2018", title: "黑龙江省三好学生", desc: "黑龙江省前1%", level: "University", featured: true },
-      { year: "2019", title: "共进奖学金", desc: "电子系仅3名", level: "University" },
-      { year: "2018", title: "黑龙江省三好学生", desc: "省前1%", level: "Provincial" },   
-      { year: "2016 and 2017", title: "全国大学生数学竞赛一等奖（2次）", desc: "国家级数学竞赛。", level: "National" },
-    ],
-    service: {
-      reviewer:[ 
-        "IEEE Transactions on Information Theory (TIT)", 
-        "IEEE Journal on Selected Areas in Communications (JSAC)", 
-        "IEEE Transactions on Mobile Computing (TMC)", 
-        "IEEE Transactions on Communications (TCOM)", 
-        "IEEE Transactions on Wireless Communications (TWC)",
-        "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
-        "IEEE Transactions on Vehicular Technology (TVT)",
-        "IEEE Transactions on Cognitive Communications and Networking (TCCN)",
-        "IEEE Communications Letters (CL)",
-        "IEEE Wireless Communications Letters (WCL)",
-        "Elsevier Computer Networks",
-        "IEEE International Symposium on Information Theory (ISIT)",
-        "IEEE Conference on Computer Communications (Infocom)",
-        "IEEE International Conference on Communications (ICC)",
-        "IEEE Global Communications Conference (Globecom)",
-        "IEEE Wireless Communications and Networking Conference (WCNC)",
-        "IEEE Vehicular Technology Conference (VTC)",
-        "IEEE International Wireless Communications and Mobile Computing Conference (IWCMC)"
-      ],
-      chair: [ "分会主席, IEEE ITW 2024信息年龄分会", "分会主席, IEEE Globecom 2024分布式学习分会" ],
-      volunteer: [ "IEEE VTC-Spring 2024", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
-    },
-    teaching: [
-      { role: "助教", course: "通信原理 (本科)", org: "哈尔滨工业大学（深圳）", period: "2020 秋", desc: "合作教师：吴绍华教授" },
-      { role: "助教", course: "信息论基础 (研究生)", org: "哈尔滨工业大学（深圳）", period: "2022 秋", desc: "合作教师：吴绍华教授" }
-    ]
-  }
-};
-
-// ==========================================
 // --- 逻辑层 & 组件 (Logic & Components) ---
 // ==========================================
 
-const useSEO = (title, description) => {
+const useSEO = (title, description, lang = 'en') => {
   useEffect(() => {
     document.title = title;
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     let metaDesc = document.querySelector("meta[name='description']");
     if (!metaDesc) {
       metaDesc = document.createElement("meta");
@@ -769,7 +57,7 @@ const useSEO = (title, description) => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.setAttribute("content", description);
-  }, [title, description]);
+  }, [title, description, lang]);
 };
 
 const generateBibtex = (pub) => {
@@ -783,6 +71,252 @@ const generateBibtex = (pub) => {
   journal={${pub.venue}},
   year={${year}}
 }`;
+};
+
+const VISITOR_STATS_URL = 'https://info.flagcounter.com/Ad32';
+const VISITOR_TRACKER_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260610g';
+const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
+  /\bTMC\b|transactions on mobile computing/i,
+  /\bIoTJ\b|\bJIOT\b|internet of things journal/i,
+  /\bISIT\b|international symposium on information theory/i,
+  /\bVTC\b|vehicular technology conference/i,
+  /\bTIT\b|transactions on information theory/i,
+];
+const DEFAULT_VISITOR_SNAPSHOT = {
+  pageviews: 39,
+  countries: 4,
+  ranking: [
+    { code: 'US', name: 'United States', matchName: 'United States', count: 4, delay: 0, x: 23.5, y: 42.5 },
+    { code: 'TR', name: 'Türkiye', matchName: 'Turkey', count: 2, delay: 0.4, x: 55.6, y: 41.2 },
+    { code: 'SG', name: 'Singapore', matchName: 'Singapore', count: 1, delay: 0.8, x: 72.8, y: 64.5 },
+    { code: 'CN', name: 'China', matchName: 'China', count: 1, delay: 1.2, x: 73.2, y: 44.8 },
+  ],
+};
+
+const UI_COPY = {
+  en: {
+    publicationDesc: 'Selected research works and academic contributions.',
+    searchPlaceholder: 'Search titles, authors, or venues...',
+    newestFirst: 'Newest First',
+    oldestFirst: 'Oldest First',
+    toggleSort: 'Toggle date sort',
+    allPapers: 'All Papers',
+    moreVenues: 'More Venues',
+    selectedPublications: 'Selected Publications',
+    viewMorePublications: 'View More Publications',
+    remaining: 'remaining',
+    noPapers: 'No papers found matching your criteria.',
+    selected: 'Selected',
+    openArticle: 'Open article',
+    expandAbstract: 'Expand abstract',
+    collapseAbstract: 'Collapse abstract',
+    abstract: 'Abstract',
+    noAbstract: 'No abstract available.',
+    moreNews: 'More News',
+    fewerNews: 'Fewer News',
+    awardsDesc: 'Recognition for research excellence and academic achievements.',
+    selectedHonors: 'Selected Honors',
+    otherAwards: 'Other Awards & Recognition',
+    viewMoreAwards: 'View More Awards',
+    experience: 'Experience',
+    education: 'Education',
+    contactDesc: 'I welcome discussions on research collaborations, student mentoring, and opportunities related to information theory and communications.',
+    locationLabel: 'Location',
+    emailLabel: 'Email',
+    globalVisitors: 'Global Visitors',
+    globalVisitorsDesc: 'Approximate visitor locations by country.',
+    viewStats: 'View Stats',
+    visitorMap: 'Visitor Map',
+    topVisitorCountries: 'Top Visitor Countries',
+    activeVisitorRegions: 'Active visitor regions',
+    countrySignal: 'aggregate country-level signal',
+    pageviews: 'pageviews',
+    countries: 'countries',
+    visitorNote: 'Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.',
+  },
+  zh: {
+    publicationDesc: '精选论文与学术成果。',
+    searchPlaceholder: '搜索题目、作者或期刊会议...',
+    newestFirst: '最新优先',
+    oldestFirst: '最早优先',
+    toggleSort: '切换时间排序',
+    allPapers: '全部论文',
+    moreVenues: '更多期刊会议',
+    selectedPublications: '精选论文',
+    viewMorePublications: '查看更多论文',
+    remaining: '篇未显示',
+    noPapers: '没有找到符合条件的论文。',
+    selected: '精选',
+    openArticle: '打开论文链接',
+    expandAbstract: '展开摘要',
+    collapseAbstract: '收起摘要',
+    abstract: '摘要',
+    noAbstract: '暂无摘要。',
+    moreNews: '更多动态',
+    fewerNews: '收起动态',
+    awardsDesc: '科研表现与学术成长中的代表性荣誉。',
+    selectedHonors: '代表性荣誉',
+    otherAwards: '其他奖项与认可',
+    viewMoreAwards: '查看更多奖项',
+    experience: '经历',
+    education: '教育',
+    contactDesc: '欢迎就科研合作、学生指导，以及信息理论与通信相关机会进行交流。',
+    locationLabel: '所在地',
+    emailLabel: '邮箱',
+    globalVisitors: '全球访客',
+    globalVisitorsDesc: '按国家统计的近似访问来源。',
+    viewStats: '查看统计',
+    visitorMap: '访客地图',
+    topVisitorCountries: '访问国家排名',
+    activeVisitorRegions: '已点亮访问区域',
+    countrySignal: '国家级聚合访问统计',
+    pageviews: '次访问',
+    countries: '个国家',
+    visitorNote: '访客国家由 FlagCounter 按聚合统计估算；此处不展示个人身份信息。',
+  },
+};
+
+const getRuntimeSyncData = () => (
+  typeof window !== 'undefined' && window.HOMEPAGE_SYNC_DATA
+    ? window.HOMEPAGE_SYNC_DATA
+    : {}
+);
+
+const getRuntimeMapData = () => (
+  typeof window !== 'undefined' && window.HOMEPAGE_VISITOR_WORLD_MAP
+    ? window.HOMEPAGE_VISITOR_WORLD_MAP
+    : null
+);
+
+const stripHtml = (value = '') => String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+const normalizeTitle = (value = '') => stripHtml(value)
+  .toLowerCase()
+  .replace(/[^\p{Letter}\p{Number}]+/gu, ' ')
+  .trim();
+
+const slugify = (value = '') => normalizeTitle(value).replace(/\s+/g, '-').slice(0, 80) || 'item';
+
+const normalizeNewsDate = (date = '') => {
+  const match = String(date).match(/\d{4}-\d{2}/);
+  return match ? match[0] : String(new Date().getUTCFullYear());
+};
+
+const isAllowedSyncedHomepageItem = (item = {}) => {
+  const haystack = [
+    item.label,
+    item.newsLabel,
+    item.shortVenue,
+    item.venue_short,
+    item.venue,
+    item.title,
+  ].filter(Boolean).join(' ');
+  if (/arxiv/i.test(haystack)) return false;
+  return HOMEPAGE_ALLOWED_SYNC_PATTERNS.some(pattern => pattern.test(haystack));
+};
+
+const toSyncedPublication = (item) => {
+  const venueShort = item.venue_short || item.shortVenue || item.newsLabel || item.label || 'Scholar';
+  return {
+    id: item.id || item.key || `sync-${slugify(item.title)}`,
+    year: Number(item.year) || new Date().getUTCFullYear(),
+    title: item.title,
+    authors: item.authors || 'Aimin Li',
+    venue: item.venue || venueShort,
+    venue_short: venueShort,
+    type: item.type || (/conference|symposium|workshop|vtc|isit/i.test(item.venue || venueShort) ? 'Conference' : 'Journal'),
+    tag: item.tag && item.tag !== 'Google Scholar' ? item.tag : 'Scholar Sync',
+    featured: Boolean(item.featured),
+    keywords: Array.isArray(item.keywords) && item.keywords.length ? item.keywords : ['Google Scholar'],
+    summary: item.summary || `Latest Google Scholar record: ${item.venue || venueShort}.`,
+    url: item.url || item.href,
+    links: item.links,
+  };
+};
+
+const buildPublications = (basePublications, syncData) => {
+  const seen = new Set(basePublications.map(pub => normalizeTitle(pub.title)));
+  const additions = (syncData.extraPublications || [])
+    .filter(isAllowedSyncedHomepageItem)
+    .map(toSyncedPublication)
+    .filter(pub => {
+      const key = normalizeTitle(pub.title);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  return [...basePublications, ...additions];
+};
+
+const buildNewsItems = (baseNews, syncData) => {
+  const seen = new Set();
+  return [
+    ...baseNews.map((item, index) => ({ ...item, date: normalizeNewsDate(item.date), order: index })),
+    ...(syncData.extraNews || [])
+      .filter(isAllowedSyncedHomepageItem)
+      .map((item, index) => ({
+        date: normalizeNewsDate(item.date),
+        label: item.label || item.newsLabel || 'Scholar',
+        title: item.title,
+        content: item.content || item.html || item.title,
+        link: item.link || item.href,
+        order: baseNews.length + index,
+      })),
+  ]
+    .filter(item => {
+      const key = normalizeTitle(item.title || item.content);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => b.date.localeCompare(a.date) || a.order - b.order);
+};
+
+const getVisitorSnapshot = (syncData) => {
+  const snapshot = syncData.visitorSnapshot || DEFAULT_VISITOR_SNAPSHOT;
+  return {
+    ...DEFAULT_VISITOR_SNAPSHOT,
+    ...snapshot,
+    ranking: Array.isArray(snapshot.ranking) && snapshot.ranking.length
+      ? snapshot.ranking
+      : DEFAULT_VISITOR_SNAPSHOT.ranking,
+  };
+};
+
+const getActiveVisitorCountries = (snapshot, mapData) => {
+  const snapshotByCode = new Map(snapshot.ranking.map(country => [country.code, country]));
+  if (mapData?.activeCountries?.length) {
+    return mapData.activeCountries.map(country => ({
+      ...country,
+      ...(snapshotByCode.get(country.code) || {}),
+      x: country.x,
+      y: country.y,
+      d: country.d,
+    }));
+  }
+  const viewBox = mapData?.viewBox || { width: 720, height: 330 };
+  return snapshot.ranking.map(country => ({
+    ...country,
+    x: country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2,
+    y: country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2,
+    d: '',
+  }));
+};
+
+const buildVisitorRoutes = (activeCountries) => {
+  const source = activeCountries.find(country => country.code === 'TR') || activeCountries[0];
+  if (!source) return [];
+  return activeCountries
+    .filter(country => country.code !== source.code)
+    .map(country => {
+      const midX = (source.x + country.x) / 2;
+      const lift = Math.max(22, Math.abs(source.x - country.x) * 0.11);
+      const midY = Math.min(source.y, country.y) - lift;
+      return {
+        key: `${source.code}-${country.code}`,
+        d: `M${source.x},${source.y} Q${midX.toFixed(1)},${midY.toFixed(1)} ${country.x},${country.y}`,
+      };
+    });
 };
 
 const HighlightText = ({ text, darkMode }) => {
@@ -845,12 +379,13 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   const colors = {
     email: darkMode ? "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426]" : "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426] shadow-sm",
     scholar: darkMode ? "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6]" : "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6] shadow-sm",
+    orcid: darkMode ? "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f]" : "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f] shadow-sm",
     github: darkMode ? "bg-[#181717] text-white border-[#30363d] hover:bg-[#30363d]" : "bg-[#24292e] text-white border-[#24292e] hover:bg-[#000] shadow-sm",
     linkedin: darkMode ? "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097]" : "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097] shadow-sm",
   };
   const activeColor = colors[colorType] || (darkMode ? "bg-slate-800 text-white border-slate-700" : "bg-white text-slate-700 border-gray-200");
   return (
-    <a href={href} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label}>
+    <a href={href} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label} aria-label={label}>
       {React.createElement(icon, { size: 22 })}
     </a>
   );
@@ -953,6 +488,113 @@ const AcademicLineage = ({ lineage, darkMode }) => {
   );
 };
 
+const GlobalVisitors = ({ syncData, darkMode, ui }) => {
+  const snapshot = getVisitorSnapshot(syncData);
+  const mapData = getRuntimeMapData();
+  const viewBox = mapData?.viewBox || { width: 720, height: 330 };
+  const activeCountries = getActiveVisitorCountries(snapshot, mapData);
+  const routes = buildVisitorRoutes(activeCountries);
+
+  return (
+    <section className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-slate-900/60 border-slate-700/70' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
+      <div className={`px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b ${darkMode ? 'border-slate-700/70' : 'border-slate-100'}`}>
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-2xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-blue-50 text-blue-600'}`} aria-hidden="true">
+            <MapIcon size={22} />
+          </div>
+          <div>
+            <h2 id="global-visitors-title" className={`text-2xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-950'}`}>{ui.globalVisitors}</h2>
+            <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.globalVisitorsDesc}</p>
+          </div>
+        </div>
+        <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+          {ui.viewStats} <ExternalLink size={13} className="ml-1.5" />
+        </a>
+      </div>
+
+      <div className="p-6">
+        <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.95fr)] gap-6">
+          <div>
+            <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.visitorMap}</h3>
+            <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`visitor-map-frame ${darkMode ? 'visitor-map-frame--dark' : ''}`} aria-label="Open global visitor statistics">
+              <div className="visitor-world-map">
+                <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} role="img" aria-label="World map visitor snapshot" focusable="false">
+                  <defs>
+                    <pattern id="visitor-map-grid" width="42" height="42" patternUnits="userSpaceOnUse">
+                      <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeWidth="1" />
+                    </pattern>
+                  </defs>
+                  <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill="url(#visitor-map-grid)" />
+                  <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
+                  <g>
+                    {(mapData?.countries || []).map((country, index) => (
+                      <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d}>
+                        <title>{country.name}</title>
+                      </path>
+                    ))}
+                  </g>
+                  {mapData?.borders && <path className="visitor-map-borders" d={mapData.borders} />}
+                  <g>
+                    {activeCountries.filter(country => country.d).map(country => (
+                      <path key={country.code} className="visitor-map-country-active" d={country.d} style={{ animationDelay: `${country.delay || 0}s` }}>
+                        <title>{country.name}: {country.count} visits</title>
+                      </path>
+                    ))}
+                  </g>
+                  <g>
+                    {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
+                  </g>
+                </svg>
+
+                {activeCountries.map(country => {
+                  const left = `${(country.x / viewBox.width * 100).toFixed(2)}%`;
+                  const top = `${(country.y / viewBox.height * 100).toFixed(2)}%`;
+                  return (
+                    <React.Fragment key={country.code}>
+                      <span className="visitor-map-region" style={{ left, top, animationDelay: `${country.delay || 0}s` }} aria-hidden="true" />
+                      <span className="visitor-map-marker" style={{ left, top, animationDelay: `${country.delay || 0}s` }}>
+                        <strong>{country.code}</strong><em>{country.count}</em>
+                      </span>
+                    </React.Fragment>
+                  );
+                })}
+
+                <div className="visitor-map-label">
+                  {ui.activeVisitorRegions}
+                  <span>{ui.countrySignal}</span>
+                </div>
+                <div className="visitor-map-summary">
+                  <span>{snapshot.pageviews} {ui.pageviews}</span>
+                  <span>{snapshot.countries} {ui.countries}</span>
+                </div>
+                <img className="visitor-map-tracker" src={VISITOR_TRACKER_URL} alt="" width="1" height="1" loading="eager" decoding="async" referrerPolicy="no-referrer" aria-hidden="true" />
+              </div>
+            </a>
+          </div>
+
+          <div>
+            <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.topVisitorCountries}</h3>
+            <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`block rounded-2xl border p-4 h-[19rem] transition-colors ${darkMode ? 'bg-slate-950/50 border-slate-700 hover:border-cyan-400/40' : 'bg-slate-50/80 border-slate-100 hover:border-blue-200'}`} aria-label="Open visitor country ranking">
+              <div className="space-y-2">
+                {snapshot.ranking.map(country => (
+                  <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-slate-900/80 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
+                    <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{country.code}</span>
+                    <span className="min-w-0 truncate font-semibold">{country.name}</span>
+                    <span className={`text-right font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{country.count}</span>
+                  </div>
+                ))}
+              </div>
+            </a>
+          </div>
+        </div>
+        <p className={`mt-5 text-center text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+          {ui.visitorNote}
+        </p>
+      </div>
+    </section>
+  );
+};
+
 // ==========================================
 // --- Main App Component ---
 // ==========================================
@@ -977,34 +619,53 @@ export default function AcademicProfile() {
   const [expandedPaperId, setExpandedPaperId] = useState(null);
   const [visiblePubs, setVisiblePubs] = useState(5);
   const [visibleAwards, setVisibleAwards] = useState(6); // Controls visibility of "Other Awards"
+  const [showAllNews, setShowAllNews] = useState(false);
 
-  const content = DATA[lang];
-  useSEO(content.meta_title, content.meta_desc);
+  const syncData = useMemo(() => getRuntimeSyncData(), []);
+  const publications = useMemo(() => buildPublications(BASE_PUBLICATIONS, syncData), [syncData]);
+  const content = PROFILE_DATA[lang];
+  const ui = UI_COPY[lang];
+  useSEO(content.meta_title, content.meta_desc, lang);
+  const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
+  const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
 
   const venueStats = useMemo(() => {
     const counts = {};
-    PUBLICATIONS.forEach(pub => {
+    publications.forEach(pub => {
       const v = pub.venue_short || 'Other';
       counts[v] = (counts[v] || 0) + 1;
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([venue, count]) => ({ venue, count }));
-  }, []);
+  }, [publications]);
+
+  const pinnedVenueNames = new Set(['IEEE TMC', 'IEEE IoTJ', 'IEEE ISIT', 'IEEE VTC-Spring']);
+  const primaryVenueNames = new Set([
+    ...venueStats.slice(0, 6).map(item => item.venue),
+    ...venueStats.filter(item => pinnedVenueNames.has(item.venue)).map(item => item.venue),
+  ]);
+  const primaryVenueStats = venueStats.filter(item => primaryVenueNames.has(item.venue));
+  const secondaryVenueStats = venueStats.filter(item => !primaryVenueNames.has(item.venue));
 
   const allKeywords = useMemo(() => {
     const keys = new Set();
-    PUBLICATIONS.forEach(p => p.keywords?.forEach(k => keys.add(k)));
+    publications.forEach(p => p.keywords?.forEach(k => keys.add(k)));
     return ["All", ...Array.from(keys).sort()];
-  }, []);
+  }, [publications]);
 
   const { featuredPubs, otherPubs } = useMemo(() => {
-    let filtered = [...PUBLICATIONS];
+    let filtered = [...publications];
     filtered.sort((a, b) => {
       if (sortOrder === "newest") return b.year - a.year;
       return a.year - b.year;
     });
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(p => p.title.toLowerCase().includes(q) || p.venue.toLowerCase().includes(q));
+      filtered = filtered.filter(p => [
+        p.title,
+        p.authors,
+        p.venue,
+        p.venue_short,
+      ].filter(Boolean).some(value => value.toLowerCase().includes(q)));
     }
     if (selectedKeyword !== "All") {
       filtered = filtered.filter(p => p.keywords?.includes(selectedKeyword));
@@ -1015,7 +676,7 @@ export default function AcademicProfile() {
     const featured = filtered.filter(p => p.featured);
     const others = filtered.filter(p => !p.featured);
     return { featuredPubs: featured, otherPubs: others };
-  }, [searchQuery, selectedKeyword, selectedVenue, sortOrder]);
+  }, [publications, searchQuery, selectedKeyword, selectedVenue, sortOrder]);
 
   const { featuredAwards, otherAwards } = useMemo(() => {
     return {
@@ -1043,32 +704,42 @@ export default function AcademicProfile() {
   }, [content.nav]);
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const resetPublicationView = () => {
+    setVisiblePubs(5);
+    setExpandedPaperId(null);
+  };
+  const updateSearchQuery = (value) => {
+    setSearchQuery(value);
+    resetPublicationView();
+  };
+  const updateSelectedVenue = (value) => {
+    setSelectedVenue(value);
+    resetPublicationView();
+  };
+  const updateSelectedKeyword = (value) => {
+    setSelectedKeyword(value);
+    resetPublicationView();
+  };
+  const toggleSortOrder = () => {
+    setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest');
+    resetPublicationView();
+  };
 
   const PublicationCard = ({ pub, isFeatured }) => {
     const isExpanded = expandedPaperId === pub.id;
-    
-    const handleCardClick = () => {
-      // If the user clicks the card, open the article URL
-      if (pub.url) {
-        window.open(pub.url, '_blank', 'noopener,noreferrer');
-      }
-    };
+    const primaryHref = pub.url || pub.links?.pdf || pub.links?.arxiv || null;
 
-    const toggleExpand = (e) => {
-      // Stop propagation so it doesn't trigger the URL open
-      e.stopPropagation();
+    const toggleExpand = () => {
       setExpandedPaperId(isExpanded ? null : pub.id);
     };
 
     return (
-      <div 
-        className={`group relative rounded-2xl border transition-all duration-300 overflow-hidden cursor-pointer
+      <article
+        className={`group relative rounded-2xl border transition-all duration-300 overflow-hidden
           ${isFeatured 
             ? (darkMode ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-amber-500/30 shadow-lg shadow-amber-900/10' : 'bg-gradient-to-br from-white to-amber-50/30 border-amber-200 shadow-lg shadow-amber-100') 
             : (darkMode ? 'bg-slate-800/40 border-slate-700/50 hover:border-purple-500/30' : 'bg-white border-gray-100 hover:border-purple-200 hover:shadow-md')
           }`}
-        onClick={handleCardClick}
-        title="Click to view article"
       >
         {/* Hover Indicator Icon */}
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
@@ -1077,29 +748,36 @@ export default function AcademicProfile() {
 
         {isFeatured && (
           <div className="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-xl z-10 flex items-center gap-1 shadow-sm">
-            <Star size={10} fill="currentColor" /> Selected
+            <Star size={10} fill="currentColor" /> {ui.selected}
           </div>
         )}
         <div className="p-5 flex flex-col md:flex-row gap-5">
           {pub.image && (
             <div className="shrink-0 w-full md:w-48 h-32 rounded-xl overflow-hidden border dark:border-slate-700 shadow-sm hidden md:block relative">
-              <img src={pub.image} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={pub.image} alt={`${pub.title} visual summary`} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
           )}
           <div className="flex-1 min-w-0">
              <div className="flex justify-between items-start gap-4">
                 <h3 className={`text-lg font-bold leading-snug mb-2 group-hover:underline decoration-2 underline-offset-2 ${darkMode ? 'text-slate-100 group-hover:text-purple-400' : 'text-gray-900 group-hover:text-purple-600'} transition-colors`}>
-                  {pub.title}
+                  {primaryHref ? (
+                    <a href={primaryHref} target="_blank" rel="noreferrer" title={ui.openArticle}>
+                      {pub.title}
+                    </a>
+                  ) : pub.title}
                 </h3>
                 
                 {/* Expansion Arrow - Clickable Area */}
-                <div 
+                <button
+                  type="button"
                   className={`shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-300 z-20 ${isExpanded ? 'rotate-180' : ''}`}
                   onClick={toggleExpand}
-                  title={isExpanded ? "Collapse Abstract" : "Expand Abstract"}
+                  title={isExpanded ? ui.collapseAbstract : ui.expandAbstract}
+                  aria-expanded={isExpanded}
+                  aria-label={isExpanded ? ui.collapseAbstract : ui.expandAbstract}
                 >
                   <ChevronDown size={20} className="opacity-50 hover:opacity-100" />
-                </div>
+                </button>
              </div>
              <div className={`text-sm mb-3 leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                 {pub.authors.split(',').map((author, i, arr) => (
@@ -1135,7 +813,7 @@ export default function AcademicProfile() {
                  ))}
                </div>
              )}
-             <div className="flex gap-3 mt-auto pt-2" onClick={e => e.stopPropagation()}>
+             <div className="flex gap-3 mt-auto pt-2">
                {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
                {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
                {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
@@ -1143,13 +821,13 @@ export default function AcademicProfile() {
              </div>
           </div>
         </div>
-        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 border-t dark:border-slate-700' : 'max-h-0 opacity-0'}`} onClick={e => e.stopPropagation()}>
+        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 border-t dark:border-slate-700' : 'max-h-0 opacity-0'}`}>
           <div className={`p-5 text-sm leading-relaxed ${darkMode ? 'bg-slate-900/50 text-slate-300' : 'bg-gray-50 text-slate-700'}`}>
-            <h4 className="font-bold mb-2 text-xs uppercase tracking-wider opacity-70">Abstract</h4>
-            <p>{pub.abstract || "No abstract available."}</p>
+            <h4 className="font-bold mb-2 text-xs uppercase tracking-wider opacity-70">{ui.abstract}</h4>
+            <p>{pub.abstract || ui.noAbstract}</p>
           </div>
         </div>
-      </div>
+      </article>
     );
   };
 
@@ -1163,14 +841,14 @@ export default function AcademicProfile() {
             <Sparkles size={18} className="text-purple-500" />{content.name}
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-1 mr-2">
+            <div className="hidden lg:flex items-center gap-1 mr-2">
               {Object.entries(content.nav).map(([key, label]) => (
-                <a key={key} href={`#${key}`} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}>{label}</a>
+                <a key={key} href={`#${key}`} className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}>{label}</a>
               ))}
             </div>
             <button 
               onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')} 
-              className={`hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full transition-all font-bold text-sm border shadow-sm hover:shadow ${darkMode ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-slate-700 border-gray-200 hover:bg-gray-200'}`}
+              className={`hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-full transition-all font-bold text-sm border shadow-sm hover:shadow ${darkMode ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-slate-700 border-gray-200 hover:bg-gray-200'}`}
               title={lang === 'en' ? "切换为中文" : "Switch to English"}
             >
               <Languages size={16} className={darkMode ? 'text-purple-400' : 'text-purple-600'} />
@@ -1181,7 +859,7 @@ export default function AcademicProfile() {
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className={`md:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-gray-100 text-slate-600'}`}
+              className={`lg:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-gray-100 text-slate-600'}`}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -1190,7 +868,7 @@ export default function AcademicProfile() {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className={`md:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'}`}>
+          <div className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'}`}>
             {Object.entries(content.nav).map(([key, label]) => (
               <a 
                 key={key} 
@@ -1226,6 +904,7 @@ export default function AcademicProfile() {
             <div className="w-full flex flex-wrap justify-center md:justify-start gap-3">
                <SocialButton icon={Mail} href={content.social.email} label="Email" colorType="email" darkMode={darkMode} />
                <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
+               <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
                <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
                <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
             </div>
@@ -1243,23 +922,30 @@ export default function AcademicProfile() {
                    {content.nav.news}
                  </h3>
                  <div className={`divide-y ${darkMode ? 'divide-slate-700/60' : 'divide-gray-100'}`}>
-                   {content.news.map((item, idx) => (
-                     <div key={idx} className="grid grid-cols-[4.35rem_3.9rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1 text-[12px] leading-snug items-start">
+                   {visibleNewsItems.map((item, idx) => (
+                     <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[4.35rem_4.2rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[11px] leading-snug items-start">
                         <span className="font-mono text-[10px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
                         <div className="contents">
                              <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
-                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={item.content.replace(/<[^>]+>/g, '')} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
+                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
                                   <span className="block min-w-0 whitespace-normal break-words" dangerouslySetInnerHTML={{__html: item.content}} />
                                   {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
                              ) : (
-                               <span className="block min-w-0 whitespace-normal break-words" title={item.content.replace(/<[^>]+>/g, '')} dangerouslySetInnerHTML={{__html: item.content}} />
+                               <span className="block min-w-0 whitespace-normal break-words" title={stripHtml(item.content)} dangerouslySetInnerHTML={{__html: item.content}} />
                              )}
                         </div>
                      </div>
                    ))}
                  </div>
+                 {newsItems.length > 6 && (
+                   <div className="pt-2 flex justify-end">
+                     <button onClick={() => setShowAllNews(value => !value)} className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-purple-300 hover:bg-purple-500/10' : 'text-purple-700 hover:bg-purple-50'}`}>
+                       {showAllNews ? ui.fewerNews : ui.moreNews} <ChevronDown size={12} className={showAllNews ? 'rotate-180' : ''} />
+                     </button>
+                   </div>
+                 )}
               </div>
           </div>
         </section>
@@ -1311,7 +997,7 @@ export default function AcademicProfile() {
                                         ? (darkMode ? 'bg-purple-500/10 text-purple-300' : 'bg-purple-50 text-purple-700') 
                                         : (darkMode ? 'bg-emerald-500/10 text-emerald-300' : 'bg-emerald-50 text-emerald-700')}
                                     `}>
-                                      {isWork ? 'Experience' : 'Education'}
+                                      {isWork ? ui.experience : ui.education}
                                     </span>
                                  </div>
                                  
@@ -1365,14 +1051,14 @@ export default function AcademicProfile() {
               <div className={`p-3 rounded-xl ${darkMode ? 'bg-amber-900/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}><Trophy size={24} /></div>
               <div>
                 <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.awards}</h2>
-                <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Recognition for research excellence and academic achievements.</p>
+                <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.awardsDesc}</p>
               </div>
            </div>
 
            {/* Featured Awards Grid */}
            <div className="mb-12">
               <h3 className={`text-xs font-bold uppercase tracking-widest mb-6 flex items-center gap-2 ${darkMode ? 'text-amber-500' : 'text-amber-600'}`}>
-                 <Star size={14} /> Selected Honors
+                 <Star size={14} /> {ui.selectedHonors}
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
                  {featuredAwards.map((award, idx) => (
@@ -1408,7 +1094,7 @@ export default function AcademicProfile() {
            {/* Other Awards Compact List */}
            <div>
               <h3 className={`text-xs font-bold uppercase tracking-widest mb-4 opacity-60 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-                 Other Awards & Recognition
+                 {ui.otherAwards}
               </h3>
               <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-3`}>
                  {otherAwards.slice(0, visibleAwards).map((award, idx) => (
@@ -1441,7 +1127,7 @@ export default function AcademicProfile() {
                     onClick={() => setVisibleAwards(prev => prev + 6)}
                     className={`group flex items-center gap-2 px-6 py-2 rounded-full font-bold text-xs transition-all ${darkMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
-                    View More Awards <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                    {ui.viewMoreAwards} <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
                   </button>
                 </div>
               )}
@@ -1456,30 +1142,43 @@ export default function AcademicProfile() {
                   <div className={`p-3 rounded-xl ${darkMode ? 'bg-emerald-900/20 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}`}><BookOpen size={24} /></div>
                   <div>
                     <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.publications}</h2>
-                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Selected research works and academic contributions.</p>
+	                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.publicationDesc}</p>
                   </div>
                 </div>
                 <div className="relative w-full md:w-64">
                   <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} />
-                  <input type="text" placeholder="Search titles or venues..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className={`pl-9 pr-4 py-2 rounded-lg text-sm border focus:outline-none focus:ring-2 focus:ring-emerald-500/50 w-full transition-all ${darkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:bg-slate-700' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
+	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`pl-9 pr-4 py-2 rounded-lg text-sm border focus:outline-none focus:ring-2 focus:ring-emerald-500/50 w-full transition-all ${darkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:bg-slate-700' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2 items-center">
-                  <button onClick={() => setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`} title="Toggle Date Sort">
-                    <ArrowUpDown size={12} /> {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
-                  </button>
-                  <div className={`w-px h-4 mx-2 ${darkMode ? 'bg-slate-700' : 'bg-gray-200'}`}></div>
-                  <button onClick={() => setSelectedVenue("All")} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === "All" ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-500 border-emerald-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>All Papers ({PUBLICATIONS.length})</button>
-                  {venueStats.map((v, idx) => (
-                    <button key={idx} onClick={() => setSelectedVenue(v.venue)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === v.venue ? (darkMode ? 'bg-purple-600 border-purple-500 text-white' : 'bg-purple-500 border-purple-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>{v.venue} ({v.count})</button>
-                  ))}
+	                  <button onClick={toggleSortOrder} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`} title={ui.toggleSort}>
+	                    <ArrowUpDown size={12} /> {sortOrder === 'newest' ? ui.newestFirst : ui.oldestFirst}
+	                  </button>
+	                  <div className={`w-px h-4 mx-2 ${darkMode ? 'bg-slate-700' : 'bg-gray-200'}`}></div>
+	                  <button onClick={() => updateSelectedVenue("All")} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === "All" ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-500 border-emerald-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>{ui.allPapers} ({publications.length})</button>
+	                  {primaryVenueStats.map((v, idx) => (
+	                    <button key={idx} onClick={() => updateSelectedVenue(v.venue)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === v.venue ? (darkMode ? 'bg-purple-600 border-purple-500 text-white' : 'bg-purple-500 border-purple-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>{v.venue} ({v.count})</button>
+	                  ))}
+                    {secondaryVenueStats.length > 0 && (
+                      <select
+                        value={secondaryVenueStats.some(v => v.venue === selectedVenue) ? selectedVenue : ''}
+                        onChange={(event) => updateSelectedVenue(event.target.value || 'All')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border outline-none ${secondaryVenueStats.some(v => v.venue === selectedVenue) ? (darkMode ? 'bg-purple-600 border-purple-500 text-white' : 'bg-purple-500 border-purple-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-gray-200 text-gray-600')}`}
+                        aria-label={ui.moreVenues}
+                      >
+                        <option value="">{ui.moreVenues}</option>
+                        {secondaryVenueStats.map(v => (
+                          <option key={v.venue} value={v.venue}>{v.venue} ({v.count})</option>
+                        ))}
+                      </select>
+                    )}
               </div>
 
               <div className="flex flex-wrap gap-2 pb-4 border-b dark:border-slate-800 items-center">
                   <Filter size={14} className={`mr-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                   {allKeywords.map((keyword) => (
-                    <button key={keyword} onClick={() => setSelectedKeyword(keyword)} className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all border ${selectedKeyword === keyword ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-emerald-200')}`}>{keyword}</button>
+	                    <button key={keyword} onClick={() => updateSelectedKeyword(keyword)} className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all border ${selectedKeyword === keyword ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-emerald-200')}`}>{keyword}</button>
                   ))}
               </div>
           </div>
@@ -1487,7 +1186,7 @@ export default function AcademicProfile() {
           {featuredPubs.length > 0 && (
             <div className="space-y-4 animate-fade-in">
                <h3 className={`text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-4 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>
-                 <Star size={16} /> Selected Publications
+	                 <Star size={16} /> {ui.selectedPublications}
                </h3>
                <div className="grid gap-6">
                   {featuredPubs.map(pub => <PublicationCard key={pub.id} pub={pub} isFeatured={true} />)}
@@ -1502,11 +1201,11 @@ export default function AcademicProfile() {
              {otherPubs.length > visiblePubs && (
                 <div className="flex justify-center pt-8">
                   <button onClick={() => setVisiblePubs(prev => prev + 5)} className={`group flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm transition-all transform hover:scale-105 ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
-                    View More Publications ({otherPubs.length - visiblePubs} remaining) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
+	                    {ui.viewMorePublications} ({otherPubs.length - visiblePubs} {ui.remaining}) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
                   </button>
                 </div>
              )}
-             {otherPubs.length === 0 && featuredPubs.length === 0 && <div className="text-center py-12 opacity-50">No papers found matching your criteria.</div>}
+	             {otherPubs.length === 0 && featuredPubs.length === 0 && <div className="text-center py-12 opacity-50">{ui.noPapers}</div>}
           </div>
         </section>
 
@@ -1587,9 +1286,52 @@ export default function AcademicProfile() {
           </div>
         </section>
 
+        {/* --- Student Mentoring Section --- */}
+        <section id="mentoring" className="scroll-mt-32">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div className="flex items-start gap-4">
+              <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-900/20 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+                <Users size={24} />
+              </div>
+              <div>
+                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.mentoring.title}</h2>
+                <p className={`text-sm mt-2 max-w-3xl leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{content.mentoring.desc}</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {content.mentoring.items.map((item, idx) => {
+              const MentoringIcon = [GraduationCap, Layers, Presentation][idx % 3];
+              return (
+                <article key={`${item.title}-${idx}`} className={`relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 ${darkMode ? 'bg-slate-800/35 border-slate-700 hover:border-cyan-400/40' : 'bg-white border-gray-100 hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-100/60'}`}>
+                  <div className={`absolute -right-6 -bottom-6 opacity-[0.04] ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <MentoringIcon size={120} />
+                  </div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between gap-3 mb-5">
+                      <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+                        <MentoringIcon size={20} />
+                      </div>
+                      <span className={`text-[10px] font-mono font-bold px-2 py-1 rounded-full border ${darkMode ? 'border-cyan-400/20 text-cyan-300 bg-cyan-400/5' : 'border-cyan-100 text-cyan-700 bg-cyan-50'}`}>{item.period}</span>
+                    </div>
+                    <h3 className={`text-lg font-bold leading-snug mb-2 ${darkMode ? 'text-slate-100' : 'text-gray-900'}`}>{item.title}</h3>
+                    <div className={`text-xs font-bold uppercase tracking-wide mb-3 ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>{item.role}</div>
+                    <p className={`text-sm leading-relaxed mb-5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{item.desc}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {item.tags.map(tag => (
+                        <span key={tag} className={`text-[10px] font-semibold px-2 py-1 rounded-lg border ${darkMode ? 'border-slate-700 text-slate-400 bg-slate-900/40' : 'border-slate-100 text-slate-500 bg-slate-50'}`}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
         {/* --- Contact Section --- */}
         <section id="contact" className="scroll-mt-32 mb-16">
-           <div className="rounded-3xl overflow-hidden relative border shadow-2xl ${darkMode ? 'border-slate-700' : 'border-gray-100'}">
+           <div className={`rounded-3xl overflow-hidden relative border shadow-2xl ${darkMode ? 'border-slate-700' : 'border-gray-100'}`}>
               <div className={`absolute inset-0 opacity-10 ${darkMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gradient-to-r from-blue-400 to-purple-400'}`}></div>
               <div className={`relative p-8 md:p-12 ${darkMode ? 'bg-slate-800/50' : 'bg-white/80 backdrop-blur-sm'}`}>
                   <div className="text-center max-w-3xl mx-auto">
@@ -1598,23 +1340,21 @@ export default function AcademicProfile() {
                       </div>
                       <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.contact}</h2>
                       <p className={`text-lg mb-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                        {lang === 'en' 
-                          ? "I'm always open to discussing new research collaborations, opportunities, or just having a chat about information theory and communications." 
-                          : "欢迎随时联系我，讨论科研合作、潜在机会，或仅仅是交流未来通信相关的想法。"}
+                        {ui.contactDesc}
                       </p>
 
                       <div className="grid md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto mb-10">
                          <div className={`p-4 rounded-xl border flex items-center gap-4 ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-gray-200'}`}>
                             <div className={`p-2 rounded-full ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-600'}`}><MapPin size={20} /></div>
                             <div>
-                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Location</div>
+                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.locationLabel}</div>
                                <div className={`font-medium ${darkMode ? 'text-slate-200' : 'text-gray-900'}`}>{content.location}</div>
                             </div>
                          </div>
                          <a href={content.social.email} className={`p-4 rounded-xl border flex items-center gap-4 transition-colors ${darkMode ? 'bg-slate-900/50 border-slate-700 hover:border-blue-500' : 'bg-white border-gray-200 hover:border-blue-400'}`}>
                             <div className={`p-2 rounded-full ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-600'}`}><Mail size={20} /></div>
                             <div>
-                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Email</div>
+                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.emailLabel}</div>
                                <div className={`font-medium ${darkMode ? 'text-slate-200' : 'text-gray-900'}`}>hitliaimin AT 163.com</div>
                             </div>
                          </a>
@@ -1622,6 +1362,7 @@ export default function AcademicProfile() {
 
                       <div className="flex flex-wrap justify-center gap-4">
                          <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
+                         <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
                          <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
                          <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
                       </div>
@@ -1651,6 +1392,8 @@ export default function AcademicProfile() {
             </p>
           </div>
         </div>
+
+        <GlobalVisitors syncData={syncData} darkMode={darkMode} ui={ui} />
 
         {/* Footer */}
         <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>

@@ -1,3 +1,175 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.visitor-map-frame {
+  display: block;
+  border: 1px solid rgba(191, 219, 254, 0.95);
+  border-radius: 1rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 42%, rgba(34, 211, 238, 0.18), transparent 18%),
+    radial-gradient(circle at 76% 36%, rgba(16, 185, 129, 0.14), transparent 20%),
+    linear-gradient(135deg, #061829 0%, #082537 45%, #08333a 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.visitor-map-frame:hover {
+  border-color: rgba(34, 211, 238, 0.7);
+}
+
+.visitor-map-frame--dark {
+  border-color: rgba(51, 65, 85, 0.9);
+  background:
+    radial-gradient(circle at 22% 40%, rgba(34, 211, 238, 0.2), transparent 18%),
+    radial-gradient(circle at 72% 38%, rgba(16, 185, 129, 0.16), transparent 20%),
+    linear-gradient(135deg, #020617 0%, #082032 48%, #062e35 100%);
+}
+
+.visitor-world-map {
+  position: relative;
+  height: 19rem;
+  overflow: hidden;
+  color: rgba(148, 163, 184, 0.16);
+}
+
+.visitor-real-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.visitor-map-ocean-grid {
+  opacity: 0.7;
+}
+
+.visitor-map-graticule {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.11);
+  stroke-width: 1;
+}
+
+.visitor-map-country {
+  fill: rgba(148, 163, 184, 0.24);
+  stroke: rgba(226, 232, 240, 0.28);
+  stroke-width: 0.45;
+}
+
+.visitor-map-borders {
+  fill: none;
+  stroke: rgba(226, 232, 240, 0.18);
+  stroke-width: 0.35;
+}
+
+.visitor-map-country-active {
+  fill: rgba(34, 211, 238, 0.32);
+  stroke: rgba(103, 232, 249, 0.88);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 9px rgba(34, 211, 238, 0.45));
+  animation: visitor-country-pulse 3.2s ease-in-out infinite;
+}
+
+.visitor-map-route {
+  fill: none;
+  stroke: rgba(45, 212, 191, 0.38);
+  stroke-width: 1;
+  stroke-dasharray: 5 7;
+}
+
+.visitor-map-region {
+  position: absolute;
+  width: 2.35rem;
+  height: 2.35rem;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.3), rgba(34, 211, 238, 0.08) 48%, transparent 72%);
+  animation: visitor-region-pulse 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.visitor-map-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  background: rgba(8, 47, 73, 0.9);
+  border: 1px solid rgba(103, 232, 249, 0.38);
+  color: #cffafe;
+  padding: 0.28rem 0.48rem;
+  font-size: 0.7rem;
+  line-height: 1;
+  box-shadow: 0 10px 20px rgba(8, 47, 73, 0.25);
+  animation: visitor-marker-enter 600ms ease both;
+}
+
+.visitor-map-marker em {
+  font-style: normal;
+  color: white;
+  font-weight: 800;
+}
+
+.visitor-map-label {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  color: #cffafe;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.visitor-map-label span {
+  display: block;
+  margin-top: 0.25rem;
+  color: rgba(207, 250, 254, 0.66);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.7rem;
+}
+
+.visitor-map-summary {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.visitor-map-summary span {
+  border-radius: 9999px;
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  background: rgba(8, 47, 73, 0.78);
+  color: #e0f2fe;
+  padding: 0.42rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.visitor-map-tracker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  pointer-events: none;
+}
+
+@keyframes visitor-country-pulse {
+  0%, 100% { fill-opacity: 0.28; }
+  50% { fill-opacity: 0.55; }
+}
+
+@keyframes visitor-region-pulse {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.9); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes visitor-marker-enter {
+  from { opacity: 0; transform: translate(-50%, -40%) scale(0.92); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
