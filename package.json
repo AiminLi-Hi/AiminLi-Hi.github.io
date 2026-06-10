@@ -11,7 +11,8 @@
     "sync:homepage": "node scripts/sync-homepage-data.mjs && npm run generate:visitor-map",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run deploy:pages",
+    "deploy:pages": "node scripts/deploy-pages.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.554.0",
