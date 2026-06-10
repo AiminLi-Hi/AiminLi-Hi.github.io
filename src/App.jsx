@@ -1288,44 +1288,46 @@ export default function AcademicProfile() {
 
         {/* --- Student Mentoring Section --- */}
         <section id="mentoring" className="scroll-mt-32">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div className="flex items-start gap-4">
-              <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-900/20 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
-                <Users size={24} />
+          <div className={`relative overflow-hidden rounded-3xl border ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200 shadow-xl shadow-slate-900/5'}`}>
+            <div className={`absolute inset-x-0 top-0 h-1 ${darkMode ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500'}`} />
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+                  <Users size={24} />
+                </div>
+                <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
               </div>
-              <div>
-                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.mentoring.title}</h2>
-                <p className={`text-sm mt-2 max-w-3xl leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{content.mentoring.desc}</p>
+
+              <div className={`grid md:grid-cols-[12rem_minmax(0,1fr)] gap-3 md:gap-6 pb-6 border-b ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>
+                <div className={`font-extrabold leading-snug ${darkMode ? 'text-cyan-300' : 'text-slate-800'}`}>
+                  {content.mentoring.leadershipLabel}
+                </div>
+                <p className={`text-sm md:text-[15px] leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                  {content.mentoring.leadership}
+                </p>
+              </div>
+
+              <div className="pt-6">
+                <h3 className={`text-base font-extrabold mb-4 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
+                <div className={`rounded-2xl border overflow-hidden ${darkMode ? 'border-slate-700 bg-slate-950/30' : 'border-slate-200 bg-slate-50/50'}`}>
+                  <div className={`hidden md:grid grid-cols-[16rem_minmax(0,1fr)] gap-4 px-5 py-3 text-sm font-extrabold border-b ${darkMode ? 'border-slate-700 bg-slate-800/80 text-cyan-200' : 'border-slate-200 bg-slate-100 text-slate-800'}`}>
+                    <div>{content.mentoring.columns.student}</div>
+                    <div>{content.mentoring.columns.outcome}</div>
+                  </div>
+                  <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
+                    {content.mentoring.students.map((student) => (
+                      <div key={student.name} className={`grid md:grid-cols-[16rem_minmax(0,1fr)] gap-1 md:gap-4 px-5 py-3.5 text-sm ${darkMode ? 'hover:bg-slate-800/50' : 'hover:bg-white'} transition-colors`}>
+                        <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
+                        <div className={`leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          <span className={`md:hidden block text-[10px] uppercase tracking-widest font-bold mb-1 ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>{content.mentoring.columns.outcome}</span>
+                          {student.outcome}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {content.mentoring.items.map((item, idx) => {
-              const MentoringIcon = [GraduationCap, Layers, Presentation][idx % 3];
-              return (
-                <article key={`${item.title}-${idx}`} className={`relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 ${darkMode ? 'bg-slate-800/35 border-slate-700 hover:border-cyan-400/40' : 'bg-white border-gray-100 hover:border-cyan-200 hover:shadow-lg hover:shadow-cyan-100/60'}`}>
-                  <div className={`absolute -right-6 -bottom-6 opacity-[0.04] ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                    <MentoringIcon size={120} />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between gap-3 mb-5">
-                      <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
-                        <MentoringIcon size={20} />
-                      </div>
-                      <span className={`text-[10px] font-mono font-bold px-2 py-1 rounded-full border ${darkMode ? 'border-cyan-400/20 text-cyan-300 bg-cyan-400/5' : 'border-cyan-100 text-cyan-700 bg-cyan-50'}`}>{item.period}</span>
-                    </div>
-                    <h3 className={`text-lg font-bold leading-snug mb-2 ${darkMode ? 'text-slate-100' : 'text-gray-900'}`}>{item.title}</h3>
-                    <div className={`text-xs font-bold uppercase tracking-wide mb-3 ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>{item.role}</div>
-                    <p className={`text-sm leading-relaxed mb-5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{item.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {item.tags.map(tag => (
-                        <span key={tag} className={`text-[10px] font-semibold px-2 py-1 rounded-lg border ${darkMode ? 'border-slate-700 text-slate-400 bg-slate-900/40' : 'border-slate-100 text-slate-500 bg-slate-50'}`}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
           </div>
         </section>
 

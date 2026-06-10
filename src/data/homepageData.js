@@ -618,30 +618,22 @@ export const PROFILE_DATA = {
       { role: "Teaching Assistant", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2022", desc: "Graduate Course" }
     ],
     mentoring: {
-      title: "Student Mentoring",
-      desc: "I welcome motivated undergraduate and graduate students interested in theory-driven research on communications, information freshness, semantic systems, and network optimization.",
-      items: [
-        {
-          period: "Current",
-          title: "Research Project Mentoring",
-          role: "Undergraduate / graduate research",
-          desc: "Guidance on problem formulation, literature review, analytical modeling, simulation design, and academic writing.",
-          tags: ["Problem Formulation", "Theory", "Writing"]
-        },
-        {
-          period: "Open",
-          title: "Collaboration Topics",
-          role: "AoI, semantic communications, coding, optimization",
-          desc: "Suitable for students with backgrounds in probability, optimization, information theory, wireless communications, or machine learning.",
-          tags: ["AoI", "6G", "Optimization"]
-        },
-        {
-          period: "Ongoing",
-          title: "Academic Development",
-          role: "Presentation and publication preparation",
-          desc: "Feedback on technical presentations, reproducible experiments, and conference or journal submission preparation.",
-          tags: ["Seminar", "Reproducibility", "Submission"]
-        }
+      title: "Research Leadership and Mentorship",
+      leadershipLabel: "Research Leadership",
+      leadership: "Initiated and led 10 student-involved research projects across B.S., M.S., and Ph.D. stages. I formulated the research questions, mathematical models, and solution frameworks; junior collaborators carried out analysis, simulations, and implementation under my supervision. Outcomes include publications and submissions in IEEE TWC, IoTJ, ISIT, MobiHoc, ICC, and ITW, as well as student placements at KTH, Caltech, HKU, Huawei, HIT, METU, and Zhengzhou University.",
+      collaborationTitle: "Student mentorship and collaboration",
+      columns: { student: "Student", outcome: "Mentorship / outcome" },
+      students: [
+        { name: "Adem Utku Atasayar", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
+        { name: "Xiaomeng Chen", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
+        { name: "Kunpeng Liu", outcome: "M.S. collaboration; ICC/INFOCOM Workshop; now at Huawei." },
+        { name: "Siqi Meng", outcome: "B.S. collaboration; WCM/TCOM/TVT; Ph.D. at HIT." },
+        { name: "Burak Karasakal", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
+        { name: "Aiwei Lei", outcome: "B.S. collaboration; VTC; admitted to HKU Ph.D." },
+        { name: "Haoxu Wu", outcome: "Ph.D. collaboration; IEEE TMC major-revision manuscript." },
+        { name: "Lulu Song", outcome: "Ph.D. collaboration; now Ph.D. at Zhengzhou University." },
+        { name: "Yiğit İnce", outcome: "M.S. collaboration; METU." },
+        { name: "Ayşe Nur Pehlivanoğlu", outcome: "M.S. collaboration; METU." }
       ]
     }
   },
@@ -739,30 +731,22 @@ export const PROFILE_DATA = {
       { role: "助教", course: "信息论基础 (研究生)", org: "哈尔滨工业大学（深圳）", period: "2022 秋", desc: "合作教师：吴绍华教授" }
     ],
     mentoring: {
-      title: "学生指导",
-      desc: "欢迎对通信理论、信息时效、语义系统与网络优化感兴趣的本科生和研究生交流研究问题与合作机会。",
-      items: [
-        {
-          period: "当前",
-          title: "科研项目指导",
-          role: "本科生 / 研究生科研",
-          desc: "围绕问题建模、文献梳理、理论分析、仿真实验设计与论文写作提供指导。",
-          tags: ["问题建模", "理论分析", "论文写作"]
-        },
-        {
-          period: "开放",
-          title: "合作研究方向",
-          role: "AoI、语义通信、编码、优化",
-          desc: "适合具备概率论、优化、信息论、无线通信或机器学习基础的学生参与。",
-          tags: ["AoI", "6G", "优化"]
-        },
-        {
-          period: "持续",
-          title: "学术能力培养",
-          role: "报告与投稿准备",
-          desc: "提供技术报告、可复现实验、会议与期刊投稿准备方面的反馈。",
-          tags: ["学术报告", "可复现", "投稿准备"]
-        }
+      title: "科研领导力与学生指导",
+      leadershipLabel: "科研领导力",
+      leadership: "发起并主导了 10 项由学生参与的研究项目，覆盖本科、硕士与博士阶段。我负责提出研究问题、建立数学模型并设计求解框架；青年合作者在我的指导下完成理论分析、仿真实验与实现工作。相关成果包括 IEEE TWC、IoTJ、ISIT、MobiHoc、ICC、ITW 等论文发表或投稿，以及学生进入 KTH、Caltech、HKU、Huawei、HIT、METU 和郑州大学等平台继续发展。",
+      collaborationTitle: "学生指导与科研合作",
+      columns: { student: "学生", outcome: "指导 / 成果" },
+      students: [
+        { name: "Adem Utku Atasayar", outcome: "共同指导硕士论文；MobiHoc/TMC；现于 METU 攻读博士。" },
+        { name: "Xiaomeng Chen", outcome: "硕士阶段合作；TWC/ISIT/ITW；获 KTH 博士录取。" },
+        { name: "Kunpeng Liu", outcome: "硕士阶段合作；ICC/INFOCOM Workshop；现就职于华为。" },
+        { name: "Siqi Meng", outcome: "本科阶段合作；WCM/TCOM/TVT；现于哈工大攻读博士。" },
+        { name: "Burak Karasakal", outcome: "本科阶段合作；ITW；获 Caltech 博士录取。" },
+        { name: "Aiwei Lei", outcome: "本科阶段合作；VTC；获 HKU 博士录取。" },
+        { name: "Haoxu Wu", outcome: "博士阶段合作；IEEE TMC 大修稿件。" },
+        { name: "Lulu Song", outcome: "博士阶段合作；现为郑州大学博士生。" },
+        { name: "Yiğit İnce", outcome: "硕士阶段合作；METU。" },
+        { name: "Ayşe Nur Pehlivanoğlu", outcome: "硕士阶段合作；METU。" }
       ]
     }
   }
