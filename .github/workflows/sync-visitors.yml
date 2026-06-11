@@ -35,7 +35,7 @@ jobs:
       - name: Sync visitor data
         run: npm run sync:visitors
         env:
-          FLAG_COUNTER_ID: Ad32
+          VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
 
       - name: Validate app
         run: |

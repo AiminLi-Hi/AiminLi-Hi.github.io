@@ -73,8 +73,6 @@ const generateBibtex = (pub) => {
 }`;
 };
 
-const VISITOR_STATS_URL = 'https://info.flagcounter.com/Ad32';
-const VISITOR_TRACKER_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260611a';
 const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
 const VISITOR_REFRESH_MS = 60_000;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
@@ -126,19 +124,27 @@ const UI_COPY = {
     locationLabel: 'Location',
     emailLabel: 'Email',
     globalVisitors: 'Global Visitors',
-    globalVisitorsDesc: 'Approximate visitor locations by country.',
+    globalVisitorsDesc: 'Realtime country-level visitor statistics.',
     viewStats: 'View Stats',
+    hideStats: 'Hide Stats',
     visitorMap: 'Visitor Map',
     topVisitorCountries: 'Top Visitor Countries',
     activeVisitorRegions: 'Active visitor regions',
     countrySignal: 'aggregate country-level signal',
     pageviews: 'pageviews',
     countries: 'countries',
-    visitorNote: 'Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.',
+    visitorNote: 'Visitor countries are shown from the latest local snapshot; individual identities are not stored or shown here.',
     visitorLive: 'Live',
     visitorSnapshot: 'Snapshot',
     visitorUpdated: 'Updated',
-    visitorNoteLive: 'Visitor countries are counted in aggregate by country; individual identities are not stored or shown here.',
+    visitorNoteLive: 'Visitor data is counted by the site API and stored only as country-level aggregates; IP addresses and individual identities are not stored or shown here.',
+    statsTotalViews: 'Total pageviews',
+    statsCountries: 'Visitor countries',
+    statsTopCountry: 'Top country',
+    statsLastUpdate: 'Last update',
+    statsCountryShare: 'Country share',
+    statsRealtimeSource: 'Source: Cloudflare Pages API + KV aggregate counter.',
+    statsSnapshotSource: 'Source: static fallback snapshot generated from the last successful sync.',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -170,19 +176,27 @@ const UI_COPY = {
     locationLabel: '所在地',
     emailLabel: '邮箱',
     globalVisitors: '全球访客',
-    globalVisitorsDesc: '按国家统计的近似访问来源。',
+    globalVisitorsDesc: '按国家实时聚合的访问统计。',
     viewStats: '查看统计',
+    hideStats: '收起统计',
     visitorMap: '访客地图',
     topVisitorCountries: '访问国家排名',
     activeVisitorRegions: '已点亮访问区域',
     countrySignal: '国家级聚合访问统计',
     pageviews: '次访问',
     countries: '个国家',
-    visitorNote: '访客国家由 FlagCounter 按聚合统计估算；此处不展示个人身份信息。',
+    visitorNote: '访客国家来自最近一次本地快照；此处不存储或展示个人身份信息。',
     visitorLive: '实时',
     visitorSnapshot: '快照',
     visitorUpdated: '更新于',
-    visitorNoteLive: '访客国家按国家级聚合统计；此处不存储或展示个人身份信息。',
+    visitorNoteLive: '访客数据由本站 API 计数，并且只保存国家级聚合结果；此处不存储或展示 IP 地址和个人身份信息。',
+    statsTotalViews: '总访问量',
+    statsCountries: '访问国家',
+    statsTopCountry: '最高国家',
+    statsLastUpdate: '最近更新',
+    statsCountryShare: '国家占比',
+    statsRealtimeSource: '来源：Cloudflare Pages API + KV 聚合计数。',
+    statsSnapshotSource: '来源：最近一次自动同步生成的静态快照。',
   },
 };
 
@@ -580,12 +594,15 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [snapshot, setSnapshot] = useState(staticSnapshot);
   const [visitorMode, setVisitorMode] = useState(REALTIME_VISITOR_ENDPOINT ? 'connecting' : 'snapshot');
   const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
+  const [showStatsDetails, setShowStatsDetails] = useState(false);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
   const isLive = visitorMode === 'live';
+  const topCountry = snapshot.ranking[0] || null;
+  const countryVisitTotal = snapshot.ranking.reduce((sum, country) => sum + country.count, 0);
 
   useEffect(() => {
     if (!REALTIME_VISITOR_ENDPOINT) {
@@ -643,16 +660,17 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             </div>
           </div>
         </div>
-        <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
-          {ui.viewStats} <ExternalLink size={13} className="ml-1.5" />
-        </a>
+        <button type="button" onClick={() => setShowStatsDetails(value => !value)} className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`} aria-expanded={showStatsDetails} aria-controls="visitor-stats-details">
+          {showStatsDetails ? ui.hideStats : ui.viewStats}
+          {showStatsDetails ? <ChevronUp size={13} className="ml-1.5" /> : <ChevronDown size={13} className="ml-1.5" />}
+        </button>
       </div>
 
       <div className="p-6">
         <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.95fr)] gap-6">
           <div>
             <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.visitorMap}</h3>
-            <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`visitor-map-frame ${darkMode ? 'visitor-map-frame--dark' : ''}`} aria-label="Open global visitor statistics">
+            <div className={`visitor-map-frame ${darkMode ? 'visitor-map-frame--dark' : ''}`} aria-label="Global visitor statistics map">
               <div className="visitor-world-map">
                 <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} role="img" aria-label="World map visitor snapshot" focusable="false">
                   <defs>
@@ -703,14 +721,13 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                   <span>{snapshot.pageviews} {ui.pageviews}</span>
                   <span>{snapshot.countries} {ui.countries}</span>
                 </div>
-                <img className="visitor-map-tracker" src={VISITOR_TRACKER_URL} alt="" width="1" height="1" loading="eager" decoding="async" referrerPolicy="no-referrer" aria-hidden="true" />
               </div>
-            </a>
+            </div>
           </div>
 
           <div>
             <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.topVisitorCountries}</h3>
-            <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`block rounded-2xl border p-4 h-[19rem] transition-colors ${darkMode ? 'bg-slate-950/50 border-slate-700 hover:border-cyan-400/40' : 'bg-slate-50/80 border-slate-100 hover:border-blue-200'}`} aria-label="Open visitor country ranking">
+            <div className={`rounded-2xl border p-4 h-[19rem] ${darkMode ? 'bg-slate-950/50 border-slate-700' : 'bg-slate-50/80 border-slate-100'}`} aria-label="Visitor country ranking">
               <div className="space-y-2">
                 {snapshot.ranking.map(country => (
                   <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-slate-900/80 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
@@ -720,9 +737,53 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                   </div>
                 ))}
               </div>
-            </a>
+            </div>
           </div>
         </div>
+        {showStatsDetails && (
+          <div id="visitor-stats-details" className={`mt-6 rounded-2xl border p-5 ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
+            <div className={`grid gap-3 md:grid-cols-4 text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+              <div className="visitor-stat-metric">
+                <span>{ui.statsTotalViews}</span>
+                <strong>{snapshot.pageviews}</strong>
+              </div>
+              <div className="visitor-stat-metric">
+                <span>{ui.statsCountries}</span>
+                <strong>{snapshot.countries}</strong>
+              </div>
+              <div className="visitor-stat-metric">
+                <span>{ui.statsTopCountry}</span>
+                <strong>{topCountry ? `${topCountry.code} ${topCountry.count}` : '-'}</strong>
+              </div>
+              <div className="visitor-stat-metric">
+                <span>{ui.statsLastUpdate}</span>
+                <strong>{formattedUpdatedAt || '-'}</strong>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <h4 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.statsCountryShare}</h4>
+              <div className="space-y-3">
+                {snapshot.ranking.map(country => {
+                  const percent = countryVisitTotal ? Math.round((country.count / countryVisitTotal) * 100) : 0;
+                  return (
+                    <div key={`stats-${country.code}`} className="grid grid-cols-[2.8rem_minmax(0,1fr)_3.2rem] items-center gap-3">
+                      <span className={`text-xs font-extrabold ${darkMode ? 'text-cyan-300' : 'text-blue-600'}`}>{country.code}</span>
+                      <div className={`h-2 rounded-full overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-slate-200'}`} aria-label={`${country.name} ${percent}%`}>
+                        <div className="visitor-stat-bar" style={{ width: `${Math.max(percent, 4)}%` }} />
+                      </div>
+                      <span className={`text-right text-xs font-bold ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{percent}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <p className={`mt-5 text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+              {isLive ? ui.statsRealtimeSource : ui.statsSnapshotSource}
+            </p>
+          </div>
+        )}
         <p className={`mt-5 text-center text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
           {isLive ? ui.visitorNoteLive : ui.visitorNote}
         </p>

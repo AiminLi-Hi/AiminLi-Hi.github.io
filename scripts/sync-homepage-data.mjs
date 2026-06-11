@@ -15,7 +15,7 @@ if (args.has('--scholar-only') && args.has('--visitors-only')) {
   throw new Error('Use either --scholar-only or --visitors-only, not both.');
 }
 
-const FLAG_COUNTER_ID = process.env.FLAG_COUNTER_ID || 'Ad32';
+const VISITOR_STATS_ENDPOINT = (process.env.VITE_VISITOR_STATS_ENDPOINT || process.env.VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
 const SCHOLAR_USER_ID = process.env.SCHOLAR_USER_ID || 'nyl1-EMAAAAJ';
 const SCHOLAR_PROFILE_URL =
   process.env.SCHOLAR_PROFILE_URL ||
@@ -125,61 +125,41 @@ async function fetchText(url) {
   return response.text();
 }
 
-function displayCountryName(name) {
-  if (name === 'Turkey') return 'Türkiye';
-  return name;
-}
-
-function parseNumber(value = '') {
-  const match = String(value).match(/[\d,]+/);
-  return match ? Number(match[0].replace(/,/g, '')) : null;
-}
-
-function parseFlagCounterPageviews(html) {
-  const text = stripTags(html);
-  const patterns = [
-    /total\s+page\s*views?\s*[:\s]+([\d,]+)/i,
-    /page\s*views?\s*[:\s]+([\d,]+)/i,
-    /pageviews?\s*[:\s]+([\d,]+)/i,
-    /visitors?\s*[:\s]+([\d,]+)/i
-  ];
-
-  for (const pattern of patterns) {
-    const value = parseNumber(text.match(pattern)?.[1]);
-    if (Number.isFinite(value)) return value;
-  }
-
-  return null;
-}
-
 async function fetchVisitorSnapshot(previous) {
-  const url = `https://s01.flagcounter.com/countries/${FLAG_COUNTER_ID}/`;
-  const html = await fetchText(url);
-  const rowPattern = /<tr><td width=20>[\s\S]*?<\/tr>/g;
-  const ranking = [];
-  for (const [row] of html.matchAll(rowPattern)) {
-    const codeMatch = row.match(/class="flag-([a-z]{2})-png"/i);
-    const countryMatch = row.match(/\/factbook\/[a-z]{2}\/[^>]*>[\s\S]*?<u>([\s\S]*?)<\/u>/i);
-    const countMatch = row.match(/<td width=1%><font face=arial size=2>([\d,]+)<\/font><\/td>/i);
-    if (!codeMatch || !countryMatch || !countMatch) continue;
-    const matchName = stripTags(countryMatch[1]);
-    ranking.push({
-      code: codeMatch[1].toUpperCase(),
-      name: displayCountryName(matchName),
-      matchName,
-      count: Number(countMatch[1].replace(/,/g, '')),
-      delay: Number((ranking.length * 0.4).toFixed(1))
-    });
+  if (!VISITOR_STATS_ENDPOINT) {
+    return previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
   }
 
-  if (!ranking.length) throw new Error('No FlagCounter countries were parsed.');
+  const response = await fetch(`${VISITOR_STATS_ENDPOINT}/stats?t=${Date.now()}`, {
+    headers: {
+      'accept': 'application/json',
+      'user-agent': 'Mozilla/5.0 (compatible; homepage-sync/1.0; +https://aiminli-hi.github.io/)'
+    }
+  });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+
+  const payload = await response.json();
+  const snapshot = payload.visitorSnapshot || payload;
+  const ranking = Array.isArray(snapshot.ranking)
+    ? snapshot.ranking
+      .filter(country => country?.code && Number.isFinite(Number(country.count)))
+      .map((country, index) => ({
+        code: String(country.code).toUpperCase(),
+        name: country.name || country.code,
+        matchName: country.matchName || country.name || country.code,
+        count: Number(country.count),
+        delay: Number((index * 0.4).toFixed(1))
+      }))
+    : [];
+
+  if (!ranking.length) throw new Error('No visitor API countries were returned.');
   const previousSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
   const countryTotal = ranking.reduce((sum, country) => sum + country.count, 0);
-  const parsedPageviews = parseFlagCounterPageviews(html);
   return {
-    pageviews: Math.max(parsedPageviews || 0, countryTotal, Number(previousSnapshot.pageviews) || 0),
-    countries: ranking.length,
-    ranking
+    pageviews: Math.max(Number(snapshot.pageviews) || 0, countryTotal, Number(previousSnapshot.pageviews) || 0),
+    countries: Number(snapshot.countries) || ranking.length,
+    ranking,
+    updatedAt: snapshot.updatedAt || payload.generatedAt || previousSnapshot.updatedAt || null
   };
 }
 
@@ -357,17 +337,17 @@ async function main() {
     try {
       const visitorSnapshot = await fetchVisitorSnapshot(previous);
       if (!stableEqual(cleanVisitorSnapshot(previous.visitorSnapshot), cleanVisitorSnapshot(visitorSnapshot))) {
-        next.visitorSnapshot = { ...visitorSnapshot, updatedAt: now };
+        next.visitorSnapshot = { ...visitorSnapshot, updatedAt: visitorSnapshot.updatedAt || now };
         hasMeaningfulChange = true;
       }
-      console.log(`FlagCounter: parsed ${visitorSnapshot.ranking.length} countries.`);
+      console.log(`Visitor API: parsed ${visitorSnapshot.ranking.length} countries.`);
     } catch (error) {
       next.visitorSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
-      console.warn(`FlagCounter sync skipped: ${error.message}`);
+      console.warn(`Visitor API sync skipped: ${error.message}`);
     }
   } else {
     next.visitorSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
-    console.log('FlagCounter sync skipped by mode.');
+    console.log('Visitor sync skipped by mode.');
   }
 
   if (syncScholar) {
