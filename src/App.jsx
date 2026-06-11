@@ -124,7 +124,7 @@ const UI_COPY = {
     locationLabel: 'Location',
     emailLabel: 'Email',
     globalVisitors: 'Global Visitors',
-    globalVisitorsDesc: 'Realtime country-level visitor statistics.',
+    globalVisitorsDesc: 'Country-level visitor statistics.',
     viewStats: 'View Stats',
     hideStats: 'Hide Stats',
     visitorMap: 'Visitor Map',
@@ -133,18 +133,12 @@ const UI_COPY = {
     countrySignal: 'aggregate country-level signal',
     pageviews: 'pageviews',
     countries: 'countries',
-    visitorNote: 'Visitor countries are shown from the latest local snapshot; individual identities are not stored or shown here.',
-    visitorLive: 'Live',
-    visitorSnapshot: 'Snapshot',
-    visitorUpdated: 'Updated',
-    visitorNoteLive: 'Visitor data is counted by the site API and stored only as country-level aggregates; IP addresses and individual identities are not stored or shown here.',
+    visitorUpdated: 'Updated (Istanbul)',
     statsTotalViews: 'Total pageviews',
     statsCountries: 'Visitor countries',
     statsTopCountry: 'Top country',
     statsLastUpdate: 'Last update',
     statsCountryShare: 'Country share',
-    statsRealtimeSource: 'Source: Cloudflare Pages API + KV aggregate counter.',
-    statsSnapshotSource: 'Source: static fallback snapshot generated from the last successful sync.',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -176,7 +170,7 @@ const UI_COPY = {
     locationLabel: '所在地',
     emailLabel: '邮箱',
     globalVisitors: '全球访客',
-    globalVisitorsDesc: '按国家实时聚合的访问统计。',
+    globalVisitorsDesc: '按国家聚合的访问统计。',
     viewStats: '查看统计',
     hideStats: '收起统计',
     visitorMap: '访客地图',
@@ -185,18 +179,12 @@ const UI_COPY = {
     countrySignal: '国家级聚合访问统计',
     pageviews: '次访问',
     countries: '个国家',
-    visitorNote: '访客国家来自最近一次本地快照；此处不存储或展示个人身份信息。',
-    visitorLive: '实时',
-    visitorSnapshot: '快照',
-    visitorUpdated: '更新于',
-    visitorNoteLive: '访客数据由本站 API 计数，并且只保存国家级聚合结果；此处不存储或展示 IP 地址和个人身份信息。',
+    visitorUpdated: '更新于（伊斯坦布尔）',
     statsTotalViews: '总访问量',
     statsCountries: '访问国家',
     statsTopCountry: '最高国家',
     statsLastUpdate: '最近更新',
     statsCountryShare: '国家占比',
-    statsRealtimeSource: '来源：Cloudflare Pages API + KV 聚合计数。',
-    statsSnapshotSource: '来源：最近一次自动同步生成的静态快照。',
   },
 };
 
@@ -397,6 +385,7 @@ const formatVisitorUpdatedAt = (value, lang) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '';
   return new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en', {
+    timeZone: 'Europe/Istanbul',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
@@ -592,7 +581,6 @@ const AcademicLineage = ({ lineage, darkMode }) => {
 const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const staticSnapshot = useMemo(() => getVisitorSnapshot(syncData), [syncData]);
   const [snapshot, setSnapshot] = useState(staticSnapshot);
-  const [visitorMode, setVisitorMode] = useState(REALTIME_VISITOR_ENDPOINT ? 'connecting' : 'snapshot');
   const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
   const [showStatsDetails, setShowStatsDetails] = useState(false);
   const mapData = getRuntimeMapData();
@@ -600,7 +588,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
-  const isLive = visitorMode === 'live';
   const topCountry = snapshot.ranking[0] || null;
   const countryVisitTotal = snapshot.ranking.reduce((sum, country) => sum + country.count, 0);
 
@@ -618,12 +605,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
         if (!cancelled && realtimeSnapshot) {
           setSnapshot(realtimeSnapshot);
           setVisitorUpdatedAt(realtimeSnapshot.updatedAt || new Date().toISOString());
-          setVisitorMode('live');
         }
       } catch {
-        if (!cancelled) {
-          setVisitorMode('snapshot');
-        }
+        // Keep the generated snapshot visible if the live request is blocked.
       }
     };
 
@@ -647,17 +631,11 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           <div>
             <h2 id="global-visitors-title" className={`text-2xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-950'}`}>{ui.globalVisitors}</h2>
             <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.globalVisitorsDesc}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className={`visitor-sync-badge ${darkMode ? 'visitor-sync-badge--dark' : ''} ${isLive ? 'visitor-sync-badge--live' : ''}`}>
-                <span aria-hidden="true" />
-                {isLive ? ui.visitorLive : ui.visitorSnapshot}
-              </span>
-              {formattedUpdatedAt && (
-                <span className={`text-[0.72rem] font-semibold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {ui.visitorUpdated} {formattedUpdatedAt}
-                </span>
-              )}
-            </div>
+            {formattedUpdatedAt && (
+              <div className={`mt-2 text-[0.72rem] font-semibold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                {ui.visitorUpdated} {formattedUpdatedAt}
+              </div>
+            )}
           </div>
         </div>
         <button type="button" onClick={() => setShowStatsDetails(value => !value)} className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`} aria-expanded={showStatsDetails} aria-controls="visitor-stats-details">
@@ -779,14 +757,8 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
               </div>
             </div>
 
-            <p className={`mt-5 text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-              {isLive ? ui.statsRealtimeSource : ui.statsSnapshotSource}
-            </p>
           </div>
         )}
-        <p className={`mt-5 text-center text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-          {isLive ? ui.visitorNoteLive : ui.visitorNote}
-        </p>
       </div>
     </section>
   );
