@@ -61,6 +61,17 @@ function image(data, env, request, status = 200) {
   });
 }
 
+function script(data, env, request, status = 200) {
+  return new Response(data, {
+    status,
+    headers: {
+      ...corsHeaders(env, request),
+      'Content-Type': 'application/javascript; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+    },
+  });
+}
+
 function normalizeCountryCode(value) {
   const code = String(value || '').trim().toUpperCase();
   return /^[A-Z]{2}$/.test(code) ? code : 'XX';
@@ -129,6 +140,17 @@ function publicSnapshot(stats) {
   };
 }
 
+function addHitToStats(stats, hit) {
+  return {
+    pageviews: (stats.pageviews || 0) + 1,
+    countries: {
+      ...(stats.countries || {}),
+      [hit.country]: ((stats.countries || {})[hit.country] || 0) + 1,
+    },
+    updatedAt: hit.updatedAt || new Date().toISOString(),
+  };
+}
+
 async function readStats(env) {
   if (!env.VISITOR_KV) return seedStats(env);
 
@@ -180,6 +202,11 @@ function currentCountry(request) {
   return normalizeCountryCode(request.cf?.country || request.headers.get('CF-IPCountry'));
 }
 
+function callbackName(value) {
+  const name = String(value || '').trim();
+  return /^[A-Za-z_$][\w$]*$/.test(name) ? name : '__aiminVisitorHit';
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') {
@@ -196,18 +223,26 @@ export default {
       return json(publicSnapshot(await readStats(env)), env, request);
     }
 
-    if (url.pathname === '/hit' || url.pathname === '/hit.gif') {
+    if (url.pathname === '/hit' || url.pathname === '/hit.gif' || url.pathname === '/hit.js') {
       if (request.method !== 'GET' && request.method !== 'POST') {
         return json({ error: 'Method not allowed' }, env, request, 405);
       }
 
-      await recordHit(env, request);
-
       if (url.pathname === '/hit.gif') {
+        await recordHit(env, request);
         return image('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />', env, request);
       }
 
-      return json(publicSnapshot(await readStats(env)), env, request);
+      const stats = await readStats(env);
+      const hit = await recordHit(env, request);
+      const snapshot = publicSnapshot(addHitToStats(stats, hit));
+
+      if (url.pathname === '/hit.js') {
+        const callback = callbackName(url.searchParams.get('callback'));
+        return script(`${callback}(${JSON.stringify(snapshot)});`, env, request);
+      }
+
+      return json(snapshot, env, request);
     }
 
     return json({ error: 'Not found' }, env, request, 404);

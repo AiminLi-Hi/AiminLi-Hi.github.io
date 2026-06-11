@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Moon, Sun, MapPin, Mail, Linkedin, 
   Github, GraduationCap, Briefcase, FileText, 
@@ -240,13 +240,21 @@ const fetchRealtimeVisitorSnapshot = async (action, signal) => {
   return normalizeVisitorPayload(await response.json());
 };
 
-const recordVisitorHit = () => {
-  if (!REALTIME_VISITOR_ENDPOINT || visitorHitRecordedForPage || typeof Image === 'undefined') {
+const shouldApplyVisitorSnapshot = (nextSnapshot, currentSnapshot) => {
+  if (!nextSnapshot) return false;
+  const nextViews = Number(nextSnapshot.pageviews) || 0;
+  const currentViews = Number(currentSnapshot?.pageviews) || 0;
+  const nextTime = Date.parse(nextSnapshot.updatedAt || '') || 0;
+  const currentTime = Date.parse(currentSnapshot?.updatedAt || '') || 0;
+
+  if (nextTime && currentTime && nextTime < currentTime) return false;
+  return nextViews >= currentViews || nextTime >= currentTime;
+};
+
+const recordVisitorImageBeacon = () => {
+  if (!REALTIME_VISITOR_ENDPOINT || typeof Image === 'undefined') {
     return Promise.resolve(false);
   }
-
-  visitorHitRecordedForPage = true;
-
   return new Promise((resolve) => {
     let settled = false;
     let timeoutId;
@@ -266,6 +274,61 @@ const recordVisitorHit = () => {
     beacon.onload = () => finish(true);
     beacon.onerror = () => finish(false);
     beacon.src = url.toString();
+  });
+};
+
+const recordVisitorHit = () => {
+  if (
+    !REALTIME_VISITOR_ENDPOINT
+    || visitorHitRecordedForPage
+    || typeof window === 'undefined'
+    || typeof document === 'undefined'
+  ) {
+    return Promise.resolve(null);
+  }
+
+  visitorHitRecordedForPage = true;
+
+  return new Promise((resolve) => {
+    const callback = `__aiminVisitorHit_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement('script');
+    let settled = false;
+    let timeoutId;
+
+    const cleanup = () => {
+      window.clearTimeout(timeoutId);
+      script.onload = null;
+      script.onerror = null;
+      script.remove();
+      try {
+        delete window[callback];
+      } catch {
+        window[callback] = undefined;
+      }
+    };
+
+    const finish = (snapshot) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(snapshot);
+    };
+
+    window[callback] = (payload) => {
+      finish(normalizeVisitorPayload(payload));
+    };
+
+    script.async = true;
+    script.onerror = () => {
+      recordVisitorImageBeacon().finally(() => finish(null));
+    };
+
+    timeoutId = window.setTimeout(() => finish(null), VISITOR_BEACON_TIMEOUT_MS);
+    const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/hit.js`);
+    url.searchParams.set('callback', callback);
+    url.searchParams.set('t', String(Date.now()));
+    script.src = url.toString();
+    document.head.appendChild(script);
   });
 };
 
@@ -614,6 +677,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [snapshot, setSnapshot] = useState(staticSnapshot);
   const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
   const [showStatsDetails, setShowStatsDetails] = useState(false);
+  const snapshotRef = useRef(staticSnapshot);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
@@ -629,21 +693,28 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
     let cancelled = false;
     const controller = new AbortController();
+    const applyRealtimeSnapshot = (realtimeSnapshot) => {
+      if (cancelled || !shouldApplyVisitorSnapshot(realtimeSnapshot, snapshotRef.current)) return;
+      snapshotRef.current = realtimeSnapshot;
+      setSnapshot(realtimeSnapshot);
+      setVisitorUpdatedAt(realtimeSnapshot.updatedAt || new Date().toISOString());
+    };
 
     const loadSnapshot = async () => {
       try {
         const realtimeSnapshot = await fetchRealtimeVisitorSnapshot('stats', controller.signal);
-        if (!cancelled && realtimeSnapshot) {
-          setSnapshot(realtimeSnapshot);
-          setVisitorUpdatedAt(realtimeSnapshot.updatedAt || new Date().toISOString());
-        }
+        applyRealtimeSnapshot(realtimeSnapshot);
       } catch {
         // Keep the generated snapshot visible if the live request is blocked.
       }
     };
 
     const recordAndRefresh = async () => {
-      await recordVisitorHit();
+      const realtimeSnapshot = await recordVisitorHit();
+      if (realtimeSnapshot) {
+        applyRealtimeSnapshot(realtimeSnapshot);
+        return;
+      }
       await loadSnapshot();
     };
 

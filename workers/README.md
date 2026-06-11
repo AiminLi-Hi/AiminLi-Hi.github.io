@@ -10,7 +10,8 @@ It provides realtime country-level aggregate visitor counts for the homepage.
 
 It exposes:
 
-- `GET /hit.gif`: records one pageview through a 1x1 image beacon. This is the preferred browser counter because it does not depend on CORS `fetch`.
+- `GET /hit.js`: records one pageview and calls the requested callback with the latest snapshot. The homepage uses this first because script tags do not depend on CORS and can refresh the map immediately.
+- `GET /hit.gif`: records one pageview through a 1x1 image beacon. This is the browser fallback when the script counter is blocked.
 - `GET /hit`: records one pageview and returns the latest snapshot as JSON.
 - `GET /stats`: returns the latest snapshot without incrementing.
 - `GET /health`: health check.
