@@ -534,6 +534,7 @@ export const PROFILE_DATA = {
       email: "mailto:hitliaimin@163.com"
     },
     nav: { about: "About", news: "News", timeline: "Timeline", awards: "Honors", publications: "Publications", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", contact: "Contact" },
+    cvDownload: "CV",
     news: [
       { date: "2026-06", label: "TMC", content: "The paper <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "The paper <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>.", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
@@ -619,21 +620,21 @@ export const PROFILE_DATA = {
     ],
     mentoring: {
       title: "Research Leadership and Mentorship",
-      leadershipLabel: "Research Leadership",
-      leadership: "Initiated and led 10 student-involved research projects across B.S., M.S., and Ph.D. stages. I formulated the research questions, mathematical models, and solution frameworks; junior collaborators carried out analysis, simulations, and implementation under my supervision. Outcomes include publications and submissions in IEEE TWC, IoTJ, ISIT, MobiHoc, ICC, and ITW, as well as student placements at KTH, Caltech, HKU, Huawei, HIT, METU, and Zhengzhou University.",
       collaborationTitle: "Student mentorship and collaboration",
-      columns: { student: "Student", outcome: "Mentorship / outcome" },
+      columns: { student: "Student / period", stage: "Stage", outcome: "Mentorship / outcome" },
       students: [
-        { name: "Adem Utku Atasayar", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
-        { name: "Xiaomeng Chen", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
-        { name: "Kunpeng Liu", outcome: "M.S. collaboration; ICC/INFOCOM Workshop; now at Huawei." },
-        { name: "Siqi Meng", outcome: "B.S. collaboration; WCM/TCOM/TVT; Ph.D. at HIT." },
-        { name: "Burak Karasakal", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
-        { name: "Aiwei Lei", outcome: "B.S. collaboration; VTC; admitted to HKU Ph.D." },
-        { name: "Haoxu Wu", outcome: "Ph.D. collaboration; IEEE TMC major-revision manuscript." },
-        { name: "Lulu Song", outcome: "Ph.D. collaboration; now Ph.D. at Zhengzhou University." },
-        { name: "Yiğit İnce", outcome: "M.S. collaboration; METU." },
-        { name: "Ayşe Nur Pehlivanoğlu", outcome: "M.S. collaboration; METU." }
+        { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; VTC; admitted to HKU Ph.D." },
+        { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; now Ph.D. at Zhengzhou University." },
+        { name: "Shanmugarajan Anand", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; IAC; admitted to the M.S. program at the National University of Singapore (NUS)." },
+        { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; Asilomar; works at the Indian Space Research Organisation (ISRO)." },
+        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
+        { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; accepted by IEEE TMC." },
+        { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. collaboration; ISIT; METU." },
+        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. collaboration; SIGCOMM Workshop; METU." },
+        { name: "Kunpeng Liu", period: "2024-2026", stage: "M.S.", outcome: "M.S. collaboration; ICC/INFOCOM Workshop; now at Huawei." },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
+        { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. and Ph.D. collaboration; WCM/TCOM/TVT/JSAIT; Ph.D. at HIT." }
       ]
     }
   },
@@ -654,6 +655,7 @@ export const PROFILE_DATA = {
       email: "mailto:hitliaimin@163.com"
     },
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", awards: "荣誉奖项", publications: "发表论文", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", contact: "联系方式" },
+    cvDownload: "简历",
     news: [
       { date: "2026-06", label: "TMC", content: "论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
@@ -732,21 +734,21 @@ export const PROFILE_DATA = {
     ],
     mentoring: {
       title: "科研领导力与学生指导",
-      leadershipLabel: "科研领导力",
-      leadership: "发起并主导了 10 项由学生参与的研究项目，覆盖本科、硕士与博士阶段。我负责提出研究问题、建立数学模型并设计求解框架；青年合作者在我的指导下完成理论分析、仿真实验与实现工作。相关成果包括 IEEE TWC、IoTJ、ISIT、MobiHoc、ICC、ITW 等论文发表或投稿，以及学生进入 KTH、Caltech、HKU、Huawei、HIT、METU 和郑州大学等平台继续发展。",
       collaborationTitle: "学生指导与科研合作",
-      columns: { student: "学生", outcome: "指导 / 成果" },
+      columns: { student: "学生 / 合作时间", stage: "阶段", outcome: "指导 / 成果" },
       students: [
-        { name: "Adem Utku Atasayar", outcome: "共同指导硕士论文；MobiHoc/TMC；现于 METU 攻读博士。" },
-        { name: "Xiaomeng Chen", outcome: "硕士阶段合作；TWC/ISIT/ITW；获 KTH 博士录取。" },
-        { name: "Kunpeng Liu", outcome: "硕士阶段合作；ICC/INFOCOM Workshop；现就职于华为。" },
-        { name: "Siqi Meng", outcome: "本科阶段合作；WCM/TCOM/TVT；现于哈工大攻读博士。" },
-        { name: "Burak Karasakal", outcome: "本科阶段合作；ITW；获 Caltech 博士录取。" },
-        { name: "Aiwei Lei", outcome: "本科阶段合作；VTC；获 HKU 博士录取。" },
-        { name: "Haoxu Wu", outcome: "博士阶段合作；IEEE TMC 大修稿件。" },
-        { name: "Lulu Song", outcome: "博士阶段合作；现为郑州大学博士生。" },
-        { name: "Yiğit İnce", outcome: "硕士阶段合作；METU。" },
-        { name: "Ayşe Nur Pehlivanoğlu", outcome: "硕士阶段合作；METU。" }
+        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科阶段合作；VTC；获 HKU 博士录取。" },
+        { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士阶段合作；现为郑州大学博士生。" },
+        { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科阶段合作；IAC；获新加坡国立大学（NUS）硕士录取。" },
+        { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科阶段合作；Asilomar；现就职于 Indian Space Research Organisation (ISRO)。" },
+        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "共同指导硕士论文；MobiHoc/TMC；现于 METU 攻读博士。" },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科阶段合作；ITW；获 Caltech 博士录取。" },
+        { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士阶段合作；论文被 IEEE TMC 接收。" },
+        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士阶段合作；ISIT；METU。" },
+        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科与硕士阶段合作；SIGCOMM Workshop；METU。" },
+        { name: "Kunpeng Liu", period: "2024-2026", stage: "硕士", outcome: "硕士阶段合作；ICC/INFOCOM Workshop；现就职于华为。" },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士阶段合作；TWC/ISIT/ITW；获 KTH 博士录取。" },
+        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科与博士阶段合作；WCM/TCOM/TVT/JSAIT；现于哈工大攻读博士。" }
       ]
     }
   }

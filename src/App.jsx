@@ -1014,6 +1014,16 @@ export default function AcademicProfile() {
               {Object.entries(content.nav).map(([key, label]) => (
                 <a key={key} href={`#${key}`} className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}>{label}</a>
               ))}
+              <a
+                href="/files/Aimin_Li_CV.pdf"
+                download="Aimin_Li_CV.pdf"
+                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
+                title={lang === 'en' ? 'Download CV' : '下载简历'}
+                aria-label={lang === 'en' ? 'Download CV' : '下载简历'}
+              >
+                <Download size={15} />
+                <span>{content.cvDownload}</span>
+              </a>
             </div>
             <button 
               onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')} 
@@ -1048,6 +1058,15 @@ export default function AcademicProfile() {
                 {label}
               </a>
             ))}
+            <a
+              href="/files/Aimin_Li_CV.pdf"
+              download="Aimin_Li_CV.pdf"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
+            >
+              <Download size={16} />
+              <span>{lang === 'en' ? 'Download CV' : '简历下载'}</span>
+            </a>
             <button 
               onClick={() => { setLang(l => l === 'en' ? 'zh' : 'en'); setIsMobileMenuOpen(false); }} 
               className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all mt-2 border ${darkMode ? 'bg-slate-800 text-white border-slate-700' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
@@ -1467,28 +1486,31 @@ export default function AcademicProfile() {
                 <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
               </div>
 
-              <div className={`grid md:grid-cols-[12rem_minmax(0,1fr)] gap-3 md:gap-6 pb-6 border-b ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>
-                <div className={`font-extrabold leading-snug ${darkMode ? 'text-cyan-300' : 'text-slate-800'}`}>
-                  {content.mentoring.leadershipLabel}
-                </div>
-                <p className={`text-sm md:text-[15px] leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  {content.mentoring.leadership}
-                </p>
-              </div>
-
-              <div className="pt-6">
+              <div>
                 <h3 className={`text-base font-extrabold mb-4 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
                 <div className={`rounded-2xl border overflow-hidden ${darkMode ? 'border-slate-700 bg-slate-950/30' : 'border-slate-200 bg-slate-50/50'}`}>
-                  <div className={`hidden md:grid grid-cols-[16rem_minmax(0,1fr)] gap-4 px-5 py-3 text-sm font-extrabold border-b ${darkMode ? 'border-slate-700 bg-slate-800/80 text-cyan-200' : 'border-slate-200 bg-slate-100 text-slate-800'}`}>
+                  <div className={`hidden md:grid grid-cols-[15rem_7.5rem_minmax(0,1fr)] gap-4 px-5 py-3 text-sm font-extrabold border-b ${darkMode ? 'border-slate-700 bg-slate-800/80 text-cyan-200' : 'border-slate-200 bg-slate-100 text-slate-800'}`}>
                     <div>{content.mentoring.columns.student}</div>
+                    <div>{content.mentoring.columns.stage}</div>
                     <div>{content.mentoring.columns.outcome}</div>
                   </div>
                   <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
                     {content.mentoring.students.map((student) => (
-                      <div key={student.name} className={`grid md:grid-cols-[16rem_minmax(0,1fr)] gap-1 md:gap-4 px-5 py-3.5 text-sm ${darkMode ? 'hover:bg-slate-800/50' : 'hover:bg-white'} transition-colors`}>
-                        <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
+                      <div key={student.name} className={`grid md:grid-cols-[15rem_7.5rem_minmax(0,1fr)] gap-2 md:gap-4 px-5 py-3.5 text-sm ${darkMode ? 'hover:bg-slate-800/50' : 'hover:bg-white'} transition-colors`}>
+                        <div>
+                          <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
+                          {student.period && (
+                            <div className={`mt-1 text-[11px] font-bold tracking-wide ${darkMode ? 'text-cyan-300/75' : 'text-cyan-700/75'}`}>
+                              {student.period}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-extrabold leading-none ${darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-cyan-50 text-cyan-800'}`}>
+                            {student.stage}
+                          </span>
+                        </div>
                         <div className={`leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                          <span className={`md:hidden block text-[10px] uppercase tracking-widest font-bold mb-1 ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>{content.mentoring.columns.outcome}</span>
                           {student.outcome}
                         </div>
                       </div>
