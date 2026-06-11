@@ -1,0 +1,47 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: homepage-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate app
+        run: |
+          npm run lint
+          npm run build
+        env:
+          VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
+
+      - name: Deploy GitHub Pages
+        run: npm run deploy:pages
+        env:
+          VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
+          GIT_AUTHOR_NAME: github-actions-bot
+          GIT_AUTHOR_EMAIL: github-actions-bot@users.noreply.github.com
