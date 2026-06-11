@@ -215,6 +215,18 @@ export default {
 
     const url = new URL(request.url);
 
+    if (url.pathname === '/') {
+      return json({
+        ok: true,
+        service: 'Aimin Li homepage visitor API',
+        homepage: 'https://aiminli-hi.github.io/',
+        endpoints: {
+          health: '/health',
+          stats: '/stats',
+        },
+      }, env, request);
+    }
+
     if (url.pathname === '/health') {
       return json({ ok: true, storage: env.VISITOR_KV ? 'kv-events' : 'seed' }, env, request);
     }
