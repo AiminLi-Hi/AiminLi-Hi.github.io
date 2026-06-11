@@ -76,6 +76,7 @@ const generateBibtex = (pub) => {
 const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
 const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
+const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
 let visitorHitRecordedForPage = false;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
@@ -131,6 +132,8 @@ const UI_COPY = {
     hideStats: 'Hide Stats',
     visitorMap: 'Visitor Map',
     topVisitorCountries: 'Top Visitor Countries',
+    showRemainingCountries: 'Show remaining',
+    showTopVisitorCountriesOnly: 'Show top 5 only',
     activeVisitorRegions: 'Active visitor regions',
     countrySignal: 'aggregate country-level signal',
     pageviews: 'pageviews',
@@ -177,6 +180,8 @@ const UI_COPY = {
     hideStats: '收起统计',
     visitorMap: '访客地图',
     topVisitorCountries: '访问国家排名',
+    showRemainingCountries: '展开其余',
+    showTopVisitorCountriesOnly: '只显示前五名',
     activeVisitorRegions: '已点亮访问区域',
     countrySignal: '国家级聚合访问统计',
     pageviews: '次访问',
@@ -677,6 +682,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [snapshot, setSnapshot] = useState(staticSnapshot);
   const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
   const [showStatsDetails, setShowStatsDetails] = useState(false);
+  const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
   const snapshotRef = useRef(staticSnapshot);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
@@ -685,6 +691,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
   const topCountry = snapshot.ranking[0] || null;
   const countryVisitTotal = snapshot.ranking.reduce((sum, country) => sum + country.count, 0);
+  const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
+  const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
+  const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
 
   useEffect(() => {
     if (!REALTIME_VISITOR_ENDPOINT) {
@@ -812,9 +821,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
           <div>
             <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.topVisitorCountries}</h3>
-            <div className={`rounded-2xl border p-4 h-[19rem] ${darkMode ? 'bg-slate-950/50 border-slate-700' : 'bg-slate-50/80 border-slate-100'}`} aria-label="Visitor country ranking">
-              <div className="space-y-2">
-                {snapshot.ranking.map(country => (
+            <div className={`rounded-2xl border p-4 min-h-[19rem] flex flex-col ${darkMode ? 'bg-slate-950/50 border-slate-700' : 'bg-slate-50/80 border-slate-100'}`} aria-label="Visitor country ranking">
+              <div className={`space-y-2 ${showAllVisitorCountries && remainingVisitorCountries.length ? 'max-h-[13.5rem] overflow-y-auto pr-1' : ''}`}>
+                {displayedVisitorCountries.map(country => (
                   <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-slate-900/80 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
                     <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{country.code}</span>
                     <span className="min-w-0 truncate font-semibold">{country.name}</span>
@@ -822,6 +831,19 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                   </div>
                 ))}
               </div>
+              {remainingVisitorCountries.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllVisitorCountries(value => !value)}
+                  className={`mt-3 inline-flex w-full items-center justify-center rounded-xl border px-3 py-2 text-xs font-extrabold transition-colors ${darkMode ? 'border-slate-700 text-cyan-200 hover:bg-slate-900' : 'border-slate-200 text-blue-700 hover:bg-white'}`}
+                  aria-expanded={showAllVisitorCountries}
+                >
+                  {showAllVisitorCountries
+                    ? ui.showTopVisitorCountriesOnly
+                    : `${ui.showRemainingCountries} (${remainingVisitorCountries.length})`}
+                  {showAllVisitorCountries ? <ChevronUp size={13} className="ml-1.5" /> : <ChevronDown size={13} className="ml-1.5" />}
+                </button>
+              )}
             </div>
           </div>
         </div>
