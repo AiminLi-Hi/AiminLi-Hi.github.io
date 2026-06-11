@@ -1,0 +1,14 @@
+name = "aimin-homepage-visitors"
+main = "visitor-stats-worker.js"
+compatibility_date = "2026-06-11"
+
+[vars]
+ALLOWED_ORIGIN = "https://aiminli-hi.github.io,http://localhost:5173,http://127.0.0.1:5173"
+
+[[durable_objects.bindings]]
+name = "VISITOR_COUNTER"
+class_name = "VisitorCounter"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["VisitorCounter"]

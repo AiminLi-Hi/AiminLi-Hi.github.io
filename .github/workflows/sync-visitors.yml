@@ -1,9 +1,9 @@
-name: Sync Scholar data
+name: Sync visitor data
 
 on:
   schedule:
-    # 05:17 in Europe/Istanbul, expressed in UTC.
-    - cron: '17 2 * * *'
+    # Hourly visitor refresh. GitHub may delay scheduled runs during busy periods.
+    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -32,27 +32,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync Google Scholar data
-        run: npm run sync:scholar
+      - name: Sync visitor data
+        run: npm run sync:visitors
         env:
-          SCHOLAR_USER_ID: nyl1-EMAAAAJ
+          FLAG_COUNTER_ID: Ad32
 
       - name: Validate app
         run: |
           npm run lint
           npm run build
 
-      - name: Commit synchronized source data
+      - name: Commit synchronized visitor data
         id: commit-data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/homepage-sync-data.js
+          git add public/homepage-sync-data.js public/visitor-map-data.js
           if git diff --cached --quiet; then
-            echo "No synchronized Scholar data changes."
+            echo "No synchronized visitor data changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "Sync homepage Scholar data"
+            git commit -m "Sync homepage visitor data"
             git push origin HEAD:main
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi

@@ -7,6 +7,14 @@ const root = path.resolve(__dirname, '..');
 const outputPath = path.join(root, 'public', 'homepage-sync-data.js');
 const dataPath = path.join(root, 'src', 'data', 'homepageData.js');
 
+const args = new Set(process.argv.slice(2));
+const syncVisitors = !args.has('--scholar-only');
+const syncScholar = !args.has('--visitors-only');
+
+if (args.has('--scholar-only') && args.has('--visitors-only')) {
+  throw new Error('Use either --scholar-only or --visitors-only, not both.');
+}
+
 const FLAG_COUNTER_ID = process.env.FLAG_COUNTER_ID || 'Ad32';
 const SCHOLAR_USER_ID = process.env.SCHOLAR_USER_ID || 'nyl1-EMAAAAJ';
 const SCHOLAR_PROFILE_URL =
@@ -122,6 +130,28 @@ function displayCountryName(name) {
   return name;
 }
 
+function parseNumber(value = '') {
+  const match = String(value).match(/[\d,]+/);
+  return match ? Number(match[0].replace(/,/g, '')) : null;
+}
+
+function parseFlagCounterPageviews(html) {
+  const text = stripTags(html);
+  const patterns = [
+    /total\s+page\s*views?\s*[:\s]+([\d,]+)/i,
+    /page\s*views?\s*[:\s]+([\d,]+)/i,
+    /pageviews?\s*[:\s]+([\d,]+)/i,
+    /visitors?\s*[:\s]+([\d,]+)/i
+  ];
+
+  for (const pattern of patterns) {
+    const value = parseNumber(text.match(pattern)?.[1]);
+    if (Number.isFinite(value)) return value;
+  }
+
+  return null;
+}
+
 async function fetchVisitorSnapshot(previous) {
   const url = `https://s01.flagcounter.com/countries/${FLAG_COUNTER_ID}/`;
   const html = await fetchText(url);
@@ -144,8 +174,10 @@ async function fetchVisitorSnapshot(previous) {
 
   if (!ranking.length) throw new Error('No FlagCounter countries were parsed.');
   const previousSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
+  const countryTotal = ranking.reduce((sum, country) => sum + country.count, 0);
+  const parsedPageviews = parseFlagCounterPageviews(html);
   return {
-    pageviews: previousSnapshot.pageviews || ranking.reduce((sum, country) => sum + country.count, 0),
+    pageviews: Math.max(parsedPageviews || 0, countryTotal, Number(previousSnapshot.pageviews) || 0),
     countries: ranking.length,
     ranking
   };
@@ -285,43 +317,112 @@ function mergeByKey(base = [], incoming = []) {
   return output;
 }
 
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function cleanVisitorSnapshot(snapshot = {}) {
+  return {
+    pageviews: Number(snapshot.pageviews) || 0,
+    countries: Number(snapshot.countries) || 0,
+    ranking: (snapshot.ranking || []).map(country => ({
+      code: country.code,
+      name: country.name,
+      matchName: country.matchName || country.name,
+      count: Number(country.count) || 0
+    }))
+  };
+}
+
+function cleanScholarData(scholar = {}) {
+  return {
+    profileUrl: scholar.profileUrl || SCHOLAR_PROFILE_URL,
+    citedBy: scholar.citedBy ?? null,
+    totalArticles: scholar.totalArticles ?? null,
+    latest: scholar.latest || []
+  };
+}
+
+function stableEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 async function main() {
   const previous = readPreviousData();
-  const next = {
-    ...previous,
-    generatedAt: new Date().toISOString()
-  };
+  const next = cloneData(previous);
+  const now = new Date().toISOString();
+  let hasMeaningfulChange = false;
 
-  try {
-    next.visitorSnapshot = await fetchVisitorSnapshot(previous);
-    console.log(`FlagCounter: parsed ${next.visitorSnapshot.ranking.length} countries.`);
-  } catch (error) {
+  if (syncVisitors) {
+    try {
+      const visitorSnapshot = await fetchVisitorSnapshot(previous);
+      if (!stableEqual(cleanVisitorSnapshot(previous.visitorSnapshot), cleanVisitorSnapshot(visitorSnapshot))) {
+        next.visitorSnapshot = { ...visitorSnapshot, updatedAt: now };
+        hasMeaningfulChange = true;
+      }
+      console.log(`FlagCounter: parsed ${visitorSnapshot.ranking.length} countries.`);
+    } catch (error) {
+      next.visitorSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
+      console.warn(`FlagCounter sync skipped: ${error.message}`);
+    }
+  } else {
     next.visitorSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
-    console.warn(`FlagCounter sync skipped: ${error.message}`);
+    console.log('FlagCounter sync skipped by mode.');
   }
 
-  try {
-    const scholar = await fetchScholarData(previous);
-    next.scholar = {
-      profileUrl: scholar.profileUrl,
-      citedBy: scholar.citedBy,
-      totalArticles: scholar.totalArticles,
-      latest: scholar.latest
-    };
-    next.extraPublications = mergeByKey(
-      (previous.extraPublications || []).filter(item => isHomepageCandidate(item)),
-      scholar.extraPublications
-    );
-    next.extraNews = mergeByKey(
-      (previous.extraNews || []).filter(item => isHomepageCandidate(item)),
-      scholar.extraNews
-    );
-    console.log(`Google Scholar: parsed ${scholar.latest.length} latest rows, ${scholar.extraPublications.length} new homepage candidates.`);
-  } catch (error) {
+  if (syncScholar) {
+    try {
+      const scholar = await fetchScholarData(previous);
+      const nextScholar = {
+        profileUrl: scholar.profileUrl,
+        citedBy: scholar.citedBy,
+        totalArticles: scholar.totalArticles,
+        latest: scholar.latest
+      };
+      const nextExtraPublications = mergeByKey(
+        (previous.extraPublications || []).filter(item => isHomepageCandidate(item)),
+        scholar.extraPublications
+      );
+      const nextExtraNews = mergeByKey(
+        (previous.extraNews || []).filter(item => isHomepageCandidate(item)),
+        scholar.extraNews
+      );
+
+      if (
+        !stableEqual(cleanScholarData(previous.scholar), cleanScholarData(nextScholar)) ||
+        !stableEqual(previous.extraPublications || [], nextExtraPublications) ||
+        !stableEqual(previous.extraNews || [], nextExtraNews)
+      ) {
+        next.scholar = { ...nextScholar, updatedAt: now };
+        next.extraPublications = nextExtraPublications;
+        next.extraNews = nextExtraNews;
+        hasMeaningfulChange = true;
+      } else {
+        next.scholar = previous.scholar || FALLBACK_DATA.scholar;
+        next.extraPublications = previous.extraPublications || [];
+        next.extraNews = previous.extraNews || [];
+      }
+      console.log(`Google Scholar: parsed ${scholar.latest.length} latest rows, ${scholar.extraPublications.length} new homepage candidates.`);
+    } catch (error) {
+      next.scholar = previous.scholar || FALLBACK_DATA.scholar;
+      next.extraPublications = previous.extraPublications || [];
+      next.extraNews = previous.extraNews || [];
+      console.warn(`Google Scholar sync skipped: ${error.message}`);
+    }
+  } else {
     next.scholar = previous.scholar || FALLBACK_DATA.scholar;
     next.extraPublications = previous.extraPublications || [];
     next.extraNews = previous.extraNews || [];
-    console.warn(`Google Scholar sync skipped: ${error.message}`);
+    console.log('Google Scholar sync skipped by mode.');
+  }
+
+  if (hasMeaningfulChange || !previous.generatedAt) {
+    next.generatedAt = now;
+  }
+
+  if (!hasMeaningfulChange && fs.existsSync(outputPath)) {
+    console.log('No synchronized homepage data changes.');
+    return;
   }
 
   const banner = '/* Generated by scripts/sync-homepage-data.mjs. Do not edit by hand. */';

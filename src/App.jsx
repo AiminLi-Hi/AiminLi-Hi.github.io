@@ -74,7 +74,9 @@ const generateBibtex = (pub) => {
 };
 
 const VISITOR_STATS_URL = 'https://info.flagcounter.com/Ad32';
-const VISITOR_TRACKER_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260610g';
+const VISITOR_TRACKER_URL = 'https://s01.flagcounter.com/count2/Ad32/bg_FFFFFF/txt_334155/border_CBD5E1/columns_2/maxflags_12/viewers_0/labels_1/pageviews_1/flags_1/percent_0/?v=20260611a';
+const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
+const VISITOR_REFRESH_MS = 60_000;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
   /\bIoTJ\b|\bJIOT\b|internet of things journal/i,
@@ -133,6 +135,10 @@ const UI_COPY = {
     pageviews: 'pageviews',
     countries: 'countries',
     visitorNote: 'Visitor countries are estimated by FlagCounter for aggregate statistics; individual identities are not shown here.',
+    visitorLive: 'Live',
+    visitorSnapshot: 'Snapshot',
+    visitorUpdated: 'Updated',
+    visitorNoteLive: 'Visitor countries are counted in aggregate by country; individual identities are not stored or shown here.',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -173,6 +179,10 @@ const UI_COPY = {
     pageviews: '次访问',
     countries: '个国家',
     visitorNote: '访客国家由 FlagCounter 按聚合统计估算；此处不展示个人身份信息。',
+    visitorLive: '实时',
+    visitorSnapshot: '快照',
+    visitorUpdated: '更新于',
+    visitorNoteLive: '访客国家按国家级聚合统计；此处不存储或展示个人身份信息。',
   },
 };
 
@@ -187,6 +197,44 @@ const getRuntimeMapData = () => (
     ? window.HOMEPAGE_VISITOR_WORLD_MAP
     : null
 );
+
+const normalizeVisitorPayload = (payload = {}) => {
+  const visitorSnapshot = payload.visitorSnapshot || payload;
+  const ranking = Array.isArray(visitorSnapshot.ranking)
+    ? visitorSnapshot.ranking
+      .filter(country => country?.code && Number.isFinite(Number(country.count)))
+      .map((country, index) => ({
+        code: String(country.code).toUpperCase(),
+        name: country.name || country.code,
+        matchName: country.matchName || country.name || country.code,
+        count: Number(country.count),
+        delay: country.delay ?? Number((index * 0.4).toFixed(1)),
+      }))
+    : [];
+
+  if (!ranking.length) return null;
+
+  return {
+    pageviews: Number(visitorSnapshot.pageviews) || ranking.reduce((sum, country) => sum + country.count, 0),
+    countries: Number(visitorSnapshot.countries) || ranking.length,
+    ranking,
+    updatedAt: payload.generatedAt || payload.updatedAt || visitorSnapshot.updatedAt || null,
+  };
+};
+
+const fetchRealtimeVisitorSnapshot = async (action, signal) => {
+  if (!REALTIME_VISITOR_ENDPOINT) return null;
+  const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/${action}`);
+  url.searchParams.set('t', String(Date.now()));
+  const response = await fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-store',
+    signal,
+  });
+  if (!response.ok) throw new Error(`Visitor API returned ${response.status}`);
+  return normalizeVisitorPayload(await response.json());
+};
 
 const stripHtml = (value = '') => String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -283,24 +331,63 @@ const getVisitorSnapshot = (syncData) => {
   };
 };
 
+const COUNTRY_NAME_ALIASES = new Map([
+  ['united states', 'united states of america'],
+  ['usa', 'united states of america'],
+  ['turkiye', 'turkey'],
+  ['czechia', 'czech republic'],
+  ['russia', 'russian federation'],
+  ['south korea', 'korea south'],
+  ['north korea', 'korea north'],
+  ['vietnam', 'viet nam'],
+  ['laos', 'lao pdr'],
+  ['syria', 'syrian arab republic'],
+  ['iran', 'iran islamic republic of'],
+  ['moldova', 'moldova republic of'],
+  ['bolivia', 'bolivia plurinational state of'],
+  ['venezuela', 'venezuela bolivarian republic of'],
+  ['tanzania', 'united republic of tanzania'],
+]);
+
+const normalizeCountryName = (value = '') => String(value)
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase()
+  .replace(/&/g, 'and')
+  .replace(/[^a-z0-9]+/g, ' ')
+  .trim();
+
 const getActiveVisitorCountries = (snapshot, mapData) => {
-  const snapshotByCode = new Map(snapshot.ranking.map(country => [country.code, country]));
-  if (mapData?.activeCountries?.length) {
-    return mapData.activeCountries.map(country => ({
-      ...country,
-      ...(snapshotByCode.get(country.code) || {}),
-      x: country.x,
-      y: country.y,
-      d: country.d,
-    }));
-  }
+  const activeByCode = new Map((mapData?.activeCountries || []).map(country => [country.code, country]));
+  const mapCountryByName = new Map((mapData?.countries || []).map(country => [
+    normalizeCountryName(country.name),
+    country,
+  ]));
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
-  return snapshot.ranking.map(country => ({
-    ...country,
-    x: country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2,
-    y: country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2,
-    d: '',
-  }));
+  return snapshot.ranking.map((country, index) => {
+    const normalized = normalizeCountryName(country.matchName || country.name);
+    const aliased = COUNTRY_NAME_ALIASES.get(normalized) || normalized;
+    const geometry = activeByCode.get(country.code) || mapCountryByName.get(aliased) || mapCountryByName.get(normalized);
+    return {
+      ...country,
+      delay: country.delay ?? Number((index * 0.4).toFixed(1)),
+      x: geometry?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
+      y: geometry?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
+      d: geometry?.d || '',
+    };
+  });
+};
+
+const formatVisitorUpdatedAt = (value, lang) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
 };
 
 const buildVisitorRoutes = (activeCountries) => {
@@ -488,12 +575,50 @@ const AcademicLineage = ({ lineage, darkMode }) => {
   );
 };
 
-const GlobalVisitors = ({ syncData, darkMode, ui }) => {
-  const snapshot = getVisitorSnapshot(syncData);
+const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
+  const staticSnapshot = useMemo(() => getVisitorSnapshot(syncData), [syncData]);
+  const [snapshot, setSnapshot] = useState(staticSnapshot);
+  const [visitorMode, setVisitorMode] = useState(REALTIME_VISITOR_ENDPOINT ? 'connecting' : 'snapshot');
+  const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
+  const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
+  const isLive = visitorMode === 'live';
+
+  useEffect(() => {
+    if (!REALTIME_VISITOR_ENDPOINT) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    const loadSnapshot = async (action) => {
+      try {
+        const realtimeSnapshot = await fetchRealtimeVisitorSnapshot(action, controller.signal);
+        if (!cancelled && realtimeSnapshot) {
+          setSnapshot(realtimeSnapshot);
+          setVisitorUpdatedAt(realtimeSnapshot.updatedAt || new Date().toISOString());
+          setVisitorMode('live');
+        }
+      } catch {
+        if (!cancelled) {
+          setVisitorMode('snapshot');
+        }
+      }
+    };
+
+    loadSnapshot('hit');
+    const intervalId = window.setInterval(() => loadSnapshot('stats'), VISITOR_REFRESH_MS);
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      window.clearInterval(intervalId);
+    };
+  }, [staticSnapshot, syncData.generatedAt]);
 
   return (
     <section className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-slate-900/60 border-slate-700/70' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
@@ -505,6 +630,17 @@ const GlobalVisitors = ({ syncData, darkMode, ui }) => {
           <div>
             <h2 id="global-visitors-title" className={`text-2xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-950'}`}>{ui.globalVisitors}</h2>
             <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.globalVisitorsDesc}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className={`visitor-sync-badge ${darkMode ? 'visitor-sync-badge--dark' : ''} ${isLive ? 'visitor-sync-badge--live' : ''}`}>
+                <span aria-hidden="true" />
+                {isLive ? ui.visitorLive : ui.visitorSnapshot}
+              </span>
+              {formattedUpdatedAt && (
+                <span className={`text-[0.72rem] font-semibold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                  {ui.visitorUpdated} {formattedUpdatedAt}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <a href={VISITOR_STATS_URL} target="_blank" rel="noreferrer" className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
@@ -588,7 +724,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui }) => {
           </div>
         </div>
         <p className={`mt-5 text-center text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-          {ui.visitorNote}
+          {isLive ? ui.visitorNoteLive : ui.visitorNote}
         </p>
       </div>
     </section>
@@ -1395,7 +1531,7 @@ export default function AcademicProfile() {
           </div>
         </div>
 
-        <GlobalVisitors syncData={syncData} darkMode={darkMode} ui={ui} />
+        <GlobalVisitors syncData={syncData} darkMode={darkMode} ui={ui} lang={lang} />
 
         {/* Footer */}
         <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>

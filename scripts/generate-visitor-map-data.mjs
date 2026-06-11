@@ -73,11 +73,16 @@ const countryNameAliases = new Map([
 ]);
 
 const countryPaths = overviewCountries.features
-  .map((country, index) => ({
-    id: country.id == null ? `unknown-${index}` : String(country.id).padStart(3, '0'),
-    name: country.properties?.name || String(country.id),
-    d: pathGenerator(country)
-  }))
+  .map((country, index) => {
+    const [x, y] = pathGenerator.centroid(country);
+    return {
+      id: country.id == null ? `unknown-${index}` : String(country.id).padStart(3, '0'),
+      name: country.properties?.name || String(country.id),
+      x: Number(x.toFixed(1)),
+      y: Number(y.toFixed(1)),
+      d: pathGenerator(country)
+    };
+  })
   .filter(country => country.d);
 
 const detailCountriesById = new Map(detailCountries.features.map(country => [
