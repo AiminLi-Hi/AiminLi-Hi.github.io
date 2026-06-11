@@ -1,0 +1,11 @@
+name = "aimin-homepage-visitors-api"
+compatibility_date = "2026-06-11"
+pages_build_output_dir = "."
+
+[vars]
+ALLOWED_ORIGIN = "https://aiminli-hi.github.io,http://localhost:5173,http://127.0.0.1:5173"
+INITIAL_VISITOR_STATS = '{"pageviews":43,"countries":{"CN":19,"US":12,"TR":8,"SG":3,"RS":1},"updatedAt":"2026-06-11T08:34:03.969Z"}'
+
+[[kv_namespaces]]
+binding = "VISITOR_KV"
+id = "94bbd5a2a35448b295e91689b9f61438"

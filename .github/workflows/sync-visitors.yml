@@ -41,6 +41,8 @@ jobs:
         run: |
           npm run lint
           npm run build
+        env:
+          VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
 
       - name: Commit synchronized visitor data
         id: commit-data
@@ -61,5 +63,6 @@ jobs:
         if: steps.commit-data.outputs.changed == 'true'
         run: npm run deploy:pages
         env:
+          VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
           GIT_AUTHOR_NAME: github-actions-bot
           GIT_AUTHOR_EMAIL: github-actions-bot@users.noreply.github.com
