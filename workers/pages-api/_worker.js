@@ -4,6 +4,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://127.0.0.1:5173',
 ];
 const STORAGE_KEY = 'visitor-stats-v1';
+const HIT_EVENT_PREFIX = 'visitor-hit-v2:';
 const INITIAL_STATS = {
   pageviews: 43,
   countries: {
@@ -45,6 +46,17 @@ function json(data, env, request, status = 200) {
     headers: {
       ...corsHeaders(env, request),
       'Content-Type': 'application/json; charset=utf-8',
+    },
+  });
+}
+
+function image(data, env, request, status = 200) {
+  return new Response(data, {
+    status,
+    headers: {
+      ...corsHeaders(env, request),
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
     },
   });
 }
@@ -121,12 +133,47 @@ async function readStats(env) {
   if (!env.VISITOR_KV) return seedStats(env);
 
   const stored = await env.VISITOR_KV.get(STORAGE_KEY, 'json');
-  return stored ? normalizeStats(stored) : seedStats(env);
+  const stats = stored ? normalizeStats(stored) : seedStats(env);
+  let cursor;
+
+  do {
+    const page = await env.VISITOR_KV.list({
+      prefix: HIT_EVENT_PREFIX,
+      cursor,
+      limit: 1000,
+    });
+
+    for (const key of page.keys || []) {
+      const [, timestamp = '', countryFromName = ''] = key.name.split(':');
+      const country = normalizeCountryCode(key.metadata?.country || countryFromName);
+      stats.pageviews += 1;
+      stats.countries[country] = (stats.countries[country] || 0) + 1;
+
+      const eventUpdatedAt = key.metadata?.updatedAt
+        || (Number.isFinite(Number(timestamp)) ? new Date(Number(timestamp)).toISOString() : null);
+      if (eventUpdatedAt && (!stats.updatedAt || eventUpdatedAt > stats.updatedAt)) {
+        stats.updatedAt = eventUpdatedAt;
+      }
+    }
+
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return stats;
 }
 
-async function writeStats(env, stats) {
-  if (!env.VISITOR_KV) return;
-  await env.VISITOR_KV.put(STORAGE_KEY, JSON.stringify(stats));
+async function recordHit(env, request) {
+  const country = currentCountry(request);
+  const updatedAt = new Date().toISOString();
+
+  if (env.VISITOR_KV) {
+    const key = `${HIT_EVENT_PREFIX}${Date.now()}:${country}:${crypto.randomUUID()}`;
+    await env.VISITOR_KV.put(key, '', {
+      metadata: { country, updatedAt },
+    });
+  }
+
+  return { country, updatedAt };
 }
 
 function currentCountry(request) {
@@ -142,31 +189,25 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/health') {
-      return json({ ok: true, storage: env.VISITOR_KV ? 'kv' : 'seed' }, env, request);
+      return json({ ok: true, storage: env.VISITOR_KV ? 'kv-events' : 'seed' }, env, request);
     }
 
     if (url.pathname === '/stats') {
       return json(publicSnapshot(await readStats(env)), env, request);
     }
 
-    if (url.pathname === '/hit') {
+    if (url.pathname === '/hit' || url.pathname === '/hit.gif') {
       if (request.method !== 'GET' && request.method !== 'POST') {
         return json({ error: 'Method not allowed' }, env, request, 405);
       }
 
-      const stats = await readStats(env);
-      const country = currentCountry(request);
-      const nextStats = {
-        pageviews: (stats.pageviews || 0) + 1,
-        countries: {
-          ...(stats.countries || {}),
-          [country]: ((stats.countries || {})[country] || 0) + 1,
-        },
-        updatedAt: new Date().toISOString(),
-      };
+      await recordHit(env, request);
 
-      await writeStats(env, nextStats);
-      return json(publicSnapshot(nextStats), env, request);
+      if (url.pathname === '/hit.gif') {
+        return image('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />', env, request);
+      }
+
+      return json(publicSnapshot(await readStats(env)), env, request);
     }
 
     return json({ error: 'Not found' }, env, request, 404);

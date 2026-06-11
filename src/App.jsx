@@ -75,6 +75,8 @@ const generateBibtex = (pub) => {
 
 const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
 const VISITOR_REFRESH_MS = 60_000;
+const VISITOR_BEACON_TIMEOUT_MS = 3_000;
+let visitorHitRecordedForPage = false;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
   /\bIoTJ\b|\bJIOT\b|internet of things journal/i,
@@ -236,6 +238,35 @@ const fetchRealtimeVisitorSnapshot = async (action, signal) => {
   });
   if (!response.ok) throw new Error(`Visitor API returned ${response.status}`);
   return normalizeVisitorPayload(await response.json());
+};
+
+const recordVisitorHit = () => {
+  if (!REALTIME_VISITOR_ENDPOINT || visitorHitRecordedForPage || typeof Image === 'undefined') {
+    return Promise.resolve(false);
+  }
+
+  visitorHitRecordedForPage = true;
+
+  return new Promise((resolve) => {
+    let settled = false;
+    let timeoutId;
+    const beacon = new Image(1, 1);
+    const finish = (ok) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      beacon.onload = null;
+      beacon.onerror = null;
+      resolve(ok);
+    };
+
+    timeoutId = window.setTimeout(() => finish(false), VISITOR_BEACON_TIMEOUT_MS);
+    const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/hit.gif`);
+    url.searchParams.set('t', String(Date.now()));
+    beacon.onload = () => finish(true);
+    beacon.onerror = () => finish(false);
+    beacon.src = url.toString();
+  });
 };
 
 const stripHtml = (value = '') => String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -599,9 +630,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
     let cancelled = false;
     const controller = new AbortController();
 
-    const loadSnapshot = async (action) => {
+    const loadSnapshot = async () => {
       try {
-        const realtimeSnapshot = await fetchRealtimeVisitorSnapshot(action, controller.signal);
+        const realtimeSnapshot = await fetchRealtimeVisitorSnapshot('stats', controller.signal);
         if (!cancelled && realtimeSnapshot) {
           setSnapshot(realtimeSnapshot);
           setVisitorUpdatedAt(realtimeSnapshot.updatedAt || new Date().toISOString());
@@ -611,8 +642,13 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       }
     };
 
-    loadSnapshot('hit');
-    const intervalId = window.setInterval(() => loadSnapshot('stats'), VISITOR_REFRESH_MS);
+    const recordAndRefresh = async () => {
+      await recordVisitorHit();
+      await loadSnapshot();
+    };
+
+    recordAndRefresh();
+    const intervalId = window.setInterval(loadSnapshot, VISITOR_REFRESH_MS);
 
     return () => {
       cancelled = true;

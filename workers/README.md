@@ -10,7 +10,8 @@ It provides realtime country-level aggregate visitor counts for the homepage.
 
 It exposes:
 
-- `GET /hit`: records one pageview and returns the latest snapshot.
+- `GET /hit.gif`: records one pageview through a 1x1 image beacon. This is the preferred browser counter because it does not depend on CORS `fetch`.
+- `GET /hit`: records one pageview and returns the latest snapshot as JSON.
 - `GET /stats`: returns the latest snapshot without incrementing.
 - `GET /health`: health check.
 
@@ -30,7 +31,7 @@ Then set the homepage build environment variable:
 VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors-api.pages.dev
 ```
 
-The API stores only aggregate country counts and total pageviews. It does not store IP addresses, user agents, or individual visitor identities.
+The API stores only country-level aggregate counts plus anonymous per-hit KV event keys used to avoid lost updates. It does not store IP addresses, user agents, or individual visitor identities.
 
 ## Durable Object Alternative
 
