@@ -19,6 +19,20 @@
   border-color: rgba(34, 211, 238, 0.7);
 }
 
+.visitor-map-frame--interactive {
+  cursor: zoom-in;
+}
+
+.visitor-map-frame--interactive:focus-visible {
+  outline: 3px solid rgba(34, 211, 238, 0.52);
+  outline-offset: 3px;
+}
+
+.visitor-map-frame--expanded {
+  height: 100%;
+  border-radius: 1.25rem;
+}
+
 .visitor-map-frame--dark {
   border-color: rgba(51, 65, 85, 0.9);
   background:
@@ -34,88 +48,161 @@
   color: rgba(148, 163, 184, 0.16);
 }
 
+.visitor-world-map::before,
+.visitor-world-map::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.visitor-world-map::before {
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(125, 211, 252, 0.045) 0 1px, transparent 1px 20px),
+    repeating-linear-gradient(90deg, rgba(125, 211, 252, 0.035) 0 1px, transparent 1px 24px);
+  mix-blend-mode: screen;
+}
+
+.visitor-world-map::after {
+  z-index: 3;
+  background:
+    linear-gradient(90deg, rgba(2, 6, 23, 0.2), transparent 18%, transparent 82%, rgba(2, 6, 23, 0.2)),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.14), transparent 24%, transparent 72%, rgba(2, 6, 23, 0.22));
+}
+
+.visitor-map-frame--expanded .visitor-world-map {
+  height: 100%;
+  min-height: 22rem;
+}
+
 .visitor-real-map {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  shape-rendering: geometricPrecision;
+  z-index: 1;
+}
+
+.visitor-map-ocean-base {
+  opacity: 0.96;
 }
 
 .visitor-map-ocean-grid {
-  opacity: 0.7;
+  opacity: 0.56;
 }
 
 .visitor-map-graticule {
   fill: none;
-  stroke: rgba(56, 189, 248, 0.11);
+  stroke: rgba(56, 189, 248, 0.13);
   stroke-width: 1;
 }
 
 .visitor-map-country {
-  fill: rgba(148, 163, 184, 0.24);
-  stroke: rgba(226, 232, 240, 0.28);
+  fill: rgba(148, 163, 184, 0.25);
+  stroke: rgba(226, 232, 240, 0.31);
   stroke-width: 0.45;
+  vector-effect: non-scaling-stroke;
 }
 
 .visitor-map-borders {
   fill: none;
   stroke: rgba(226, 232, 240, 0.18);
   stroke-width: 0.35;
+  vector-effect: non-scaling-stroke;
 }
 
 .visitor-map-country-active {
-  fill: rgba(34, 211, 238, 0.32);
-  stroke: rgba(103, 232, 249, 0.88);
+  fill: rgba(45, 212, 191, 0.38);
+  stroke: rgba(103, 232, 249, 0.92);
   stroke-width: 1.2;
-  filter: drop-shadow(0 0 9px rgba(34, 211, 238, 0.45));
+  filter: drop-shadow(0 0 11px rgba(34, 211, 238, 0.52));
+  vector-effect: non-scaling-stroke;
   animation: visitor-country-pulse 3.2s ease-in-out infinite;
 }
 
 .visitor-map-route {
   fill: none;
-  stroke: rgba(45, 212, 191, 0.38);
+  stroke: rgba(45, 212, 191, 0.42);
   stroke-width: 1;
   stroke-dasharray: 5 7;
+  vector-effect: non-scaling-stroke;
 }
 
-.visitor-map-region {
-  position: absolute;
-  width: 2.35rem;
-  height: 2.35rem;
-  transform: translate(-50%, -50%);
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.3), rgba(34, 211, 238, 0.08) 48%, transparent 72%);
-  animation: visitor-region-pulse 3.2s ease-in-out infinite;
+.visitor-map-svg-marker {
   pointer-events: none;
+  opacity: 0;
+  animation: visitor-svg-marker-enter 520ms ease both;
 }
 
-.visitor-map-marker {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  border-radius: 9999px;
-  background: rgba(8, 47, 73, 0.9);
-  border: 1px solid rgba(103, 232, 249, 0.38);
-  color: #cffafe;
-  padding: 0.28rem 0.48rem;
-  font-size: 0.7rem;
-  line-height: 1;
-  box-shadow: 0 10px 20px rgba(8, 47, 73, 0.25);
-  animation: visitor-marker-enter 600ms ease both;
+.visitor-map-svg-leader {
+  stroke: rgba(103, 232, 249, 0.42);
+  stroke-width: 0.8;
+  stroke-dasharray: 2.5 3.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
 
-.visitor-map-marker em {
-  font-style: normal;
-  color: white;
-  font-weight: 800;
+.visitor-map-svg-region {
+  fill: rgba(34, 211, 238, 0.2);
+  stroke: rgba(103, 232, 249, 0.68);
+  stroke-width: 1.3;
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.58));
+  transform-box: fill-box;
+  transform-origin: center;
+  vector-effect: non-scaling-stroke;
+  animation: visitor-svg-region-pulse 3.2s ease-in-out infinite;
+}
+
+.visitor-map-svg-pill rect {
+  fill: rgba(7, 32, 53, 0.94);
+  stroke: rgba(125, 211, 252, 0.58);
+  stroke-width: 1;
+  filter: drop-shadow(0 4px 10px rgba(2, 8, 23, 0.32));
+  vector-effect: non-scaling-stroke;
+}
+
+.visitor-map-svg-pill text {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: rgba(8, 47, 73, 0.8);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.visitor-map-svg-code {
+  fill: #67e8f9;
+}
+
+.visitor-map-svg-count {
+  text-anchor: end;
+  fill: #ffffff;
+}
+
+.visitor-map-frame--expanded .visitor-map-svg-pill text {
+  font-size: 10px;
+}
+
+.visitor-map-frame--expanded .visitor-map-svg-region {
+  stroke-width: 1.1;
+}
+
+.visitor-map-frame--expanded .visitor-map-country {
+  stroke-width: 0.32;
+}
+
+.visitor-map-frame--expanded .visitor-map-country-active {
+  stroke-width: 0.9;
 }
 
 .visitor-map-label {
   position: absolute;
   left: 1rem;
   top: 1rem;
+  z-index: 4;
   color: #cffafe;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -136,6 +223,7 @@
   position: absolute;
   left: 1rem;
   bottom: 1rem;
+  z-index: 4;
   display: flex;
   gap: 0.45rem;
   flex-wrap: wrap;
@@ -149,6 +237,34 @@
   padding: 0.42rem 0.65rem;
   font-size: 0.74rem;
   font-weight: 800;
+}
+
+.visitor-map-expand-badge {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  background: rgba(8, 47, 73, 0.78);
+  color: #e0f2fe;
+  padding: 0.42rem 0.62rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 12px 24px rgba(8, 47, 73, 0.24);
+  opacity: 0.9;
+  transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.visitor-map-frame--interactive:hover .visitor-map-expand-badge,
+.visitor-map-frame--interactive:focus-visible .visitor-map-expand-badge {
+  border-color: rgba(103, 232, 249, 0.58);
+  opacity: 1;
+  transform: translateY(-1px);
 }
 
 .visitor-stat-metric {
@@ -192,12 +308,25 @@
   50% { fill-opacity: 0.55; }
 }
 
-@keyframes visitor-region-pulse {
-  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.9); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+@keyframes visitor-svg-region-pulse {
+  0%, 100% { opacity: 0.68; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1.25); }
 }
 
-@keyframes visitor-marker-enter {
-  from { opacity: 0; transform: translate(-50%, -40%) scale(0.92); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+@keyframes visitor-svg-marker-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .visitor-map-frame--expanded .visitor-world-map {
+    min-height: 19rem;
+  }
+
+  .visitor-map-expand-badge {
+    right: 0.75rem;
+    top: 0.75rem;
+    padding: 0.38rem 0.5rem;
+    font-size: 0.66rem;
+  }
 }

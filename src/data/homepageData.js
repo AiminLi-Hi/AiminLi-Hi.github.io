@@ -620,20 +620,24 @@ export const PROFILE_DATA = {
     ],
     mentoring: {
       title: "Research Leadership and Mentorship",
+      leadershipTitle: "Research Leadership",
+      leadershipSummary: "Initiated and led student-involved research projects across B.S., M.S., and Ph.D. stages by shaping research questions, mathematical models, and solution frameworks, then mentoring analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
+      studentListOpen: "Show full student list",
+      studentListClose: "Show concise list",
       collaborationTitle: "Student mentorship and collaboration",
       columns: { student: "Student / period", stage: "Stage", outcome: "Mentorship / outcome" },
       students: [
+        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
         { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; VTC; admitted to HKU Ph.D." },
         { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; now Ph.D. at Zhengzhou University." },
         { name: "Shanmugarajan Anand", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; IAC; admitted to the M.S. program at the National University of Singapore (NUS)." },
         { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; Asilomar; works at the Indian Space Research Organisation (ISRO)." },
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
         { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; accepted by IEEE TMC." },
         { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. collaboration; ISIT; METU." },
         { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. collaboration; SIGCOMM Workshop; METU." },
         { name: "Kunpeng Liu", period: "2024-2026", stage: "M.S.", outcome: "M.S. collaboration; ICC/INFOCOM Workshop; now at Huawei." },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
         { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. and Ph.D. collaboration; WCM/TCOM/TVT/JSAIT; Ph.D. at HIT." }
       ]
     }
@@ -734,21 +738,25 @@ export const PROFILE_DATA = {
     ],
     mentoring: {
       title: "科研领导力与学生指导",
+      leadershipTitle: "科研领导力",
+      leadershipSummary: "面向本科、硕士与博士阶段学生共同推进研究项目：凝练研究问题、建立数学模型与求解框架，并指导分析、仿真与实现，推动形成论文成果及后续升学或职业发展。",
+      studentListOpen: "展开完整名单",
+      studentListClose: "收起为简表",
       collaborationTitle: "学生指导与科研合作",
       columns: { student: "学生 / 合作时间", stage: "阶段", outcome: "指导 / 成果" },
       students: [
-        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科阶段合作；VTC；获 HKU 博士录取。" },
+        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "共同指导硕士论文；MobiHoc/TMC；现于中东技术大学攻读博士。" },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科阶段合作；ITW；获加州理工学院博士录取。" },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士阶段合作；TWC/ISIT/ITW；获瑞典皇家理工学院博士录取。" },
+        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科阶段合作；VTC；获香港大学博士录取。" },
         { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士阶段合作；现为郑州大学博士生。" },
-        { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科阶段合作；IAC；获新加坡国立大学（NUS）硕士录取。" },
+        { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科阶段合作；IAC；获新加坡国立大学硕士录取。" },
         { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科阶段合作；Asilomar；现就职于 Indian Space Research Organisation (ISRO)。" },
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "共同指导硕士论文；MobiHoc/TMC；现于 METU 攻读博士。" },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科阶段合作；ITW；获 Caltech 博士录取。" },
         { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士阶段合作；论文被 IEEE TMC 接收。" },
-        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士阶段合作；ISIT；METU。" },
-        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科与硕士阶段合作；SIGCOMM Workshop；METU。" },
+        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士阶段合作；ISIT；中东技术大学。" },
+        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科与硕士阶段合作；SIGCOMM Workshop；中东技术大学。" },
         { name: "Kunpeng Liu", period: "2024-2026", stage: "硕士", outcome: "硕士阶段合作；ICC/INFOCOM Workshop；现就职于华为。" },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士阶段合作；TWC/ISIT/ITW；获 KTH 博士录取。" },
-        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科与博士阶段合作；WCM/TCOM/TVT/JSAIT；现于哈工大攻读博士。" }
+        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科与博士阶段合作；WCM/TCOM/TVT/JSAIT；现于哈尔滨工业大学攻读博士。" }
       ]
     }
   }

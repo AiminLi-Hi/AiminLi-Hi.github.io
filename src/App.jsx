@@ -9,7 +9,7 @@ import {
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
   Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus, ArrowUpDown,
   MessageCircle, Plane, Landmark, Network, GitCommit, Languages,
-  Menu, X // Added Menu and X icons for mobile navigation
+  Maximize2, Menu, X
 } from 'lucide-react';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
 
@@ -77,6 +77,7 @@ const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT |
 const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
+const MENTORING_STUDENT_PREVIEW_LIMIT = 3;
 let visitorHitRecordedForPage = false;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
@@ -131,6 +132,9 @@ const UI_COPY = {
     viewStats: 'View Stats',
     hideStats: 'Hide Stats',
     visitorMap: 'Visitor Map',
+    expandVisitorMap: 'Enlarge map',
+    closeVisitorMap: 'Close map',
+    visitorMapModalTitle: 'Global Visitor Map',
     topVisitorCountries: 'Top Visitor Countries',
     showRemainingCountries: 'Show remaining',
     showTopVisitorCountriesOnly: 'Show top 5 only',
@@ -179,6 +183,9 @@ const UI_COPY = {
     viewStats: '查看统计',
     hideStats: '收起统计',
     visitorMap: '访客地图',
+    expandVisitorMap: '放大地图',
+    closeVisitorMap: '关闭地图',
+    visitorMapModalTitle: '全球访客地图',
     topVisitorCountries: '访问国家排名',
     showRemainingCountries: '展开其余',
     showTopVisitorCountriesOnly: '只显示前五名',
@@ -432,14 +439,40 @@ const getVisitorSnapshot = (syncData) => {
   };
 };
 
+const VISITOR_COUNTRY_FALLBACK_POINTS = new Map([
+  ['US', { x: 203.9, y: 84.1 }],
+  ['CA', { x: 178.2, y: 57.8 }],
+  ['TR', { x: 412.2, y: 93.3 }],
+  ['CN', { x: 515.1, y: 98.5 }],
+  ['SG', { x: 526.4, y: 163.5 }],
+  ['JP', { x: 565.8, y: 96.2 }],
+  ['KR', { x: 548.8, y: 95.3 }],
+  ['RS', { x: 390.1, y: 83.8 }],
+  ['GB', { x: 350.8, y: 66.3 }],
+  ['DE', { x: 375.1, y: 72.1 }],
+  ['FR', { x: 360.4, y: 79.8 }],
+  ['IN', { x: 477.1, y: 129.4 }],
+  ['AU', { x: 575.9, y: 224.1 }],
+]);
+
+const VISITOR_MARKER_LABEL_OFFSETS = new Map([
+  ['CN', { side: 'left', y: -12 }],
+  ['JP', { side: 'right', y: -32 }],
+  ['KR', { side: 'right', y: 10 }],
+  ['SG', { side: 'right', y: 12 }],
+  ['TR', { side: 'right', y: -14 }],
+  ['NL', { side: 'left', y: -24 }],
+  ['RS', { side: 'left', y: 6 }],
+]);
+
 const COUNTRY_NAME_ALIASES = new Map([
   ['united states', 'united states of america'],
   ['usa', 'united states of america'],
   ['turkiye', 'turkey'],
   ['czechia', 'czech republic'],
   ['russia', 'russian federation'],
-  ['south korea', 'korea south'],
-  ['north korea', 'korea north'],
+  ['republic of korea', 'south korea'],
+  ['democratic people s republic of korea', 'north korea'],
   ['vietnam', 'viet nam'],
   ['laos', 'lao pdr'],
   ['syria', 'syrian arab republic'],
@@ -469,11 +502,12 @@ const getActiveVisitorCountries = (snapshot, mapData) => {
     const normalized = normalizeCountryName(country.matchName || country.name);
     const aliased = COUNTRY_NAME_ALIASES.get(normalized) || normalized;
     const geometry = activeByCode.get(country.code) || mapCountryByName.get(aliased) || mapCountryByName.get(normalized);
+    const fallbackPoint = VISITOR_COUNTRY_FALLBACK_POINTS.get(country.code);
     return {
       ...country,
       delay: country.delay ?? Number((index * 0.4).toFixed(1)),
-      x: geometry?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
-      y: geometry?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
+      x: geometry?.x || fallbackPoint?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
+      y: geometry?.y || fallbackPoint?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
       d: geometry?.d || '',
     };
   });
@@ -683,6 +717,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(staticSnapshot.updatedAt || syncData.generatedAt || null);
   const [showStatsDetails, setShowStatsDetails] = useState(false);
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
+  const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
   const snapshotRef = useRef(staticSnapshot);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
@@ -694,6 +729,119 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
   const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
+
+  const openVisitorMapModal = () => setShowVisitorMapModal(true);
+  const closeVisitorMapModal = () => setShowVisitorMapModal(false);
+  const handleVisitorMapKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openVisitorMapModal();
+    }
+  };
+
+  const renderVisitorMap = ({ expanded = false } = {}) => (
+    <div
+      className={`visitor-map-frame ${expanded ? 'visitor-map-frame--expanded' : 'visitor-map-frame--interactive'} ${darkMode ? 'visitor-map-frame--dark' : ''}`}
+      role={expanded ? undefined : 'button'}
+      tabIndex={expanded ? undefined : 0}
+      aria-label={expanded ? ui.visitorMapModalTitle : ui.expandVisitorMap}
+      onClick={expanded ? undefined : openVisitorMapModal}
+      onKeyDown={expanded ? undefined : handleVisitorMapKeyDown}
+    >
+      <div className="visitor-world-map">
+        <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map visitor snapshot" focusable="false">
+          <defs>
+            <linearGradient id={expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'} x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stopColor="#071a2d" />
+              <stop offset="52%" stopColor="#08283b" />
+              <stop offset="100%" stopColor="#06323a" />
+            </linearGradient>
+            <pattern id={expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'} width="42" height="42" patternUnits="userSpaceOnUse">
+              <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeWidth="1" />
+            </pattern>
+          </defs>
+          <rect className="visitor-map-ocean-base" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'})`} />
+          <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'})`} />
+          <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
+          <g>
+            {(mapData?.countries || []).map((country, index) => (
+              <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d}>
+                <title>{country.name}</title>
+              </path>
+            ))}
+          </g>
+          {mapData?.borders && <path className="visitor-map-borders" d={mapData.borders} />}
+          <g>
+            {activeCountries.filter(country => country.d).map(country => (
+              <path key={country.code} className="visitor-map-country-active" d={country.d} style={{ animationDelay: `${country.delay || 0}s` }}>
+                <title>{country.name}: {country.count} visits</title>
+              </path>
+            ))}
+          </g>
+          <g>
+            {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
+          </g>
+          <g>
+            {activeCountries.map((country, index) => {
+              const countText = String(country.count);
+              const pillWidth = Math.max(56, 46 + countText.length * 7);
+              const labelOffset = VISITOR_MARKER_LABEL_OFFSETS.get(country.code);
+              const labelX = (labelOffset?.side === 'left' || (!labelOffset && country.x > viewBox.width * 0.78))
+                ? -pillWidth - 12
+                : 10;
+              const labelY = labelOffset?.y ?? (index % 3 === 1 ? 8 : -12);
+              const leaderEndX = labelX < 0 ? labelX + pillWidth : labelX;
+              const leaderEndY = labelY + 10;
+              return (
+                <g key={`marker-${country.code}`} className="visitor-map-svg-marker" data-country-code={country.code} transform={`translate(${country.x} ${country.y})`} style={{ animationDelay: `${country.delay || 0}s` }}>
+                  <title>{country.name}: {country.count} visits</title>
+                  <line className="visitor-map-svg-leader" x1="0" y1="0" x2={leaderEndX} y2={leaderEndY} />
+                  <circle className="visitor-map-svg-region" r={expanded ? 11 : 9} />
+                  <g className="visitor-map-svg-pill" transform={`translate(${labelX} ${labelY})`}>
+                    <rect width={pillWidth} height="20" rx="10" />
+                    <text x="10" y="14" className="visitor-map-svg-code">{country.code}</text>
+                    <text x={pillWidth - 10} y="14" className="visitor-map-svg-count">{countText}</text>
+                  </g>
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+
+        <div className="visitor-map-label">
+          {ui.activeVisitorRegions}
+          <span>{ui.countrySignal}</span>
+        </div>
+        <div className="visitor-map-summary">
+          <span>{snapshot.pageviews} {ui.pageviews}</span>
+          <span>{snapshot.countries} {ui.countries}</span>
+        </div>
+        {!expanded && (
+          <span className="visitor-map-expand-badge" aria-hidden="true">
+            <Maximize2 size={14} />
+            {ui.expandVisitorMap}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  useEffect(() => {
+    if (!showVisitorMapModal) return undefined;
+
+    const originalOverflow = document.body.style.overflow;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') closeVisitorMapModal();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showVisitorMapModal]);
 
   useEffect(() => {
     if (!REALTIME_VISITOR_ENDPOINT) {
@@ -764,59 +912,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
         <div className="grid lg:grid-cols-[minmax(0,2fr)_minmax(16rem,0.95fr)] gap-6">
           <div>
             <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.visitorMap}</h3>
-            <div className={`visitor-map-frame ${darkMode ? 'visitor-map-frame--dark' : ''}`} aria-label="Global visitor statistics map">
-              <div className="visitor-world-map">
-                <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} role="img" aria-label="World map visitor snapshot" focusable="false">
-                  <defs>
-                    <pattern id="visitor-map-grid" width="42" height="42" patternUnits="userSpaceOnUse">
-                      <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeWidth="1" />
-                    </pattern>
-                  </defs>
-                  <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill="url(#visitor-map-grid)" />
-                  <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
-                  <g>
-                    {(mapData?.countries || []).map((country, index) => (
-                      <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d}>
-                        <title>{country.name}</title>
-                      </path>
-                    ))}
-                  </g>
-                  {mapData?.borders && <path className="visitor-map-borders" d={mapData.borders} />}
-                  <g>
-                    {activeCountries.filter(country => country.d).map(country => (
-                      <path key={country.code} className="visitor-map-country-active" d={country.d} style={{ animationDelay: `${country.delay || 0}s` }}>
-                        <title>{country.name}: {country.count} visits</title>
-                      </path>
-                    ))}
-                  </g>
-                  <g>
-                    {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
-                  </g>
-                </svg>
-
-                {activeCountries.map(country => {
-                  const left = `${(country.x / viewBox.width * 100).toFixed(2)}%`;
-                  const top = `${(country.y / viewBox.height * 100).toFixed(2)}%`;
-                  return (
-                    <React.Fragment key={country.code}>
-                      <span className="visitor-map-region" style={{ left, top, animationDelay: `${country.delay || 0}s` }} aria-hidden="true" />
-                      <span className="visitor-map-marker" style={{ left, top, animationDelay: `${country.delay || 0}s` }}>
-                        <strong>{country.code}</strong><em>{country.count}</em>
-                      </span>
-                    </React.Fragment>
-                  );
-                })}
-
-                <div className="visitor-map-label">
-                  {ui.activeVisitorRegions}
-                  <span>{ui.countrySignal}</span>
-                </div>
-                <div className="visitor-map-summary">
-                  <span>{snapshot.pageviews} {ui.pageviews}</span>
-                  <span>{snapshot.countries} {ui.countries}</span>
-                </div>
-              </div>
-            </div>
+            {renderVisitorMap()}
           </div>
 
           <div>
@@ -889,6 +985,40 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           </div>
         )}
       </div>
+      {showVisitorMapModal && (
+        <div
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-md sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="visitor-map-modal-title"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeVisitorMapModal();
+          }}
+        >
+          <div className={`flex h-[min(86vh,780px)] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border shadow-2xl ${darkMode ? 'border-cyan-400/20 bg-slate-950 text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}>
+            <div className={`flex items-center justify-between gap-4 border-b px-4 py-3 sm:px-5 ${darkMode ? 'border-slate-800' : 'border-slate-100'}`}>
+              <div className="min-w-0">
+                <h3 id="visitor-map-modal-title" className="truncate text-base font-extrabold sm:text-lg">{ui.visitorMapModalTitle}</h3>
+                <p className={`mt-0.5 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  {snapshot.pageviews} {ui.pageviews} · {snapshot.countries} {ui.countries}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeVisitorMapModal}
+                className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${darkMode ? 'border-slate-700 text-slate-200 hover:bg-slate-900' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                aria-label={ui.closeVisitorMap}
+                title={ui.closeVisitorMap}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 p-3 sm:p-5">
+              {renderVisitorMap({ expanded: true })}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
@@ -908,6 +1038,7 @@ export default function AcademicProfile() {
   const [activeSection, setActiveSection] = useState('about');
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAllMentoringStudents, setShowAllMentoringStudents] = useState(false);
 
   // -- Filter & Search States --
   const [searchQuery, setSearchQuery] = useState("");
@@ -926,6 +1057,10 @@ export default function AcademicProfile() {
   useSEO(content.meta_title, content.meta_desc, lang);
   const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
+  const visibleMentoringStudents = showAllMentoringStudents
+    ? content.mentoring.students
+    : content.mentoring.students.slice(0, MENTORING_STUDENT_PREVIEW_LIMIT);
+  const hiddenMentoringStudentCount = Math.max(content.mentoring.students.length - visibleMentoringStudents.length, 0);
 
   const venueStats = useMemo(() => {
     const counts = {};
@@ -1615,6 +1750,22 @@ export default function AcademicProfile() {
                 <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
               </div>
 
+              <div className={`mb-6 rounded-2xl border ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
+                <div className="flex w-full items-center justify-between gap-4 px-5 py-4">
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-100 text-cyan-700'}`}>
+                      <Network size={17} />
+                    </span>
+                    <span className={`truncate text-sm font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      {content.mentoring.leadershipTitle}
+                    </span>
+                  </span>
+                </div>
+                <div id="mentoring-leadership-note" className={`border-t px-5 py-4 text-sm leading-relaxed ${darkMode ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-600'}`}>
+                  {content.mentoring.leadershipSummary}
+                </div>
+              </div>
+
               <div>
                 <h3 className={`text-base font-extrabold mb-4 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
                 <div className={`rounded-2xl border overflow-hidden ${darkMode ? 'border-slate-700 bg-slate-950/30' : 'border-slate-200 bg-slate-50/50'}`}>
@@ -1624,7 +1775,7 @@ export default function AcademicProfile() {
                     <div>{content.mentoring.columns.outcome}</div>
                   </div>
                   <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
-                    {content.mentoring.students.map((student) => (
+                    {visibleMentoringStudents.map((student) => (
                       <div key={student.name} className={`grid md:grid-cols-[15rem_7.5rem_minmax(0,1fr)] gap-2 md:gap-4 px-5 py-3.5 text-sm ${darkMode ? 'hover:bg-slate-800/50' : 'hover:bg-white'} transition-colors`}>
                         <div>
                           <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
@@ -1646,6 +1797,21 @@ export default function AcademicProfile() {
                     ))}
                   </div>
                 </div>
+                {content.mentoring.students.length > MENTORING_STUDENT_PREVIEW_LIMIT && (
+                  <div className="mt-4 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowAllMentoringStudents(value => !value)}
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-extrabold transition-colors ${darkMode ? 'border-slate-700 bg-slate-900/70 text-cyan-200 hover:border-cyan-400/50 hover:bg-slate-800' : 'border-slate-200 bg-white text-cyan-800 hover:border-cyan-200 hover:bg-cyan-50'}`}
+                      aria-expanded={showAllMentoringStudents}
+                    >
+                      {showAllMentoringStudents
+                        ? content.mentoring.studentListClose
+                        : `${content.mentoring.studentListOpen} (${hiddenMentoringStudentCount})`}
+                      {showAllMentoringStudents ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
