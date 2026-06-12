@@ -866,16 +866,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       }
     };
 
-    const recordAndRefresh = async () => {
-      const realtimeSnapshot = await recordVisitorHit();
-      if (realtimeSnapshot) {
-        applyRealtimeSnapshot(realtimeSnapshot);
-        return;
-      }
-      await loadSnapshot();
-    };
-
-    recordAndRefresh();
+    loadSnapshot();
     const intervalId = window.setInterval(loadSnapshot, VISITOR_REFRESH_MS);
 
     return () => {
@@ -1061,6 +1052,10 @@ export default function AcademicProfile() {
     ? content.mentoring.students
     : content.mentoring.students.slice(0, MENTORING_STUDENT_PREVIEW_LIMIT);
   const hiddenMentoringStudentCount = Math.max(content.mentoring.students.length - visibleMentoringStudents.length, 0);
+
+  useEffect(() => {
+    recordVisitorHit();
+  }, []);
 
   const venueStats = useMemo(() => {
     const counts = {};
