@@ -95,6 +95,7 @@ const DEFAULT_VISITOR_SNAPSHOT = {
     { code: 'SG', name: 'Singapore', matchName: 'Singapore', count: 1, delay: 0.8, x: 72.8, y: 64.5 },
     { code: 'CN', name: 'China', matchName: 'China', count: 1, delay: 1.2, x: 73.2, y: 44.8 },
   ],
+  regions: {},
 };
 
 const UI_COPY = {
@@ -148,6 +149,11 @@ const UI_COPY = {
     statsTopCountry: 'Top country',
     statsLastUpdate: 'Last update',
     statsCountryShare: 'Country share',
+    regionalDetails: 'Regional details',
+    regionalDetailsHint: 'Available after new visits with state or province data.',
+    regionalNoData: 'Regional data will appear after new visits from this country.',
+    regionalCountrySelect: 'Country',
+    regionalShare: 'Regional share',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -199,6 +205,11 @@ const UI_COPY = {
     statsTopCountry: '最高国家',
     statsLastUpdate: '最近更新',
     statsCountryShare: '国家占比',
+    regionalDetails: '地区细分',
+    regionalDetailsHint: '新访问产生州/省级数据后自动显示。',
+    regionalNoData: '该国家的新访问产生后，会显示州/省级聚合数据。',
+    regionalCountrySelect: '国家',
+    regionalShare: '地区占比',
   },
 };
 
@@ -234,8 +245,29 @@ const normalizeVisitorPayload = (payload = {}) => {
     pageviews: Number(visitorSnapshot.pageviews) || ranking.reduce((sum, country) => sum + country.count, 0),
     countries: Number(visitorSnapshot.countries) || ranking.length,
     ranking,
+    regions: normalizeVisitorRegions(visitorSnapshot.regions),
     updatedAt: payload.generatedAt || payload.updatedAt || visitorSnapshot.updatedAt || null,
   };
+};
+
+const normalizeVisitorRegions = (regions = {}) => {
+  if (!regions || typeof regions !== 'object') return {};
+  return Object.fromEntries(
+    Object.entries(regions)
+      .map(([countryCode, regionRanking]) => [
+        String(countryCode).toUpperCase(),
+        Array.isArray(regionRanking)
+          ? regionRanking
+            .filter(region => region?.code && Number.isFinite(Number(region.count)))
+            .map(region => ({
+              code: String(region.code).toUpperCase(),
+              name: region.name || region.code,
+              count: Number(region.count),
+            }))
+          : [],
+      ])
+      .filter(([, regionRanking]) => regionRanking.length)
+  );
 };
 
 const fetchRealtimeVisitorSnapshot = async (action, signal) => {
@@ -436,6 +468,7 @@ const getVisitorSnapshot = (syncData) => {
     ranking: Array.isArray(snapshot.ranking) && snapshot.ranking.length
       ? snapshot.ranking
       : DEFAULT_VISITOR_SNAPSHOT.ranking,
+    regions: normalizeVisitorRegions(snapshot.regions || DEFAULT_VISITOR_SNAPSHOT.regions),
   };
 };
 
@@ -718,6 +751,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [showStatsDetails, setShowStatsDetails] = useState(false);
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
   const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
+  const [selectedVisitorCountryCode, setSelectedVisitorCountryCode] = useState('');
   const snapshotRef = useRef(staticSnapshot);
   const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
@@ -729,6 +763,17 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
   const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
+  const regionsByCountry = snapshot.regions || {};
+  const firstCountryWithRegions = snapshot.ranking.find(country => regionsByCountry[country.code]?.length);
+  const resolvedSelectedVisitorCountryCode = snapshot.ranking.some(country => country.code === selectedVisitorCountryCode)
+    ? selectedVisitorCountryCode
+    : firstCountryWithRegions?.code || snapshot.ranking[0]?.code || '';
+  const selectedVisitorCountry = snapshot.ranking.find(country => country.code === resolvedSelectedVisitorCountryCode)
+    || firstCountryWithRegions
+    || snapshot.ranking[0]
+    || null;
+  const selectedRegionRanking = selectedVisitorCountry ? (regionsByCountry[selectedVisitorCountry.code] || []) : [];
+  const selectedRegionTotal = selectedRegionRanking.reduce((sum, region) => sum + region.count, 0);
 
   const openVisitorMapModal = () => setShowVisitorMapModal(true);
   const closeVisitorMapModal = () => setShowVisitorMapModal(false);
@@ -738,6 +783,76 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       openVisitorMapModal();
     }
   };
+
+  const renderRegionalDetails = () => (
+    <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-slate-800 bg-slate-900/72' : 'border-slate-200 bg-slate-50/80'}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-slate-800'}`}>{ui.regionalDetails}</h4>
+          <p className={`mt-1 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.regionalDetailsHint}</p>
+        </div>
+        {selectedVisitorCountry && (
+          <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200' : 'border-blue-200 bg-white text-blue-700'}`}>
+            {selectedVisitorCountry.code}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <div className={`mb-2 text-[0.68rem] font-extrabold uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{ui.regionalCountrySelect}</div>
+        <div className="visitor-region-country-strip">
+          {snapshot.ranking.map(country => {
+            const hasRegions = Boolean(regionsByCountry[country.code]?.length);
+            const isSelected = resolvedSelectedVisitorCountryCode === country.code;
+            return (
+              <button
+                key={`regional-country-${country.code}`}
+                type="button"
+                onClick={() => setSelectedVisitorCountryCode(country.code)}
+                className={`visitor-region-country-button ${isSelected ? 'visitor-region-country-button--active' : ''} ${darkMode ? 'visitor-region-country-button--dark' : ''}`}
+                aria-pressed={isSelected}
+                title={hasRegions ? country.name : ui.regionalNoData}
+              >
+                <span>{country.code}</span>
+                <strong>{country.count}</strong>
+                {hasRegions && <i aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <div className={`mb-2 flex items-center justify-between gap-3 text-[0.68rem] font-extrabold uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+          <span>{selectedVisitorCountry?.name || ui.topVisitorCountries}</span>
+          <span>{ui.regionalShare}</span>
+        </div>
+        {selectedRegionRanking.length ? (
+          <div className="space-y-2">
+            {selectedRegionRanking.slice(0, 10).map(region => {
+              const percent = selectedRegionTotal ? Math.round((region.count / selectedRegionTotal) * 100) : 0;
+              return (
+                <div key={`${selectedVisitorCountry.code}-${region.code}`} className={`rounded-xl border px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/58' : 'border-slate-200 bg-white'}`}>
+                  <div className="grid grid-cols-[2.6rem_minmax(0,1fr)_2.4rem] items-center gap-2 text-sm">
+                    <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{region.code}</span>
+                    <span className={`min-w-0 truncate font-bold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{region.name}</span>
+                    <span className={`text-right font-extrabold ${darkMode ? 'text-white' : 'text-slate-950'}`}>{region.count}</span>
+                  </div>
+                  <div className={`mt-2 h-1.5 rounded-full overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-slate-200'}`} aria-label={`${region.name} ${percent}%`}>
+                    <div className="visitor-stat-bar" style={{ width: `${Math.max(percent, 5)}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className={`rounded-2xl border border-dashed px-4 py-8 text-center text-sm font-semibold leading-relaxed ${darkMode ? 'border-slate-700 text-slate-400' : 'border-slate-200 text-slate-500'}`}>
+            {ui.regionalNoData}
+          </div>
+        )}
+      </div>
+    </aside>
+  );
 
   const renderVisitorMap = ({ expanded = false } = {}) => (
     <div
@@ -1004,8 +1119,13 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                 <X size={18} />
               </button>
             </div>
-            <div className="min-h-0 flex-1 p-3 sm:p-5">
-              {renderVisitorMap({ expanded: true })}
+            <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
+              <div className="grid min-h-full gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(19rem,0.75fr)]">
+                <div className="min-h-[22rem]">
+                  {renderVisitorMap({ expanded: true })}
+                </div>
+                {renderRegionalDetails()}
+              </div>
             </div>
           </div>
         </div>

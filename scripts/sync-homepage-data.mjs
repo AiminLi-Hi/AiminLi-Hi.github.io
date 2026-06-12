@@ -31,7 +31,8 @@ const FALLBACK_DATA = {
       { code: 'TR', name: 'Türkiye', matchName: 'Turkey', count: 2, delay: 0.4 },
       { code: 'SG', name: 'Singapore', matchName: 'Singapore', count: 1, delay: 0.8 },
       { code: 'CN', name: 'China', matchName: 'China', count: 1, delay: 1.2 }
-    ]
+    ],
+    regions: {}
   },
   scholar: {
     profileUrl: SCHOLAR_PROFILE_URL,
@@ -159,8 +160,29 @@ async function fetchVisitorSnapshot(previous) {
     pageviews: Math.max(Number(snapshot.pageviews) || 0, countryTotal, Number(previousSnapshot.pageviews) || 0),
     countries: Number(snapshot.countries) || ranking.length,
     ranking,
+    regions: cleanVisitorRegions(snapshot.regions),
     updatedAt: snapshot.updatedAt || payload.generatedAt || previousSnapshot.updatedAt || null
   };
+}
+
+function cleanVisitorRegions(regions = {}) {
+  if (!regions || typeof regions !== 'object') return {};
+  return Object.fromEntries(
+    Object.entries(regions)
+      .map(([countryCode, regionRanking]) => [
+        String(countryCode).toUpperCase(),
+        Array.isArray(regionRanking)
+          ? regionRanking
+            .filter(region => region?.code && Number.isFinite(Number(region.count)))
+            .map(region => ({
+              code: String(region.code).toUpperCase(),
+              name: region.name || region.code,
+              count: Number(region.count)
+            }))
+          : []
+      ])
+      .filter(([, regionRanking]) => regionRanking.length)
+  );
 }
 
 function inferVenue(venueText) {
@@ -310,7 +332,8 @@ function cleanVisitorSnapshot(snapshot = {}) {
       name: country.name,
       matchName: country.matchName || country.name,
       count: Number(country.count) || 0
-    }))
+    })),
+    regions: cleanVisitorRegions(snapshot.regions)
   };
 }
 

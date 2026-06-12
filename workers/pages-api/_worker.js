@@ -14,6 +14,7 @@ const INITIAL_STATS = {
     SG: 3,
     RS: 1,
   },
+  regions: {},
   updatedAt: '2026-06-11T08:34:03.969Z',
 };
 
@@ -77,6 +78,21 @@ function normalizeCountryCode(value) {
   return /^[A-Z]{2}$/.test(code) ? code : 'XX';
 }
 
+function normalizeRegionCode(value) {
+  const code = String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/^[A-Z]{2}-/, '')
+    .replace(/[^A-Z0-9]/g, '');
+  return /^[A-Z0-9]{1,8}$/.test(code) ? code : '';
+}
+
+function normalizeRegionName(value, fallback = '') {
+  const name = String(value || '').replace(/\s+/g, ' ').trim();
+  if (name.length > 80) return fallback;
+  return name || fallback;
+}
+
 function countryName(code) {
   if (code === 'XX') return 'Unknown';
   try {
@@ -88,13 +104,13 @@ function countryName(code) {
 }
 
 function seedStats(env) {
-  if (!env.INITIAL_VISITOR_STATS) return INITIAL_STATS;
+  if (!env.INITIAL_VISITOR_STATS) return normalizeStats(INITIAL_STATS);
 
   try {
     const parsed = JSON.parse(env.INITIAL_VISITOR_STATS);
     return normalizeStats(parsed);
   } catch {
-    return INITIAL_STATS;
+    return normalizeStats(INITIAL_STATS);
   }
 }
 
@@ -106,12 +122,64 @@ function normalizeStats(value) {
         .filter(([, count]) => count > 0)
     )
     : {};
+  const regions = normalizeRegions(value?.regions);
 
   return {
     pageviews: Math.max(0, Number(value?.pageviews) || 0),
     countries,
+    regions,
     updatedAt: value?.updatedAt || null,
   };
+}
+
+function normalizeRegions(value) {
+  if (!value || typeof value !== 'object') return {};
+
+  const regions = {};
+  for (const [countryValue, entries] of Object.entries(value)) {
+    const country = normalizeCountryCode(countryValue);
+    if (country === 'XX') continue;
+
+    const normalizedEntries = {};
+    const sourceEntries = Array.isArray(entries)
+      ? entries.map(region => [region?.code, region])
+      : Object.entries(entries || {});
+
+    for (const [regionValue, regionData] of sourceEntries) {
+      const code = normalizeRegionCode(regionData?.code || regionValue);
+      const count = Number(regionData?.count ?? regionData) || 0;
+      if (!code || count <= 0) continue;
+      normalizedEntries[code] = {
+        count,
+        name: normalizeRegionName(regionData?.name || regionData?.region || code, code),
+      };
+    }
+
+    if (Object.keys(normalizedEntries).length) {
+      regions[country] = normalizedEntries;
+    }
+  }
+
+  return regions;
+}
+
+function publicRegions(regions = {}) {
+  return Object.fromEntries(
+    Object.entries(regions)
+      .map(([country, regionMap]) => [
+        country,
+        Object.entries(regionMap || {})
+          .map(([code, region]) => ({
+            code,
+            name: normalizeRegionName(region?.name, code),
+            count: Number(region?.count) || 0,
+          }))
+          .filter(region => region.count > 0)
+          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+          .slice(0, 20),
+      ])
+      .filter(([, ranking]) => ranking.length)
+  );
 }
 
 function publicSnapshot(stats) {
@@ -135,9 +203,27 @@ function publicSnapshot(stats) {
       pageviews: stats.pageviews || 0,
       countries: ranking.length,
       ranking,
+      regions: publicRegions(stats.regions),
       updatedAt: stats.updatedAt,
     },
   };
+}
+
+function addRegionToStats(stats, hit) {
+  if (!hit.regionCode || hit.country === 'XX') return stats.regions || {};
+
+  const regions = {
+    ...(stats.regions || {}),
+    [hit.country]: {
+      ...((stats.regions || {})[hit.country] || {}),
+    },
+  };
+  const previous = regions[hit.country][hit.regionCode] || { count: 0, name: hit.regionName || hit.regionCode };
+  regions[hit.country][hit.regionCode] = {
+    count: (Number(previous.count) || 0) + 1,
+    name: hit.regionName || previous.name || hit.regionCode,
+  };
+  return regions;
 }
 
 function addHitToStats(stats, hit) {
@@ -147,6 +233,7 @@ function addHitToStats(stats, hit) {
       ...(stats.countries || {}),
       [hit.country]: ((stats.countries || {})[hit.country] || 0) + 1,
     },
+    regions: addRegionToStats(stats, hit),
     updatedAt: hit.updatedAt || new Date().toISOString(),
   };
 }
@@ -167,12 +254,19 @@ async function readStats(env) {
 
     for (const key of page.keys || []) {
       const [, timestamp = '', countryFromName = ''] = key.name.split(':');
-      const country = normalizeCountryCode(key.metadata?.country || countryFromName);
-      stats.pageviews += 1;
-      stats.countries[country] = (stats.countries[country] || 0) + 1;
-
       const eventUpdatedAt = key.metadata?.updatedAt
         || (Number.isFinite(Number(timestamp)) ? new Date(Number(timestamp)).toISOString() : null);
+      const hit = normalizeHit({
+        country: key.metadata?.country || countryFromName,
+        regionCode: key.metadata?.regionCode,
+        regionName: key.metadata?.regionName || key.metadata?.region,
+        updatedAt: eventUpdatedAt,
+      });
+      const nextStats = addHitToStats(stats, hit);
+      stats.pageviews = nextStats.pageviews;
+      stats.countries = nextStats.countries;
+      stats.regions = nextStats.regions;
+
       if (eventUpdatedAt && (!stats.updatedAt || eventUpdatedAt > stats.updatedAt)) {
         stats.updatedAt = eventUpdatedAt;
       }
@@ -185,21 +279,42 @@ async function readStats(env) {
 }
 
 async function recordHit(env, request) {
-  const country = currentCountry(request);
+  const hit = currentHit(request);
   const updatedAt = new Date().toISOString();
+  const event = { ...hit, updatedAt };
 
   if (env.VISITOR_KV) {
-    const key = `${HIT_EVENT_PREFIX}${Date.now()}:${country}:${crypto.randomUUID()}`;
+    const key = `${HIT_EVENT_PREFIX}${Date.now()}:${event.country}:${crypto.randomUUID()}`;
     await env.VISITOR_KV.put(key, '', {
-      metadata: { country, updatedAt },
+      metadata: {
+        country: event.country,
+        regionCode: event.regionCode,
+        regionName: event.regionName,
+        updatedAt,
+      },
     });
   }
 
-  return { country, updatedAt };
+  return event;
 }
 
-function currentCountry(request) {
-  return normalizeCountryCode(request.cf?.country || request.headers.get('CF-IPCountry'));
+function normalizeHit(value = {}) {
+  const country = normalizeCountryCode(value.country);
+  const regionCode = normalizeRegionCode(value.regionCode);
+  return {
+    country,
+    regionCode,
+    regionName: normalizeRegionName(value.regionName, regionCode),
+    updatedAt: value.updatedAt || new Date().toISOString(),
+  };
+}
+
+function currentHit(request) {
+  return normalizeHit({
+    country: request.cf?.country || request.headers.get('CF-IPCountry'),
+    regionCode: request.cf?.regionCode || request.headers.get('CF-Region-Code'),
+    regionName: request.cf?.region || request.headers.get('CF-Region'),
+  });
 }
 
 function callbackName(value) {

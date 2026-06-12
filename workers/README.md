@@ -33,7 +33,7 @@ Then set the homepage build environment variable:
 VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors-api.pages.dev
 ```
 
-The API stores only country-level aggregate counts plus anonymous per-hit KV event keys used to avoid lost updates. It does not store IP addresses, user agents, or individual visitor identities.
+The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys used to avoid lost updates. It does not store IP addresses, user agents, city-level data, or individual visitor identities.
 
 ## Durable Object Alternative
 
