@@ -18,6 +18,7 @@ const INITIAL_STATS = {
   updatedAt: '2026-06-11T08:34:03.969Z',
 };
 const COUNTRY_REGION_OVERRIDES = {
+  HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
 };
 
@@ -97,6 +98,7 @@ function normalizeRegionName(value, fallback = '') {
 }
 
 function regionNameFor(country, regionCode, value) {
+  if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
   return normalizeRegionName(value, regionCode);
 }

@@ -5,6 +5,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ];
 const STORAGE_KEY = 'visitor-stats-v1';
 const COUNTRY_REGION_OVERRIDES = {
+  HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
 };
 
@@ -62,6 +63,7 @@ function normalizeRegionName(value, fallback = '') {
 }
 
 function regionNameFor(country, regionCode, value) {
+  if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
   return normalizeRegionName(value, regionCode);
 }

@@ -44,6 +44,7 @@ const FALLBACK_DATA = {
   extraPublications: []
 };
 const VISITOR_COUNTRY_REGION_OVERRIDES = {
+  HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong', countryName: 'China', matchName: 'China' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' }
 };
 
@@ -102,6 +103,7 @@ function decodeHtml(value = '') {
 }
 
 function regionNameFor(country, regionCode, value) {
+  if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
   return String(value || regionCode).replace(/\s+/g, ' ').trim() || regionCode;
 }

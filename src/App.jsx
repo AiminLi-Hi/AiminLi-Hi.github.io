@@ -98,6 +98,7 @@ const DEFAULT_VISITOR_SNAPSHOT = {
   regions: {},
 };
 const VISITOR_COUNTRY_REGION_OVERRIDES = {
+  HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong', countryName: 'China', matchName: 'China' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' },
 };
 const EMPTY_VISITOR_SNAPSHOT = {
@@ -238,6 +239,7 @@ const getRuntimeMapData = () => (
 );
 
 const visitorRegionNameFor = (country, regionCode, value) => {
+  if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
   return value || regionCode;
 };
