@@ -97,6 +97,9 @@ const DEFAULT_VISITOR_SNAPSHOT = {
   ],
   regions: {},
 };
+const VISITOR_COUNTRY_REGION_OVERRIDES = {
+  TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' },
+};
 const EMPTY_VISITOR_SNAPSHOT = {
   pageviews: 0,
   countries: 0,
@@ -234,12 +237,106 @@ const getRuntimeMapData = () => (
     : null
 );
 
+const visitorRegionNameFor = (country, regionCode, value) => {
+  if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  return value || regionCode;
+};
+
+const addVisitorRegion = (regions, country, regionCode, regionName, count) => {
+  if (!country || !regionCode || count <= 0) return;
+  regions[country] = regions[country] || {};
+  const previous = regions[country][regionCode] || { count: 0, name: visitorRegionNameFor(country, regionCode, regionName) };
+  regions[country][regionCode] = {
+    count: (Number(previous.count) || 0) + count,
+    name: visitorRegionNameFor(country, regionCode, regionName || previous.name),
+  };
+};
+
+const visitorRegionRows = (regionMap) => (
+  Array.isArray(regionMap)
+    ? regionMap
+    : Object.entries(regionMap || {}).map(([code, region]) => ({
+      code,
+      name: region?.name || code,
+      count: Number(region?.count ?? region) || 0,
+    }))
+);
+
+const mergeVisitorRegions = (baseRegions = {}, extraRegions = {}) => {
+  const merged = {};
+  for (const [country, regionMap] of Object.entries(baseRegions || {})) {
+    for (const region of visitorRegionRows(regionMap)) {
+      addVisitorRegion(merged, country, String(region.code || '').toUpperCase(), region.name, Number(region.count) || 0);
+    }
+  }
+  for (const [country, regionMap] of Object.entries(extraRegions || {})) {
+    for (const region of visitorRegionRows(regionMap)) {
+      addVisitorRegion(merged, country, String(region.code || '').toUpperCase(), region.name, Number(region.count) || 0);
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(merged)
+      .map(([country, regionMap]) => [
+        country,
+        Object.entries(regionMap)
+          .map(([code, region]) => ({
+            code,
+            name: visitorRegionNameFor(country, code, region.name),
+            count: Number(region.count) || 0,
+          }))
+          .filter(region => region.count > 0)
+          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
+      ])
+      .filter(([, regionRanking]) => regionRanking.length)
+  );
+};
+
+const normalizeVisitorRanking = (rawRanking = []) => {
+  const countries = new Map();
+  const overrideRegions = {};
+  const skipRegionCountries = new Set();
+
+  for (const country of rawRanking) {
+    const rawCode = String(country.code || '').toUpperCase();
+    const count = Number(country.count) || 0;
+    if (!rawCode || count <= 0) continue;
+
+    const override = VISITOR_COUNTRY_REGION_OVERRIDES[rawCode];
+    const code = override?.country || rawCode;
+    const previous = countries.get(code) || {
+      ...country,
+      code,
+      name: override?.countryName || country.name || code,
+      matchName: override?.matchName || country.matchName || country.name || code,
+      count: 0,
+    };
+    previous.count += count;
+    countries.set(code, previous);
+
+    if (override) {
+      skipRegionCountries.add(rawCode);
+      addVisitorRegion(overrideRegions, override.country, override.regionCode, override.regionName, count);
+    }
+  }
+
+  const ranking = Array.from(countries.values())
+    .sort((a, b) => b.count - a.count || a.code.localeCompare(b.code))
+    .map((country, index) => ({
+      ...country,
+      delay: Number((index * 0.4).toFixed(1)),
+    }));
+
+  return { ranking, overrideRegions, skipRegionCountries };
+};
+
 const normalizeVisitorPayload = (payload = {}) => {
   const visitorSnapshot = payload.visitorSnapshot || payload;
-  const ranking = Array.isArray(visitorSnapshot.ranking)
+  const rawRanking = Array.isArray(visitorSnapshot.ranking)
     ? visitorSnapshot.ranking
       .filter(country => country?.code && Number.isFinite(Number(country.count)))
       .map((country, index) => ({
+        ...country,
         code: String(country.code).toUpperCase(),
         name: country.name || country.code,
         matchName: country.matchName || country.name || country.code,
@@ -247,36 +344,42 @@ const normalizeVisitorPayload = (payload = {}) => {
         delay: country.delay ?? Number((index * 0.4).toFixed(1)),
       }))
     : [];
+  const { ranking, overrideRegions, skipRegionCountries } = normalizeVisitorRanking(rawRanking);
 
   if (!ranking.length) return null;
 
   return {
     pageviews: Number(visitorSnapshot.pageviews) || ranking.reduce((sum, country) => sum + country.count, 0),
-    countries: Number(visitorSnapshot.countries) || ranking.length,
+    countries: ranking.length,
     ranking,
-    regions: normalizeVisitorRegions(visitorSnapshot.regions),
+    regions: mergeVisitorRegions(normalizeVisitorRegions(visitorSnapshot.regions, skipRegionCountries), overrideRegions),
     updatedAt: payload.generatedAt || payload.updatedAt || visitorSnapshot.updatedAt || null,
   };
 };
 
-const normalizeVisitorRegions = (regions = {}) => {
+const normalizeVisitorRegions = (regions = {}, skipRegionCountries = new Set()) => {
   if (!regions || typeof regions !== 'object') return {};
-  return Object.fromEntries(
-    Object.entries(regions)
-      .map(([countryCode, regionRanking]) => [
-        String(countryCode).toUpperCase(),
-        Array.isArray(regionRanking)
-          ? regionRanking
-            .filter(region => region?.code && Number.isFinite(Number(region.count)))
-            .map(region => ({
-              code: String(region.code).toUpperCase(),
-              name: region.name || region.code,
-              count: Number(region.count),
-            }))
-          : [],
-      ])
-      .filter(([, regionRanking]) => regionRanking.length)
-  );
+  const normalized = {};
+  for (const [countryCode, regionRanking] of Object.entries(regions)) {
+    const rawCode = String(countryCode).toUpperCase();
+    const rows = Array.isArray(regionRanking)
+      ? regionRanking.filter(region => region?.code && Number.isFinite(Number(region.count)))
+      : [];
+    const override = VISITOR_COUNTRY_REGION_OVERRIDES[rawCode];
+    if (override) {
+      if (skipRegionCountries.has(rawCode)) continue;
+      const total = rows.reduce((sum, region) => sum + (Number(region.count) || 0), 0);
+      addVisitorRegion(normalized, override.country, override.regionCode, override.regionName, total);
+      continue;
+    }
+
+    for (const region of rows) {
+      const code = String(region.code).toUpperCase();
+      addVisitorRegion(normalized, rawCode, code, region.name || code, Number(region.count) || 0);
+    }
+  }
+
+  return mergeVisitorRegions(normalized);
 };
 
 const fetchRealtimeVisitorSnapshot = async (action, signal) => {
@@ -471,14 +574,10 @@ const buildNewsItems = (baseNews, syncData) => {
 
 const getVisitorSnapshot = (syncData) => {
   const snapshot = syncData.visitorSnapshot || DEFAULT_VISITOR_SNAPSHOT;
-  return {
-    ...DEFAULT_VISITOR_SNAPSHOT,
-    ...snapshot,
-    ranking: Array.isArray(snapshot.ranking) && snapshot.ranking.length
-      ? snapshot.ranking
-      : DEFAULT_VISITOR_SNAPSHOT.ranking,
-    regions: normalizeVisitorRegions(snapshot.regions || DEFAULT_VISITOR_SNAPSHOT.regions),
-  };
+  const normalized = normalizeVisitorPayload({ visitorSnapshot: snapshot });
+  return normalized
+    ? { ...DEFAULT_VISITOR_SNAPSHOT, ...normalized }
+    : DEFAULT_VISITOR_SNAPSHOT;
 };
 
 const VISITOR_COUNTRY_FALLBACK_POINTS = new Map([

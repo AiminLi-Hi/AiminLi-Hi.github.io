@@ -17,6 +17,9 @@ const INITIAL_STATS = {
   regions: {},
   updatedAt: '2026-06-11T08:34:03.969Z',
 };
+const COUNTRY_REGION_OVERRIDES = {
+  TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
+};
 
 function allowedOrigins(env) {
   return String(env.ALLOWED_ORIGIN || DEFAULT_ALLOWED_ORIGINS.join(','))
@@ -93,6 +96,28 @@ function normalizeRegionName(value, fallback = '') {
   return name || fallback;
 }
 
+function regionNameFor(country, regionCode, value) {
+  if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  return normalizeRegionName(value, regionCode);
+}
+
+function addCountryCount(countries, country, count) {
+  if (country === 'XX' || count <= 0) return;
+  countries[country] = (countries[country] || 0) + count;
+}
+
+function addRegionCount(regions, country, regionCode, regionName, count) {
+  if (country === 'XX' || !regionCode || count <= 0) return;
+  regions[country] = {
+    ...(regions[country] || {}),
+  };
+  const previous = regions[country][regionCode] || { count: 0, name: regionNameFor(country, regionCode, regionName) };
+  regions[country][regionCode] = {
+    count: (Number(previous.count) || 0) + count,
+    name: regionNameFor(country, regionCode, regionName || previous.name),
+  };
+}
+
 function countryName(code) {
   if (code === 'XX') return 'Unknown';
   try {
@@ -115,14 +140,33 @@ function seedStats(env) {
 }
 
 function normalizeStats(value) {
-  const countries = value?.countries && typeof value.countries === 'object'
-    ? Object.fromEntries(
-      Object.entries(value.countries)
-        .map(([code, count]) => [normalizeCountryCode(code), Number(count) || 0])
-        .filter(([, count]) => count > 0)
-    )
-    : {};
-  const regions = normalizeRegions(value?.regions);
+  const countries = {};
+  const regionCountsFromCountries = {};
+  const skipRegionCountries = new Set();
+
+  if (value?.countries && typeof value.countries === 'object') {
+    for (const [countryValue, countValue] of Object.entries(value.countries)) {
+      const rawCountry = normalizeCountryCode(countryValue);
+      const count = Number(countValue) || 0;
+      if (rawCountry === 'XX' || count <= 0) continue;
+
+      const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+      if (override) {
+        addCountryCount(countries, override.country, count);
+        addRegionCount(regionCountsFromCountries, override.country, override.regionCode, override.regionName, count);
+        skipRegionCountries.add(rawCountry);
+      } else {
+        addCountryCount(countries, rawCountry, count);
+      }
+    }
+  }
+
+  const regions = normalizeRegions(value?.regions, skipRegionCountries);
+  for (const [country, regionMap] of Object.entries(regionCountsFromCountries)) {
+    for (const [regionCode, region] of Object.entries(regionMap)) {
+      addRegionCount(regions, country, regionCode, region.name, Number(region.count) || 0);
+    }
+  }
 
   return {
     pageviews: Math.max(0, Number(value?.pageviews) || 0),
@@ -132,26 +176,36 @@ function normalizeStats(value) {
   };
 }
 
-function normalizeRegions(value) {
+function normalizeRegions(value, skipRegionCountries = new Set()) {
   if (!value || typeof value !== 'object') return {};
 
   const regions = {};
   for (const [countryValue, entries] of Object.entries(value)) {
-    const country = normalizeCountryCode(countryValue);
-    if (country === 'XX') continue;
-
-    const normalizedEntries = {};
+    const rawCountry = normalizeCountryCode(countryValue);
+    if (rawCountry === 'XX') continue;
     const sourceEntries = Array.isArray(entries)
       ? entries.map(region => [region?.code, region])
       : Object.entries(entries || {});
 
+    const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+    if (override) {
+      if (skipRegionCountries.has(rawCountry)) continue;
+      const total = sourceEntries.reduce((sum, [, regionData]) => (
+        sum + (Number(regionData?.count ?? regionData) || 0)
+      ), 0);
+      addRegionCount(regions, override.country, override.regionCode, override.regionName, total);
+      continue;
+    }
+
+    const country = rawCountry;
+    const normalizedEntries = {};
     for (const [regionValue, regionData] of sourceEntries) {
       const code = normalizeRegionCode(regionData?.code || regionValue);
       const count = Number(regionData?.count ?? regionData) || 0;
       if (!code || count <= 0) continue;
       normalizedEntries[code] = {
         count,
-        name: normalizeRegionName(regionData?.name || regionData?.region || code, code),
+        name: regionNameFor(country, code, regionData?.name || regionData?.region || code),
       };
     }
 
@@ -171,7 +225,7 @@ function publicRegions(regions = {}) {
         Object.entries(regionMap || {})
           .map(([code, region]) => ({
             code,
-            name: normalizeRegionName(region?.name, code),
+            name: regionNameFor(country, code, region?.name),
             count: Number(region?.count) || 0,
           }))
           .filter(region => region.count > 0)
@@ -221,20 +275,21 @@ function addRegionToStats(stats, hit) {
   const previous = regions[hit.country][hit.regionCode] || { count: 0, name: hit.regionName || hit.regionCode };
   regions[hit.country][hit.regionCode] = {
     count: (Number(previous.count) || 0) + 1,
-    name: hit.regionName || previous.name || hit.regionCode,
+    name: regionNameFor(hit.country, hit.regionCode, hit.regionName || previous.name),
   };
   return regions;
 }
 
 function addHitToStats(stats, hit) {
+  const normalizedHit = normalizeHit(hit);
   return {
     pageviews: (stats.pageviews || 0) + 1,
     countries: {
       ...(stats.countries || {}),
-      [hit.country]: ((stats.countries || {})[hit.country] || 0) + 1,
+      [normalizedHit.country]: ((stats.countries || {})[normalizedHit.country] || 0) + 1,
     },
-    regions: addRegionToStats(stats, hit),
-    updatedAt: hit.updatedAt || new Date().toISOString(),
+    regions: addRegionToStats(stats, normalizedHit),
+    updatedAt: normalizedHit.updatedAt || new Date().toISOString(),
   };
 }
 
@@ -299,12 +354,22 @@ async function recordHit(env, request) {
 }
 
 function normalizeHit(value = {}) {
-  const country = normalizeCountryCode(value.country);
+  const rawCountry = normalizeCountryCode(value.country);
   const regionCode = normalizeRegionCode(value.regionCode);
+  const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+  if (override) {
+    return {
+      country: override.country,
+      regionCode: override.regionCode,
+      regionName: override.regionName,
+      updatedAt: value.updatedAt || new Date().toISOString(),
+    };
+  }
+
   return {
-    country,
+    country: rawCountry,
     regionCode,
-    regionName: normalizeRegionName(value.regionName, regionCode),
+    regionName: regionNameFor(rawCountry, regionCode, value.regionName),
     updatedAt: value.updatedAt || new Date().toISOString(),
   };
 }

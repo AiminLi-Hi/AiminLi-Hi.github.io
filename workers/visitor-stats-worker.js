@@ -4,6 +4,9 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://127.0.0.1:5173',
 ];
 const STORAGE_KEY = 'visitor-stats-v1';
+const COUNTRY_REGION_OVERRIDES = {
+  TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
+};
 
 function allowedOrigins(env) {
   return String(env.ALLOWED_ORIGIN || DEFAULT_ALLOWED_ORIGINS.join(','))
@@ -58,6 +61,28 @@ function normalizeRegionName(value, fallback = '') {
   return name || fallback;
 }
 
+function regionNameFor(country, regionCode, value) {
+  if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  return normalizeRegionName(value, regionCode);
+}
+
+function addCountryCount(countries, country, count) {
+  if (country === 'XX' || count <= 0) return;
+  countries[country] = (countries[country] || 0) + count;
+}
+
+function addRegionCount(regions, country, regionCode, regionName, count) {
+  if (country === 'XX' || !regionCode || count <= 0) return;
+  regions[country] = {
+    ...(regions[country] || {}),
+  };
+  const previous = regions[country][regionCode] || { count: 0, name: regionNameFor(country, regionCode, regionName) };
+  regions[country][regionCode] = {
+    count: (Number(previous.count) || 0) + count,
+    name: regionNameFor(country, regionCode, regionName || previous.name),
+  };
+}
+
 function countryName(code) {
   if (code === 'XX') return 'Unknown';
   try {
@@ -77,6 +102,76 @@ function emptyStats() {
   };
 }
 
+function normalizeStats(value = {}) {
+  const countries = {};
+  const regionCountsFromCountries = {};
+  const skipRegionCountries = new Set();
+
+  if (value.countries && typeof value.countries === 'object') {
+    for (const [countryValue, countValue] of Object.entries(value.countries)) {
+      const rawCountry = normalizeCountryCode(countryValue);
+      const count = Number(countValue) || 0;
+      if (rawCountry === 'XX' || count <= 0) continue;
+
+      const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+      if (override) {
+        addCountryCount(countries, override.country, count);
+        addRegionCount(regionCountsFromCountries, override.country, override.regionCode, override.regionName, count);
+        skipRegionCountries.add(rawCountry);
+      } else {
+        addCountryCount(countries, rawCountry, count);
+      }
+    }
+  }
+
+  const regions = normalizeRegions(value.regions, skipRegionCountries);
+  for (const [country, regionMap] of Object.entries(regionCountsFromCountries)) {
+    for (const [regionCode, region] of Object.entries(regionMap)) {
+      addRegionCount(regions, country, regionCode, region.name, Number(region.count) || 0);
+    }
+  }
+
+  return {
+    pageviews: Math.max(0, Number(value.pageviews) || 0),
+    countries,
+    regions,
+    updatedAt: value.updatedAt || null,
+  };
+}
+
+function normalizeRegions(value, skipRegionCountries = new Set()) {
+  if (!value || typeof value !== 'object') return {};
+
+  const regions = {};
+  for (const [countryValue, entries] of Object.entries(value)) {
+    const rawCountry = normalizeCountryCode(countryValue);
+    if (rawCountry === 'XX') continue;
+    const sourceEntries = Array.isArray(entries)
+      ? entries.map(region => [region?.code, region])
+      : Object.entries(entries || {});
+
+    const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+    if (override) {
+      if (skipRegionCountries.has(rawCountry)) continue;
+      const total = sourceEntries.reduce((sum, [, regionData]) => (
+        sum + (Number(regionData?.count ?? regionData) || 0)
+      ), 0);
+      addRegionCount(regions, override.country, override.regionCode, override.regionName, total);
+      continue;
+    }
+
+    const country = rawCountry;
+    for (const [regionValue, regionData] of sourceEntries) {
+      const code = normalizeRegionCode(regionData?.code || regionValue);
+      const count = Number(regionData?.count ?? regionData) || 0;
+      if (!code || count <= 0) continue;
+      addRegionCount(regions, country, code, regionData?.name || regionData?.region || code, count);
+    }
+  }
+
+  return regions;
+}
+
 function publicRegions(regions = {}) {
   return Object.fromEntries(
     Object.entries(regions)
@@ -85,7 +180,7 @@ function publicRegions(regions = {}) {
         Object.entries(regionMap || {})
           .map(([code, region]) => ({
             code,
-            name: normalizeRegionName(region?.name, code),
+            name: regionNameFor(country, code, region?.name),
             count: Number(region?.count) || 0,
           }))
           .filter(region => region.count > 0)
@@ -97,7 +192,8 @@ function publicRegions(regions = {}) {
 }
 
 function publicSnapshot(stats) {
-  const ranking = Object.entries(stats.countries || {})
+  const normalizedStats = normalizeStats(stats);
+  const ranking = Object.entries(normalizedStats.countries || {})
     .map(([code, count], index) => ({
       code,
       name: countryName(code),
@@ -112,13 +208,13 @@ function publicSnapshot(stats) {
     }));
 
   return {
-    generatedAt: stats.updatedAt,
+    generatedAt: normalizedStats.updatedAt,
     visitorSnapshot: {
-      pageviews: stats.pageviews || 0,
+      pageviews: normalizedStats.pageviews || 0,
       countries: ranking.length,
       ranking,
-      regions: publicRegions(stats.regions),
-      updatedAt: stats.updatedAt,
+      regions: publicRegions(normalizedStats.regions),
+      updatedAt: normalizedStats.updatedAt,
     },
   };
 }
@@ -134,9 +230,28 @@ function addRegionToStats(stats, country, regionCode, regionName) {
   const previous = regions[country][regionCode] || { count: 0, name: regionName || regionCode };
   regions[country][regionCode] = {
     count: (Number(previous.count) || 0) + 1,
-    name: regionName || previous.name || regionCode,
+    name: regionNameFor(country, regionCode, regionName || previous.name),
   };
   return regions;
+}
+
+function normalizeHit(countryValue, regionCodeValue, regionNameValue) {
+  const rawCountry = normalizeCountryCode(countryValue);
+  const regionCode = normalizeRegionCode(regionCodeValue);
+  const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+  if (override) {
+    return {
+      country: override.country,
+      regionCode: override.regionCode,
+      regionName: override.regionName,
+    };
+  }
+
+  return {
+    country: rawCountry,
+    regionCode,
+    regionName: regionNameFor(rawCountry, regionCode, regionNameValue),
+  };
 }
 
 export class VisitorCounter {
@@ -156,7 +271,7 @@ export class VisitorCounter {
     }
 
     if (url.pathname === '/stats') {
-      const stats = await this.ctx.storage.get(STORAGE_KEY) || emptyStats();
+      const stats = normalizeStats(await this.ctx.storage.get(STORAGE_KEY) || emptyStats());
       return json(publicSnapshot(stats), this.env, request);
     }
 
@@ -165,17 +280,19 @@ export class VisitorCounter {
         return json({ error: 'Method not allowed' }, this.env, request, 405);
       }
 
-      const stats = await this.ctx.storage.get(STORAGE_KEY) || emptyStats();
-      const country = normalizeCountryCode(request.headers.get('x-visitor-country'));
-      const regionCode = normalizeRegionCode(request.headers.get('x-visitor-region-code'));
-      const regionName = normalizeRegionName(request.headers.get('x-visitor-region-name'), regionCode);
+      const stats = normalizeStats(await this.ctx.storage.get(STORAGE_KEY) || emptyStats());
+      const hit = normalizeHit(
+        request.headers.get('x-visitor-country'),
+        request.headers.get('x-visitor-region-code'),
+        request.headers.get('x-visitor-region-name')
+      );
       const nextStats = {
         pageviews: (stats.pageviews || 0) + 1,
         countries: {
           ...(stats.countries || {}),
-          [country]: ((stats.countries || {})[country] || 0) + 1,
+          [hit.country]: ((stats.countries || {})[hit.country] || 0) + 1,
         },
-        regions: addRegionToStats(stats, country, regionCode, regionName),
+        regions: addRegionToStats(stats, hit.country, hit.regionCode, hit.regionName),
         updatedAt: new Date().toISOString(),
       };
 
@@ -198,17 +315,22 @@ export default {
     }
 
     const headers = new Headers(request.headers);
+    const hit = normalizeHit(
+      request.cf?.country || request.headers.get('CF-IPCountry'),
+      request.cf?.regionCode || request.headers.get('CF-Region-Code'),
+      request.cf?.region || request.headers.get('CF-Region')
+    );
     headers.set(
       'x-visitor-country',
-      normalizeCountryCode(request.cf?.country || request.headers.get('CF-IPCountry'))
+      hit.country
     );
     headers.set(
       'x-visitor-region-code',
-      normalizeRegionCode(request.cf?.regionCode || request.headers.get('CF-Region-Code'))
+      hit.regionCode
     );
     headers.set(
       'x-visitor-region-name',
-      normalizeRegionName(request.cf?.region || request.headers.get('CF-Region'))
+      hit.regionName
     );
 
     const forwardedRequest = new Request(request, { headers });
