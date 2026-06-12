@@ -627,19 +627,66 @@ export const PROFILE_DATA = {
       studentListClose: "Show concise list",
       collaborationTitle: "Student mentorship and collaboration",
       columns: { student: "Student / period", stage: "Stage", outcome: "Mentorship / outcome" },
+      groups: [
+        {
+          title: "Harbin Institute of Technology, Shenzhen",
+          shortTitle: "HIT",
+          note: "Student collaborations during doctoral research at HIT.",
+          students: [
+            { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S./Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
+            { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE TWC / IEEE ISIT / IEEE ITW papers; KTH Ph.D. admission." },
+            { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
+            { name: "Kunpeng Liu", period: "2024-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
+            { name: "Jiaming Zhang", period: "2022-2025", stage: "M.S.", outcome: "M.S. research mentorship; IEEE VTC paper." },
+            { name: "Xin Jin", period: "2022", stage: "B.S.", outcome: "B.S. research mentorship." }
+          ]
+        },
+        {
+          title: "Middle East Technical University",
+          shortTitle: "METU",
+          note: "Student collaborations during postdoctoral research at METU.",
+          students: [
+            { name: "Adem Utku ATASAYAR", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis co-advising; ACM MobiHoc / IEEE TMC papers; METU Ph.D." },
+            { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper; Caltech Ph.D. admission." },
+            { name: "Shanmugarajan Anand", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; IAC paper; NUS M.S. admission." },
+            { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
+            { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; Asilomar paper; Indian Space Research Organisation (ISRO)." },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop paper." },
+            { name: "Selay Nisa Şahin", period: "2026", stage: "B.S.", outcome: "" },
+            { name: "Yusuf", period: "2026", stage: "B.S.", outcome: "" }
+          ]
+        },
+        {
+          title: "Zhengzhou University",
+          shortTitle: "ZZU",
+          note: "Student collaborations connected with Zhengzhou University.",
+          students: [
+            { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; Zhengzhou University Ph.D. placement." },
+            { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE VTC paper; HKU Ph.D. admission." },
+            { name: "Yinglei Yang", period: "2026", stage: "", outcome: "Research mentorship; IEEE Globecom paper." },
+            { name: "Mingxiao Sun", period: "2025", stage: "", outcome: "Research mentorship; IEEE TCOM / IEEE ICCT papers." }
+          ]
+        }
+      ],
       students: [
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "Co-advised M.S. thesis; MobiHoc/TMC; Ph.D. at METU." },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. collaboration; ITW; admitted to Caltech Ph.D." },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. collaboration; TWC/ISIT/ITW; admitted to KTH Ph.D." },
-        { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; VTC; admitted to HKU Ph.D." },
-        { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; now Ph.D. at Zhengzhou University." },
-        { name: "Shanmugarajan Anand", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; IAC; admitted to the M.S. program at the National University of Singapore (NUS)." },
-        { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. collaboration; Asilomar; works at the Indian Space Research Organisation (ISRO)." },
-        { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. collaboration; accepted by IEEE TMC." },
-        { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. collaboration; ISIT; METU." },
-        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. collaboration; SIGCOMM Workshop; METU." },
-        { name: "Kunpeng Liu", period: "2024-2026", stage: "M.S.", outcome: "M.S. collaboration; ICC/INFOCOM Workshop; now at Huawei." },
-        { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. and Ph.D. collaboration; WCM/TCOM/TVT/JSAIT; Ph.D. at HIT." }
+        { name: "Adem Utku ATASAYAR", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis co-advising; ACM MobiHoc / IEEE TMC papers; METU Ph.D." },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper; Caltech Ph.D. admission." },
+        { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S./Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE TWC / IEEE ISIT / IEEE ITW papers; KTH Ph.D. admission." },
+        { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
+        { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE VTC paper; HKU Ph.D. admission." },
+        { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; Zhengzhou University Ph.D. placement." },
+        { name: "Shanmugarajan Anand", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; IAC paper; NUS M.S. admission." },
+        { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. research mentorship; Asilomar paper; Indian Space Research Organisation (ISRO)." },
+        { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
+        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop paper." },
+        { name: "Kunpeng Liu", period: "2024-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
+        { name: "Jiaming Zhang", period: "2022-2025", stage: "M.S.", outcome: "M.S. research mentorship; IEEE VTC paper." },
+        { name: "Xin Jin", period: "2022", stage: "B.S.", outcome: "B.S. research mentorship." },
+        { name: "Selay Nisa Şahin", period: "2026", stage: "B.S.", outcome: "" },
+        { name: "Yusuf", period: "2026", stage: "B.S.", outcome: "" },
+        { name: "Yinglei Yang", period: "2026", stage: "", outcome: "Globecom collaboration." },
+        { name: "Mingxiao Sun", period: "2025", stage: "", outcome: "TCOM/ICCT collaboration." }
       ]
     }
   },
@@ -746,19 +793,66 @@ export const PROFILE_DATA = {
       studentListClose: "收起为简表",
       collaborationTitle: "学生指导与科研合作",
       columns: { student: "学生 / 合作时间", stage: "阶段", outcome: "指导 / 成果" },
+      groups: [
+        {
+          title: "哈尔滨工业大学（深圳）",
+          shortTitle: "HIT",
+          note: "博士阶段在哈尔滨工业大学（深圳）开展的学生科研合作。",
+          students: [
+            { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科/博士科研指导；IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT 论文。" },
+            { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士科研指导；IEEE TWC / IEEE ISIT / IEEE ITW 论文；获瑞典皇家理工学院博士录取。" },
+            { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士科研指导；IEEE TMC 论文。" },
+            { name: "Kunpeng Liu", period: "2024-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ICC / IEEE INFOCOM Workshop 论文；现就职于华为。" },
+            { name: "Jiaming Zhang", period: "2022-2025", stage: "硕士", outcome: "硕士科研指导；IEEE VTC 论文。" },
+            { name: "Xin Jin", period: "2022", stage: "本科", outcome: "本科科研指导。" }
+          ]
+        },
+        {
+          title: "土耳其中东技术大学",
+          shortTitle: "METU",
+          note: "博士后阶段在土耳其中东技术大学开展的学生科研指导。",
+          students: [
+            { name: "Adem Utku ATASAYAR", period: "2025-2026", stage: "硕士", outcome: "硕士论文共同指导；ACM MobiHoc / IEEE TMC 论文；现于中东技术大学攻读博士。" },
+            { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科科研指导；IEEE ITW 论文；获加州理工学院博士录取。" },
+            { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科科研指导；IAC 论文；获新加坡国立大学硕士录取。" },
+            { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
+            { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科科研指导；Asilomar 论文；现就职于 Indian Space Research Organisation (ISRO)。" },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop 论文。" },
+            { name: "Selay Nisa Şahin", period: "2026", stage: "本科", outcome: "" },
+            { name: "Yusuf", period: "2026", stage: "本科", outcome: "" }
+          ]
+        },
+        {
+          title: "郑州大学",
+          shortTitle: "ZZU",
+          note: "与郑州大学相关的学生科研合作。",
+          students: [
+            { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士科研指导；现为郑州大学博士生。" },
+            { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科科研指导；IEEE VTC 论文；获香港大学博士录取。" },
+            { name: "Yinglei Yang", period: "2026", stage: "", outcome: "科研指导；IEEE Globecom 论文。" },
+            { name: "Mingxiao Sun", period: "2025", stage: "", outcome: "科研指导；IEEE TCOM / IEEE ICCT 论文。" }
+          ]
+        }
+      ],
       students: [
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "共同指导硕士论文；MobiHoc/TMC；现于中东技术大学攻读博士。" },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科阶段合作；ITW；获加州理工学院博士录取。" },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士阶段合作；TWC/ISIT/ITW；获瑞典皇家理工学院博士录取。" },
-        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科阶段合作；VTC；获香港大学博士录取。" },
-        { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士阶段合作；现为郑州大学博士生。" },
-        { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科阶段合作；IAC；获新加坡国立大学硕士录取。" },
-        { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科阶段合作；Asilomar；现就职于 Indian Space Research Organisation (ISRO)。" },
-        { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士阶段合作；论文被 IEEE TMC 接收。" },
-        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士阶段合作；ISIT；中东技术大学。" },
-        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科与硕士阶段合作；SIGCOMM Workshop；中东技术大学。" },
-        { name: "Kunpeng Liu", period: "2024-2026", stage: "硕士", outcome: "硕士阶段合作；ICC/INFOCOM Workshop；现就职于华为。" },
-        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科与博士阶段合作；WCM/TCOM/TVT/JSAIT；现于哈尔滨工业大学攻读博士。" }
+        { name: "Adem Utku ATASAYAR", period: "2025-2026", stage: "硕士", outcome: "硕士论文共同指导；ACM MobiHoc / IEEE TMC 论文；现于中东技术大学攻读博士。" },
+        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科科研指导；IEEE ITW 论文；获加州理工学院博士录取。" },
+        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科/博士科研指导；IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT 论文。" },
+        { name: "Xiaomeng Chen", period: "2023-2026", stage: "硕士", outcome: "硕士科研指导；IEEE TWC / IEEE ISIT / IEEE ITW 论文；获瑞典皇家理工学院博士录取。" },
+        { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士科研指导；IEEE TMC 论文。" },
+        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科科研指导；IEEE VTC 论文；获香港大学博士录取。" },
+        { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士科研指导；现为郑州大学博士生。" },
+        { name: "Shanmugarajan Anand", period: "2026", stage: "本科", outcome: "本科科研指导；IAC 论文；获新加坡国立大学硕士录取。" },
+        { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科科研指导；Asilomar 论文；现就职于 Indian Space Research Organisation (ISRO)。" },
+        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
+        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop 论文。" },
+        { name: "Kunpeng Liu", period: "2024-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ICC / IEEE INFOCOM Workshop 论文；现就职于华为。" },
+        { name: "Jiaming Zhang", period: "2022-2025", stage: "硕士", outcome: "硕士科研指导；IEEE VTC 论文。" },
+        { name: "Xin Jin", period: "2022", stage: "本科", outcome: "本科科研指导。" },
+        { name: "Selay Nisa Şahin", period: "2026", stage: "本科", outcome: "" },
+        { name: "Yusuf", period: "2026", stage: "本科", outcome: "" },
+        { name: "Yinglei Yang", period: "2026", stage: "", outcome: "科研指导；IEEE Globecom 论文。" },
+        { name: "Mingxiao Sun", period: "2025", stage: "", outcome: "科研指导；IEEE TCOM / IEEE ICCT 论文。" }
       ]
     }
   }

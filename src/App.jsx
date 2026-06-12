@@ -77,7 +77,7 @@ const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT |
 const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
-const MENTORING_STUDENT_PREVIEW_LIMIT = 3;
+const MENTORING_GROUP_PREVIEW_LIMIT = 1;
 let visitorHitRecordedForPage = false;
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
@@ -1304,7 +1304,7 @@ export default function AcademicProfile() {
   const [activeSection, setActiveSection] = useState('about');
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showAllMentoringStudents, setShowAllMentoringStudents] = useState(false);
+  const [expandedMentoringGroups, setExpandedMentoringGroups] = useState({});
 
   // -- Filter & Search States --
   const [searchQuery, setSearchQuery] = useState("");
@@ -1323,10 +1323,31 @@ export default function AcademicProfile() {
   useSEO(content.meta_title, content.meta_desc, lang);
   const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
-  const visibleMentoringStudents = showAllMentoringStudents
-    ? content.mentoring.students
-    : content.mentoring.students.slice(0, MENTORING_STUDENT_PREVIEW_LIMIT);
-  const hiddenMentoringStudentCount = Math.max(content.mentoring.students.length - visibleMentoringStudents.length, 0);
+  const mentoringGroups = content.mentoring.groups?.length
+    ? content.mentoring.groups
+    : [{ title: content.mentoring.collaborationTitle, shortTitle: '', note: '', students: content.mentoring.students }];
+  const visibleMentoringGroups = mentoringGroups
+    .map((group, index) => {
+      const groupKey = group.shortTitle || group.title || `group-${index}`;
+      const isExpanded = Boolean(expandedMentoringGroups[groupKey]);
+      const previewLimit = group.previewLimit || MENTORING_GROUP_PREVIEW_LIMIT;
+      const visibleStudents = isExpanded ? group.students : group.students.slice(0, previewLimit);
+      return {
+        ...group,
+        groupKey,
+        isExpanded,
+        totalCount: group.students.length,
+        hiddenCount: Math.max(group.students.length - visibleStudents.length, 0),
+        students: visibleStudents,
+      };
+    })
+    .filter(group => group.students.length);
+  const toggleMentoringGroup = (groupKey) => {
+    setExpandedMentoringGroups((current) => ({
+      ...current,
+      [groupKey]: !current[groupKey],
+    }));
+  };
 
   const venueStats = useMemo(() => {
     const counts = {};
@@ -2008,18 +2029,18 @@ export default function AcademicProfile() {
         <section id="mentoring" className="scroll-mt-32">
           <div className={`relative overflow-hidden rounded-3xl border ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200 shadow-xl shadow-slate-900/5'}`}>
             <div className={`absolute inset-x-0 top-0 h-1 ${darkMode ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500'}`} />
-            <div className="p-6 md:p-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
-                  <Users size={24} />
+            <div className="p-5 md:p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+                  <Users size={22} />
                 </div>
                 <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
               </div>
 
-              <div className={`mb-6 rounded-2xl border ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
-                <div className="flex w-full items-center justify-between gap-4 px-5 py-4">
+              <div className={`mb-5 rounded-xl border ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
+                <div className="flex w-full items-center justify-between gap-4 px-4 py-3">
                   <span className="flex min-w-0 items-center gap-3">
-                    <span className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-100 text-cyan-700'}`}>
+                    <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-100 text-cyan-700'}`}>
                       <Network size={17} />
                     </span>
                     <span className={`truncate text-sm font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
@@ -2027,57 +2048,98 @@ export default function AcademicProfile() {
                     </span>
                   </span>
                 </div>
-                <div id="mentoring-leadership-note" className={`border-t px-5 py-4 text-sm leading-relaxed ${darkMode ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-600'}`}>
+                <div id="mentoring-leadership-note" className={`border-t px-4 py-3 text-[13px] leading-relaxed ${darkMode ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-600'}`}>
                   {content.mentoring.leadershipSummary}
                 </div>
               </div>
 
               <div>
-                <h3 className={`text-base font-extrabold mb-4 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
-                <div className={`rounded-2xl border overflow-hidden ${darkMode ? 'border-slate-700 bg-slate-950/30' : 'border-slate-200 bg-slate-50/50'}`}>
-                  <div className={`hidden md:grid grid-cols-[15rem_7.5rem_minmax(0,1fr)] gap-4 px-5 py-3 text-sm font-extrabold border-b ${darkMode ? 'border-slate-700 bg-slate-800/80 text-cyan-200' : 'border-slate-200 bg-slate-100 text-slate-800'}`}>
-                    <div>{content.mentoring.columns.student}</div>
-                    <div>{content.mentoring.columns.stage}</div>
-                    <div>{content.mentoring.columns.outcome}</div>
-                  </div>
-                  <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
-                    {visibleMentoringStudents.map((student) => (
-                      <div key={student.name} className={`grid md:grid-cols-[15rem_7.5rem_minmax(0,1fr)] gap-2 md:gap-4 px-5 py-3.5 text-sm ${darkMode ? 'hover:bg-slate-800/50' : 'hover:bg-white'} transition-colors`}>
-                        <div>
-                          <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
-                          {student.period && (
-                            <div className={`mt-1 text-[11px] font-bold tracking-wide ${darkMode ? 'text-cyan-300/75' : 'text-cyan-700/75'}`}>
-                              {student.period}
+                <h3 className={`text-base font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
+                <div className="space-y-3">
+                  {visibleMentoringGroups.map((group) => (
+                    <div key={group.title} className={`group relative overflow-hidden rounded-xl border transition-all duration-300 ${darkMode ? 'border-slate-700/80 bg-slate-950/40 shadow-lg shadow-slate-950/25 hover:border-cyan-400/25' : 'border-slate-200 bg-white shadow-md shadow-slate-900/[0.04] hover:border-cyan-200 hover:shadow-lg hover:shadow-slate-900/[0.07]'}`}>
+                      <div className={`absolute inset-y-0 left-0 w-1 ${darkMode ? 'bg-gradient-to-b from-cyan-300 via-blue-400 to-indigo-400' : 'bg-gradient-to-b from-cyan-500 via-blue-500 to-indigo-500'}`} />
+                      <div className={`flex flex-col gap-2 px-4 py-2.5 pl-5 md:flex-row md:items-center md:justify-between ${darkMode ? 'bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/25' : 'bg-gradient-to-r from-slate-50 via-white to-cyan-50/60'}`}>
+                          <div className="flex min-w-0 items-center gap-2.5">
+                            {group.shortTitle && (
+                              <span className={`inline-flex h-7 min-w-11 shrink-0 items-center justify-center rounded-full border px-2.5 text-[10px] font-black tracking-wide shadow-sm ${darkMode ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/40' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100'}`}>
+                                {group.shortTitle}
+                              </span>
+                            )}
+                            <div className="min-w-0">
+                              <div className={`truncate text-sm font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{group.title}</div>
+                              {group.note && (
+                                <div className={`mt-0.5 text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                                  {group.note}
+                                </div>
+                              )}
                             </div>
-                          )}
+                          </div>
+                          <div className="flex w-fit items-center gap-2">
+                            <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-extrabold ${darkMode ? 'border-slate-700 bg-slate-900/80 text-cyan-200' : 'border-slate-200 bg-white/85 text-cyan-800'}`}>
+                              {group.students.length}/{group.totalCount}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-extrabold leading-none ${darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-cyan-50 text-cyan-800'}`}>
-                            {student.stage}
-                          </span>
+                        <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
+                          {group.students.map((student) => {
+                            const hasOutcome = Boolean(student.outcome);
+                            const hasStage = Boolean(student.stage);
+                            const rowColumns = hasOutcome && hasStage
+                              ? 'md:grid-cols-[13.5rem_6.5rem_minmax(0,1fr)]'
+                              : hasOutcome
+                                ? 'md:grid-cols-[13.5rem_minmax(0,1fr)]'
+                                : hasStage
+                                  ? 'md:grid-cols-[minmax(0,1fr)_auto] md:items-center'
+                                  : 'md:grid-cols-1';
+                            return (
+                              <div key={`${group.title}-${student.name}`} className={`grid gap-1.5 px-4 text-[13px] transition-colors md:gap-3 ${hasOutcome ? 'py-2.5' : 'py-2'} ${rowColumns} ${darkMode ? 'hover:bg-slate-800/45' : 'hover:bg-slate-50/80'}`}>
+                                <div>
+                                  <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
+                                  {student.period && (
+                                    <div className={`mt-0.5 text-[10px] font-bold tracking-wide ${darkMode ? 'text-cyan-300/75' : 'text-cyan-700/75'}`}>
+                                      {student.period}
+                                    </div>
+                                  )}
+                                </div>
+                                {hasStage && (
+                                  <div>
+                                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-extrabold leading-none ${darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-cyan-50 text-cyan-800'}`}>
+                                    {student.stage}
+                                  </span>
+                                  </div>
+                                )}
+                                {hasOutcome && (
+                                  <div className={`leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                    {student.outcome}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
-                        <div className={`leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                          {student.outcome}
-                        </div>
+                        {(group.isExpanded || group.hiddenCount > 0) && (
+                          <div className={`border-t px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/45' : 'border-slate-100 bg-slate-50/70'}`}>
+                            <button
+                              type="button"
+                              onClick={() => toggleMentoringGroup(group.groupKey)}
+                              className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/55 hover:bg-cyan-400/15' : 'border-cyan-200 bg-white text-cyan-800 shadow-sm shadow-cyan-100/60 hover:border-cyan-300 hover:bg-cyan-50'}`}
+                              aria-expanded={group.isExpanded}
+                              aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
+                              title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
+                            >
+                              <span>
+                                {group.isExpanded
+                                  ? (lang === 'en' ? 'Less' : '收起')
+                                  : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
+                              </span>
+                              {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-                {content.mentoring.students.length > MENTORING_STUDENT_PREVIEW_LIMIT && (
-                  <div className="mt-4 flex justify-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowAllMentoringStudents(value => !value)}
-                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-extrabold transition-colors ${darkMode ? 'border-slate-700 bg-slate-900/70 text-cyan-200 hover:border-cyan-400/50 hover:bg-slate-800' : 'border-slate-200 bg-white text-cyan-800 hover:border-cyan-200 hover:bg-cyan-50'}`}
-                      aria-expanded={showAllMentoringStudents}
-                    >
-                      {showAllMentoringStudents
-                        ? content.mentoring.studentListClose
-                        : `${content.mentoring.studentListOpen} (${hiddenMentoringStudentCount})`}
-                      {showAllMentoringStudents ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           </div>
