@@ -8,13 +8,19 @@ const HIT_EVENT_PREFIX = 'visitor-hit-v2:';
 const INITIAL_STATS = {
   pageviews: 43,
   countries: {
-    CN: 19,
+    CN: 20,
     US: 12,
-    TR: 8,
+    TR: 7,
     SG: 3,
     RS: 1,
   },
-  regions: {},
+  regions: {
+    TR: {
+      '06': { count: 1, name: 'Ankara' },
+      '38': { count: 5, name: 'Kayseri' },
+      '34': { count: 1, name: 'Istanbul' },
+    },
+  },
   updatedAt: '2026-06-11T08:34:03.969Z',
 };
 const COUNTRY_REGION_OVERRIDES = {

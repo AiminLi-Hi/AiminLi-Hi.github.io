@@ -254,7 +254,7 @@ async function fetchVisitorSnapshot(previous) {
   const previousSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
   const countryTotal = ranking.reduce((sum, country) => sum + country.count, 0);
   return {
-    pageviews: Math.max(Number(snapshot.pageviews) || 0, countryTotal, Number(previousSnapshot.pageviews) || 0),
+    pageviews: Math.max(Number(snapshot.pageviews) || 0, countryTotal),
     countries: ranking.length,
     ranking,
     regions: mergeVisitorRegions(cleanVisitorRegions(snapshot.regions, skipRegionCountries), overrideRegions),

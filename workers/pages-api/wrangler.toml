@@ -4,7 +4,7 @@ pages_build_output_dir = "."
 
 [vars]
 ALLOWED_ORIGIN = "https://aiminli-hi.github.io,http://localhost:5173,http://127.0.0.1:5173"
-INITIAL_VISITOR_STATS = '{"pageviews":43,"countries":{"CN":19,"US":12,"TR":8,"SG":3,"RS":1},"regions":{},"updatedAt":"2026-06-11T08:34:03.969Z"}'
+INITIAL_VISITOR_STATS = '{"pageviews":43,"countries":{"CN":20,"US":12,"TR":7,"SG":3,"RS":1},"regions":{"TR":{"06":{"count":1,"name":"Ankara"},"38":{"count":5,"name":"Kayseri"},"34":{"count":1,"name":"Istanbul"}}},"updatedAt":"2026-06-11T08:34:03.969Z"}'
 
 [[kv_namespaces]]
 binding = "VISITOR_KV"
