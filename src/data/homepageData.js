@@ -518,12 +518,12 @@ const SUBMITTED = [];
 export const PROFILE_DATA = {
   en: {
     meta_title: "Aimin Li | Postdoc Researcher | METU",
-    meta_desc: "Academic profile and research portfolio of Aimin Li, Postdoctoral Researcher at Middle East Technical University (METU), Türkiye.",
+    meta_desc: "Academic profile and research portfolio of Aimin Li (Eamon), Postdoctoral Researcher at Middle East Technical University (METU), Türkiye.",
     name: "Aimin Li (黎爱民)",
     role: "Postdoctoral Researcher",
     org: "Middle East Technical University (METU)",
     org_full: "Middle East Technical University (METU)",
-    bio: "Aimin Li is a Postdoctoral Researcher at METU, working with IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/) on the ERC Advanced Grant project **GO-SPACE**. His research focuses on **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**. He received the Ph.D. degree from Harbin Institute of Technology, Shenzhen, advised by [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
+    bio: "I am Aimin Li, a Postdoctoral Researcher at METU working with IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/) on the ERC Advanced Grant project **GO-SPACE**. You can also call me **Eamon**. My research interests lie in **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**, with a focus on goal-oriented and timely communication systems. I received my Ph.D. from Harbin Institute of Technology, Shenzhen, advised by [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
     location: "Ankara, Türkiye",
     social: {
       scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=en",
@@ -700,12 +700,12 @@ export const PROFILE_DATA = {
   },
   zh: {
     meta_title: "黎爱民 | 博士后研究员 | 土耳其中东技术大学 (METU)",
-    meta_desc: "黎爱民的个人学术主页与研究成果档案。",
+    meta_desc: "黎爱民（Eamon）的个人学术主页与研究成果档案。",
     name: "黎爱民",
     role: "博士后研究员",
     org: "土耳其中东技术大学 (METU)",
     org_full: "土耳其中东技术大学 (METU)",
-    bio: "黎爱民现为土耳其中东技术大学 (METU) 博士后研究员，与 IEEE Fellow [Elif Uysal 教授](https://users.metu.edu.tr/ueelif/) 合作参与欧盟 ERC Advanced Grant 项目 **GO-SPACE**。研究方向聚焦于**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**。他博士毕业于哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)，并曾在新加坡科技研究局（A*STAR I²R）访问研究，期间受新加坡工程院院士、IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导。",
+    bio: "我是黎爱民，现为土耳其中东技术大学 (METU) 博士后研究员；英文名是 **Eamon**，也欢迎大家这样称呼我。我与 IEEE Fellow [Elif Uysal 教授](https://users.metu.edu.tr/ueelif/) 合作参与欧盟 ERC Advanced Grant 项目 **GO-SPACE**。我的研究兴趣包括**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**，尤其关注目标导向与时效通信系统的信息论基础。我博士毕业于哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)，并曾在新加坡科技研究局（A*STAR I²R）访问研究，期间受新加坡工程院院士、IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导。",
     location: "土耳其安卡拉",
     social: {
       scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=zh-CN",

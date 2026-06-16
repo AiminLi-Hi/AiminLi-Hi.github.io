@@ -103,6 +103,38 @@ function regionNameFor(country, regionCode, value) {
   return normalizeRegionName(value, regionCode);
 }
 
+function normalizeClientIp(value) {
+  const first = String(value || '').split(',')[0].trim();
+  const withoutIpv6Brackets = first.replace(/^\[([^\]]+)\](?::\d+)?$/, '$1');
+  const withoutIpv4Port = withoutIpv6Brackets.replace(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/, '$1');
+  if (!withoutIpv4Port || withoutIpv4Port.length > 80) return '';
+  return /^[0-9A-Fa-f:.]+$/.test(withoutIpv4Port) ? withoutIpv4Port : '';
+}
+
+function clientIp(request) {
+  const directHeaders = ['CF-Connecting-IP', 'True-Client-IP', 'X-Real-IP'];
+  for (const header of directHeaders) {
+    const ip = normalizeClientIp(request.headers.get(header));
+    if (ip) return ip;
+  }
+  return normalizeClientIp(request.headers.get('X-Forwarded-For'));
+}
+
+function hexDigest(buffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function uniqueVisitorId(env, request) {
+  const ip = clientIp(request);
+  if (!ip) return '';
+  const salt = String(env.VISITOR_HASH_SALT || env.IP_HASH_SALT || 'aimin-homepage-visitors-v1');
+  const data = new TextEncoder().encode(`${salt}:${ip}`);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return hexDigest(digest);
+}
+
 function addCountryCount(countries, country, count) {
   if (country === 'XX' || count <= 0) return;
   countries[country] = (countries[country] || 0) + count;
@@ -257,6 +289,7 @@ function publicSnapshot(stats) {
     generatedAt: stats.updatedAt,
     visitorSnapshot: {
       pageviews: stats.pageviews || 0,
+      uniqueVisitors: stats.pageviews || 0,
       countries: ranking.length,
       ranking,
       regions: publicRegions(stats.regions),
@@ -341,8 +374,19 @@ async function recordHit(env, request) {
   const event = { ...hit, updatedAt };
 
   if (env.VISITOR_KV) {
-    const key = `${HIT_EVENT_PREFIX}${Date.now()}:${event.country}:${crypto.randomUUID()}`;
-    await env.VISITOR_KV.put(key, '', {
+    const visitorId = await uniqueVisitorId(env, request);
+    const key = visitorId
+      ? `${HIT_EVENT_PREFIX}${visitorId}`
+      : `${HIT_EVENT_PREFIX}${Date.now()}:${event.country}:${crypto.randomUUID()}`;
+
+    if (visitorId) {
+      const existingHit = await env.VISITOR_KV.get(key);
+      if (existingHit) {
+        return { ...event, counted: false };
+      }
+    }
+
+    await env.VISITOR_KV.put(key, '1', {
       metadata: {
         country: event.country,
         regionCode: event.regionCode,
@@ -352,7 +396,7 @@ async function recordHit(env, request) {
     });
   }
 
-  return event;
+  return { ...event, counted: true };
 }
 
 function normalizeHit(value = {}) {
@@ -410,7 +454,11 @@ export default {
     }
 
     if (url.pathname === '/health') {
-      return json({ ok: true, storage: env.VISITOR_KV ? 'kv-events' : 'seed' }, env, request);
+      return json({
+        ok: true,
+        storage: env.VISITOR_KV ? 'kv-events' : 'seed',
+        unique: env.VISITOR_KV ? 'hashed-ip' : 'unavailable',
+      }, env, request);
     }
 
     if (url.pathname === '/stats') {
@@ -429,7 +477,7 @@ export default {
 
       const stats = await readStats(env);
       const hit = await recordHit(env, request);
-      const snapshot = publicSnapshot(addHitToStats(stats, hit));
+      const snapshot = publicSnapshot(hit.counted ? addHitToStats(stats, hit) : stats);
 
       if (url.pathname === '/hit.js') {
         const callback = callbackName(url.searchParams.get('callback'));

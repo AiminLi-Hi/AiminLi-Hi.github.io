@@ -4,6 +4,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://127.0.0.1:5173',
 ];
 const STORAGE_KEY = 'visitor-stats-v1';
+const UNIQUE_VISITOR_PREFIX = 'visitor-unique-v1:';
 const COUNTRY_REGION_OVERRIDES = {
   HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
@@ -66,6 +67,38 @@ function regionNameFor(country, regionCode, value) {
   if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
   return normalizeRegionName(value, regionCode);
+}
+
+function normalizeClientIp(value) {
+  const first = String(value || '').split(',')[0].trim();
+  const withoutIpv6Brackets = first.replace(/^\[([^\]]+)\](?::\d+)?$/, '$1');
+  const withoutIpv4Port = withoutIpv6Brackets.replace(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/, '$1');
+  if (!withoutIpv4Port || withoutIpv4Port.length > 80) return '';
+  return /^[0-9A-Fa-f:.]+$/.test(withoutIpv4Port) ? withoutIpv4Port : '';
+}
+
+function clientIp(request) {
+  const directHeaders = ['CF-Connecting-IP', 'True-Client-IP', 'X-Real-IP'];
+  for (const header of directHeaders) {
+    const ip = normalizeClientIp(request.headers.get(header));
+    if (ip) return ip;
+  }
+  return normalizeClientIp(request.headers.get('X-Forwarded-For'));
+}
+
+function hexDigest(buffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function uniqueVisitorId(env, request) {
+  const ip = clientIp(request);
+  if (!ip) return '';
+  const salt = String(env.VISITOR_HASH_SALT || env.IP_HASH_SALT || 'aimin-homepage-visitors-v1');
+  const data = new TextEncoder().encode(`${salt}:${ip}`);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return hexDigest(digest);
 }
 
 function addCountryCount(countries, country, count) {
@@ -213,6 +246,7 @@ function publicSnapshot(stats) {
     generatedAt: normalizedStats.updatedAt,
     visitorSnapshot: {
       pageviews: normalizedStats.pageviews || 0,
+      uniqueVisitors: normalizedStats.pageviews || 0,
       countries: ranking.length,
       ranking,
       regions: publicRegions(normalizedStats.regions),
@@ -288,6 +322,13 @@ export class VisitorCounter {
         request.headers.get('x-visitor-region-code'),
         request.headers.get('x-visitor-region-name')
       );
+      const visitorId = String(request.headers.get('x-visitor-id') || '').trim();
+      const visitorKey = /^[a-f0-9]{64}$/.test(visitorId) ? `${UNIQUE_VISITOR_PREFIX}${visitorId}` : '';
+
+      if (visitorKey && await this.ctx.storage.get(visitorKey)) {
+        return json(publicSnapshot(stats), this.env, request);
+      }
+
       const nextStats = {
         pageviews: (stats.pageviews || 0) + 1,
         countries: {
@@ -297,6 +338,15 @@ export class VisitorCounter {
         regions: addRegionToStats(stats, hit.country, hit.regionCode, hit.regionName),
         updatedAt: new Date().toISOString(),
       };
+
+      if (visitorKey) {
+        await this.ctx.storage.put(visitorKey, {
+          firstSeenAt: nextStats.updatedAt,
+          country: hit.country,
+          regionCode: hit.regionCode,
+          regionName: hit.regionName,
+        });
+      }
 
       await this.ctx.storage.put(STORAGE_KEY, nextStats);
       return json(publicSnapshot(nextStats), this.env, request);
@@ -334,6 +384,10 @@ export default {
       'x-visitor-region-name',
       hit.regionName
     );
+    const visitorId = await uniqueVisitorId(env, request);
+    if (visitorId) {
+      headers.set('x-visitor-id', visitorId);
+    }
 
     const forwardedRequest = new Request(request, { headers });
     const id = env.VISITOR_COUNTER.idFromName('global');

@@ -140,7 +140,7 @@ const UI_COPY = {
     locationLabel: 'Location',
     emailLabel: 'Email',
     globalVisitors: 'Global Visitors',
-    globalVisitorsDesc: 'Country-level visitor statistics.',
+    globalVisitorsDesc: 'Country-level unique visitor statistics.',
     loadingVisitors: 'Updating visitor stats...',
     viewStats: 'View Stats',
     hideStats: 'Hide Stats',
@@ -153,10 +153,10 @@ const UI_COPY = {
     showTopVisitorCountriesOnly: 'Show top 5 only',
     activeVisitorRegions: 'Active visitor regions',
     countrySignal: 'aggregate country-level signal',
-    pageviews: 'pageviews',
+    pageviews: 'unique visitors',
     countries: 'countries',
     visitorUpdated: 'Updated (Istanbul)',
-    statsTotalViews: 'Total pageviews',
+    statsTotalViews: 'Unique visitors',
     statsCountries: 'Visitor countries',
     statsTopCountry: 'Top country',
     statsLastUpdate: 'Last update',
@@ -197,7 +197,7 @@ const UI_COPY = {
     locationLabel: '所在地',
     emailLabel: '邮箱',
     globalVisitors: '全球访客',
-    globalVisitorsDesc: '按国家聚合的访问统计。',
+    globalVisitorsDesc: '按国家聚合的独立访客统计。',
     loadingVisitors: '正在更新访客统计...',
     viewStats: '查看统计',
     hideStats: '收起统计',
@@ -210,10 +210,10 @@ const UI_COPY = {
     showTopVisitorCountriesOnly: '只显示前五名',
     activeVisitorRegions: '已点亮访问区域',
     countrySignal: '国家级聚合访问统计',
-    pageviews: '次访问',
+    pageviews: '位独立访客',
     countries: '个国家',
     visitorUpdated: '更新于（伊斯坦布尔）',
-    statsTotalViews: '总访问量',
+    statsTotalViews: '独立访客',
     statsCountries: '访问国家',
     statsTopCountry: '最高国家',
     statsLastUpdate: '最近更新',
@@ -1004,7 +1004,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           <g>
             {activeCountries.filter(country => country.d).map(country => (
               <path key={country.code} className="visitor-map-country-active" d={country.d} style={{ animationDelay: `${country.delay || 0}s` }}>
-                <title>{country.name}: {country.count} visits</title>
+                <title>{country.name}: {country.count} {ui.pageviews}</title>
               </path>
             ))}
           </g>
@@ -1024,7 +1024,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
               const leaderEndY = labelY + 10;
               return (
                 <g key={`marker-${country.code}`} className="visitor-map-svg-marker" data-country-code={country.code} transform={`translate(${country.x} ${country.y})`} style={{ animationDelay: `${country.delay || 0}s` }}>
-                  <title>{country.name}: {country.count} visits</title>
+                  <title>{country.name}: {country.count} {ui.pageviews}</title>
                   <line className="visitor-map-svg-leader" x1="0" y1="0" x2={leaderEndX} y2={leaderEndY} />
                   <circle className="visitor-map-svg-region" r={expanded ? 11 : 9} />
                   <g className="visitor-map-svg-pill" transform={`translate(${labelX} ${labelY})`}>
