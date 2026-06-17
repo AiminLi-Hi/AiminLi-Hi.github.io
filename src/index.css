@@ -2,6 +2,193 @@
 @tailwind components;
 @tailwind utilities;
 
+.news-mobihoc-count {
+  border-radius: 0.35rem;
+  background: rgba(225, 29, 72, 0.1);
+  color: #e11d48;
+  font-weight: 900;
+  padding: 0 0.18rem;
+}
+
+.page-transition-shell {
+  opacity: 1;
+  will-change: opacity;
+}
+
+.page-transition-shell--leaving {
+  pointer-events: none;
+  animation: page-transition-exit 180ms ease-in both;
+}
+
+.page-transition-shell--entering {
+  animation: page-transition-enter 440ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+.page-transition-shell .animate-fade-in,
+.page-transition-shell .animate-fade-in-up {
+  animation: none;
+}
+
+.animate-fade-in {
+  animation: refined-fade-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in-up {
+  animation: refined-fade-in-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-transition-enter {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes page-transition-exit {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes refined-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes refined-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-shell,
+  .animate-fade-in,
+  .animate-fade-in-up {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+.lineage-chain {
+  --lineage-line: rgba(148, 163, 184, 0.28);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.45rem;
+}
+
+.lineage-chain--dark {
+  --lineage-line: rgba(71, 85, 105, 0.72);
+}
+
+.lineage-chain::before {
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0.65rem;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--lineage-line);
+  content: "";
+}
+
+.lineage-chain-item {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 1.45rem minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: stretch;
+}
+
+.lineage-chain-marker {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.45rem;
+}
+
+.lineage-chain-card {
+  min-height: 5.25rem;
+}
+
+.lineage-chain-arrow {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .lineage-chain {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .lineage-chain::before {
+    top: 0.62rem;
+    right: 1.1rem;
+    bottom: auto;
+    left: 1.1rem;
+    width: auto;
+    height: 2px;
+  }
+
+  .lineage-chain-item {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1.45rem minmax(0, 1fr);
+    gap: 0.25rem;
+    align-items: start;
+  }
+
+  .lineage-chain-marker {
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+
+  .lineage-chain-card {
+    width: 100%;
+    min-height: 6.2rem;
+  }
+
+  .lineage-chain-item--0 .lineage-chain-card {
+    min-height: 8.25rem;
+  }
+
+  .lineage-chain-item--1 .lineage-chain-card {
+    min-height: 7.25rem;
+  }
+
+  .lineage-chain-item--2 .lineage-chain-card {
+    min-height: 6.25rem;
+  }
+
+  .lineage-chain-arrow {
+    position: absolute;
+    top: 0.12rem;
+    right: -0.68rem;
+    z-index: 3;
+    display: block;
+    padding: 0.1rem;
+    border-radius: 999px;
+    background: inherit;
+  }
+}
+
 .visitor-map-frame {
   display: block;
   border: 1px solid rgba(191, 219, 254, 0.95);

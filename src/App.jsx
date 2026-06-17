@@ -5,7 +5,7 @@ import {
   ExternalLink, BookOpen, ChevronRight,
   Download, Play, Youtube, Copy,
   Quote, Search, Star, Trophy, Video,
-  School, ChevronDown, ChevronUp, Layers, User, Users,
+  School, ChevronDown, ChevronUp, User, Users,
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
   Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus,
   MessageCircle, Plane, Landmark, Network, GitCommit, Languages,
@@ -81,7 +81,24 @@ const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
 const MENTORING_GROUP_PREVIEW_LIMIT = 1;
+const PAGE_FADE_OUT_MS = 180;
+const PAGE_FADE_IN_MS = 440;
 let visitorHitRecordedForPage = false;
+const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring'];
+const PUBLICATION_HASH_PREFIX = 'pub-';
+const getCurrentHashValue = () => (
+  typeof window === 'undefined'
+    ? ''
+    : decodeURIComponent(window.location.hash.replace(/^#/, '').trim())
+);
+const isPublicationHashValue = (hash = '') => hash.startsWith(PUBLICATION_HASH_PREFIX);
+const resolvePageFromHash = () => {
+  if (typeof window === 'undefined') return 'about';
+  const hash = getCurrentHashValue();
+  if (hash === 'submitted') return 'publications';
+  if (isPublicationHashValue(hash)) return 'publications';
+  return PAGE_KEYS.includes(hash) ? hash : 'about';
+};
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
   /\bIoTJ\b|\bJIOT\b|internet of things journal/i,
@@ -146,6 +163,18 @@ const UI_COPY = {
     noAbstract: 'No abstract available.',
     moreNews: 'More News',
     fewerNews: 'Fewer News',
+    homeNavTitle: 'Explore my profile',
+    homeNavDesc: 'Jump directly to focused pages.',
+    homeNavCards: {
+      about: 'Home page and latest news',
+      publications: 'Papers, projects, code, and citations',
+      timeline: 'Research path and academic heritage',
+      mentoring: 'Student mentoring and collaborations',
+      awards: 'Honors and recognitions',
+      service: 'Reviewing, chairing, and service',
+      teaching: 'Teaching assistant experience',
+      cv: 'Download my curriculum vitae',
+    },
     awardsDesc: 'Recognition for research excellence and academic achievements.',
     selectedHonors: 'Selected Honors',
     otherAwards: 'Other Awards & Recognition',
@@ -182,6 +211,11 @@ const UI_COPY = {
     regionalNoData: 'Regional data will appear after new visits from this country.',
     regionalCountrySelect: 'Country',
     regionalShare: 'Regional share',
+    serviceReviewerTitle: 'Invited Reviewer',
+    serviceJournals: 'Journals & Letters',
+    serviceConferences: 'Conferences',
+    serviceChairTitle: 'Session Chair',
+    serviceVolunteerTitle: 'Volunteer & Service',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -215,6 +249,18 @@ const UI_COPY = {
     noAbstract: '暂无摘要。',
     moreNews: '更多动态',
     fewerNews: '收起动态',
+    homeNavTitle: '快速浏览主页',
+    homeNavDesc: '直接进入不同内容页。',
+    homeNavCards: {
+      about: '主页简介与最新动态',
+      publications: '论文、项目、代码与引用',
+      timeline: '科研经历与学术谱系',
+      mentoring: '学生指导与科研合作',
+      awards: '代表性荣誉与奖励',
+      service: '审稿、分会主席与学术服务',
+      teaching: '课程助教与教学经历',
+      cv: '下载我的简历',
+    },
     awardsDesc: '科研表现与学术成长中的代表性荣誉。',
     selectedHonors: '代表性荣誉',
     otherAwards: '其他奖项与认可',
@@ -251,6 +297,11 @@ const UI_COPY = {
     regionalNoData: '该国家的新访问产生后，会显示州/省级聚合数据。',
     regionalCountrySelect: '国家',
     regionalShare: '地区占比',
+    serviceReviewerTitle: '受邀审稿',
+    serviceJournals: '期刊与快报',
+    serviceConferences: '会议',
+    serviceChairTitle: '分会主席',
+    serviceVolunteerTitle: '志愿服务',
   },
 };
 
@@ -602,7 +653,16 @@ const awardYearValue = (award = {}) => (
   Math.max(...(String(award.year).match(/\d{4}/g) || ['0']).map(Number))
 );
 
+const getServiceVenueMeta = (venue = '') => {
+  const isJournal = /Transactions|Journal|Letters|Computer Networks/i.test(venue);
+  return {
+    full: venue,
+    type: isJournal ? 'journal' : 'conference',
+  };
+};
+
 const slugify = (value = '') => normalizeTitle(value).replace(/\s+/g, '-').slice(0, 80) || 'item';
+const getPublicationAnchorId = (pub = {}) => `${PUBLICATION_HASH_PREFIX}${pub.id || slugify(pub.title)}`;
 
 const normalizeNewsDate = (date = '') => {
   const match = String(date).match(/\d{4}-\d{2}/);
@@ -790,8 +850,8 @@ const buildVisitorRoutes = (activeCountries) => {
     });
 };
 
-const TIMELINE_REFLECTION_SPLIT_PATTERN = /(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我也很爱土耳其四季分明的日子。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and slowly finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)/g;
-const TIMELINE_REFLECTION_TEST_PATTERN = /^(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我也很爱土耳其四季分明的日子。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and slowly finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)$/;
+const TIMELINE_REFLECTION_SPLIT_PATTERN = /(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love the warmth of Turkish people and Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)/g;
+const TIMELINE_REFLECTION_TEST_PATTERN = /^(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love the warmth of Turkish people and Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)$/;
 
 const HighlightText = ({ text, darkMode }) => {
   if (!text) return null;
@@ -840,6 +900,22 @@ const HighlightText = ({ text, darkMode }) => {
         return renderPlainText(part, i);
       })}
     </span>
+  );
+};
+
+const BioText = ({ text, darkMode }) => {
+  const bioText = String(text || '')
+    .split(/\n{2,}/)
+    .map(part => part.trim())
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <div className={`text-[15px] leading-7 md:text-base md:leading-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+      <p>
+        <HighlightText text={bioText} darkMode={darkMode} />
+      </p>
+    </div>
   );
 };
 
@@ -907,9 +983,9 @@ const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }
       onClick={(e) => { e.stopPropagation(); onClick && onClick(); }} 
       target={href ? "_blank" : undefined} 
       rel={href ? "noreferrer" : undefined} 
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border cursor-pointer ${colorClass}`}
+      className={`inline-flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border px-2.5 text-[11px] font-extrabold leading-none shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow cursor-pointer ${colorClass}`}
     >
-      {React.createElement(icon, { size: 14 })}{label}
+      {React.createElement(icon, { size: 13, strokeWidth: 2.3 })}{label}
     </Component>
   );
 };
@@ -955,74 +1031,110 @@ const JcrBadge = ({ zone, ifVal, darkMode }) => (
 // --- Academic Lineage Component ---
 // ==========================================
 
-const AcademicLineage = ({ lineage, darkMode }) => {
-  return (
-    <div className={`mt-5 pt-5 border-t border-dashed ${darkMode ? 'border-slate-700' : 'border-indigo-100'}`}>
-      <h4 className={`text-xs font-extrabold uppercase tracking-widest mb-4 flex items-center gap-2 ${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>
-        <Network size={14} /> Academic Heritage（学术谱系）
-      </h4>
-      
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 relative pl-2 md:pl-0">
-        {lineage.map((person, idx) => {
-          const isLast = idx === lineage.length - 1;
-          const isAdvisor = person.highlight && !isLast;
-          
-          // Define colors based on roles
-          let ringColor = darkMode ? 'border-slate-600' : 'border-gray-200';
-          let bgColor = darkMode ? 'bg-slate-800' : 'bg-white';
-          let textColor = darkMode ? 'text-slate-400' : 'text-gray-500';
-          let shadowClass = '';
+const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
+  const labels = lang === 'zh'
+    ? {
+        title: 'Academic Heritage（学术谱系）',
+        ancestor: '历史源流',
+        advisor: '现任导师',
+        current: '当前节点',
+        bridge: '学术传承',
+      }
+    : {
+        title: 'Academic Heritage（学术谱系）',
+        ancestor: 'Foundational lineage',
+        advisor: 'Advisor',
+        current: 'Current node',
+        bridge: 'Lineage',
+      };
 
-          if (isAdvisor) {
-            ringColor = darkMode ? 'border-indigo-500' : 'border-indigo-400';
-            bgColor = darkMode ? 'bg-indigo-900/30' : 'bg-indigo-50';
-            textColor = darkMode ? 'text-indigo-300' : 'text-indigo-700';
-            shadowClass = 'shadow-[0_0_10px_rgba(99,102,241,0.3)]';
-          } else if (isLast) {
-            ringColor = darkMode ? 'border-purple-500' : 'border-purple-400';
-            bgColor = darkMode ? 'bg-purple-900/30' : 'bg-purple-50';
-            textColor = darkMode ? 'text-purple-300' : 'text-purple-700';
-            shadowClass = 'shadow-[0_0_15px_rgba(168,85,247,0.4)] animate-pulse';
-          }
+  const getNodeStyle = (person) => {
+    const role = person.role || (person.highlight ? 'advisor' : 'ancestor');
+    if (role === 'current') {
+      return {
+        role,
+        label: labels.current,
+        card: darkMode
+          ? 'border-cyan-400/35 bg-cyan-400/[0.04]'
+          : 'border-cyan-200 bg-cyan-50/35',
+        step: darkMode ? 'border-cyan-400/45 bg-slate-950 text-cyan-200' : 'border-cyan-300 bg-white text-cyan-700',
+        name: darkMode ? 'text-slate-100' : 'text-slate-950',
+        meta: darkMode ? 'text-slate-400' : 'text-slate-600',
+        pill: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-white text-cyan-700',
+      };
+    }
+    if (role === 'advisor' || person.highlight) {
+      return {
+        role: 'advisor',
+        label: labels.advisor,
+        card: darkMode
+          ? 'border-indigo-400/35 bg-indigo-400/[0.05]'
+          : 'border-indigo-200 bg-indigo-50/45',
+        step: darkMode ? 'border-indigo-400/45 bg-slate-950 text-indigo-200' : 'border-indigo-300 bg-white text-indigo-700',
+        name: darkMode ? 'text-slate-100' : 'text-slate-950',
+        meta: darkMode ? 'text-slate-400' : 'text-slate-600',
+        pill: darkMode ? 'border-indigo-300/30 bg-indigo-300/10 text-indigo-100' : 'border-indigo-200 bg-white text-indigo-800',
+      };
+    }
+    return {
+      role: 'ancestor',
+      label: labels.ancestor,
+      card: darkMode
+        ? 'border-slate-700/80 bg-slate-900/28'
+        : 'border-slate-200 bg-slate-50/65',
+      step: darkMode ? 'border-slate-700 bg-slate-950 text-slate-500' : 'border-slate-200 bg-white text-slate-500',
+      name: darkMode ? 'text-slate-300' : 'text-slate-700',
+      meta: darkMode ? 'text-slate-500' : 'text-slate-500',
+      pill: darkMode ? 'border-slate-700 bg-slate-950/45 text-slate-400' : 'border-slate-200 bg-white text-slate-500',
+    };
+  };
+
+  return (
+    <div className={`w-full min-w-0 rounded-2xl border p-3 ${darkMode ? 'border-slate-700/80 bg-slate-900/45' : 'border-slate-200 bg-white'}`}>
+      <h4 className={`mb-2.5 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
+        <Network size={14} /> {labels.title}
+      </h4>
+
+      <ol className={`lineage-chain ${darkMode ? 'lineage-chain--dark' : ''}`}>
+        {lineage.map((person, idx) => {
+          const node = getNodeStyle(person);
 
           return (
-            <React.Fragment key={idx}>
-              {/* Node */}
-              <div className={`relative flex flex-col items-center group z-10 ${isLast ? 'flex-1 md:flex-none' : ''}`}>
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center border-[3px] transition-all duration-300 ${ringColor} ${bgColor} ${shadowClass}`}>
-                  <span className={`text-xs font-bold text-center leading-tight px-1 ${textColor}`}>
-                    {person.name.split(' ').slice(-1)[0]}
+            <li key={person.name} className={`lineage-chain-item lineage-chain-item--${idx}`}>
+              <div className="lineage-chain-marker">
+                <span className={`relative z-10 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10px] font-black tabular-nums ${node.step}`}>
+                  {idx + 1}
+                </span>
+              </div>
+
+              <div className={`lineage-chain-card flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2 text-left transition-colors ${node.card}`}>
+                <div className="flex min-w-0 flex-wrap items-start gap-1">
+                  <span className={`inline-flex max-w-full items-center rounded-md border px-1.5 py-0.5 text-[8px] font-black uppercase leading-tight tracking-[0.08em] break-words ${node.pill}`}>
+                    {node.label}
                   </span>
+                  {person.era && (
+                    <span className={`max-w-full rounded-md px-1.5 py-0.5 text-[8px] font-black leading-tight tabular-nums break-words ${darkMode ? 'bg-white/5 text-slate-500' : 'bg-white text-slate-500 shadow-sm'}`}>
+                    {person.era}
+                  </span>
+                  )}
                 </div>
-                
-                <div className={`mt-2.5 text-center transition-colors duration-300 ${isAdvisor || isLast ? (darkMode ? 'text-white' : 'text-gray-900') : (darkMode ? 'text-slate-500' : 'text-gray-400')}`}>
-                  <div className="text-xs font-bold whitespace-nowrap">{person.name}</div>
-                  <div className={`text-[9px] opacity-80 max-w-[100px] mx-auto leading-tight mt-0.5 font-medium`}>
+
+                <div className="min-w-0">
+                  <div className={`break-words text-xs font-extrabold leading-tight ${node.name}`}>
+                    {person.name}
+                  </div>
+                  <div className={`mt-0.5 text-[9px] font-semibold leading-snug ${node.meta}`}>
                     {person.title}
                   </div>
                 </div>
               </div>
-
-              {/* Connector (Arrow) */}
-              {!isLast && lineage[idx+1].title !== "You" && lineage[idx+1].title !== "我" && (
-                <>
-                  {/* Desktop Arrow */}
-                  <div className="hidden md:flex flex-1 items-center justify-center px-2">
-                    <div className={`h-[3px] w-full relative rounded-full ${darkMode ? 'bg-slate-700' : 'bg-indigo-200'}`}>
-                       <div className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 ${darkMode ? 'text-slate-500' : 'text-indigo-400'}`}>
-                          <ChevronRight size={20} strokeWidth={4} />
-                       </div>
-                    </div>
-                  </div>
-                  
-                  {/* Mobile Vertical Line - Enhanced */}
-                  <div className={`md:hidden h-8 w-[3px] ml-[1.7rem] my-1 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-indigo-200'}`}></div>
-                </>
+              {idx < lineage.length - 1 && (
+                <ChevronRight className={`lineage-chain-arrow ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} strokeWidth={3} />
               )}
-            </React.Fragment>
+            </li>
           );
         })}
-      </div>
+      </ol>
     </div>
   );
 };
@@ -1474,16 +1586,23 @@ export default function AcademicProfile() {
   ));
   const [lang, setLang] = useState('en');
   const [activeBibtex, setActiveBibtex] = useState(null);
-  const [activeSection, setActiveSection] = useState('about');
+  const [activeSection, setActiveSection] = useState(() => resolvePageFromHash());
+  const [pageTransition, setPageTransition] = useState(() => ({
+    displaySection: resolvePageFromHash(),
+    phase: 'entered',
+  }));
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMentoringGroups, setExpandedMentoringGroups] = useState({});
+  const [pendingPublicationAnchor, setPendingPublicationAnchor] = useState(() => {
+    const hash = getCurrentHashValue();
+    return isPublicationHashValue(hash) ? hash : '';
+  });
 
   // -- Filter & Search States --
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("All");
   const [visiblePubs, setVisiblePubs] = useState(12);
-  const [visibleAwards, setVisibleAwards] = useState(6); // Controls visibility of "Other Awards"
   const [showAllNews, setShowAllNews] = useState(false);
 
   const syncData = useMemo(() => getRuntimeSyncData(), []);
@@ -1491,6 +1610,10 @@ export default function AcademicProfile() {
   const content = PROFILE_DATA[lang];
   const ui = UI_COPY[lang];
   useSEO(content.meta_title, content.meta_desc, lang);
+  const isHomePage = activeSection === 'about' || activeSection === 'news';
+  const displaySection = pageTransition.displaySection;
+  const displayIsHomePage = displaySection === 'about' || displaySection === 'news';
+  const displaySectionRef = useRef(displaySection);
   const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
   const matchesMentoredStudent = useMemo(
@@ -1600,36 +1723,160 @@ export default function AcademicProfile() {
     }));
   }, [filteredPubs, visiblePubs]);
 
-  const { featuredAwards, otherAwards } = useMemo(() => {
+  const groupedAwardYears = useMemo(() => {
     const sortedAwards = [...content.awards].sort((a, b) => (
       awardYearValue(b) - awardYearValue(a)
       || String(a.title).localeCompare(String(b.title))
     ));
-    return {
-      featuredAwards: sortedAwards.filter(a => a.featured),
-      otherAwards: sortedAwards.filter(a => !a.featured)
-    };
+    const groups = new Map();
+    sortedAwards.forEach((award) => {
+      const year = String(awardYearValue(award) || award.year || 'N/A');
+      if (!groups.has(year)) groups.set(year, []);
+      groups.get(year).push(award);
+    });
+    return Array.from(groups.entries()).map(([year, awards]) => ({
+      year,
+      awards,
+      totalCount: awards.length,
+    }));
   }, [content.awards]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
-      const sections = Object.keys(content.nav);
-      let current = '';
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150) current = section;
-        }
-      }
-      if (current) setActiveSection(current);
+  const serviceReviewGroups = useMemo(() => {
+    const items = content.service.reviewer.map((venue, index) => ({
+      ...getServiceVenueMeta(venue),
+      index,
+    }));
+    const journals = items
+      .filter(item => item.type === 'journal')
+      .sort((a, b) => a.index - b.index);
+    const conferences = items.filter(item => item.type === 'conference');
+    return {
+      journals,
+      conferences,
+      total: items.length,
     };
+  }, [content.service.reviewer]);
+
+  const teachingRows = useMemo(() => (
+    [...content.teaching].sort((a, b) => (
+      Number(String(b.period).match(/\d{4}/)?.[0] || 0) - Number(String(a.period).match(/\d{4}/)?.[0] || 0)
+      || String(b.period).localeCompare(String(a.period))
+    ))
+  ), [content.teaching]);
+
+  useEffect(() => {
+    recordVisitorHit().catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    displaySectionRef.current = displaySection;
+  }, [displaySection]);
+
+  useEffect(() => {
+    const currentDisplaySection = displaySectionRef.current;
+    let settleTimer;
+    let leaveTimer;
+    let exitTimer;
+    let enterTimer;
+
+    if (activeSection === currentDisplaySection) {
+      settleTimer = window.setTimeout(() => {
+        setPageTransition((current) => (
+          current.phase === 'entered' ? current : { ...current, phase: 'entered' }
+        ));
+      }, 0);
+      return () => {
+        window.clearTimeout(settleTimer);
+      };
+    }
+
+    leaveTimer = window.setTimeout(() => {
+      setPageTransition((current) => ({ ...current, phase: 'leaving' }));
+      exitTimer = window.setTimeout(() => {
+        displaySectionRef.current = activeSection;
+        setPageTransition({ displaySection: activeSection, phase: 'entering' });
+        enterTimer = window.setTimeout(() => {
+          setPageTransition((current) => (
+            current.displaySection === activeSection
+              ? { ...current, phase: 'entered' }
+              : current
+          ));
+        }, PAGE_FADE_IN_MS);
+      }, PAGE_FADE_OUT_MS);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(leaveTimer);
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(enterTimer);
+    };
+  }, [activeSection]);
+
+  useEffect(() => {
+    const syncPageFromHash = () => {
+      const hash = getCurrentHashValue();
+      if (isPublicationHashValue(hash)) {
+        setSearchQuery("");
+        setSelectedVenue("All");
+        setVisiblePubs(publications.length);
+        setPendingPublicationAnchor(hash);
+      } else {
+        setPendingPublicationAnchor('');
+      }
+      setActiveSection(resolvePageFromHash());
+    };
+    window.addEventListener('hashchange', syncPageFromHash);
+    window.addEventListener('popstate', syncPageFromHash);
+    syncPageFromHash();
+    return () => {
+      window.removeEventListener('hashchange', syncPageFromHash);
+      window.removeEventListener('popstate', syncPageFromHash);
+    };
+  }, [publications.length]);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      if (displaySection === 'publications' && pendingPublicationAnchor) {
+        window.requestAnimationFrame(() => {
+          document.getElementById(pendingPublicationAnchor)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        return;
+      }
+      if (displaySection === 'news') {
+        document.getElementById('news')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frameId);
+  }, [displaySection, groupedPublicationYears, pendingPublicationAnchor]);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 400);
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [content.nav]);
+  }, []);
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const navigateToPage = (key, event) => {
+    event?.preventDefault();
+    if (!PAGE_KEYS.includes(key)) return;
+    setActiveSection(key);
+    setIsMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      const nextHash = `#${key}`;
+      if (window.location.hash !== nextHash) {
+        window.history.pushState(null, '', nextHash);
+      }
+    }
+  };
+  const scrollToTop = () => {
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    navigateToPage('about');
+  };
   const resetPublicationView = () => {
     setVisiblePubs(12);
   };
@@ -1641,6 +1888,113 @@ export default function AcademicProfile() {
     setSelectedVenue(value);
     resetPublicationView();
   };
+
+  const mentoringStudentCount = mentoringGroups.reduce((sum, group) => sum + group.students.length, 0);
+  const homeNavItems = [
+    {
+      key: 'about',
+      targetKey: 'about',
+      label: lang === 'en' ? 'Home' : '主页',
+      icon: Sparkles,
+      metric: newsItems.length,
+      accent: darkMode ? 'border-violet-400/25 bg-violet-400/10 text-violet-200 shadow-violet-950/25' : 'border-violet-200 bg-violet-50 text-violet-800 shadow-violet-100/70',
+    },
+    {
+      key: 'publications',
+      icon: BookOpen,
+      metric: publications.length,
+      accent: darkMode ? 'border-emerald-400/25 bg-emerald-400/10 text-emerald-200 shadow-emerald-950/25' : 'border-emerald-200 bg-emerald-50 text-emerald-800 shadow-emerald-100/70',
+    },
+    {
+      key: 'timeline',
+      icon: Plane,
+      metric: content.timeline.length,
+      accent: darkMode ? 'border-blue-400/25 bg-blue-400/10 text-blue-200 shadow-blue-950/25' : 'border-blue-200 bg-blue-50 text-blue-800 shadow-blue-100/70',
+    },
+    {
+      key: 'awards',
+      icon: Trophy,
+      metric: content.awards.length,
+      accent: darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200 shadow-amber-950/25' : 'border-amber-200 bg-amber-50 text-amber-800 shadow-amber-100/70',
+    },
+    {
+      key: 'service',
+      icon: Star,
+      metric: content.service.reviewer.length,
+      accent: darkMode ? 'border-purple-400/25 bg-purple-400/10 text-purple-200 shadow-purple-950/25' : 'border-purple-200 bg-purple-50 text-purple-800 shadow-purple-100/70',
+    },
+    {
+      key: 'teaching',
+      icon: Presentation,
+      metric: content.teaching.length,
+      accent: darkMode ? 'border-pink-400/25 bg-pink-400/10 text-pink-200 shadow-pink-950/25' : 'border-pink-200 bg-pink-50 text-pink-800 shadow-pink-100/70',
+    },
+    {
+      key: 'mentoring',
+      icon: Users,
+      metric: mentoringStudentCount,
+      accent: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/25' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100/70',
+    },
+    {
+      key: 'cv',
+      label: content.cvDownload,
+      href: '/files/Aimin_Li_CV.pdf',
+      download: 'Aimin_Li_CV.pdf',
+      icon: Download,
+      metric: null,
+      accent: darkMode ? 'border-sky-400/25 bg-sky-400/10 text-sky-200 shadow-sky-950/25' : 'border-sky-200 bg-sky-50 text-sky-800 shadow-sky-100/70',
+    },
+  ];
+
+  const profileSidebar = (
+    <aside className="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:sticky md:top-24 md:items-start md:text-left space-y-5">
+      <div className="relative group w-48 h-48 mx-auto md:mx-0">
+        <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-purple-500 via-pink-500 to-emerald-500' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
+        <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-slate-800' : 'border-white'}`}>
+          <img src={`/images/profile.jpg`} alt="Profile" className="w-full h-full object-cover bg-slate-100" />
+        </div>
+      </div>
+      <div className="w-full flex flex-wrap justify-center md:justify-start gap-3">
+         <SocialButton icon={Mail} href={content.social.email} label="Email" colorType="email" darkMode={darkMode} />
+         <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
+         <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
+         <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
+         <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
+      </div>
+      <nav className={`relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 md:block ${darkMode ? 'border-slate-700/80 bg-slate-900/55' : 'border-slate-200 bg-white'}`} aria-label={ui.homeNavTitle}>
+        <div className={`absolute inset-y-0 left-0 w-1 ${darkMode ? 'bg-gradient-to-b from-emerald-300 via-cyan-300 to-violet-300' : 'bg-gradient-to-b from-emerald-500 via-cyan-500 to-violet-500'}`} />
+        <div className="space-y-1">
+          {homeNavItems.map((item) => {
+            const Icon = item.icon;
+            const targetKey = item.targetKey || item.key;
+            const isActive = item.key === 'about' ? isHomePage : activeSection === item.key;
+            const itemLabel = item.label || content.nav[item.key];
+            const itemTitle = ui.homeNavCards[item.key];
+            return (
+              <a
+                key={item.key}
+                href={item.href || `#${targetKey}`}
+                download={item.download}
+                onClick={item.href ? undefined : (event) => navigateToPage(targetKey, event)}
+                title={itemTitle}
+                className={`group flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[10px] font-black transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
+                  isActive
+                    ? (darkMode ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-100' : 'border-cyan-300 bg-cyan-50 text-cyan-900')
+                    : (darkMode ? 'border-slate-700 bg-slate-950/45 text-slate-300 hover:border-cyan-400/35 hover:bg-cyan-400/10' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-900')
+                }`}
+              >
+                <span className={`inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ${item.accent}`}>
+                  <Icon size={10} strokeWidth={2.5} />
+                </span>
+                <span className="min-w-0 flex-1 truncate">{itemLabel}</span>
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+    </aside>
+  );
+
   const PublicationRow = ({ pub }) => {
     const primaryHref = pub.url || pub.links?.pdf || pub.links?.arxiv || null;
     const displayTitle = getPublicationTitle(pub, lang);
@@ -1648,9 +2002,11 @@ export default function AcademicProfile() {
     const showSoleAuthorBadge = isSoleAuthor && pub.showSoleAuthorBadge !== false;
     const isCoFirstAuthor = isCoFirstAuthorPublication(pub);
     const isFirstAuthor = isFirstAuthorPublication(pub);
-    const isStudentOutcome = isStudentOutcomePublication(pub);
+    const isAuthorLead = isSoleAuthor || isFirstAuthor || isCoFirstAuthor;
+    const isStudentOutcome = !isAuthorLead && isStudentOutcomePublication(pub);
     const typeLabel = pub.type === 'Journal' ? ui.journalShort : pub.type === 'Thesis' ? ui.thesisShort : ui.conferenceShort;
-    const highlightClass = (isSoleAuthor || isFirstAuthor || isCoFirstAuthor)
+    const inlineCoFirstLabel = lang === 'zh' ? '共同一作' : 'co-first';
+    const highlightClass = isAuthorLead
       ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
       : isStudentOutcome
         ? (darkMode ? 'border-l-emerald-400 bg-emerald-400/[0.04]' : 'border-l-emerald-400 bg-emerald-50/40')
@@ -1658,10 +2014,11 @@ export default function AcademicProfile() {
 
     return (
       <article
-        className={`grid gap-2 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 md:grid-cols-[minmax(0,1fr)_10rem] md:items-start ${highlightClass} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+        id={getPublicationAnchorId(pub)}
+        className={`scroll-mt-28 border-b border-l-2 py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${highlightClass} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
       >
         <div className="min-w-0">
-          <div className="mb-1 flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
               {typeLabel}
             </span>
@@ -1681,11 +2038,6 @@ export default function AcademicProfile() {
             {isFirstAuthor && (
               <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
                 {ui.firstAuthorBadge}
-              </span>
-            )}
-            {isCoFirstAuthor && (
-              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
-                {ui.coFirstAuthorBadge}
               </span>
             )}
             {isStudentOutcome && (
@@ -1712,7 +2064,9 @@ export default function AcademicProfile() {
             )}
             {pub.jcr && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
           </div>
+        </div>
 
+        <div className="mt-1 min-w-0">
           <h3 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
             {primaryHref ? (
               <a href={primaryHref} target="_blank" rel="noreferrer" className={darkMode ? 'hover:text-cyan-300' : 'hover:text-cyan-700'} title={ui.openArticle}>
@@ -1721,24 +2075,41 @@ export default function AcademicProfile() {
             ) : displayTitle}
           </h3>
 
+          {(pub.venue || pub.venue_short) && (
+            <div
+              className={`mt-1 flex w-full max-w-full items-start gap-1.5 text-[10px] font-black leading-snug tracking-[0.08em] ${darkMode ? 'text-cyan-300/80' : 'text-cyan-700/80'}`}
+              title={pub.venue_short}
+            >
+              <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-cyan-300/70' : 'bg-cyan-600/70'}`} />
+              <span className="min-w-0 whitespace-normal break-words">{pub.venue || pub.venue_short}</span>
+            </div>
+          )}
+
           <div className={`mt-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
             {getAuthorList(pub.authors).map((author, i, arr) => (
               <span key={`${pub.id}-author-${i}`}>
-                {author.includes('Aimin Li')
-                  ? <strong className={`font-black underline underline-offset-2 ${darkMode ? 'text-cyan-200 decoration-cyan-300/60' : 'text-cyan-800 decoration-cyan-500/45'}`}>{author}</strong>
-                  : author}
+                {author.includes('Aimin Li') ? (
+                  <>
+                    <strong className={`font-black underline underline-offset-2 ${darkMode ? 'text-cyan-200 decoration-cyan-300/60' : 'text-cyan-800 decoration-cyan-500/45'}`}>{author}</strong>
+                    {isCoFirstAuthor && (
+                      <span className={`ml-1 inline-flex translate-y-[-1px] items-center rounded-full border px-1.5 py-0.5 text-[9px] font-black leading-none ${darkMode ? 'border-amber-400/30 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+                        {inlineCoFirstLabel}
+                      </span>
+                    )}
+                  </>
+                ) : author}
                 {i < arr.length - 1 ? ', ' : ''}
               </span>
             ))}
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 md:justify-end">
-          {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
-          {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
-          {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
-          {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
-          <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
+          <div className="mt-2 flex max-w-full flex-wrap items-center gap-1.5">
+            {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
+            {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
+            {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
+            {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
+            <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
+          </div>
         </div>
       </article>
     );
@@ -1750,13 +2121,20 @@ export default function AcademicProfile() {
       {/* --- Navigation --- */}
       <div className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-gray-200'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className={`text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={scrollToTop}>
+          <div className={`text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={() => navigateToPage('about')}>
             <Sparkles size={18} className="text-purple-500" />{content.name}
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-1 mr-2">
               {Object.entries(content.nav).map(([key, label]) => (
-                <a key={key} href={`#${key}`} className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}>{label}</a>
+                <a
+                  key={key}
+                  href={`#${key}`}
+                  onClick={(event) => navigateToPage(key, event)}
+                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
+                >
+                  {label}
+                </a>
               ))}
               <a
                 href="/files/Aimin_Li_CV.pdf"
@@ -1796,7 +2174,7 @@ export default function AcademicProfile() {
               <a 
                 key={key} 
                 href={`#${key}`} 
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(event) => navigateToPage(key, event)}
                 className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
               >
                 {label}
@@ -1823,29 +2201,17 @@ export default function AcademicProfile() {
       </div>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
-        
-        {/* --- Hero Section --- */}
-        <section id="about" className="grid md:grid-cols-12 gap-12 items-start scroll-mt-32 animate-fade-in-up">
-          <div className="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:text-left md:items-start space-y-6">
-            <div className="relative group w-48 h-48 mx-auto md:mx-0">
-              <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-purple-500 via-pink-500 to-emerald-500' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
-              <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-slate-800' : 'border-white'}`}>
-                <img src={`/images/profile.jpg`} alt="Profile" className="w-full h-full object-cover bg-slate-100" />
-              </div>
-            </div>
-            <div className="w-full flex flex-wrap justify-center md:justify-start gap-3">
-               <SocialButton icon={Mail} href={content.social.email} label="Email" colorType="email" darkMode={darkMode} />
-               <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
-               <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
-               <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
-               <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
-            </div>
-          </div>
-          <div className="md:col-span-8 lg:col-span-9 space-y-8">
+        <div className="grid md:grid-cols-12 gap-12 items-start">
+          {profileSidebar}
+          <div className="md:col-span-8 lg:col-span-9 min-w-0">
+            <div key={`${displaySection}-${lang}`} className={`page-transition-shell page-transition-shell--${pageTransition.phase} space-y-8`}>
+            {displayIsHomePage && (
+            <section id="about" className="scroll-mt-32 animate-fade-in-up">
+              <div className="space-y-8">
               <div>
                 <h1 className={`text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r ${darkMode ? 'from-white to-slate-400' : 'from-gray-900 to-slate-600'}`}>{content.name}</h1>
                 <div className={`text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
-                <div className={`prose prose-lg max-w-none leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}><p><HighlightText text={content.bio} darkMode={darkMode} /></p></div>
+                <BioText text={content.bio} darkMode={darkMode} />
               </div>
               
               <div id="news" className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-gray-100 shadow-sm'}`}>
@@ -1881,106 +2247,70 @@ export default function AcademicProfile() {
               </div>
           </div>
         </section>
+        )}
 
         {/* --- Timeline Section (Optimized) --- */}
-        <section id="timeline" className="scroll-mt-32">
+        {displaySection === 'timeline' && (
+        <section id="timeline" className="scroll-mt-32 animate-fade-in">
            <div className="flex items-center gap-3 mb-8">
             <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}><Plane size={20} /></div>
             <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.timeline}</h2>
           </div>
           
-          <div className="relative px-2">
-             {/* Vertical Gradient Line */}
-             <div className={`absolute left-8 md:left-1/2 top-2 bottom-2 w-[2px] transform md:-translate-x-1/2 bg-gradient-to-b ${darkMode ? 'from-indigo-500 via-purple-500 to-slate-800' : 'from-indigo-400 via-purple-400 to-gray-200'}`}></div>
-
-             <div className="space-y-6">
+          <div className="space-y-8">
+            <div className="relative pl-7">
+              <div className={`absolute left-[0.42rem] top-2 bottom-2 w-px ${darkMode ? 'bg-slate-800' : 'bg-slate-200'}`}></div>
+              <div className="space-y-5">
                 {content.timeline.map((item, idx) => {
                    const isWork = item.type === 'work';
+                   const advisor = item.lineage?.find(person => person.highlight) || item.lineage?.[item.lineage.length - 1];
                    
                    return (
-                     <div key={idx} className={`relative flex flex-col md:flex-row group ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-                        
-                        {/* Center Node */}
-                        <div className={`absolute left-8 md:left-1/2 transform -translate-x-1/2 w-3 h-3 rounded-full border-2 z-10 mt-6 transition-all duration-300 
-                           ${idx === 0 
-                             ? (darkMode ? 'bg-indigo-500 border-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.6)] scale-125' : 'bg-indigo-500 border-indigo-200 shadow-md scale-125') 
-                             : (darkMode ? 'bg-slate-900 border-slate-500 group-hover:border-indigo-400 group-hover:scale-110' : 'bg-white border-gray-400 group-hover:border-indigo-500 group-hover:scale-110')
-                           }`}>
+                     <div key={idx} className="group relative">
+                        <div className={`absolute -left-[1.63rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 transition-transform duration-200 group-hover:scale-110 ${
+                          isWork
+                            ? (darkMode ? 'border-purple-300 bg-purple-500 shadow-[0_0_0_4px_rgba(168,85,247,0.12)]' : 'border-purple-200 bg-purple-600 shadow-[0_0_0_4px_rgba(147,51,234,0.10)]')
+                            : (darkMode ? 'border-emerald-300 bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]' : 'border-emerald-200 bg-emerald-600 shadow-[0_0_0_4px_rgba(5,150,105,0.10)]')
+                        }`}></div>
+                        <div className={`pb-5 ${idx === content.timeline.length - 1 ? '' : (darkMode ? 'border-b border-slate-800' : 'border-b border-slate-200')}`}>
+                          <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{item.year}</span>
+                            <span className={`inline-flex items-center gap-1 text-[11px] font-bold ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                              <MapPin size={11} /> {item.location}
+                            </span>
+                          </div>
+                          <h3 className={`text-base font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{item.role}</h3>
+                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>{item.org}</div>
+                          {advisor && (
+                            <div className={`mt-1 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                              {lang === 'zh' ? '合作导师' : 'Advisor'}: {advisor.name} · {advisor.title}
+                            </div>
+                          )}
+                          {item.desc && (
+                            <div className={`mt-2 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                              <HighlightText text={item.desc} darkMode={darkMode} />
+                            </div>
+                          )}
+                          {item.lineage?.length > 0 && (
+                            <div className="mt-4">
+                              <AcademicLineage lineage={item.lineage} darkMode={darkMode} lang={lang} />
+                            </div>
+                          )}
                         </div>
-
-                        {/* Content Side */}
-                        <div className={`md:w-1/2 pl-16 md:pl-0 ${idx % 2 === 0 ? 'md:pr-10' : 'md:pl-10'}`}>
-                           <div className={`p-5 rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group/card hover:-translate-y-0.5
-                             ${isWork 
-                                ? (darkMode ? 'border-l-purple-500 bg-slate-800/50' : 'border-l-purple-600 bg-white') 
-                                : (darkMode ? 'border-l-emerald-500 bg-slate-800/50' : 'border-l-emerald-600 bg-white')}
-                             ${darkMode ? 'border-slate-700/50' : 'border-gray-100'}
-                           `}>
-                              {/* Watermark Icon */}
-                              <div className={`absolute -right-4 -bottom-4 opacity-5 transform -rotate-12 group-hover/card:scale-110 transition-transform duration-500 ${darkMode ? 'text-white' : 'text-black'}`}>
-                                  {isWork ? <Briefcase size={80} /> : <GraduationCap size={80} />}
-                              </div>
-
-                              <div className="flex flex-col gap-1.5 relative z-10">
-                                 <div className="flex justify-between items-start">
-                                    <span className={`font-mono text-xs font-bold tracking-tight ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{item.year}</span>
-                                    <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded 
-                                      ${isWork 
-                                        ? (darkMode ? 'bg-purple-500/10 text-purple-300' : 'bg-purple-50 text-purple-700') 
-                                        : (darkMode ? 'bg-emerald-500/10 text-emerald-300' : 'bg-emerald-50 text-emerald-700')}
-                                    `}>
-                                      {isWork ? ui.experience : ui.education}
-                                    </span>
-                                 </div>
-                                 
-                                 <div>
-                                   <h3 className={`text-base font-bold leading-tight ${darkMode ? 'text-slate-100' : 'text-gray-900'}`}>{item.role}</h3>
-                                   <div className={`text-xs font-medium mt-0.5 ${darkMode ? 'text-indigo-300' : 'text-indigo-600'}`}>{item.org}</div>
-                                 </div>
-
-                                 {item.desc && (
-                                   <div className={`text-xs mt-1 pt-2 border-t border-dashed leading-relaxed ${darkMode ? 'border-slate-700 text-slate-400' : 'border-gray-100 text-slate-600'}`}>
-                                     <HighlightText text={item.desc} darkMode={darkMode} />
-                                   </div>
-                                 )}
-
-                                 {/* Academic Lineage Visualization */}
-                                 {item.lineage && (
-                                   <AcademicLineage lineage={item.lineage} darkMode={darkMode} />
-                                 )}
-                              </div>
-                           </div>
-                        </div>
-
-                        {/* Context Side (Location Badge - aligned with card) */}
-                        <div className={`hidden md:flex md:w-1/2 flex-col justify-center ${idx % 2 === 0 ? 'items-start pl-10' : 'items-end pr-10'}`}>
-                           <div className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all 
-                              ${darkMode 
-                                ? 'bg-slate-800/50 border-slate-700 text-slate-400 group-hover:text-indigo-300 group-hover:border-indigo-500/30' 
-                                : 'bg-white border-gray-200 text-slate-500 group-hover:text-indigo-600 group-hover:border-indigo-200'}
-                           `}>
-                              <MapPin size={12} /> {item.location}
-                           </div>
-                        </div>
-                        
-                        {/* Mobile Location Badge (Absolute) */}
-                        <div className="md:hidden absolute left-16 -top-2.5 z-20">
-                           <div className={`flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border shadow-sm ${darkMode ? 'bg-slate-900 border-slate-600 text-indigo-300' : 'bg-white border-indigo-100 text-indigo-600'}`}>
-                              <MapPin size={10} /> {item.location}
-                           </div>
-                        </div>
-
                      </div>
                    )
                 })}
-             </div>
+              </div>
+            </div>
           </div>
         </section>
+        )}
 
         {/* --- PUBLICATIONS SECTION --- */}
-        <section id="publications" className="scroll-mt-32 space-y-8">
-          <div className="space-y-6">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        {displaySection === 'publications' && (
+        <section id="publications" className="scroll-mt-32 space-y-8 animate-fade-in">
+          <div>
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-xl ${darkMode ? 'bg-emerald-900/20 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}`}><BookOpen size={24} /></div>
                   <div>
@@ -1988,30 +2318,27 @@ export default function AcademicProfile() {
 	                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.publicationDesc}</p>
                   </div>
                 </div>
-                <div className="relative w-full md:w-64">
-                  <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} />
-	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`pl-9 pr-4 py-2 rounded-lg text-sm border focus:outline-none focus:ring-2 focus:ring-emerald-500/50 w-full transition-all ${darkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:bg-slate-700' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
+                  <div className="relative min-w-0 flex-1 lg:w-80 lg:flex-none">
+                    <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} />
+	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`h-11 w-full rounded-xl border pl-9 pr-4 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all ${darkMode ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500 focus:bg-slate-800' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
+                  </div>
+                  <label className={`flex h-11 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-extrabold shadow-sm transition-colors ${darkMode ? 'border-slate-700 bg-slate-800/80 text-slate-300' : 'border-gray-200 bg-white text-slate-600'}`}>
+                    <Tag size={14} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
+                    <span className="whitespace-nowrap">{ui.venueFilter}</span>
+                    <select
+                      value={selectedVenue}
+                      onChange={(event) => updateSelectedVenue(event.target.value)}
+                      className={`min-w-[9.5rem] max-w-[13rem] bg-transparent text-xs font-extrabold outline-none ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}
+                    >
+                      <option value="All">{ui.allPapers} ({publications.length})</option>
+                      {venueStats.map(v => (
+                        <option key={v.venue} value={v.venue}>{v.venue} ({v.count})</option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
               </div>
-
-              <div className={`flex flex-col gap-3 rounded-xl border p-3 text-xs sm:flex-row sm:items-center sm:justify-end ${darkMode ? 'border-slate-800 bg-slate-900/25 text-slate-400' : 'border-slate-200 bg-white/80 text-slate-500'}`}>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <label className="flex items-center gap-2">
-                      <Tag size={14} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
-                      <span className="font-bold">{ui.venueFilter}</span>
-                      <select
-                        value={selectedVenue}
-                        onChange={(event) => updateSelectedVenue(event.target.value)}
-                        className={`max-w-[12rem] rounded-lg border px-3 py-1.5 text-xs font-bold outline-none ${darkMode ? 'border-slate-700 bg-slate-800 text-slate-300' : 'border-gray-200 bg-white text-gray-600'}`}
-                      >
-                        <option value="All">{ui.allPapers} ({publications.length})</option>
-                        {venueStats.map(v => (
-                          <option key={v.venue} value={v.venue}>{v.venue} ({v.count})</option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                </div>
           </div>
 
           <div className="space-y-4 animate-fade-in">
@@ -2041,9 +2368,11 @@ export default function AcademicProfile() {
           )}
           {filteredPubs.length === 0 && <div className="text-center py-12 opacity-50">{ui.noPapers}</div>}
         </section>
+        )}
 
         {/* --- Awards Section (Compact) --- */}
-        <section id="awards" className="scroll-mt-32">
+        {displaySection === 'awards' && (
+        <section id="awards" className="scroll-mt-32 animate-fade-in">
            <div className="flex items-center gap-3 mb-6">
               <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-amber-900/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}><Trophy size={20} /></div>
               <div>
@@ -2052,81 +2381,53 @@ export default function AcademicProfile() {
               </div>
            </div>
 
-           {/* Featured Awards Grid */}
-           <div className="mb-8">
-              <h3 className={`text-[11px] font-black uppercase tracking-widest mb-3 flex items-center gap-2 ${darkMode ? 'text-amber-500' : 'text-amber-600'}`}>
-                 <Star size={14} /> {ui.selectedHonors}
-              </h3>
-              <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">
-                 {featuredAwards.map((award, idx) => (
-                    <div key={idx} className={`group relative overflow-hidden rounded-xl border border-l-4 p-3 transition-all duration-300 hover:-translate-y-0.5
-                       ${darkMode 
-                          ? 'border-slate-800 border-l-amber-400 bg-slate-900/35 hover:bg-slate-900/60 hover:border-slate-700' 
-                          : 'border-slate-200 border-l-amber-400 bg-white hover:border-amber-200 hover:shadow-sm'}
-                    `}>
-                       <div className="relative z-10 flex items-start gap-3">
-                          <div className="shrink-0 space-y-1">
-                             <span className={`block rounded-md px-2 py-1 text-[10px] font-black tabular-nums ${darkMode ? 'bg-amber-500/15 text-amber-300' : 'bg-amber-50 text-amber-800'}`}>
-                                {award.year}
-                             </span>
-                             <span className={`block text-center text-[8px] font-black uppercase tracking-wider ${darkMode ? 'text-amber-400/70' : 'text-amber-700/70'}`}>
-                                {award.level}
-                            </span>
-                          </div>
-                          <div className="min-w-0">
-                            <h3 className={`text-sm font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                               {award.title}
-                            </h3>
-                            <p className={`mt-1 text-[12px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                               <HonorText text={award.desc} darkMode={darkMode} />
-                            </p>
-                          </div>
+           <div className="space-y-4">
+             {groupedAwardYears.map((group) => (
+               <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                 <div>
+                   <div className={`text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                     {group.year}
+                   </div>
+                 </div>
+                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                   {group.awards.map((award, idx) => (
+                     <article
+                       key={`${group.year}-${award.title}-${idx}`}
+                       className={`grid gap-1.5 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 ${
+                         award.featured
+                           ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
+                           : (darkMode ? 'border-l-slate-800' : 'border-l-transparent')
+                       } ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                     >
+                       <div className="flex flex-wrap items-center gap-1.5">
+                         <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+                           {award.level}
+                         </span>
+                         {award.featured && (
+                           <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+                             {ui.selected}
+                           </span>
+                         )}
                        </div>
-                    </div>
-                 ))}
-              </div>
-           </div>
-
-           {/* Other Awards Compact List */}
-           <div>
-              <h3 className={`mb-3 text-[11px] font-black uppercase tracking-widest opacity-60 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-                 {ui.otherAwards}
-              </h3>
-              <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
-                 {otherAwards.slice(0, visibleAwards).map((award, idx) => (
-                    <div key={idx} className={`group relative overflow-hidden rounded-lg border p-3 transition-all duration-300 hover:-translate-y-0.5
-                       ${darkMode 
-                          ? 'border-slate-800 bg-slate-900/25 hover:bg-slate-900/50' 
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'}
-                    `}>
-                       <div className="relative z-10 mb-1.5 flex items-center justify-between gap-2">
-                          <span className={`font-mono text-[10px] font-bold tabular-nums ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{award.year}</span>
-                          <span className={`text-[8px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-600' : 'text-gray-400'}`}>{award.level}</span>
-                       </div>
-                       <h4 className={`relative z-10 text-[13px] font-bold leading-snug ${darkMode ? 'text-slate-200' : 'text-gray-800'}`}>
-                          {award.title}
-                       </h4>
-                       {award.desc && <p className={`relative z-10 mt-0.5 line-clamp-1 text-[11px] opacity-65 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}><HonorText text={award.desc} darkMode={darkMode} /></p>}
-                    </div>
-                 ))}
-              </div>
-              
-              {/* View More Button for Awards */}
-              {otherAwards.length > visibleAwards && (
-                <div className="flex justify-center pt-4">
-                  <button 
-                    onClick={() => setVisibleAwards(prev => prev + 6)}
-                    className={`group flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-all ${darkMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                  >
-                    {ui.viewMoreAwards} <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                  </button>
-                </div>
-              )}
+                       <h3 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                         {award.title}
+                       </h3>
+                       {award.desc && (
+                         <p className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                           <HonorText text={award.desc} darkMode={darkMode} />
+                         </p>
+                       )}
+                     </article>
+                   ))}
+                 </div>
+               </section>
+             ))}
            </div>
         </section>
+        )}
 
         {/* --- SUBMITTED / PREPRINTS --- */}
-        {content.submitted && content.submitted.length > 0 && (
+        {displaySection === 'publications' && content.submitted && content.submitted.length > 0 && (
           <section id="submitted" className="scroll-mt-32">
              <div className="flex items-center gap-4 mb-8">
               <div className={`p-3 rounded-xl ${darkMode ? 'bg-sky-900/20 text-sky-400' : 'bg-sky-50 text-sky-600'}`}><Send size={24} /></div>
@@ -2149,61 +2450,138 @@ export default function AcademicProfile() {
         )}
 
         {/* --- Service & Contact --- */}
-        <section id="service" className="scroll-mt-32">
+        {displaySection === 'service' && (
+        <section id="service" className="scroll-mt-32 animate-fade-in">
           <div className="flex items-center gap-4 mb-10">
               <div className={`p-3 rounded-xl ${darkMode ? 'bg-purple-900/20 text-purple-400' : 'bg-purple-50 text-purple-600'}`}><Star size={24} /></div>
               <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h2>
           </div>
-          <div className="grid lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-7">
-               <div className={`rounded-3xl p-8 border h-full ${darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-white border-gray-100 shadow-lg shadow-purple-500/5'}`}>
-                <h4 className={`text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}><Briefcase size={16} /> Invited Reviewer（审稿人）</h4>
-                <ul className="space-y-4">{content.service.reviewer.map((item, i) => (<li key={i} className={`flex items-start gap-3 text-sm group ${darkMode ? 'text-slate-300' : 'text-gray-700'}`}><div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${darkMode ? 'bg-slate-600 group-hover:bg-purple-400' : 'bg-gray-300 group-hover:bg-purple-500'}`}></div><span className="leading-relaxed">{item}</span></li>))}</ul>
+          <div className="space-y-5">
+            <div className={`rounded-2xl border p-5 shadow-lg shadow-purple-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <h4 className={`flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>
+                  <Briefcase size={16} /> {ui.serviceReviewerTitle}
+                </h4>
+                <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${darkMode ? 'border-purple-400/25 bg-purple-400/10 text-purple-200' : 'border-purple-200 bg-purple-50 text-purple-800'}`}>
+                  {serviceReviewGroups.total} {lang === 'en' ? 'venues' : '项'}
+                </span>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                {[
+                  { key: 'journals', label: ui.serviceJournals, items: serviceReviewGroups.journals },
+                  { key: 'conferences', label: ui.serviceConferences, items: serviceReviewGroups.conferences },
+                ].map(group => (
+                  <div key={group.key}>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <h5 className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Tag size={12} /> {group.label}
+                      </h5>
+                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-black tabular-nums ${darkMode ? 'bg-white/5 text-slate-400' : 'bg-white text-slate-500'}`}>
+                        {group.items.length}
+                      </span>
+                    </div>
+                    <ul className="space-y-2.5">
+                      {group.items.map(item => (
+                        <li
+                          key={item.full}
+                          title={item.full}
+                          className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-purple-400/20 bg-purple-400/10 text-slate-100' : 'border-purple-100 bg-purple-50/70 text-slate-900'}`}
+                        >
+                          <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${darkMode ? 'text-purple-300' : 'text-purple-600'}`} />
+                          <span className="leading-snug">{item.full}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="lg:col-span-5 space-y-8">
-               <div className={`rounded-3xl p-8 border ${darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-white border-gray-100 shadow-lg shadow-emerald-500/5'}`}>
-                  <h4 className={`text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 ${darkMode ? 'text-emerald-400' : 'text-emerald-700'}`}><Mic2 size={16} /> Session Chair（分会主席）</h4>
-                  <ul className="space-y-4">{content.service.chair.map((item, i) => (<li key={i} className={`flex items-center gap-3 text-sm font-medium ${darkMode ? 'text-slate-200' : 'text-gray-800'}`}><CheckCircle2 size={16} className={darkMode ? 'text-emerald-500' : 'text-emerald-600'} />{item}</li>))}</ul>
-               </div>
-               <div className={`rounded-3xl p-8 border ${darkMode ? 'bg-slate-800/30 border-slate-700' : 'bg-white border-gray-100 shadow-lg shadow-blue-500/5'}`}>
-                  <h4 className={`text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}><User size={16} /> Volunteer & Service（志愿服务）</h4>
-                  <ul className="space-y-3">{content.service.volunteer.map((item, i) => (<li key={i} className={`flex items-center gap-3 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-600'}`}><div className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-blue-500' : 'bg-blue-500'}`}></div>{item}</li>))}</ul>
-               </div>
+
+            <div className="grid gap-5 lg:grid-cols-2">
+              <div className={`rounded-2xl border p-5 shadow-lg shadow-emerald-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
+                <h4 className={`mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                  <Mic2 size={16} /> {ui.serviceChairTitle}
+                </h4>
+                <ul className="space-y-2.5">
+                  {content.service.chair.map((item, i) => (
+                    <li key={i} className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-emerald-400/15 bg-emerald-400/5 text-slate-200' : 'border-emerald-100 bg-emerald-50/60 text-slate-800'}`}>
+                      <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${darkMode ? 'text-emerald-300' : 'text-emerald-600'}`} />
+                      <span className="leading-snug">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className={`rounded-2xl border p-5 shadow-lg shadow-blue-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
+                <h4 className={`mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
+                  <User size={16} /> {ui.serviceVolunteerTitle}
+                </h4>
+                <ul className="space-y-2.5">
+                  {content.service.volunteer.map((item, i) => (
+                    <li key={i} className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-blue-400/15 bg-blue-400/5 text-slate-300' : 'border-blue-100 bg-blue-50/60 text-slate-700'}`}>
+                      <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-blue-300' : 'bg-blue-600'}`} />
+                      <span className="leading-snug">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>
+        )}
 
         {/* --- Teaching Section --- */}
-        <section id="teaching" className="scroll-mt-32">
-          <div className="flex items-center gap-4 mb-8">
-             <div className={`p-3 rounded-xl ${darkMode ? 'bg-pink-900/20 text-pink-400' : 'bg-pink-50 text-pink-600'}`}>
-               <Presentation size={24} />
-             </div>
-             <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.teaching}</h2>
+        {displaySection === 'teaching' && (
+        <section id="teaching" className="scroll-mt-32 animate-fade-in">
+          <div className="mb-8 flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${darkMode ? 'bg-pink-900/20 text-pink-400' : 'bg-pink-50 text-pink-600'}`}>
+              <Presentation size={24} />
+            </div>
+            <div>
+              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.teaching}</h2>
+              <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.teaching}</p>
+            </div>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
-             {content.teaching.map((item, idx) => (
-                <div key={idx} className={`p-6 rounded-2xl border transition-all hover:-translate-y-1 ${darkMode ? 'bg-slate-800/30 border-slate-700 hover:border-pink-500/30' : 'bg-white border-gray-100 hover:shadow-lg hover:border-pink-200'}`}>
-                   <div className="flex justify-between items-start mb-4">
-                      <div className={`p-2 rounded-lg ${darkMode ? 'bg-pink-500/10 text-pink-400' : 'bg-pink-50 text-pink-600'}`}>
-                         <School size={20} />
-                      </div>
-                      <span className={`text-xs font-mono font-bold px-2 py-1 rounded ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>{item.period}</span>
-                   </div>
-                   <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-slate-100' : 'text-gray-900'}`}>{item.course}</h3>
-                   <div className={`flex items-center gap-2 text-sm font-medium mb-3 ${darkMode ? 'text-pink-400' : 'text-pink-600'}`}>
-                      <User size={14} /> {item.role}
-                   </div>
-                   <p className={`text-sm mb-2 ${darkMode ? 'text-slate-400' : 'text-gray-600'}`}>{item.org}</p>
-                   {item.desc && <p className={`text-xs italic opacity-70 border-t pt-2 mt-2 ${darkMode ? 'border-slate-700 text-slate-500' : 'border-gray-100 text-gray-500'}`}>{item.desc}</p>}
+          <div className="space-y-4 animate-fade-in">
+            {teachingRows.map((item, idx) => (
+              <section key={`${item.period}-${item.course}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[6.5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className="flex items-baseline justify-between gap-2 md:block">
+                  <div className={`text-xl font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                    {item.period}
+                  </div>
                 </div>
-             ))}
+                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <article className={`border-l-2 border-l-pink-400 py-2 pl-3 transition-colors ${darkMode ? 'border-b-slate-800 bg-pink-400/[0.04] hover:bg-slate-900/45' : 'border-b-slate-200 bg-pink-50/40 hover:bg-slate-50/75'}`}>
+                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-pink-400/25 bg-pink-400/10 text-pink-200' : 'border-pink-200 bg-pink-50 text-pink-800'}`}>
+                        {item.role}
+                      </span>
+                      {item.desc && (
+                        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+                          {item.desc}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className={`text-[15px] font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                      {item.course}
+                    </h3>
+                    <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      <span className="inline-flex items-center gap-1.5">
+                        <School size={13} className={darkMode ? 'text-pink-300' : 'text-pink-700'} />
+                        {item.org}
+                      </span>
+                    </div>
+                  </article>
+                </div>
+              </section>
+            ))}
           </div>
         </section>
+        )}
 
         {/* --- Student Mentoring Section --- */}
-        <section id="mentoring" className="scroll-mt-32">
+        {displaySection === 'mentoring' && (
+        <section id="mentoring" className="scroll-mt-32 animate-fade-in">
           <div className={`relative overflow-hidden rounded-3xl border ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200 shadow-xl shadow-slate-900/5'}`}>
             <div className={`absolute inset-x-0 top-0 h-1 ${darkMode ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500'}`} />
             <div className="p-5 md:p-6">
@@ -2231,141 +2609,152 @@ export default function AcademicProfile() {
               </div>
 
               <div>
-                <h3 className={`text-base font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
-                <div className="space-y-3">
-                  {visibleMentoringGroups.map((group) => (
-                    <div key={group.title} className={`group relative overflow-hidden rounded-xl border transition-all duration-300 ${darkMode ? 'border-slate-700/80 bg-slate-950/40 shadow-lg shadow-slate-950/25 hover:border-cyan-400/25' : 'border-slate-200 bg-white shadow-md shadow-slate-900/[0.04] hover:border-cyan-200 hover:shadow-lg hover:shadow-slate-900/[0.07]'}`}>
-                      <div className={`absolute inset-y-0 left-0 w-1 ${darkMode ? 'bg-gradient-to-b from-cyan-300 via-blue-400 to-indigo-400' : 'bg-gradient-to-b from-cyan-500 via-blue-500 to-indigo-500'}`} />
-                      <div className={`flex flex-col gap-2 px-4 py-2.5 pl-5 md:flex-row md:items-center md:justify-between ${darkMode ? 'bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/25' : 'bg-gradient-to-r from-slate-50 via-white to-cyan-50/60'}`}>
-                          <div className="flex min-w-0 items-center gap-2.5">
+                <h3 className={`mb-3 text-base font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
+                <div className="space-y-4">
+                  {visibleMentoringGroups.map((group) => {
+                    const accent = group.shortTitle === 'METU'
+                      ? {
+                          text: darkMode ? 'text-cyan-200' : 'text-cyan-800',
+                          border: darkMode ? 'border-cyan-400/25' : 'border-cyan-200',
+                          bg: darkMode ? 'bg-cyan-400/10' : 'bg-cyan-50',
+                          side: darkMode ? 'border-cyan-400' : 'border-cyan-500',
+                          dot: darkMode ? 'bg-cyan-300' : 'bg-cyan-600',
+                        }
+                      : group.shortTitle === 'ZZU'
+                        ? {
+                            text: darkMode ? 'text-emerald-200' : 'text-emerald-800',
+                            border: darkMode ? 'border-emerald-400/25' : 'border-emerald-200',
+                            bg: darkMode ? 'bg-emerald-400/10' : 'bg-emerald-50',
+                            side: darkMode ? 'border-emerald-400' : 'border-emerald-500',
+                            dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
+                          }
+                        : {
+                            text: darkMode ? 'text-indigo-200' : 'text-indigo-800',
+                            border: darkMode ? 'border-indigo-400/25' : 'border-indigo-200',
+                            bg: darkMode ? 'bg-indigo-400/10' : 'bg-indigo-50',
+                            side: darkMode ? 'border-indigo-400' : 'border-indigo-500',
+                            dot: darkMode ? 'bg-indigo-300' : 'bg-indigo-600',
+                          };
+
+                    return (
+                      <section key={group.title} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                        <div className="flex items-start justify-between gap-3 md:block">
+                          <div>
                             {group.shortTitle && (
-                              <span className={`inline-flex h-7 min-w-11 shrink-0 items-center justify-center rounded-full border px-2.5 text-[10px] font-black tracking-wide shadow-sm ${darkMode ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/40' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100'}`}>
+                              <div className={`inline-flex rounded-lg border px-2.5 py-1 text-xl font-black leading-none tracking-tight ${accent.border} ${accent.bg} ${accent.text}`}>
                                 {group.shortTitle}
-                              </span>
+                              </div>
                             )}
-                            <div className="min-w-0">
-                              <div className={`truncate text-sm font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{group.title}</div>
-                              {group.note && (
-                                <div className={`mt-0.5 text-xs ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                                  {group.note}
-                                </div>
-                              )}
+                            <div className={`mt-2 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                              {group.totalCount} {lang === 'en' ? 'students' : '位学生'}
                             </div>
                           </div>
-                          <div className="flex w-fit items-center gap-2">
-                            <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-extrabold ${darkMode ? 'border-slate-700 bg-slate-900/80 text-cyan-200' : 'border-slate-200 bg-white/85 text-cyan-800'}`}>
-                              {group.students.length}/{group.totalCount}
-                            </span>
-                          </div>
                         </div>
-                        <div className={`divide-y ${darkMode ? 'divide-slate-800' : 'divide-slate-200'}`}>
-                          {group.students.map((student) => {
-                            const hasOutcome = Boolean(student.outcome);
-                            const hasStage = Boolean(student.stage);
-                            const rowColumns = hasOutcome && hasStage
-                              ? 'md:grid-cols-[13.5rem_6.5rem_minmax(0,1fr)]'
-                              : hasOutcome
-                                ? 'md:grid-cols-[13.5rem_minmax(0,1fr)]'
-                                : hasStage
-                                  ? 'md:grid-cols-[minmax(0,1fr)_auto] md:items-center'
-                                  : 'md:grid-cols-1';
-                            return (
-                              <div key={`${group.title}-${student.name}`} className={`grid gap-1.5 px-4 text-[13px] transition-colors md:gap-3 ${hasOutcome ? 'py-2.5' : 'py-2'} ${rowColumns} ${darkMode ? 'hover:bg-slate-800/45' : 'hover:bg-slate-50/80'}`}>
-                                <div>
-                                  <div className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{student.name}</div>
-                                  {student.period && (
-                                    <div className={`mt-0.5 text-[10px] font-bold tracking-wide ${darkMode ? 'text-cyan-300/75' : 'text-cyan-700/75'}`}>
-                                      {student.period}
-                                    </div>
-                                  )}
-                                </div>
-                                {hasStage && (
-                                  <div>
-                                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-extrabold leading-none ${darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-cyan-50 text-cyan-800'}`}>
-                                    {student.stage}
-                                  </span>
+
+                        <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                          <div className={`border-b px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/30' : 'border-slate-200 bg-slate-50/65'}`}>
+                            <div className={`text-sm font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{group.title}</div>
+                            {group.note && (
+                              <div className={`mt-0.5 text-[11px] font-medium leading-snug ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                                {group.note}
+                              </div>
+                            )}
+                          </div>
+
+                          {group.students.map((student) => (
+                            <article
+                              key={`${group.title}-${student.name}`}
+                              className={`grid gap-2 border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 md:grid-cols-[7.5rem_minmax(0,1fr)] md:items-start ${accent.side} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                            >
+                              <div className="flex flex-wrap items-center gap-1.5 md:block">
+                                {student.period && (
+                                  <div className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    {student.period}
                                   </div>
                                 )}
-                                {hasOutcome && (
-                                  <div className={`leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                {student.stage && (
+                                  <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-black leading-none md:mt-1 ${accent.border} ${accent.bg} ${accent.text}`}>
+                                    {student.stage}
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="min-w-0">
+                                <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5">
+                                  <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${accent.dot}`} />
+                                  <h4 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                                    {student.name}
+                                  </h4>
+                                </div>
+                                {student.outcome && (
+                                  <div className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                                     {student.outcome}
                                   </div>
                                 )}
                               </div>
-                            );
-                          })}
+                            </article>
+                          ))}
+
+                          {(group.isExpanded || group.hiddenCount > 0) && (
+                            <div className={`border-t px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/45' : 'border-slate-100 bg-slate-50/70'}`}>
+                              <button
+                                type="button"
+                                onClick={() => toggleMentoringGroup(group.groupKey)}
+                                className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${accent.border} ${accent.bg} ${accent.text}`}
+                                aria-expanded={group.isExpanded}
+                                aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
+                                title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
+                              >
+                                <span>
+                                  {group.isExpanded
+                                    ? (lang === 'en' ? 'Less' : '收起')
+                                    : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
+                                </span>
+                                {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        {(group.isExpanded || group.hiddenCount > 0) && (
-                          <div className={`border-t px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/45' : 'border-slate-100 bg-slate-50/70'}`}>
-                            <button
-                              type="button"
-                              onClick={() => toggleMentoringGroup(group.groupKey)}
-                              className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/55 hover:bg-cyan-400/15' : 'border-cyan-200 bg-white text-cyan-800 shadow-sm shadow-cyan-100/60 hover:border-cyan-300 hover:bg-cyan-50'}`}
-                              aria-expanded={group.isExpanded}
-                              aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
-                              title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
-                            >
-                              <span>
-                                {group.isExpanded
-                                  ? (lang === 'en' ? 'Less' : '收起')
-                                  : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
-                              </span>
-                              {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                  ))}
+                      </section>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
         </section>
+        )}
 
-        {/* --- Contact Section --- */}
-        <section id="contact" className="scroll-mt-32 mb-16">
-           <div className={`rounded-3xl overflow-hidden relative border shadow-2xl ${darkMode ? 'border-slate-700' : 'border-gray-100'}`}>
-              <div className={`absolute inset-0 opacity-10 ${darkMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gradient-to-r from-blue-400 to-purple-400'}`}></div>
-              <div className={`relative p-8 md:p-12 ${darkMode ? 'bg-slate-800/50' : 'bg-white/80 backdrop-blur-sm'}`}>
-                  <div className="text-center max-w-3xl mx-auto">
-                      <div className={`inline-flex p-3 rounded-2xl mb-6 ${darkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
-                         <MessageCircle size={32} />
-                      </div>
-                      <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.contact}</h2>
-                      <p className={`text-lg mb-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                        {ui.contactDesc}
-                      </p>
+            </div>
+          </div>
+        </div>
 
-                      <div className="grid md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto mb-10">
-                         <div className={`p-4 rounded-xl border flex items-center gap-4 ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-gray-200'}`}>
-                            <div className={`p-2 rounded-full ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-600'}`}><MapPin size={20} /></div>
-                            <div>
-                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.locationLabel}</div>
-                               <div className={`font-medium ${darkMode ? 'text-slate-200' : 'text-gray-900'}`}>{content.location}</div>
-                            </div>
-                         </div>
-                         <a href={content.social.email} className={`p-4 rounded-xl border flex items-center gap-4 transition-colors ${darkMode ? 'bg-slate-900/50 border-slate-700 hover:border-blue-500' : 'bg-white border-gray-200 hover:border-blue-400'}`}>
-                            <div className={`p-2 rounded-full ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-600'}`}><Mail size={20} /></div>
-                            <div>
-                               <div className={`text-xs font-bold uppercase opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.emailLabel}</div>
-                               <div className={`font-medium ${darkMode ? 'text-slate-200' : 'text-gray-900'}`}>hitliaimin AT 163.com</div>
-                            </div>
-                         </a>
-                      </div>
+        <div className={`mx-auto mt-5 mb-2 max-w-4xl border-y py-2.5 text-center ${
+          darkMode ? 'border-slate-700/70' : 'border-slate-200'
+        }`}>
+            <p className={`mx-auto max-w-3xl font-serif text-[15px] italic leading-snug md:text-lg ${
+              darkMode ? 'text-slate-100' : 'text-slate-800'
+            }`}>
+              {lang === 'zh'
+                ? '始终欢迎聪慧的伙伴与我联系，一起探索未知。'
+                : 'Always welcome brilliant minds to connect and explore the unknown together.'}
+            </p>
+            <p className={`mx-auto mt-1 max-w-3xl text-[11px] font-semibold leading-snug md:text-xs ${
+              darkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}>
+              {lang === 'zh'
+                ? '如果你对合作感兴趣，欢迎给我发邮件：hitliaimin AT 163.com'
+                : 'Drop me an email if you are interested in collaborations: hitliaimin AT 163.com'}
+            </p>
+            <div className={`mx-auto mt-1.5 h-px w-12 ${darkMode ? 'bg-cyan-300/55' : 'bg-cyan-500/55'}`} />
+        </div>
 
-                      <div className="flex flex-wrap justify-center gap-4">
-                         <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
-                         <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
-                         <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
-                         <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
-                      </div>
-                  </div>
-              </div>
-           </div>
-        </section>
+        {displayIsHomePage && (
+          <GlobalVisitors syncData={syncData} darkMode={darkMode} ui={ui} lang={lang} />
+        )}
 
         {/* Motto Banner */}
-        <div className={`mt-12 py-8 px-6 text-center relative overflow-hidden group`}>
+        <div className={`py-8 px-6 text-center relative overflow-hidden group`}>
           <div className="absolute inset-0 z-0 transition-transform duration-1000 group-hover:scale-105" 
                style={{ 
                   backgroundImage: `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`, 
@@ -2378,15 +2767,25 @@ export default function AcademicProfile() {
           <div className="relative z-10">
             <Quote size={18} className={`mx-auto mb-3 opacity-60 ${darkMode ? 'text-purple-300' : 'text-purple-600'}`} />
             <h2 className={`text-xl md:text-2xl font-serif italic tracking-wide leading-relaxed drop-shadow-sm ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
-              复杂之中见秩序，纷乱之处寻真相
+              复杂中见序，纷乱中求真
             </h2>
             <p className={`mt-2 text-[10px] font-sans uppercase tracking-[0.3em] opacity-70 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
               Order in complexity, truth in chaos
             </p>
+            <a
+              href="mailto:hitliaimin@163.com"
+              title="Email: hitliaimin@163.com"
+              aria-label="Send email to hitliaimin@163.com"
+              className={`mt-4 inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.16em] transition-colors ${
+                darkMode
+                  ? 'border-slate-300/25 bg-slate-950/25 text-slate-200 hover:border-purple-300/60 hover:text-purple-200'
+                  : 'border-slate-700/10 bg-white/45 text-slate-700 hover:border-purple-400/45 hover:text-purple-700'
+              }`}
+            >
+              E-mail: hitliaimin AT 163.com
+            </a>
           </div>
         </div>
-
-        <GlobalVisitors syncData={syncData} darkMode={darkMode} ui={ui} lang={lang} />
 
         {/* Footer */}
         <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>
