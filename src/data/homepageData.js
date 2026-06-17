@@ -74,7 +74,7 @@ export const BASE_PUBLICATIONS = [
   },
   {
     id: "j16",
-    year: 2025,
+    year: 2026,
     title: "From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making",
     authors: "Aimin Li, Shaohua Wu, Gary Lee, Sumei Sun",
     venue: "IEEE Transactions on Information Theory",
@@ -86,6 +86,20 @@ export const BASE_PUBLICATIONS = [
     summary: "Proposes an age-aware remote MDP framework and a two-stage QUICK BLP algorithm to jointly optimize sampling and decision-making under random delay and sampling constraints.",
     links: { pdf: "/papers/paper26TIT.pdf" },
     url: getIEEEUrl("From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making")
+  },
+  {
+    id: "t1",
+    year: 2025,
+    title: "Key Technologies for Timeliness-Enhanced Space-Air Communications in Perception-Decision Closed-Loop Systems",
+    title_zh: "面向感知-决策闭环实效性的空天通信关键技术研究",
+    authors: "Aimin Li",
+    venue: "Ph.D. Dissertation, Harbin Institute of Technology",
+    venue_short: "Ph.D. Dissertation",
+    type: "Thesis",
+    tag: "Sole Author",
+    showSoleAuthorBadge: false,
+    keywords: ["Ph.D. Dissertation", "Space-Air Communications", "Perception-Decision Loop", "Effectiveness"],
+    summary: "Ph.D. dissertation on key technologies for timeliness-enhanced space-air communications in perception-decision closed-loop systems."
   },
   {
     id: "j15",
@@ -307,8 +321,10 @@ export const BASE_PUBLICATIONS = [
     venue_short: "IEEE IROS",
     type: "Conference",
     tag: "Co-First Author",
+    studentOutcome: false,
     keywords: ["Multi-Agent Planning", "Diffusion Models", "Reinforcement Learning", "Cooperative Driving"],
     summary: "Develops stable online reinforcement fine-tuning for scene-consistent multi-agent diffusion planning in cooperative driving.",
+    links: { project: "https://zebai9.github.io/SCORP/" },
     url: "https://arxiv.org/abs/2604.11734"
   },
   {
@@ -323,6 +339,10 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     keywords: ["Age of Information", "Preemption", "Heavy-Tailed Delay", "Impulse Control"],
     summary: "Studies age-optimal sampling and preemption under general, especially heavy-tailed, service-time distributions.",
+    links: {
+      project: "https://yigiti.github.io/Preemption/",
+      code: "https://github.com/AiminLi-Hi/aoi-preemption-heavy-tail"
+    },
     url: "https://arxiv.org/abs/2601.16624"
   },
   {
@@ -351,7 +371,10 @@ export const BASE_PUBLICATIONS = [
     keywords: ["Remote Estimation", "Scheduling"],
     summary: "Optimizing sampling, scheduling, and estimation for correlated processes in remote fusion estimation systems, and proving a separation principle.",
     image: "/images/Allerton1.png",
-    links: { pdf: "/papers/paper24Allerton.pdf" },
+    links: {
+      pdf: "/papers/paper24Allerton.pdf",
+      project: "https://aiminli-hi.github.io/allerton25-winer-fusion/"
+    },
     url: "https://arxiv.org/pdf/2510.22288"
   },
   {
@@ -360,10 +383,12 @@ export const BASE_PUBLICATIONS = [
     title: "Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information",
     authors: "Adem Utku Atasayar, Aimin Li, Cagri Ari, Elif Uysal",
     venue: "ACM International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing",
-    venue_short: "ACM Mobihoc",
+    venue_short: "ACM MobiHoc",
     type: "Conference",
     image: "/images/Mobihoc1.png",
     featured: true,
+    acceptanceRate: "23%",
+    acceptedWorldwide: 39,
     keywords: ["AoI", "Routing", "Sampling"],
     summary: "Joint sampling and routing design for AoI minimization in networks with random delay, establishing a remarkably simple threshold-based optimal policy.",
     links: { pdf: "/papers/paper22Mobihoc.pdf" },
@@ -382,7 +407,10 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     keywords: ["AoI", "Remote Estimation", "MDP"],
     summary: "Proposes an age-aware sampling policy for remote MDPs, proving optimality.",
-    links: { pdf: "/papers/paper18ITW.pdf" },
+    links: {
+      pdf: "/papers/paper18ITW.pdf",
+      code: "https://github.com/AiminLi-Hi/itw2024-aoi-goal-oriented-comm"
+    },
     url: getIEEEUrl("Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process")
   },
   {
@@ -546,24 +574,25 @@ export const PROFILE_DATA = {
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
       email: "mailto:hitliaimin@163.com"
     },
-    nav: { about: "About", news: "News", timeline: "Timeline", awards: "Honors", publications: "Publications", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", contact: "Contact" },
+    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", contact: "Contact" },
     cvDownload: "CV",
     news: [
       { date: "2026-06", label: "IROS", content: "Our paper <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>.", link: "https://arxiv.org/abs/2604.11734" },
       { date: "2026-06", label: "TMC", content: "Our paper <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>.", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "Our paper <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>.", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
       { date: "2026-03", label: "VTC", content: "Our paper <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> was accepted by <strong>IEEE VTC2026-Spring</strong>.", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT", content: "Our paper <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2026-02", label: "TIT", content: "Our paper <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> was accepted by <strong>IEEE Transactions on Information Theory (TIT)</strong>.", link: "/papers/paper26TIT.pdf" },
+      { date: "2026-01", label: "ISIT", content: "Our paper <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> was accepted by <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong>.", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2025-11", label: "Award", content: "I received the <strong>Best Dissertation Award Nomination</strong> at Harbin Institute of Technology as the sole nominee from the EE Department.", link: "#awards" },
       { date: "2025-11", label: "Allerton", content: "Our paper <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> was accepted by Allerton 2025.", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc", content: "Our paper <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> was accepted by ACM Mobihoc 2025 (<strong>39 accepted papers worldwide</strong>).", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2025-11", label: "MobiHoc", content: "Our paper <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> was accepted by <strong>ACM MobiHoc 2025</strong> with a <strong>23% acceptance rate</strong> (<strong>39 papers accepted worldwide in total</strong>).", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2025-09", label: "Ph.D.", content: "I defended my Ph.D. thesis, <strong>Key Technologies for Timeliness-Enhanced Space-Air Communications in Perception-Decision Closed-Loop Systems</strong>.", link: "#publications" },
       { date: "2024-12", label: "4MT", content: "I won the 3rd Prize in IEEE Globecom 4MT Thesis Competition.", link: "#awards" },
       { date: "2024-12", label: "Scholar", content: "I received the National Scholarship for PhD students.", link: "#awards" }
     ],
     timeline: [
       { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
-        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.", 
+        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.\nResearch is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love Türkiye’s distinct four seasons.", 
         lineage: [
           { name: "Claude Shannon", title: "Information Theory Founder", highlight: false },
           { name: "Robert Gallager", title: "MIT Professor Emeritus", highlight: false },
@@ -571,10 +600,10 @@ export const PROFILE_DATA = {
         ],
         type: "work" },
       { year: "2023.10 - 2024.10", location: "Singapore", role: "Visiting Researcher", org: "Institute for Infocomm Research (I2R), A*STAR", 
-        desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).\nThis visit broadened my research perspective and strengthened long-term collaborations in 6G communications.", 
+        desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).\nSingapore came to me when I needed light the most. It gave me direction, confidence, and a renewed belief in research. Under the guidance of Prof. Sumei Sun and Dr. Gary Lee, I gradually grew into a more independent researcher. This journey will always remain a warm and luminous chapter in my life.", 
         type: "work" },
       { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Info. & Comm. Eng.", org: "Harbin Institute of Technology, Shenzhen", 
-        desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).\nI completed doctoral research on information freshness, channel coding, and goal-oriented communication systems.", 
+        desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).\nI spent nine years of my youth, learning, searching, and slowly finding my own path at HIT. I was introduced to the world of research and learned to face problems with persistence and discipline.", 
         type: "edu" },
       { year: "2017.07 - 2017.08", location: "California, USA", role: "Visiting Student", org: "University of California, Riverside (UCR)", desc: "International exchange program.", type: "edu" },
       { 
@@ -588,7 +617,8 @@ export const PROFILE_DATA = {
     ],
     awards: [
       { year: "2025", title: "Best Dissertation Award Nomination", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
-      { year: "2020 and 2024", title: "National Scholarship of China (Twice)", desc: "Top 0.2% nationwide", level: "National", featured: true },
+      { year: "2024", title: "National Scholarship of China", desc: "Top 0.2% nationwide", level: "National", featured: true },
+      { year: "2020", title: "National Scholarship of China", desc: "Top 0.2% nationwide", level: "National", featured: true },
       { year: "2025", title: "Provincial Outstanding Graduate Award", desc: "Top 0.4% in Heilongjiang Province", level: "Provincial", featured: true },
       { year: "2020", title: "Best Undergraduate Thesis Award", desc: "One of two recipients in the EE Department.", level: "University", featured: true },
       { year: "2025", title: "Award for HIT Outstanding Graduate Students", desc: "Top 10% in Harbin Institute of Technology", level: "University" },
@@ -597,11 +627,13 @@ export const PROFILE_DATA = {
       { year: "2024", title: "Candidate for NSFC Youth Project", desc: "One of fewer than 600 Ph.D. candidates selected nationwide in the first cohort.", level: "National" },
       { year: "2023", title: "HIT 'Dianzi' Research Student Program (Independent PI Project)", desc: "Sole Ph.D. student recipient in the EE Department.", level: "University", featured: true },
       { year: "2020", title: "Special Merit Doctoral Scholarship", desc: "Awarded by the HIT President to only 8 Ph.D. students university-wide.", level: "University", featured: true },
-      { year: "2017 and 2019", title: "HIT Outstanding Student Award (Twice)", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
+      { year: "2019", title: "HIT Outstanding Student Award", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
+      { year: "2017", title: "HIT Outstanding Student Award", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
       { year: "2019", title: "Outstanding Participant, Tsinghua University Summer Camp", desc: "Qualified postgraduate recommendation to Tsinghua University", level: "University", featured: true },
       { year: "2018", title: "Gongjin Scholarship for Overall Excellence", desc: "Only 3 recipients in EE Dept.", level: "University" },
       { year: "2018", title: "Provincial Merit Student", desc: "Top 1% in Heilongjiang Province.", level: "Provincial", featured: true },
-      { year: "2016 and 2017", title: "First Prize of Chinese College Student Math Competition (Twice)", desc: "National-level mathematics competition.", level: "National" },
+      { year: "2017", title: "First Prize of Chinese College Student Math Competition", desc: "National-level mathematics competition.", level: "National" },
+      { year: "2016", title: "First Prize of Chinese College Student Math Competition", desc: "National-level mathematics competition.", level: "National" },
       { year: "2017", title: "First Class Scholarship for Comprehensive Excellence", desc: "Top 5% in Harbin Institute of Technology.", level: "National" },
     ],
     service: {
@@ -636,7 +668,7 @@ export const PROFILE_DATA = {
     mentoring: {
       title: "Research Leadership and Mentorship",
       leadershipTitle: "Research Leadership",
-      leadershipSummary: "I initiated and led student-involved research projects across B.S., M.S., and Ph.D. stages by shaping research questions, mathematical models, and solution frameworks, then mentoring analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
+      leadershipSummary: "I have been fortunate to work with many talented junior students during my Ph.D. and postdoctoral stages. In these collaborations, I helped shape research questions, mathematical models, and solution frameworks, and mentored analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
       studentListOpen: "Show full student list",
       studentListClose: "Show concise list",
       collaborationTitle: "Student mentorship and collaboration",
@@ -728,24 +760,25 @@ export const PROFILE_DATA = {
       linkedin: "https://linkedin.com",
       email: "mailto:hitliaimin@163.com"
     },
-    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", awards: "荣誉奖项", publications: "发表论文", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", contact: "联系方式" },
+    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", contact: "联系方式" },
     cvDownload: "简历",
     news: [
       { date: "2026-06", label: "IROS", content: "我们的论文 <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。", link: "https://arxiv.org/abs/2604.11734" },
       { date: "2026-06", label: "TMC", content: "我们的论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。", link: "https://ieeexplore.ieee.org/abstract/document/11547874/" },
       { date: "2026-05", label: "IoTJ", content: "我们的论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。", link: "https://doi.org/10.1109/JIOT.2026.3663721" },
       { date: "2026-03", label: "VTC", content: "我们的论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。", link: "https://events.vtsociety.org/vtc2026-spring/conference-sessions/workshops-currently-available/w2-2nd-international-workshop-on-intelligent-aerial-and-spaceborne-systems-for-6g-6g-saga-communication-sensing-and-autonomy-for-mobility/" },
-      { date: "2026-01", label: "ISIT", content: "我们的论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2026-02", label: "TIT", content: "我们的论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。", link: "/papers/paper26TIT.pdf" },
+      { date: "2026-01", label: "ISIT", content: "我们的论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用。", link: "https://arxiv.org/abs/2601.16624" },
       { date: "2025-11", label: "荣誉", content: "我获得哈尔滨工业大学最佳学位论文提名奖。", link: "#awards" },
       { date: "2025-11", label: "Allerton", content: "我们的论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。欢迎交流与合作。", link: "https://arxiv.org/pdf/2510.22288" },
-      { date: "2025-11", label: "Mobihoc", content: "我们的论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 ACM Mobihoc 2025 录用（<strong>全球2025录用39篇</strong>）。欢迎交流与合作。", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2025-11", label: "MobiHoc", content: "我们的论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 <strong>ACM MobiHoc 2025</strong> 录用，<strong>录用率23%</strong>（<strong>全球共录用39篇</strong>）。欢迎交流与合作。", link: "https://dl.acm.org/doi/10.1145/3704413.3764413" },
+      { date: "2025-09", label: "博士", content: "我完成博士学位论文答辩，论文题目为 <strong>面向感知-决策闭环实效性的空天通信关键技术研究</strong>。", link: "#publications" },
       { date: "2024-12", label: "4MT", content: "我获得 IEEE Globecom 四分钟博士学位论文竞赛三等奖。", link: "#awards" },
       { date: "2024-12", label: "国奖", content: "我获得博士研究生国家奖学金。", link: "#awards" }      
     ],
     timeline: [
       { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
-        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。", 
+        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。\n科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我也很爱土耳其四季分明的日子。", 
         lineage: [
           { name: "Claude Shannon", title: "信息论之父", highlight: false },
           { name: "Robert Gallager", title: "MIT 荣休教授", highlight: false },
@@ -753,17 +786,18 @@ export const PROFILE_DATA = {
         ],
         type: "work" },
       { year: "2023.10 - 2024.10", location: "新加坡", role: "访问研究员", org: "新加坡资讯通信研究院 (I2R), A*STAR", 
-        desc: "我主要研究目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。\n该访问经历拓展了我的研究视野，并促进了围绕 6G 通信的长期合作。", 
+        desc: "我主要研究目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。\n新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。", 
         type: "work" },
       { year: "2020.09 - 2025", location: "中国，深圳", role: "工学博士 (信息与通信工程)", org: "哈尔滨工业大学（深圳）", 
-        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。\n我在博士阶段主要围绕信息时效、信道编码与目标导向通信系统开展研究。", 
+        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。\n我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。", 
         type: "edu" },
       { year: "2017", location: "美国，加州", role: "访问学生", org: "加州大学河滨分校 (UCR)", desc: "国际交换生项目。", type: "edu" },
       { year: "2016.09 - 2020.06", location: "中国，深圳", role: "工学学士 (通信工程)", org: "哈尔滨工业大学（深圳）", desc: "获清华大学研究生推荐免试录用资格。获哈尔滨工业大学校优秀毕业论文、黑龙江省三好学生。", type: "edu" }
     ],
     awards: [
       { year: "2025", title: "哈工大最佳博士学位论文提名", desc: "电子系唯一入选者", level: "University", featured: true },
-      { year: "2020 and 2024", title: "博士研究生国家奖学金（2次）", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
+      { year: "2024", title: "博士研究生国家奖学金", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
+      { year: "2020", title: "博士研究生国家奖学金", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
       { year: "2025", title: "黑龙江省普通高校优秀博士毕业生", desc: "黑龙江省前0.4%", level: "Provincial",  featured: true },
       { year: "2020", title: "哈工大特等博士研究生奖学金", desc: "校长特别颁发（全校博士生仅 8 人）", level: "University", featured: true },
       { year: "2020", title: "哈工大校优秀本科毕业论文", desc: "电子系仅 2 名", level: "University",  featured: true },
@@ -772,12 +806,13 @@ export const PROFILE_DATA = {
       { year: "2024", title: "IEEE Globecom 旅行奖", desc: "全球共 15 名博士生获奖。", level: "International" },
       { year: "2024", title: "国家自然科学基金青年学生项目候选人", desc: "电子系唯一入选，首批全国少于 600 名博士生进入候选", level: "National" },
       { year: "2023", title: "哈工大“点子”基金项目负责人 (PI)", desc: "获得独立科研经费资助", level: "University", featured: true },
-      { year: "2017 and 2019", title: "哈工大年度优秀学生（2次）", desc: "校前10%", level: "University" },
+      { year: "2019", title: "哈工大年度优秀学生", desc: "校前10%", level: "University" },
+      { year: "2017", title: "哈工大年度优秀学生", desc: "校前10%", level: "University" },
       { year: "2019", title: "清华大学电子系推免夏令营优秀营员", desc: "获清华大学研究生推荐免试录用资格。", level: "University", featured: true },
-      { year: "2018", title: "黑龙江省三好学生", desc: "黑龙江省前1%", level: "University", featured: true },
+      { year: "2018", title: "黑龙江省三好学生", desc: "黑龙江省前1%", level: "Provincial", featured: true },
       { year: "2019", title: "共进奖学金", desc: "电子系仅3名", level: "University" },
-      { year: "2018", title: "黑龙江省三好学生", desc: "省前1%", level: "Provincial" },   
-      { year: "2016 and 2017", title: "全国大学生数学竞赛一等奖（2次）", desc: "国家级数学竞赛奖项。", level: "National" },
+      { year: "2017", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
+      { year: "2016", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
     ],
     service: {
       reviewer:[ 
@@ -811,7 +846,7 @@ export const PROFILE_DATA = {
     mentoring: {
       title: "学生指导与合作",
       leadershipTitle: "科研领导力",
-      leadershipSummary: "我面向本科、硕士与博士阶段学生共同推进研究项目：凝练研究问题、建立数学模型与求解框架，并指导分析、仿真与实现，推动形成论文成果及后续升学或职业发展。",
+      leadershipSummary: "我很荣幸在读博和博士后期间，与许多低年级优秀学生一起开展科研合作。我主要帮助他们凝练研究问题、建立数学模型与求解框架，并指导分析、仿真与实现，推动形成论文成果及后续升学或职业发展。",
       studentListOpen: "展开完整名单",
       studentListClose: "收起为简表",
       collaborationTitle: "学生指导与科研合作",

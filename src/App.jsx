@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Moon, Sun, MapPin, Mail, Linkedin, 
   Github, GraduationCap, Briefcase, FileText, 
-  Award, ExternalLink, BookOpen, ChevronRight,
+  ExternalLink, BookOpen, ChevronRight,
   Download, Play, Youtube, Copy,
-  Quote, Search, Filter, Star, Trophy, Video,
+  Quote, Search, Star, Trophy, Video,
   School, ChevronDown, ChevronUp, Layers, User, Users,
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
-  Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus, ArrowUpDown,
+  Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus,
   MessageCircle, Plane, Landmark, Network, GitCommit, Languages,
   Maximize2, Menu, X
 } from 'lucide-react';
@@ -65,10 +65,13 @@ const generateBibtex = (pub) => {
   const firstAuthorSurname = pub.authors.split(',')[0]?.trim().split(' ').pop() || 'Author';
   const firstTitleWord = pub.title.split(' ')[0] || 'Title';
   const id = (firstAuthorSurname + year + firstTitleWord).toLowerCase();
-  return `@${pub.type === 'Journal' ? 'article' : 'inproceedings'}{${id},
+  const entryType = pub.type === 'Journal' ? 'article' : pub.type === 'Thesis' ? 'phdthesis' : 'inproceedings';
+  const venueField = pub.type === 'Thesis' ? 'school' : pub.type === 'Journal' ? 'journal' : 'booktitle';
+  const venueValue = pub.type === 'Thesis' ? pub.venue.replace(/^Ph\.D\. Dissertation,\s*/i, '') : pub.venue;
+  return `@${entryType}{${id},
   title={${pub.title}},
   author={${pub.authors}},
-  journal={${pub.venue}},
+  ${venueField}={${venueValue}},
   year={${year}}
 }`;
 };
@@ -119,10 +122,22 @@ const UI_COPY = {
     toggleSort: 'Toggle date sort',
     allPapers: 'All Papers',
     moreVenues: 'More Venues',
+    venueFilter: 'Venue',
     selectedPublications: 'Selected Publications',
     viewMorePublications: 'View More Publications',
     remaining: 'remaining',
     noPapers: 'No papers found matching your criteria.',
+    papersInYear: 'papers',
+    acceptanceRate: 'acceptance',
+    acceptedWorldwide: 'accepted worldwide',
+    firstAuthorBadge: 'First author',
+    coFirstAuthorBadge: 'Co-first author',
+    soleAuthorBadge: 'Sole author',
+    studentOutcomeBadge: 'Student outcome',
+    featuredBadge: 'Selected',
+    journalShort: 'J',
+    conferenceShort: 'C',
+    thesisShort: 'Thesis',
     selected: 'Selected',
     openArticle: 'Open article',
     expandAbstract: 'Expand abstract',
@@ -176,10 +191,22 @@ const UI_COPY = {
     toggleSort: '切换时间排序',
     allPapers: '全部论文',
     moreVenues: '更多期刊会议',
+    venueFilter: '期刊/会议',
     selectedPublications: '精选论文',
     viewMorePublications: '查看更多论文',
     remaining: '篇未显示',
     noPapers: '没有找到符合条件的论文。',
+    papersInYear: '篇论文',
+    acceptanceRate: '录用率',
+    acceptedWorldwide: '全球录用',
+    firstAuthorBadge: '一作',
+    coFirstAuthorBadge: '共同一作',
+    soleAuthorBadge: '独著',
+    studentOutcomeBadge: '学生成果',
+    featuredBadge: '精选',
+    journalShort: '刊',
+    conferenceShort: '会',
+    thesisShort: '学位论文',
     selected: '精选',
     openArticle: '打开论文链接',
     expandAbstract: '展开摘要',
@@ -498,6 +525,83 @@ const normalizeTitle = (value = '') => stripHtml(value)
   .replace(/[^\p{Letter}\p{Number}]+/gu, ' ')
   .trim();
 
+const normalizePersonName = (value = '') => stripHtml(value)
+  .normalize('NFD')
+  .replace(/\p{Diacritic}/gu, '')
+  .toLowerCase()
+  .replace(/[^a-z]+/g, ' ')
+  .trim();
+
+const getAuthorList = (authors = '') => String(authors)
+  .split(',')
+  .map(author => author.trim())
+  .filter(Boolean);
+
+const getPublicationTitle = (pub = {}, lang = 'en') => (
+  lang === 'zh' && pub.title_zh ? pub.title_zh : pub.title
+);
+
+const getMentoringStudentNames = (mentoring = {}) => {
+  const groups = Array.isArray(mentoring.groups) ? mentoring.groups : [];
+  const groupedStudents = groups.flatMap(group => group.students || []);
+  const flatStudents = Array.isArray(mentoring.students) ? mentoring.students : [];
+  return [...groupedStudents, ...flatStudents]
+    .map(student => student.name)
+    .filter(Boolean);
+};
+
+const createStudentMatcher = (studentNames = []) => {
+  const matchers = studentNames
+    .map((name) => {
+      const normalized = normalizePersonName(name);
+      const tokens = normalized.split(' ').filter(Boolean);
+      return {
+        normalized,
+        firstInitial: tokens[0]?.[0] || '',
+        familyName: tokens[tokens.length - 1] || '',
+      };
+    })
+    .filter(item => item.normalized && item.familyName);
+
+  return (author = '') => {
+    const normalizedAuthor = normalizePersonName(author);
+    if (!normalizedAuthor) return false;
+    const authorTokens = normalizedAuthor.split(' ').filter(Boolean);
+    const authorInitial = authorTokens[0]?.[0] || '';
+    const authorFamily = authorTokens[authorTokens.length - 1] || '';
+    return matchers.some(student => (
+      normalizedAuthor === student.normalized
+      || normalizedAuthor.includes(student.normalized)
+      || (student.firstInitial && student.familyName && authorInitial === student.firstInitial && authorFamily === student.familyName)
+    ));
+  };
+};
+
+const isCoFirstAuthorPublication = (pub = {}) => (
+  /co[-\s]?first/i.test(pub.tag || '')
+);
+
+const isSoleAuthorPublication = (pub = {}) => (
+  /sole author/i.test(pub.tag || '')
+  || (
+    getAuthorList(pub.authors).length === 1
+    && /aimin li/i.test(getAuthorList(pub.authors)[0] || '')
+  )
+);
+
+const isFirstAuthorPublication = (pub = {}) => (
+  !isCoFirstAuthorPublication(pub)
+  && !isSoleAuthorPublication(pub)
+  && (
+    /(^|[-\s])first author/i.test(pub.tag || '')
+    || /^aimin li\b/i.test(getAuthorList(pub.authors)[0] || '')
+  )
+);
+
+const awardYearValue = (award = {}) => (
+  Math.max(...(String(award.year).match(/\d{4}/g) || ['0']).map(Number))
+);
+
 const slugify = (value = '') => normalizeTitle(value).replace(/\s+/g, '-').slice(0, 80) || 'item';
 
 const normalizeNewsDate = (date = '') => {
@@ -527,7 +631,7 @@ const toSyncedPublication = (item) => {
     authors: item.authors || 'Aimin Li',
     venue: item.venue || venueShort,
     venue_short: venueShort,
-    type: item.type || (/conference|symposium|workshop|vtc|isit/i.test(item.venue || venueShort) ? 'Conference' : 'Journal'),
+    type: item.type || (/conference|symposium|workshop|vtc|isit|iros/i.test(item.venue || venueShort) ? 'Conference' : 'Journal'),
     tag: item.tag && item.tag !== 'Google Scholar' ? item.tag : 'Scholar Sync',
     featured: Boolean(item.featured),
     keywords: Array.isArray(item.keywords) && item.keywords.length ? item.keywords : ['Google Scholar'],
@@ -686,9 +790,32 @@ const buildVisitorRoutes = (activeCountries) => {
     });
 };
 
+const TIMELINE_REFLECTION_SPLIT_PATTERN = /(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我也很爱土耳其四季分明的日子。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and slowly finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)/g;
+const TIMELINE_REFLECTION_TEST_PATTERN = /^(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我也很爱土耳其四季分明的日子。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and slowly finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)$/;
+
 const HighlightText = ({ text, darkMode }) => {
   if (!text) return null;
   const parts = text.split(/(\[[^\]]+\]\([^)]+\))|(\*\*.*?\*\*)/g).filter(Boolean);
+  const renderPlainText = (value, keyPrefix) => String(value)
+    .split(TIMELINE_REFLECTION_SPLIT_PATTERN)
+    .filter(Boolean)
+    .map((segment, index) => {
+      if (TIMELINE_REFLECTION_TEST_PATTERN.test(segment)) {
+        return (
+          <em
+            key={`${keyPrefix}-warm-${index}`}
+            className={`mt-2 block border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${
+              darkMode
+                ? 'border-indigo-300/60 text-slate-100'
+                : 'border-indigo-300 text-slate-800'
+            }`}
+          >
+            {segment}
+          </em>
+        );
+      }
+      return segment;
+    });
   
   return (
     <span>
@@ -710,10 +837,54 @@ const HighlightText = ({ text, darkMode }) => {
             </a>
           );
         }
-        return part;
+        return renderPlainText(part, i);
       })}
     </span>
   );
+};
+
+const HONOR_VALUE_PATTERN = [
+  'Sole nominee',
+  'Sole Ph\\.D\\. student recipient',
+  'Top\\s*\\d+(?:\\.\\d+)?%[^.;。；,，]*',
+  'One of two recipients',
+  'One of fewer than\\s+\\d+\\s+Ph\\.D\\. candidates selected nationwide',
+  'only\\s+\\d+\\s+Ph\\.D\\. students university-wide',
+  'Top\\s+\\d+\\s+Ph\\.D\\. Students Worldwide',
+  'Ranked\\s+\\d+(?:st|nd|rd|th)?\\s+out of\\s+\\d+[^.;。；,，]*',
+  '最高学生荣誉',
+  '电子系唯一入选者',
+  '电子系唯一入选',
+  '黑龙江省前\\s*\\d+(?:\\.\\d+)?%',
+  '全国前\\s*\\d+(?:\\.\\d+)?%',
+  '省前\\s*\\d+(?:\\.\\d+)?%',
+  '校前\\s*\\d+(?:\\.\\d+)?%',
+  '电子系仅\\s*\\d+\\s*名',
+  '全校博士生仅\\s*\\d+\\s*人',
+  '全球决赛第\\s*\\d+\\s*名',
+  '全球共\\s*\\d+\\s*名博士生',
+  '首批全国少于\\s*\\d+\\s*名博士生',
+].join('|');
+const HONOR_VALUE_SPLIT_RE = new RegExp(`(${HONOR_VALUE_PATTERN})`, 'giu');
+const HONOR_VALUE_TEST_RE = new RegExp(`^(?:${HONOR_VALUE_PATTERN})$`, 'iu');
+
+const HonorText = ({ text, darkMode }) => {
+  if (!text) return null;
+  return String(text)
+    .split(HONOR_VALUE_SPLIT_RE)
+    .filter(Boolean)
+    .map((part, index) => (
+      HONOR_VALUE_TEST_RE.test(part)
+        ? (
+          <strong
+            key={`${part}-${index}`}
+            className={`rounded px-1 font-black ${darkMode ? 'bg-amber-400/10 text-amber-200' : 'bg-amber-50 text-amber-800'}`}
+          >
+            {part}
+          </strong>
+        )
+        : part
+    ));
 };
 
 const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }) => {
@@ -723,6 +894,7 @@ const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }
     code: darkMode ? "bg-gray-800 text-white border-gray-700 hover:bg-black" : "bg-gray-900 text-white border-gray-900 hover:bg-black",
     bibtex: darkMode ? "bg-blue-900/20 text-blue-400 border-blue-800/50 hover:bg-blue-900/40" : "bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100",
     arxiv: darkMode ? "bg-red-900/10 text-red-400 border-red-800/30 hover:bg-red-900/30" : "bg-red-50 text-red-800 border-red-100 hover:bg-red-100",
+    project: darkMode ? "bg-cyan-900/20 text-cyan-300 border-cyan-800/50 hover:bg-cyan-900/40" : "bg-cyan-50 text-cyan-800 border-cyan-100 hover:bg-cyan-100",
     default: darkMode ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700" : "bg-white text-slate-600 border-gray-200 hover:bg-gray-50"
   };
   
@@ -1309,11 +1481,8 @@ export default function AcademicProfile() {
 
   // -- Filter & Search States --
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedKeyword, setSelectedKeyword] = useState("All");
   const [selectedVenue, setSelectedVenue] = useState("All");
-  const [sortOrder, setSortOrder] = useState("newest");
-  const [expandedPaperId, setExpandedPaperId] = useState(null);
-  const [visiblePubs, setVisiblePubs] = useState(5);
+  const [visiblePubs, setVisiblePubs] = useState(12);
   const [visibleAwards, setVisibleAwards] = useState(6); // Controls visibility of "Other Awards"
   const [showAllNews, setShowAllNews] = useState(false);
 
@@ -1324,6 +1493,14 @@ export default function AcademicProfile() {
   useSEO(content.meta_title, content.meta_desc, lang);
   const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
+  const matchesMentoredStudent = useMemo(
+    () => createStudentMatcher(getMentoringStudentNames(content.mentoring)),
+    [content.mentoring]
+  );
+  const isStudentOutcomePublication = (pub) => (
+    pub.studentOutcome !== false
+    && getAuthorList(pub.authors).some(author => matchesMentoredStudent(author))
+  );
   const mentoringGroups = content.mentoring.groups?.length
     ? content.mentoring.groups
     : [{ title: content.mentoring.collaborationTitle, shortTitle: '', note: '', students: content.mentoring.students }];
@@ -1359,50 +1536,78 @@ export default function AcademicProfile() {
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([venue, count]) => ({ venue, count }));
   }, [publications]);
 
-  const pinnedVenueNames = new Set(['IEEE TMC', 'IEEE IoTJ', 'IEEE ISIT', 'IEEE VTC-Spring']);
-  const primaryVenueNames = new Set([
-    ...venueStats.slice(0, 6).map(item => item.venue),
-    ...venueStats.filter(item => pinnedVenueNames.has(item.venue)).map(item => item.venue),
-  ]);
-  const primaryVenueStats = venueStats.filter(item => primaryVenueNames.has(item.venue));
-  const secondaryVenueStats = venueStats.filter(item => !primaryVenueNames.has(item.venue));
-
-  const allKeywords = useMemo(() => {
-    const keys = new Set();
-    publications.forEach(p => p.keywords?.forEach(k => keys.add(k)));
-    return ["All", ...Array.from(keys).sort()];
-  }, [publications]);
-
-  const { featuredPubs, otherPubs } = useMemo(() => {
+  const filteredPubs = useMemo(() => {
     let filtered = [...publications];
+    const getSortMeta = (pub) => {
+      const titleKey = normalizeTitle(pub.title);
+      const newsIndex = newsItems.findIndex(item => normalizeTitle(`${item.content || ''} ${item.title || ''}`).includes(titleKey));
+      const newsDate = newsIndex >= 0 ? newsItems[newsIndex].date : '';
+      return {
+        date: newsDate || `${pub.year || 0}-00`,
+        newsIndex: newsIndex >= 0 ? newsIndex : Number.MAX_SAFE_INTEGER,
+      };
+    };
+    const getContributionRank = (pub) => {
+      if (pub.type === 'Thesis') return -1;
+      if (isSoleAuthorPublication(pub) || isFirstAuthorPublication(pub) || isCoFirstAuthorPublication(pub)) return 0;
+      if (pub.studentOutcome !== false && getAuthorList(pub.authors).some(author => matchesMentoredStudent(author))) return 1;
+      return 2;
+    };
     filtered.sort((a, b) => {
-      if (sortOrder === "newest") return b.year - a.year;
-      return a.year - b.year;
+      const aMeta = getSortMeta(a);
+      const bMeta = getSortMeta(b);
+      const yearCompare = (Number(b.year) || 0) - (Number(a.year) || 0);
+      if (yearCompare) return yearCompare;
+      const contributionCompare = getContributionRank(a) - getContributionRank(b);
+      if (contributionCompare) return contributionCompare;
+      const dateCompare = bMeta.date.localeCompare(aMeta.date);
+      if (dateCompare) return dateCompare;
+      if (aMeta.newsIndex !== bMeta.newsIndex) return aMeta.newsIndex - bMeta.newsIndex;
+      return 0;
     });
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(p => [
         p.title,
+        p.title_zh,
         p.authors,
         p.venue,
         p.venue_short,
       ].filter(Boolean).some(value => value.toLowerCase().includes(q)));
     }
-    if (selectedKeyword !== "All") {
-      filtered = filtered.filter(p => p.keywords?.includes(selectedKeyword));
-    }
     if (selectedVenue !== "All") {
       filtered = filtered.filter(p => p.venue_short === selectedVenue);
     }
-    const featured = filtered.filter(p => p.featured);
-    const others = filtered.filter(p => !p.featured);
-    return { featuredPubs: featured, otherPubs: others };
-  }, [publications, searchQuery, selectedKeyword, selectedVenue, sortOrder]);
+    return filtered;
+  }, [matchesMentoredStudent, newsItems, publications, searchQuery, selectedVenue]);
+
+  const groupedPublicationYears = useMemo(() => {
+    const groups = new Map();
+    const yearCounts = new Map();
+    filteredPubs.forEach((pub) => {
+      const year = String(pub.year || 'N/A');
+      yearCounts.set(year, (yearCounts.get(year) || 0) + 1);
+    });
+    filteredPubs.slice(0, visiblePubs).forEach((pub) => {
+      const year = String(pub.year || 'N/A');
+      if (!groups.has(year)) groups.set(year, []);
+      groups.get(year).push(pub);
+    });
+    return Array.from(groups.entries()).map(([year, pubs]) => ({
+      year,
+      pubs,
+      totalCount: yearCounts.get(year) || pubs.length,
+    }));
+  }, [filteredPubs, visiblePubs]);
 
   const { featuredAwards, otherAwards } = useMemo(() => {
+    const sortedAwards = [...content.awards].sort((a, b) => (
+      awardYearValue(b) - awardYearValue(a)
+      || String(a.title).localeCompare(String(b.title))
+    ));
     return {
-      featuredAwards: content.awards.filter(a => a.featured),
-      otherAwards: content.awards.filter(a => !a.featured)
+      featuredAwards: sortedAwards.filter(a => a.featured),
+      otherAwards: sortedAwards.filter(a => !a.featured)
     };
   }, [content.awards]);
 
@@ -1426,8 +1631,7 @@ export default function AcademicProfile() {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   const resetPublicationView = () => {
-    setVisiblePubs(5);
-    setExpandedPaperId(null);
+    setVisiblePubs(12);
   };
   const updateSearchQuery = (value) => {
     setSearchQuery(value);
@@ -1437,116 +1641,104 @@ export default function AcademicProfile() {
     setSelectedVenue(value);
     resetPublicationView();
   };
-  const updateSelectedKeyword = (value) => {
-    setSelectedKeyword(value);
-    resetPublicationView();
-  };
-  const toggleSortOrder = () => {
-    setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest');
-    resetPublicationView();
-  };
-
-  const PublicationCard = ({ pub, isFeatured }) => {
-    const isExpanded = expandedPaperId === pub.id;
+  const PublicationRow = ({ pub }) => {
     const primaryHref = pub.url || pub.links?.pdf || pub.links?.arxiv || null;
-
-    const toggleExpand = () => {
-      setExpandedPaperId(isExpanded ? null : pub.id);
-    };
+    const displayTitle = getPublicationTitle(pub, lang);
+    const isSoleAuthor = isSoleAuthorPublication(pub);
+    const showSoleAuthorBadge = isSoleAuthor && pub.showSoleAuthorBadge !== false;
+    const isCoFirstAuthor = isCoFirstAuthorPublication(pub);
+    const isFirstAuthor = isFirstAuthorPublication(pub);
+    const isStudentOutcome = isStudentOutcomePublication(pub);
+    const typeLabel = pub.type === 'Journal' ? ui.journalShort : pub.type === 'Thesis' ? ui.thesisShort : ui.conferenceShort;
+    const highlightClass = (isSoleAuthor || isFirstAuthor || isCoFirstAuthor)
+      ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
+      : isStudentOutcome
+        ? (darkMode ? 'border-l-emerald-400 bg-emerald-400/[0.04]' : 'border-l-emerald-400 bg-emerald-50/40')
+        : (darkMode ? 'border-l-slate-800' : 'border-l-transparent');
 
     return (
       <article
-        className={`group relative rounded-2xl border transition-all duration-300 overflow-hidden
-          ${isFeatured 
-            ? (darkMode ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-amber-500/30 shadow-lg shadow-amber-900/10' : 'bg-gradient-to-br from-white to-amber-50/30 border-amber-200 shadow-lg shadow-amber-100') 
-            : (darkMode ? 'bg-slate-800/40 border-slate-700/50 hover:border-purple-500/30' : 'bg-white border-gray-100 hover:border-purple-200 hover:shadow-md')
-          }`}
+        className={`grid gap-2 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 md:grid-cols-[minmax(0,1fr)_10rem] md:items-start ${highlightClass} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
       >
-        {/* Hover Indicator Icon */}
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
-           <ExternalLink size={16} className={darkMode ? 'text-slate-400' : 'text-slate-400'} />
+        <div className="min-w-0">
+          <div className="mb-1 flex flex-wrap items-center gap-1.5">
+            <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+              {typeLabel}
+            </span>
+            <button
+              type="button"
+              onClick={() => updateSelectedVenue(pub.venue_short)}
+              className={`rounded-md border px-2 py-0.5 text-[10px] font-black transition-colors ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/45' : 'border-cyan-200 bg-cyan-50 text-cyan-800 hover:border-cyan-300'}`}
+              title={pub.venue}
+            >
+              {pub.venue_short}
+            </button>
+            {showSoleAuthorBadge && (
+              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+                {ui.soleAuthorBadge}
+              </span>
+            )}
+            {isFirstAuthor && (
+              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+                {ui.firstAuthorBadge}
+              </span>
+            )}
+            {isCoFirstAuthor && (
+              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
+                {ui.coFirstAuthorBadge}
+              </span>
+            )}
+            {isStudentOutcome && (
+              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-emerald-400/25 bg-emerald-400/10 text-emerald-200' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>
+                {ui.studentOutcomeBadge}
+              </span>
+            )}
+            {(pub.acceptanceRate || pub.acceptedWorldwide) && (
+              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-rose-300/30 bg-rose-400/10 text-rose-100' : 'border-rose-200 bg-rose-50 text-rose-800'}`}>
+                {lang === 'zh' ? (
+                  <>
+                    {pub.acceptanceRate && <><strong>{pub.acceptanceRate}</strong> {ui.acceptanceRate}</>}
+                    {pub.acceptanceRate && pub.acceptedWorldwide && <span> · </span>}
+                    {pub.acceptedWorldwide && <>{ui.acceptedWorldwide} <strong>{pub.acceptedWorldwide}</strong> 篇</>}
+                  </>
+                ) : (
+                  <>
+                    {pub.acceptanceRate && <><strong>{pub.acceptanceRate}</strong> {ui.acceptanceRate}</>}
+                    {pub.acceptanceRate && pub.acceptedWorldwide && <span> · </span>}
+                    {pub.acceptedWorldwide && <><strong>{pub.acceptedWorldwide}</strong> {ui.acceptedWorldwide}</>}
+                  </>
+                )}
+              </span>
+            )}
+            {pub.jcr && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
+          </div>
+
+          <h3 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+            {primaryHref ? (
+              <a href={primaryHref} target="_blank" rel="noreferrer" className={darkMode ? 'hover:text-cyan-300' : 'hover:text-cyan-700'} title={ui.openArticle}>
+                {displayTitle}
+              </a>
+            ) : displayTitle}
+          </h3>
+
+          <div className={`mt-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+            {getAuthorList(pub.authors).map((author, i, arr) => (
+              <span key={`${pub.id}-author-${i}`}>
+                {author.includes('Aimin Li')
+                  ? <strong className={`font-black underline underline-offset-2 ${darkMode ? 'text-cyan-200 decoration-cyan-300/60' : 'text-cyan-800 decoration-cyan-500/45'}`}>{author}</strong>
+                  : author}
+                {i < arr.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {isFeatured && (
-          <div className="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-xl z-10 flex items-center gap-1 shadow-sm">
-            <Star size={10} fill="currentColor" /> {ui.selected}
-          </div>
-        )}
-        <div className="p-5 flex flex-col md:flex-row gap-5">
-          {pub.image && (
-            <div className="shrink-0 w-full md:w-48 h-32 rounded-xl overflow-hidden border dark:border-slate-700 shadow-sm hidden md:block relative">
-              <img src={pub.image} alt={`${pub.title} visual summary`} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-             <div className="flex justify-between items-start gap-4">
-                <h3 className={`text-lg font-bold leading-snug mb-2 group-hover:underline decoration-2 underline-offset-2 ${darkMode ? 'text-slate-100 group-hover:text-purple-400' : 'text-gray-900 group-hover:text-purple-600'} transition-colors`}>
-                  {primaryHref ? (
-                    <a href={primaryHref} target="_blank" rel="noreferrer" title={ui.openArticle}>
-                      {pub.title}
-                    </a>
-                  ) : pub.title}
-                </h3>
-                
-                {/* Expansion Arrow - Clickable Area */}
-                <button
-                  type="button"
-                  className={`shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-300 z-20 ${isExpanded ? 'rotate-180' : ''}`}
-                  onClick={toggleExpand}
-                  title={isExpanded ? ui.collapseAbstract : ui.expandAbstract}
-                  aria-expanded={isExpanded}
-                  aria-label={isExpanded ? ui.collapseAbstract : ui.expandAbstract}
-                >
-                  <ChevronDown size={20} className="opacity-50 hover:opacity-100" />
-                </button>
-             </div>
-             <div className={`text-sm mb-3 leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                {pub.authors.split(',').map((author, i, arr) => (
-                  <span key={i}>
-                    {author.includes(lang === 'en' ? 'Aimin Li' : '李爱民') 
-                      ? <strong className={darkMode ? 'text-slate-200 underline decoration-purple-500/50' : 'text-gray-900 underline decoration-purple-500/30'}>{author.trim()}</strong> 
-                      : author.trim()}
-                    {i < arr.length - 1 ? ', ' : ''}
-                  </span>
-                ))}
-             </div>
-             <div className="flex flex-wrap items-center gap-y-2 gap-x-3 mb-3">
-                <div className="flex items-center gap-2">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-md border ${darkMode ? 'bg-slate-700/50 border-slate-600 text-slate-300' : 'bg-gray-100 border-gray-200 text-gray-700'}`}>
-                      {pub.venue_short}
-                    </span>
-                    <span className={`text-xs font-medium italic ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                       {pub.venue}
-                    </span>
-                </div>
-                {pub.jcr && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded bg-opacity-10 ${darkMode ? 'bg-white text-slate-400' : 'bg-black text-gray-500'}`}>{pub.year}</span>
-             </div>
-             {pub.summary && (
-                <div className={`text-sm italic mb-3 pl-3 border-l-2 ${darkMode ? 'text-slate-400 border-slate-600' : 'text-slate-500 border-purple-200'}`}>
-                  "{pub.summary}"
-                </div>
-             )}
-             {pub.keywords && (
-               <div className="flex gap-2 mb-3">
-                 {pub.keywords.slice(0,3).map((k,i) => (
-                   <span key={i} className={`text-[10px] px-1.5 py-0.5 rounded border ${darkMode ? 'border-slate-700 text-slate-500' : 'border-gray-100 text-gray-400 bg-gray-50'}`}>#{k}</span>
-                 ))}
-               </div>
-             )}
-             <div className="flex gap-3 mt-auto pt-2">
-               {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
-               {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
-               {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
-               <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
-             </div>
-          </div>
-        </div>
-        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 border-t dark:border-slate-700' : 'max-h-0 opacity-0'}`}>
-          <div className={`p-5 text-sm leading-relaxed ${darkMode ? 'bg-slate-900/50 text-slate-300' : 'bg-gray-50 text-slate-700'}`}>
-            <h4 className="font-bold mb-2 text-xs uppercase tracking-wider opacity-70">{ui.abstract}</h4>
-            <p>{pub.abstract || ui.noAbstract}</p>
-          </div>
+        <div className="flex flex-wrap items-center gap-1.5 md:justify-end">
+          {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
+          {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
+          {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
+          {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
+          <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
         </div>
       </article>
     );
@@ -1785,95 +1977,6 @@ export default function AcademicProfile() {
           </div>
         </section>
 
-        {/* --- Awards Section (Updated) --- */}
-        <section id="awards" className="scroll-mt-32">
-           <div className="flex items-center gap-4 mb-10">
-              <div className={`p-3 rounded-xl ${darkMode ? 'bg-amber-900/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}><Trophy size={24} /></div>
-              <div>
-                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.awards}</h2>
-                <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.awardsDesc}</p>
-              </div>
-           </div>
-
-           {/* Featured Awards Grid */}
-           <div className="mb-12">
-              <h3 className={`text-xs font-bold uppercase tracking-widest mb-6 flex items-center gap-2 ${darkMode ? 'text-amber-500' : 'text-amber-600'}`}>
-                 <Star size={14} /> {ui.selectedHonors}
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                 {featuredAwards.map((award, idx) => (
-                    <div key={idx} className={`relative p-6 rounded-2xl border overflow-hidden group transition-all duration-300 hover:-translate-y-1
-                       ${darkMode 
-                          ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-amber-500/30 hover:border-amber-400/50' 
-                          : 'bg-gradient-to-br from-amber-50/50 to-white border-amber-200 hover:border-amber-300 hover:shadow-lg hover:shadow-amber-100'}
-                    `}>
-                       {/* Decorative Background Icon */}
-                       <Trophy className={`absolute -right-4 -bottom-4 opacity-5 transform rotate-12 group-hover:scale-110 transition-transform duration-500 ${darkMode ? 'text-amber-100' : 'text-amber-900'}`} size={120} />
-                       
-                       <div className="relative z-10">
-                          <div className="flex justify-between items-start mb-3">
-                             <span className={`text-xs font-mono font-bold px-2 py-1 rounded ${darkMode ? 'bg-amber-500/20 text-amber-300' : 'bg-amber-100 text-amber-800'}`}>
-                                {award.year}
-                             </span>
-                             <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-1 rounded-full border ${darkMode ? 'border-amber-500/30 text-amber-400' : 'border-amber-200 text-amber-700 bg-white'}`}>
-                                {award.level}
-                             </span>
-                          </div>
-                          <h3 className={`text-lg font-bold mb-2 leading-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                             {award.title}
-                          </h3>
-                          <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                             {award.desc}
-                          </p>
-                       </div>
-                    </div>
-                 ))}
-              </div>
-           </div>
-
-           {/* Other Awards Compact List */}
-           <div>
-              <h3 className={`text-xs font-bold uppercase tracking-widest mb-4 opacity-60 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-                 {ui.otherAwards}
-              </h3>
-              <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-3`}>
-                 {otherAwards.slice(0, visibleAwards).map((award, idx) => (
-                    <div key={idx} className={`relative flex flex-col p-5 rounded-xl border transition-all duration-300 overflow-hidden group hover:-translate-y-1
-                       ${darkMode 
-                          ? 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-amber-900/10' 
-                          : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-lg hover:shadow-amber-100/50'}
-                    `}>
-                       {/* Watermark Icon */}
-                       <div className={`absolute -right-3 -bottom-3 opacity-[0.03] transform rotate-12 group-hover:scale-110 transition-transform duration-500 ${darkMode ? 'text-white' : 'text-black'}`}>
-                          <Award size={64} />
-                       </div>
-
-                       <div className="flex justify-between items-center mb-2 relative z-10">
-                          <span className={`text-[10px] font-mono opacity-50 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{award.year}</span>
-                          <span className={`text-[9px] uppercase font-bold tracking-wider ${darkMode ? 'text-slate-600' : 'text-gray-400'}`}>{award.level}</span>
-                       </div>
-                       <h4 className={`text-sm font-medium leading-snug mb-1 relative z-10 ${darkMode ? 'text-slate-200' : 'text-gray-800'}`}>
-                          {award.title}
-                       </h4>
-                       {award.desc && <p className={`text-xs opacity-60 line-clamp-2 relative z-10 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{award.desc}</p>}
-                    </div>
-                 ))}
-              </div>
-              
-              {/* View More Button for Awards */}
-              {otherAwards.length > visibleAwards && (
-                <div className="flex justify-center pt-6">
-                  <button 
-                    onClick={() => setVisibleAwards(prev => prev + 6)}
-                    className={`group flex items-center gap-2 px-6 py-2 rounded-full font-bold text-xs transition-all ${darkMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                  >
-                    {ui.viewMoreAwards} <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                  </button>
-                </div>
-              )}
-           </div>
-        </section>
-
         {/* --- PUBLICATIONS SECTION --- */}
         <section id="publications" className="scroll-mt-32 space-y-8">
           <div className="space-y-6">
@@ -1891,62 +1994,135 @@ export default function AcademicProfile() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 items-center">
-	                  <button onClick={toggleSortOrder} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`} title={ui.toggleSort}>
-	                    <ArrowUpDown size={12} /> {sortOrder === 'newest' ? ui.newestFirst : ui.oldestFirst}
-	                  </button>
-	                  <div className={`w-px h-4 mx-2 ${darkMode ? 'bg-slate-700' : 'bg-gray-200'}`}></div>
-	                  <button onClick={() => updateSelectedVenue("All")} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === "All" ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-500 border-emerald-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>{ui.allPapers} ({publications.length})</button>
-	                  {primaryVenueStats.map((v, idx) => (
-	                    <button key={idx} onClick={() => updateSelectedVenue(v.venue)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${selectedVenue === v.venue ? (darkMode ? 'bg-purple-600 border-purple-500 text-white' : 'bg-purple-500 border-purple-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50')}`}>{v.venue} ({v.count})</button>
-	                  ))}
-                    {secondaryVenueStats.length > 0 && (
+              <div className={`flex flex-col gap-3 rounded-xl border p-3 text-xs sm:flex-row sm:items-center sm:justify-end ${darkMode ? 'border-slate-800 bg-slate-900/25 text-slate-400' : 'border-slate-200 bg-white/80 text-slate-500'}`}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="flex items-center gap-2">
+                      <Tag size={14} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
+                      <span className="font-bold">{ui.venueFilter}</span>
                       <select
-                        value={secondaryVenueStats.some(v => v.venue === selectedVenue) ? selectedVenue : ''}
-                        onChange={(event) => updateSelectedVenue(event.target.value || 'All')}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border outline-none ${secondaryVenueStats.some(v => v.venue === selectedVenue) ? (darkMode ? 'bg-purple-600 border-purple-500 text-white' : 'bg-purple-500 border-purple-500 text-white') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-gray-200 text-gray-600')}`}
-                        aria-label={ui.moreVenues}
+                        value={selectedVenue}
+                        onChange={(event) => updateSelectedVenue(event.target.value)}
+                        className={`max-w-[12rem] rounded-lg border px-3 py-1.5 text-xs font-bold outline-none ${darkMode ? 'border-slate-700 bg-slate-800 text-slate-300' : 'border-gray-200 bg-white text-gray-600'}`}
                       >
-                        <option value="">{ui.moreVenues}</option>
-                        {secondaryVenueStats.map(v => (
+                        <option value="All">{ui.allPapers} ({publications.length})</option>
+                        {venueStats.map(v => (
                           <option key={v.venue} value={v.venue}>{v.venue} ({v.count})</option>
                         ))}
                       </select>
-                    )}
-              </div>
-
-              <div className="flex flex-wrap gap-2 pb-4 border-b dark:border-slate-800 items-center">
-                  <Filter size={14} className={`mr-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
-                  {allKeywords.map((keyword) => (
-	                    <button key={keyword} onClick={() => updateSelectedKeyword(keyword)} className={`text-xs font-medium px-3 py-1.5 rounded-full transition-all border ${selectedKeyword === keyword ? (darkMode ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200') : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-emerald-200')}`}>{keyword}</button>
-                  ))}
-              </div>
+                    </label>
+                  </div>
+                </div>
           </div>
 
-          {featuredPubs.length > 0 && (
-            <div className="space-y-4 animate-fade-in">
-               <h3 className={`text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-4 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>
-	                 <Star size={16} /> {ui.selectedPublications}
-               </h3>
-               <div className="grid gap-6">
-                  {featuredPubs.map(pub => <PublicationCard key={pub.id} pub={pub} isFeatured={true} />)}
-               </div>
+          <div className="space-y-4 animate-fade-in">
+            {groupedPublicationYears.map((group) => (
+              <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className="flex items-baseline justify-between gap-2 md:block">
+                  <div className={`text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                    {group.year}
+                  </div>
+                  <div className={`mt-1 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest md:mt-2 ${darkMode ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
+                    {group.totalCount} {ui.papersInYear}
+                  </div>
+                </div>
+                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                  {group.pubs.map(pub => <PublicationRow key={pub.id} pub={pub} />)}
+                </div>
+              </section>
+            ))}
+          </div>
+
+          {filteredPubs.length > visiblePubs && (
+            <div className="flex justify-center pt-2">
+              <button onClick={() => setVisiblePubs(prev => prev + 12)} className={`group flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
+                {ui.viewMorePublications} ({filteredPubs.length - visiblePubs} {ui.remaining}) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
+              </button>
             </div>
           )}
+          {filteredPubs.length === 0 && <div className="text-center py-12 opacity-50">{ui.noPapers}</div>}
+        </section>
 
-          <div className="space-y-4">
-             <div className="grid gap-6">
-                {otherPubs.slice(0, visiblePubs).map(pub => <PublicationCard key={pub.id} pub={pub} isFeatured={false} />)}
-             </div>
-             {otherPubs.length > visiblePubs && (
-                <div className="flex justify-center pt-8">
-                  <button onClick={() => setVisiblePubs(prev => prev + 5)} className={`group flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm transition-all transform hover:scale-105 ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
-	                    {ui.viewMorePublications} ({otherPubs.length - visiblePubs} {ui.remaining}) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
+        {/* --- Awards Section (Compact) --- */}
+        <section id="awards" className="scroll-mt-32">
+           <div className="flex items-center gap-3 mb-6">
+              <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-amber-900/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}><Trophy size={20} /></div>
+              <div>
+                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.awards}</h2>
+                <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.awardsDesc}</p>
+              </div>
+           </div>
+
+           {/* Featured Awards Grid */}
+           <div className="mb-8">
+              <h3 className={`text-[11px] font-black uppercase tracking-widest mb-3 flex items-center gap-2 ${darkMode ? 'text-amber-500' : 'text-amber-600'}`}>
+                 <Star size={14} /> {ui.selectedHonors}
+              </h3>
+              <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">
+                 {featuredAwards.map((award, idx) => (
+                    <div key={idx} className={`group relative overflow-hidden rounded-xl border border-l-4 p-3 transition-all duration-300 hover:-translate-y-0.5
+                       ${darkMode 
+                          ? 'border-slate-800 border-l-amber-400 bg-slate-900/35 hover:bg-slate-900/60 hover:border-slate-700' 
+                          : 'border-slate-200 border-l-amber-400 bg-white hover:border-amber-200 hover:shadow-sm'}
+                    `}>
+                       <div className="relative z-10 flex items-start gap-3">
+                          <div className="shrink-0 space-y-1">
+                             <span className={`block rounded-md px-2 py-1 text-[10px] font-black tabular-nums ${darkMode ? 'bg-amber-500/15 text-amber-300' : 'bg-amber-50 text-amber-800'}`}>
+                                {award.year}
+                             </span>
+                             <span className={`block text-center text-[8px] font-black uppercase tracking-wider ${darkMode ? 'text-amber-400/70' : 'text-amber-700/70'}`}>
+                                {award.level}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className={`text-sm font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                               {award.title}
+                            </h3>
+                            <p className={`mt-1 text-[12px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                               <HonorText text={award.desc} darkMode={darkMode} />
+                            </p>
+                          </div>
+                       </div>
+                    </div>
+                 ))}
+              </div>
+           </div>
+
+           {/* Other Awards Compact List */}
+           <div>
+              <h3 className={`mb-3 text-[11px] font-black uppercase tracking-widest opacity-60 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+                 {ui.otherAwards}
+              </h3>
+              <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-3">
+                 {otherAwards.slice(0, visibleAwards).map((award, idx) => (
+                    <div key={idx} className={`group relative overflow-hidden rounded-lg border p-3 transition-all duration-300 hover:-translate-y-0.5
+                       ${darkMode 
+                          ? 'border-slate-800 bg-slate-900/25 hover:bg-slate-900/50' 
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'}
+                    `}>
+                       <div className="relative z-10 mb-1.5 flex items-center justify-between gap-2">
+                          <span className={`font-mono text-[10px] font-bold tabular-nums ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{award.year}</span>
+                          <span className={`text-[8px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-600' : 'text-gray-400'}`}>{award.level}</span>
+                       </div>
+                       <h4 className={`relative z-10 text-[13px] font-bold leading-snug ${darkMode ? 'text-slate-200' : 'text-gray-800'}`}>
+                          {award.title}
+                       </h4>
+                       {award.desc && <p className={`relative z-10 mt-0.5 line-clamp-1 text-[11px] opacity-65 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}><HonorText text={award.desc} darkMode={darkMode} /></p>}
+                    </div>
+                 ))}
+              </div>
+              
+              {/* View More Button for Awards */}
+              {otherAwards.length > visibleAwards && (
+                <div className="flex justify-center pt-4">
+                  <button 
+                    onClick={() => setVisibleAwards(prev => prev + 6)}
+                    className={`group flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-all ${darkMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                  >
+                    {ui.viewMoreAwards} <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform" />
                   </button>
                 </div>
-             )}
-	             {otherPubs.length === 0 && featuredPubs.length === 0 && <div className="text-center py-12 opacity-50">{ui.noPapers}</div>}
-          </div>
+              )}
+           </div>
         </section>
 
         {/* --- SUBMITTED / PREPRINTS --- */}
