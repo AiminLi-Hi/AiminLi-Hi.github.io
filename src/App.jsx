@@ -83,6 +83,7 @@ const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bTMC\b|transactions on mobile computing/i,
   /\bIoTJ\b|\bJIOT\b|internet of things journal/i,
   /\bISIT\b|international symposium on information theory/i,
+  /\bIROS\b|intelligent robots and systems/i,
   /\bVTC\b|vehicular technology conference/i,
   /\bTIT\b|transactions on information theory/i,
 ];

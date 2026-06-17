@@ -52,6 +52,7 @@ const VENUE_PATTERNS = [
   [/transactions on mobile computing|mobile computing/i, 'IEEE TMC', 'TMC'],
   [/internet of things journal|iotj|jiot/i, 'IEEE IoTJ', 'IoTJ'],
   [/international symposium on information theory|isit/i, 'IEEE ISIT', 'ISIT'],
+  [/intelligent robots and systems|iros/i, 'IEEE IROS', 'IROS'],
   [/vehicular technology conference|vtc/i, 'IEEE VTC', 'VTC'],
   [/transactions on information theory/i, 'IEEE TIT', 'TIT'],
   [/transactions on communications/i, 'IEEE TCOM', 'TCOM'],
@@ -72,6 +73,7 @@ const HOMEPAGE_ALLOWED_VENUE_PATTERNS = [
   /IEEE TMC/i,
   /IEEE IoTJ/i,
   /IEEE ISIT/i,
+  /IEEE IROS/i,
   /IEEE VTC/i,
   /IEEE TIT/i
 ];
@@ -301,7 +303,7 @@ function isHomepageCandidate(item, shortVenue = item.shortVenue || item.venue_sh
 }
 
 function inferType(venueText) {
-  return /conference|symposium|workshop|globecom|infocom|wcnc|vtc|isit|icct|allerton|mobihoc/i.test(venueText)
+  return /conference|symposium|workshop|globecom|infocom|wcnc|vtc|isit|iros|icct|allerton|mobihoc/i.test(venueText)
     ? 'Conference'
     : 'Journal';
 }
@@ -395,7 +397,7 @@ async function fetchScholarData(previous) {
     date: month,
     label: pub.newsLabel,
     title: pub.title,
-    html: `Paper titled <strong>${pub.title}</strong> was added to <strong>Google Scholar</strong>${pub.venue ? ` (${pub.venue})` : ''}.`,
+    html: `Our paper <strong>${pub.title}</strong> was added to <strong>Google Scholar</strong>${pub.venue ? ` (${pub.venue})` : ''}.`,
     href: pub.href
   }));
 
