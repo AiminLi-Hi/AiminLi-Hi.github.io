@@ -1,9 +1,7 @@
 name: Sync visitor data
 
 on:
-  schedule:
-    # Hourly visitor refresh. GitHub may delay scheduled runs during busy periods.
-    - cron: '17 * * * *'
+  # Manual only. Visitor snapshots should not be refreshed by a scheduled job.
   workflow_dispatch:
 
 permissions:
