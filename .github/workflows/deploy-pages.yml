@@ -1,9 +1,9 @@
 name: Deploy GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  # Manual only. Normal homepage releases are deployed by the local
+  # `npm run deploy` flow after validation, which avoids concurrent
+  # gh-pages writes racing with a main-branch push.
   workflow_dispatch:
 
 permissions:
