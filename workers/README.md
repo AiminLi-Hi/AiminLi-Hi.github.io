@@ -18,7 +18,7 @@ It exposes:
 - `POST /admin/adjust`: manually adds aggregate visitor events. Requires `VISITOR_ADMIN_TOKEN`.
 - `GET /health`: health check.
 
-The homepage uses the realtime API only when `VITE_VISITOR_STATS_ENDPOINT` is set. Without that env var, the site keeps using the GitHub Action generated static snapshot.
+The homepage automatically uses this production API on `aiminli-hi.github.io`. `VITE_VISITOR_STATS_ENDPOINT` is only needed when overriding the endpoint for builds, previews, or a future API migration. Local development falls back to the static snapshot unless the endpoint is explicitly configured.
 
 ## Deploy Pages API
 
@@ -58,15 +58,15 @@ curl -X POST "https://aimin-homepage-visitors-api.pages.dev/admin/adjust" \
   --data '{"adjustments":[{"country":"SE","regionCode":"AB","regionName":"Stockholm","count":2},{"country":"CN","regionCode":"ZJ","regionName":"Zhejiang","count":3}]}'
 ```
 
-## Durable Object Alternative
+## Legacy Durable Object Alternative
 
-The `visitor-stats-worker.js` Worker stores the same aggregate shape in a Durable Object:
+The `visitor-stats-worker.js` Worker stores the same aggregate shape in a Durable Object, but it is not the active production API for the homepage. Do not run `npx wrangler deploy` from `workers/` during ordinary maintenance; use `workers/pages-api` instead.
 
 ```bash
 npx wrangler deploy
 ```
 
-It is a fallback implementation. Prefer the Pages API when local networks resolve `workers.dev` incorrectly.
+It is only a fallback implementation. Prefer the Pages API for the live homepage.
 
 ```bash
 VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors.<your-subdomain>.workers.dev

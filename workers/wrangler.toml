@@ -1,3 +1,5 @@
+# Legacy Durable Object worker. The live homepage uses workers/pages-api.
+# Do not deploy this file during ordinary homepage maintenance.
 name = "aimin-homepage-visitors"
 main = "visitor-stats-worker.js"
 compatibility_date = "2026-06-11"

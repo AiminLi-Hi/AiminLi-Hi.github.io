@@ -1,3 +1,5 @@
+// Legacy Durable Object worker. The live homepage uses workers/pages-api.
+// Keep this as a fallback only; ordinary maintenance should not deploy it.
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://aiminli-hi.github.io',
   'http://localhost:5173',

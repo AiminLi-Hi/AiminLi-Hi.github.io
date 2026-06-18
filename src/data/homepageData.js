@@ -688,13 +688,13 @@ export const PROFILE_DATA = {
       { role: "Teaching Assistant", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2022", desc: "Graduate Course" }
     ],
     mentoring: {
-      title: "Research Leadership and Mentorship",
+      title: "Student Mentorship and Collaboration",
       leadershipTitle: "Research Leadership",
       leadershipSummary: "I have been fortunate to work with many talented junior students during my Ph.D. and postdoctoral stages. In these collaborations, I helped shape research questions, mathematical models, and solution frameworks, and mentored analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
       studentListOpen: "Show full student list",
       studentListClose: "Show concise list",
-      collaborationTitle: "Student mentorship and collaboration",
-      columns: { student: "Student / period", stage: "Stage", outcome: "Mentorship / outcome" },
+      collaborationTitle: "Student mentorship and research collaboration",
+      columns: { student: "Student / period", stage: "Stage", outcome: "Mentorship / collaboration outcome" },
       groups: [
         {
           title: "Harbin Institute of Technology, Shenzhen",
