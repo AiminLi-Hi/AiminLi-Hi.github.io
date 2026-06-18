@@ -8,7 +8,7 @@ import {
   School, ChevronDown, ChevronUp, User, Users,
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
   Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus,
-  MessageCircle, Plane, Landmark, Network, GitCommit, Languages,
+  MessageCircle, Plane, Landmark, Network, GitCommit,
   Maximize2, Menu, X
 } from 'lucide-react';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
@@ -76,13 +76,20 @@ const generateBibtex = (pub) => {
 }`;
 };
 
-const REALTIME_VISITOR_ENDPOINT = (import.meta.env.VITE_VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
+const DEFAULT_PRODUCTION_VISITOR_ENDPOINT = 'https://aimin-homepage-visitors-api.pages.dev';
+const isProductionHomepage = () => (
+  typeof window !== 'undefined' && window.location.hostname === 'aiminli-hi.github.io'
+);
+const REALTIME_VISITOR_ENDPOINT = (
+  import.meta.env.VITE_VISITOR_STATS_ENDPOINT
+  || (isProductionHomepage() ? DEFAULT_PRODUCTION_VISITOR_ENDPOINT : '')
+).replace(/\/+$/, '');
 const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
 const MENTORING_GROUP_PREVIEW_LIMIT = 1;
-const PAGE_FADE_OUT_MS = 180;
-const PAGE_FADE_IN_MS = 440;
+const PAGE_FADE_OUT_MS = 220;
+const PAGE_FADE_IN_MS = 520;
 let visitorHitRecordedForPage = false;
 const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring'];
 const PUBLICATION_HASH_PREFIX = 'pub-';
@@ -150,7 +157,7 @@ const UI_COPY = {
     firstAuthorBadge: 'First author',
     coFirstAuthorBadge: 'Co-first author',
     soleAuthorBadge: 'Sole author',
-    studentOutcomeBadge: 'Student outcome',
+    studentOutcomeBadge: 'Student mentorship',
     featuredBadge: 'Selected',
     journalShort: 'J',
     conferenceShort: 'C',
@@ -215,6 +222,7 @@ const UI_COPY = {
     serviceJournals: 'Journals & Letters',
     serviceConferences: 'Conferences',
     serviceChairTitle: 'Session Chair',
+    serviceTpcTitle: 'TPC Member',
     serviceVolunteerTitle: 'Volunteer & Service',
   },
   zh: {
@@ -236,7 +244,7 @@ const UI_COPY = {
     firstAuthorBadge: '一作',
     coFirstAuthorBadge: '共同一作',
     soleAuthorBadge: '独著',
-    studentOutcomeBadge: '学生成果',
+    studentOutcomeBadge: '学生指导成果',
     featuredBadge: '精选',
     journalShort: '刊',
     conferenceShort: '会',
@@ -301,6 +309,7 @@ const UI_COPY = {
     serviceJournals: '期刊与快报',
     serviceConferences: '会议',
     serviceChairTitle: '分会主席',
+    serviceTpcTitle: 'TPC 委员',
     serviceVolunteerTitle: '志愿服务',
   },
 };
@@ -920,26 +929,19 @@ const BioText = ({ text, darkMode }) => {
 };
 
 const HONOR_VALUE_PATTERN = [
-  'Sole nominee',
-  'Sole Ph\\.D\\. student recipient',
-  'Top\\s*\\d+(?:\\.\\d+)?%[^.;。；,，]*',
+  'Sole[^;。；,，]*',
+  'Only[^;。；,，]*',
+  'only[^;。；,，]*',
+  'Top[^;。；,，]*',
   'One of two recipients',
-  'One of fewer than\\s+\\d+\\s+Ph\\.D\\. candidates selected nationwide',
-  'only\\s+\\d+\\s+Ph\\.D\\. students university-wide',
-  'Top\\s+\\d+\\s+Ph\\.D\\. Students Worldwide',
-  'Ranked\\s+\\d+(?:st|nd|rd|th)?\\s+out of\\s+\\d+[^.;。；,，]*',
+  'One of fewer than\\s+\\d+[^;。；,，]*',
+  'Worldwide',
+  'worldwide',
   '最高学生荣誉',
-  '电子系唯一入选者',
-  '电子系唯一入选',
-  '黑龙江省前\\s*\\d+(?:\\.\\d+)?%',
-  '全国前\\s*\\d+(?:\\.\\d+)?%',
-  '省前\\s*\\d+(?:\\.\\d+)?%',
-  '校前\\s*\\d+(?:\\.\\d+)?%',
-  '电子系仅\\s*\\d+\\s*名',
-  '全校博士生仅\\s*\\d+\\s*人',
-  '全球决赛第\\s*\\d+\\s*名',
-  '全球共\\s*\\d+\\s*名博士生',
-  '首批全国少于\\s*\\d+\\s*名博士生',
+  '唯一[^.;。；,，]*',
+  '仅\\s*\\d+[^.;。；,，]*',
+  '前\\s*\\d+(?:\\.\\d+)?%[^.;。；,，]*',
+  '全球[^.;。；,，]*',
 ].join('|');
 const HONOR_VALUE_SPLIT_RE = new RegExp(`(${HONOR_VALUE_PATTERN})`, 'giu');
 const HONOR_VALUE_TEST_RE = new RegExp(`^(?:${HONOR_VALUE_PATTERN})$`, 'iu');
@@ -967,11 +969,11 @@ const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }
   if (!href && !onClick) return null;
   const styles = {
     pdf: darkMode ? "bg-red-900/20 text-red-400 border-red-800/50 hover:bg-red-900/40" : "bg-red-50 text-red-700 border-red-100 hover:bg-red-100",
-    code: darkMode ? "bg-gray-800 text-white border-gray-700 hover:bg-black" : "bg-gray-900 text-white border-gray-900 hover:bg-black",
+    code: darkMode ? "bg-[#102033] text-cyan-100 border-cyan-400/20 hover:bg-[#12314a]" : "bg-gray-900 text-white border-gray-900 hover:bg-black",
     bibtex: darkMode ? "bg-blue-900/20 text-blue-400 border-blue-800/50 hover:bg-blue-900/40" : "bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100",
     arxiv: darkMode ? "bg-red-900/10 text-red-400 border-red-800/30 hover:bg-red-900/30" : "bg-red-50 text-red-800 border-red-100 hover:bg-red-100",
     project: darkMode ? "bg-cyan-900/20 text-cyan-300 border-cyan-800/50 hover:bg-cyan-900/40" : "bg-cyan-50 text-cyan-800 border-cyan-100 hover:bg-cyan-100",
-    default: darkMode ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700" : "bg-white text-slate-600 border-gray-200 hover:bg-gray-50"
+    default: darkMode ? "bg-[#0e2032] text-slate-300 border-cyan-400/10 hover:bg-[#12314a]" : "bg-white text-slate-600 border-gray-200 hover:bg-gray-50"
   };
   
   const colorClass = styles[type] || styles.default;
@@ -995,7 +997,7 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
     email: darkMode ? "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426]" : "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426] shadow-sm",
     scholar: darkMode ? "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6]" : "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6] shadow-sm",
     orcid: darkMode ? "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f]" : "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f] shadow-sm",
-    github: darkMode ? "bg-[#181717] text-white border-[#30363d] hover:bg-[#30363d]" : "bg-[#24292e] text-white border-[#24292e] hover:bg-[#000] shadow-sm",
+    github: darkMode ? "bg-[#101a25] text-white border-cyan-400/15 hover:bg-[#15263a]" : "bg-[#24292e] text-white border-[#24292e] hover:bg-[#000] shadow-sm",
     linkedin: darkMode ? "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097]" : "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097] shadow-sm",
   };
   const activeColor = colors[colorType] || (darkMode ? "bg-slate-800 text-white border-slate-700" : "bg-white text-slate-700 border-gray-200");
@@ -1006,14 +1008,32 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   );
 };
 
+const LanguageToggle = ({ lang, darkMode, onToggle, fullWidth = false }) => {
+  const nextLangLabel = lang === 'en' ? '切换为中文' : 'Switch to English';
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`language-switcher ${fullWidth ? 'language-switcher--full' : ''} ${darkMode ? 'language-switcher--dark' : ''}`}
+      title={nextLangLabel}
+      aria-label={nextLangLabel}
+    >
+      <span className="language-switcher__label">{lang === 'en' ? 'Language' : '语言'}</span>
+      <span className={`language-switcher__option ${lang === 'en' ? 'language-switcher__option--active' : ''}`}>EN</span>
+      <span className={`language-switcher__option ${lang === 'zh' ? 'language-switcher__option--active' : ''}`}>中文</span>
+    </button>
+  );
+};
+
 const BibtexModal = ({ content, onClose, darkMode }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose}>
-    <div className={`w-full max-w-2xl p-6 rounded-xl shadow-2xl transform transition-all scale-100 ${darkMode ? 'bg-slate-900 border border-slate-700' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#061523]/70 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+    <div className={`w-full max-w-2xl p-6 rounded-xl shadow-2xl transform transition-all scale-100 ${darkMode ? 'bg-[#0b1b2b] border border-cyan-400/15' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
       <div className="flex justify-between items-center mb-4">
         <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>BibTeX</h3>
         <button onClick={onClose} className="p-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"><ChevronRight className="rotate-45" /></button>
       </div>
-      <pre className={`p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed mb-4 whitespace-pre-wrap ${darkMode ? 'bg-slate-950 text-green-400' : 'bg-gray-50 text-gray-700 border'}`}>{content}</pre>
+      <pre className={`p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed mb-4 whitespace-pre-wrap ${darkMode ? 'bg-[#071827] text-cyan-200' : 'bg-gray-50 text-gray-700 border'}`}>{content}</pre>
       <div className="flex justify-end gap-3">
         <button onClick={() => { navigator.clipboard.writeText(content); onClose(); }} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm flex items-center gap-2"><Copy size={16} /> Copy & Close</button>
       </div>
@@ -1021,11 +1041,15 @@ const BibtexModal = ({ content, onClose, darkMode }) => (
   </div>
 );
 
-const JcrBadge = ({ zone, ifVal, darkMode }) => (
-  <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[10px] font-bold tracking-wide ${darkMode ? 'bg-emerald-900/30 border-emerald-800 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-    <span className="bg-emerald-500 text-white px-1 rounded-[3px]">{zone}</span><span>IF: {ifVal}</span>
-  </div>
-);
+const JcrBadge = ({ zone, ifVal, darkMode }) => {
+  if (!zone && !ifVal) return null;
+  return (
+    <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[10px] font-bold tracking-wide ${darkMode ? 'bg-emerald-900/30 border-emerald-800 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
+      {zone && <span className="bg-emerald-500 text-white px-1 rounded-[3px]">{zone}</span>}
+      {ifVal && <span>IF: {ifVal}</span>}
+    </div>
+  );
+};
 
 // ==========================================
 // --- Academic Lineage Component ---
@@ -1057,7 +1081,7 @@ const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
         card: darkMode
           ? 'border-cyan-400/35 bg-cyan-400/[0.04]'
           : 'border-cyan-200 bg-cyan-50/35',
-        step: darkMode ? 'border-cyan-400/45 bg-slate-950 text-cyan-200' : 'border-cyan-300 bg-white text-cyan-700',
+        step: darkMode ? 'border-cyan-400/45 bg-[#071827] text-cyan-200' : 'border-cyan-300 bg-white text-cyan-700',
         name: darkMode ? 'text-slate-100' : 'text-slate-950',
         meta: darkMode ? 'text-slate-400' : 'text-slate-600',
         pill: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-white text-cyan-700',
@@ -1068,30 +1092,30 @@ const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
         role: 'advisor',
         label: labels.advisor,
         card: darkMode
-          ? 'border-indigo-400/35 bg-indigo-400/[0.05]'
+          ? 'border-cyan-400/30 bg-cyan-400/[0.035]'
           : 'border-indigo-200 bg-indigo-50/45',
-        step: darkMode ? 'border-indigo-400/45 bg-slate-950 text-indigo-200' : 'border-indigo-300 bg-white text-indigo-700',
+        step: darkMode ? 'border-cyan-400/35 bg-[#071827] text-cyan-200' : 'border-indigo-300 bg-white text-indigo-700',
         name: darkMode ? 'text-slate-100' : 'text-slate-950',
         meta: darkMode ? 'text-slate-400' : 'text-slate-600',
-        pill: darkMode ? 'border-indigo-300/30 bg-indigo-300/10 text-indigo-100' : 'border-indigo-200 bg-white text-indigo-800',
+        pill: darkMode ? 'border-cyan-300/25 bg-cyan-300/10 text-cyan-100' : 'border-indigo-200 bg-white text-indigo-800',
       };
     }
     return {
       role: 'ancestor',
       label: labels.ancestor,
       card: darkMode
-        ? 'border-slate-700/80 bg-slate-900/28'
+        ? 'border-cyan-400/10 bg-[#0b1b2b]/52'
         : 'border-slate-200 bg-slate-50/65',
-      step: darkMode ? 'border-slate-700 bg-slate-950 text-slate-500' : 'border-slate-200 bg-white text-slate-500',
+      step: darkMode ? 'border-cyan-400/15 bg-[#071827] text-slate-500' : 'border-slate-200 bg-white text-slate-500',
       name: darkMode ? 'text-slate-300' : 'text-slate-700',
       meta: darkMode ? 'text-slate-500' : 'text-slate-500',
-      pill: darkMode ? 'border-slate-700 bg-slate-950/45 text-slate-400' : 'border-slate-200 bg-white text-slate-500',
+      pill: darkMode ? 'border-cyan-400/10 bg-[#071827]/65 text-slate-400' : 'border-slate-200 bg-white text-slate-500',
     };
   };
 
   return (
-    <div className={`w-full min-w-0 rounded-2xl border p-3 ${darkMode ? 'border-slate-700/80 bg-slate-900/45' : 'border-slate-200 bg-white'}`}>
-      <h4 className={`mb-2.5 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
+    <div className={`w-full min-w-0 rounded-2xl border p-3 ${darkMode ? 'border-cyan-400/15 bg-[#0b1b2b]/60 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'border-slate-200 bg-white'}`}>
+      <h4 className={`mb-2.5 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-indigo-700'}`}>
         <Network size={14} /> {labels.title}
       </h4>
 
@@ -1148,7 +1172,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
     REALTIME_VISITOR_ENDPOINT ? null : staticSnapshot.updatedAt || syncData.generatedAt || null
   ));
   const [isVisitorSnapshotLoading, setIsVisitorSnapshotLoading] = useState(Boolean(REALTIME_VISITOR_ENDPOINT));
-  const [showStatsDetails, setShowStatsDetails] = useState(false);
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
   const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
   const [selectedVisitorCountryCode, setSelectedVisitorCountryCode] = useState('');
@@ -1158,8 +1181,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
-  const topCountry = snapshot.ranking[0] || null;
-  const countryVisitTotal = snapshot.ranking.reduce((sum, country) => sum + country.count, 0);
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
   const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
@@ -1185,7 +1206,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   };
 
   const renderRegionalDetails = () => (
-    <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-slate-800 bg-slate-900/72' : 'border-slate-200 bg-slate-50/80'}`}>
+    <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-cyan-400/10 bg-[#0b1b2b]/75' : 'border-slate-200 bg-slate-50/80'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-slate-800'}`}>{ui.regionalDetails}</h4>
@@ -1232,7 +1253,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             {selectedRegionRanking.slice(0, 10).map(region => {
               const percent = selectedRegionTotal ? Math.round((region.count / selectedRegionTotal) * 100) : 0;
               return (
-                <div key={`${selectedVisitorCountry.code}-${region.code}`} className={`rounded-xl border px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/58' : 'border-slate-200 bg-white'}`}>
+                <div key={`${selectedVisitorCountry.code}-${region.code}`} className={`rounded-xl border px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/70' : 'border-slate-200 bg-white'}`}>
                   <div className="grid grid-cols-[2.6rem_minmax(0,1fr)_2.4rem] items-center gap-2 text-sm">
                     <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{region.code}</span>
                     <span className={`min-w-0 truncate font-bold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{region.name}</span>
@@ -1422,7 +1443,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   }, [staticSnapshot, syncData.generatedAt]);
 
   return (
-    <section className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-slate-900/60 border-slate-700/70' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
+    <section className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-cyan-950/10' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
       <div className={`px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b ${darkMode ? 'border-slate-700/70' : 'border-slate-100'}`}>
         <div className="flex items-center gap-4">
           <div className={`p-3 rounded-2xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-blue-50 text-blue-600'}`} aria-hidden="true">
@@ -1438,10 +1459,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             )}
           </div>
         </div>
-        <button type="button" onClick={() => setShowStatsDetails(value => !value)} className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-xs font-bold transition-colors ${darkMode ? 'border-slate-600 text-slate-200 hover:bg-slate-800' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`} aria-expanded={showStatsDetails} aria-controls="visitor-stats-details">
-          {showStatsDetails ? ui.hideStats : ui.viewStats}
-          {showStatsDetails ? <ChevronUp size={13} className="ml-1.5" /> : <ChevronDown size={13} className="ml-1.5" />}
-        </button>
       </div>
 
       <div className="p-6">
@@ -1453,18 +1470,18 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
           <div>
             <h3 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.topVisitorCountries}</h3>
-            <div className={`rounded-2xl border p-4 min-h-[19rem] flex flex-col ${darkMode ? 'bg-slate-950/50 border-slate-700' : 'bg-slate-50/80 border-slate-100'}`} aria-label="Visitor country ranking">
+            <div className={`rounded-2xl border p-4 min-h-[19rem] flex flex-col ${darkMode ? 'bg-[#071827]/60 border-cyan-400/10' : 'bg-slate-50/80 border-slate-100'}`} aria-label="Visitor country ranking">
               <div className={`space-y-2 ${showAllVisitorCountries && remainingVisitorCountries.length ? 'max-h-[13.5rem] overflow-y-auto pr-1' : ''}`}>
                 {isVisitorSnapshotLoading
                   ? Array.from({ length: VISITOR_COUNTRY_PREVIEW_LIMIT }).map((_, index) => (
-                    <div key={`visitor-loading-${index}`} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-slate-900/80 border-slate-700' : 'bg-white border-slate-200'}`}>
+                    <div key={`visitor-loading-${index}`} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-[#0b1b2b]/80 border-cyan-400/10' : 'bg-white border-slate-200'}`}>
                       <span className={`h-3 w-7 rounded-full animate-pulse ${darkMode ? 'bg-slate-700' : 'bg-slate-200'}`} />
                       <span className={`h-3 min-w-0 rounded-full animate-pulse ${darkMode ? 'bg-slate-700' : 'bg-slate-200'}`} />
                       <span className={`h-3 w-5 justify-self-end rounded-full animate-pulse ${darkMode ? 'bg-slate-700' : 'bg-slate-200'}`} />
                     </div>
                   ))
                   : displayedVisitorCountries.map(country => (
-                    <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-slate-900/80 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
+                    <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-[#0b1b2b]/80 border-cyan-400/10 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
                       <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{country.code}</span>
                       <span className="min-w-0 truncate font-semibold">{country.name}</span>
                       <span className={`text-right font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{country.count}</span>
@@ -1475,7 +1492,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                 <button
                   type="button"
                   onClick={() => setShowAllVisitorCountries(value => !value)}
-                  className={`mt-3 inline-flex w-full items-center justify-center rounded-xl border px-3 py-2 text-xs font-extrabold transition-colors ${darkMode ? 'border-slate-700 text-cyan-200 hover:bg-slate-900' : 'border-slate-200 text-blue-700 hover:bg-white'}`}
+                  className={`mt-3 inline-flex w-full items-center justify-center rounded-xl border px-3 py-2 text-xs font-extrabold transition-colors ${darkMode ? 'border-cyan-400/15 text-cyan-200 hover:bg-cyan-400/10' : 'border-slate-200 text-blue-700 hover:bg-white'}`}
                   aria-expanded={showAllVisitorCountries}
                 >
                   {showAllVisitorCountries
@@ -1487,51 +1504,10 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             </div>
           </div>
         </div>
-        {showStatsDetails && (
-          <div id="visitor-stats-details" className={`mt-6 rounded-2xl border p-5 ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
-            <div className={`grid gap-3 md:grid-cols-4 text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              <div className="visitor-stat-metric">
-                <span>{ui.statsTotalViews}</span>
-                <strong>{isVisitorSnapshotLoading ? '-' : snapshot.pageviews}</strong>
-              </div>
-              <div className="visitor-stat-metric">
-                <span>{ui.statsCountries}</span>
-                <strong>{isVisitorSnapshotLoading ? '-' : snapshot.countries}</strong>
-              </div>
-              <div className="visitor-stat-metric">
-                <span>{ui.statsTopCountry}</span>
-                <strong>{!isVisitorSnapshotLoading && topCountry ? `${topCountry.code} ${topCountry.count}` : '-'}</strong>
-              </div>
-              <div className="visitor-stat-metric">
-                <span>{ui.statsLastUpdate}</span>
-                <strong>{!isVisitorSnapshotLoading && formattedUpdatedAt ? formattedUpdatedAt : '-'}</strong>
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <h4 className={`text-xs font-extrabold uppercase tracking-widest mb-3 ${darkMode ? 'text-cyan-300' : 'text-slate-700'}`}>{ui.statsCountryShare}</h4>
-              <div className="space-y-3">
-                {snapshot.ranking.map(country => {
-                  const percent = countryVisitTotal ? Math.round((country.count / countryVisitTotal) * 100) : 0;
-                  return (
-                    <div key={`stats-${country.code}`} className="grid grid-cols-[2.8rem_minmax(0,1fr)_3.2rem] items-center gap-3">
-                      <span className={`text-xs font-extrabold ${darkMode ? 'text-cyan-300' : 'text-blue-600'}`}>{country.code}</span>
-                      <div className={`h-2 rounded-full overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-slate-200'}`} aria-label={`${country.name} ${percent}%`}>
-                        <div className="visitor-stat-bar" style={{ width: `${Math.max(percent, 4)}%` }} />
-                      </div>
-                      <span className={`text-right text-xs font-bold ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{percent}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
-        )}
       </div>
       {showVisitorMapModal && (
         <div
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-md sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-[#061523]/106 p-3 backdrop-blur-md sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="visitor-map-modal-title"
@@ -1539,7 +1515,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             if (event.target === event.currentTarget) closeVisitorMapModal();
           }}
         >
-          <div className={`flex h-[min(86vh,780px)] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border shadow-2xl ${darkMode ? 'border-cyan-400/20 bg-slate-950 text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}>
+          <div className={`flex h-[min(86vh,780px)] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border shadow-2xl ${darkMode ? 'border-cyan-400/20 bg-[#071827] text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}>
             <div className={`flex items-center justify-between gap-4 border-b px-4 py-3 sm:px-5 ${darkMode ? 'border-slate-800' : 'border-slate-100'}`}>
               <div className="min-w-0">
                 <h3 id="visitor-map-modal-title" className="truncate text-base font-extrabold sm:text-lg">{ui.visitorMapModalTitle}</h3>
@@ -1552,7 +1528,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
               <button
                 type="button"
                 onClick={closeVisitorMapModal}
-                className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${darkMode ? 'border-slate-700 text-slate-200 hover:bg-slate-900' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${darkMode ? 'border-cyan-400/15 text-slate-200 hover:bg-cyan-400/10' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
                 aria-label={ui.closeVisitorMap}
                 title={ui.closeVisitorMap}
               >
@@ -1849,7 +1825,7 @@ export default function AcademicProfile() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     return () => window.cancelAnimationFrame(frameId);
-  }, [displaySection, groupedPublicationYears, pendingPublicationAnchor]);
+  }, [displaySection, pendingPublicationAnchor]);
 
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 400);
@@ -1897,7 +1873,7 @@ export default function AcademicProfile() {
       label: lang === 'en' ? 'Home' : '主页',
       icon: Sparkles,
       metric: newsItems.length,
-      accent: darkMode ? 'border-violet-400/25 bg-violet-400/10 text-violet-200 shadow-violet-950/25' : 'border-violet-200 bg-violet-50 text-violet-800 shadow-violet-100/70',
+      accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-violet-200 bg-violet-50 text-violet-800 shadow-violet-100/70',
     },
     {
       key: 'publications',
@@ -1921,7 +1897,7 @@ export default function AcademicProfile() {
       key: 'service',
       icon: Star,
       metric: content.service.reviewer.length,
-      accent: darkMode ? 'border-purple-400/25 bg-purple-400/10 text-purple-200 shadow-purple-950/25' : 'border-purple-200 bg-purple-50 text-purple-800 shadow-purple-100/70',
+      accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-purple-200 bg-purple-50 text-purple-800 shadow-purple-100/70',
     },
     {
       key: 'teaching',
@@ -1945,25 +1921,33 @@ export default function AcademicProfile() {
       accent: darkMode ? 'border-sky-400/25 bg-sky-400/10 text-sky-200 shadow-sky-950/25' : 'border-sky-200 bg-sky-50 text-sky-800 shadow-sky-100/70',
     },
   ];
+  const activeHomeNavIndex = Math.max(0, homeNavItems.findIndex((item) => (
+    item.key === 'about' ? isHomePage : activeSection === item.key
+  )));
 
   const profileSidebar = (
-    <aside className="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:sticky md:top-24 md:items-start md:text-left space-y-5">
-      <div className="relative group w-48 h-48 mx-auto md:mx-0">
-        <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-purple-500 via-pink-500 to-emerald-500' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
-        <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-slate-800' : 'border-white'}`}>
+    <aside className="profile-sidebar md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:sticky md:top-24 md:items-start md:text-left space-y-5">
+      <div className="profile-avatar relative group w-48 h-48 mx-auto md:mx-0">
+        <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-cyan-500 via-sky-500 to-emerald-400' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
+        <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
           <img src={`/images/profile.jpg`} alt="Profile" className="w-full h-full object-cover bg-slate-100" />
         </div>
       </div>
-      <div className="w-full flex flex-wrap justify-center md:justify-start gap-3">
+      <div className="profile-socials w-full flex flex-wrap justify-center md:justify-start gap-3">
          <SocialButton icon={Mail} href={content.social.email} label="Email" colorType="email" darkMode={darkMode} />
          <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
          <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
          <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
          <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
       </div>
-      <nav className={`relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 md:block ${darkMode ? 'border-slate-700/80 bg-slate-900/55' : 'border-slate-200 bg-white'}`} aria-label={ui.homeNavTitle}>
-        <div className={`absolute inset-y-0 left-0 w-1 ${darkMode ? 'bg-gradient-to-b from-emerald-300 via-cyan-300 to-violet-300' : 'bg-gradient-to-b from-emerald-500 via-cyan-500 to-violet-500'}`} />
-        <div className="space-y-1">
+      <nav
+        className={`profile-page-nav relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 md:block ${darkMode ? 'profile-page-nav--dark border-cyan-400/15 bg-[#0b1b2b]/70 shadow-cyan-950/10' : 'border-slate-200 bg-white'}`}
+        style={{ '--active-nav-index': activeHomeNavIndex }}
+        aria-label={ui.homeNavTitle}
+      >
+        <div className={`absolute inset-y-2 left-1 w-px ${darkMode ? 'bg-cyan-400/15' : 'bg-slate-200'}`} />
+        <span className="profile-page-nav__indicator" aria-hidden="true" />
+        <div className="profile-page-nav__items flex flex-col gap-1">
           {homeNavItems.map((item) => {
             const Icon = item.icon;
             const targetKey = item.targetKey || item.key;
@@ -1977,13 +1961,13 @@ export default function AcademicProfile() {
                 download={item.download}
                 onClick={item.href ? undefined : (event) => navigateToPage(targetKey, event)}
                 title={itemTitle}
-                className={`group flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[10px] font-black transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm ${
+                className={`profile-page-nav__link group relative z-10 flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[10px] font-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
                   isActive
-                    ? (darkMode ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-100' : 'border-cyan-300 bg-cyan-50 text-cyan-900')
-                    : (darkMode ? 'border-slate-700 bg-slate-950/45 text-slate-300 hover:border-cyan-400/35 hover:bg-cyan-400/10' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-900')
+                    ? (darkMode ? 'border-transparent bg-transparent text-white' : 'border-transparent bg-transparent text-slate-950')
+                    : (darkMode ? 'border-cyan-400/10 bg-[#071827]/62 text-slate-300 hover:border-cyan-400/35 hover:bg-cyan-400/10' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-900')
                 }`}
               >
-                <span className={`inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ${item.accent}`}>
+                <span className={`profile-page-nav__icon inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ${item.accent}`}>
                   <Icon size={10} strokeWidth={2.5} />
                 </span>
                 <span className="min-w-0 flex-1 truncate">{itemLabel}</span>
@@ -2010,16 +1994,16 @@ export default function AcademicProfile() {
       ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
       : isStudentOutcome
         ? (darkMode ? 'border-l-emerald-400 bg-emerald-400/[0.04]' : 'border-l-emerald-400 bg-emerald-50/40')
-        : (darkMode ? 'border-l-slate-800' : 'border-l-transparent');
+        : (darkMode ? 'border-l-cyan-400/10' : 'border-l-transparent');
 
     return (
       <article
         id={getPublicationAnchorId(pub)}
-        className={`scroll-mt-28 border-b border-l-2 py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${highlightClass} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+        className={`scroll-mt-28 border-b border-l-2 py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${highlightClass} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
       >
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+            <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
               {typeLabel}
             </span>
             <button
@@ -2033,11 +2017,6 @@ export default function AcademicProfile() {
             {showSoleAuthorBadge && (
               <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
                 {ui.soleAuthorBadge}
-              </span>
-            )}
-            {isFirstAuthor && (
-              <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
-                {ui.firstAuthorBadge}
               </span>
             )}
             {isStudentOutcome && (
@@ -2062,7 +2041,7 @@ export default function AcademicProfile() {
                 )}
               </span>
             )}
-            {pub.jcr && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
+            {pub.type === 'Journal' && pub.if && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
           </div>
         </div>
 
@@ -2116,22 +2095,23 @@ export default function AcademicProfile() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 font-sans selection:bg-purple-500/30 ${darkMode ? 'bg-[#0b1121] text-slate-300' : 'bg-gray-50 text-slate-600'}`}>
+    <div className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-400/25 ${darkMode ? 'theme-dark-ink text-slate-300' : 'bg-gray-50 text-slate-600'}`}>
       
       {/* --- Navigation --- */}
-      <div className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-gray-200'}`}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className={`text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={() => navigateToPage('about')}>
-            <Sparkles size={18} className="text-purple-500" />{content.name}
+      <div className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-[#0a1828]/90 border-cyan-400/10 shadow-[0_1px_0_rgba(34,211,238,0.05)]' : 'bg-white/80 border-gray-200'}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+          <div className={`min-w-0 text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={() => navigateToPage('about')}>
+            <Sparkles size={18} className={`shrink-0 ${darkMode ? 'text-cyan-300' : 'text-purple-500'}`} />
+            <span className="truncate">{content.name}</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-4">
             <div className="hidden lg:flex items-center gap-1 mr-2">
               {Object.entries(content.nav).map(([key, label]) => (
                 <a
                   key={key}
                   href={`#${key}`}
                   onClick={(event) => navigateToPage(key, event)}
-                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
+                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100 ring-1 ring-cyan-400/15' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
                 >
                   {label}
                 </a>
@@ -2147,20 +2127,17 @@ export default function AcademicProfile() {
                 <span>{content.cvDownload}</span>
               </a>
             </div>
-            <button 
-              onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')} 
-              className={`hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-full transition-all font-bold text-sm border shadow-sm hover:shadow ${darkMode ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-slate-700 border-gray-200 hover:bg-gray-200'}`}
-              title={lang === 'en' ? "切换为中文" : "Switch to English"}
-            >
-              <Languages size={16} className={darkMode ? 'text-purple-400' : 'text-purple-600'} />
-              <span>{lang === 'en' ? 'EN / 中' : '中 / EN'}</span>
-            </button>
-            <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-slate-800 text-yellow-400' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <LanguageToggle
+              lang={lang}
+              darkMode={darkMode}
+              onToggle={() => setLang(l => l === 'en' ? 'zh' : 'en')}
+            />
+            <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
             
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className={`lg:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-gray-100 text-slate-600'}`}
+              className={`lg:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-slate-300' : 'hover:bg-gray-100 text-slate-600'}`}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -2169,13 +2146,13 @@ export default function AcademicProfile() {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'}`}>
+          <div className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-[#0a1828] border-cyan-400/10' : 'bg-white border-gray-200'}`}>
             {Object.entries(content.nav).map(([key, label]) => (
               <a 
                 key={key} 
                 href={`#${key}`} 
                 onClick={(event) => navigateToPage(key, event)}
-                className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-white/10 text-white' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
+                className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
               >
                 {label}
               </a>
@@ -2189,13 +2166,17 @@ export default function AcademicProfile() {
               <Download size={16} />
               <span>{lang === 'en' ? 'Download CV' : '简历下载'}</span>
             </a>
-            <button 
-              onClick={() => { setLang(l => l === 'en' ? 'zh' : 'en'); setIsMobileMenuOpen(false); }} 
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all mt-2 border ${darkMode ? 'bg-slate-800 text-white border-slate-700' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
-            >
-              <Languages size={16} className={darkMode ? 'text-purple-400' : 'text-purple-600'} />
-              <span>{lang === 'en' ? '切换为中文' : 'Switch to English'}</span>
-            </button>
+            <div className="mt-2">
+              <LanguageToggle
+                lang={lang}
+                darkMode={darkMode}
+                fullWidth
+                onToggle={() => {
+                  setLang(l => l === 'en' ? 'zh' : 'en');
+                  setIsMobileMenuOpen(false);
+                }}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -2210,23 +2191,23 @@ export default function AcademicProfile() {
               <div className="space-y-8">
               <div>
                 <h1 className={`text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r ${darkMode ? 'from-white to-slate-400' : 'from-gray-900 to-slate-600'}`}>{content.name}</h1>
-                <div className={`text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
+                <div className={`text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-cyan-300' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
                 <BioText text={content.bio} darkMode={darkMode} />
               </div>
               
-              <div id="news" className={`p-4 rounded-2xl border ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-gray-100 shadow-sm'}`}>
-                 <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>
-                   <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>
+              <div id="news" className={`p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
+                 <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
+                   <span className="relative flex h-2 w-2"><span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${darkMode ? 'bg-cyan-300' : 'bg-purple-400'}`}></span><span className={`relative inline-flex rounded-full h-2 w-2 ${darkMode ? 'bg-cyan-400' : 'bg-purple-500'}`}></span></span>
                    {content.nav.news}
                  </h3>
-                 <div className={`divide-y ${darkMode ? 'divide-slate-700/60' : 'divide-gray-100'}`}>
+                 <div className={`divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-gray-100'}`}>
                    {visibleNewsItems.map((item, idx) => (
                      <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[4.35rem_4.2rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[11px] leading-snug items-start">
                         <span className="font-mono text-[10px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
                         <div className="contents">
-                             <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-purple-900/50 text-purple-300' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
+                             <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
-                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-purple-400' : 'hover:text-purple-600'}`}>
+                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-cyan-200' : 'hover:text-purple-600'}`}>
                                   <span className="block min-w-0 whitespace-normal break-words" dangerouslySetInnerHTML={{__html: item.content}} />
                                   {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
@@ -2239,7 +2220,7 @@ export default function AcademicProfile() {
                  </div>
                  {newsItems.length > 6 && (
                    <div className="pt-2 flex justify-end">
-                     <button onClick={() => setShowAllNews(value => !value)} className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-purple-300 hover:bg-purple-500/10' : 'text-purple-700 hover:bg-purple-50'}`}>
+                     <button onClick={() => setShowAllNews(value => !value)} className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}>
                        {showAllNews ? ui.fewerNews : ui.moreNews} <ChevronDown size={12} className={showAllNews ? 'rotate-180' : ''} />
                      </button>
                    </div>
@@ -2259,7 +2240,7 @@ export default function AcademicProfile() {
           
           <div className="space-y-8">
             <div className="relative pl-7">
-              <div className={`absolute left-[0.42rem] top-2 bottom-2 w-px ${darkMode ? 'bg-slate-800' : 'bg-slate-200'}`}></div>
+              <div className={`absolute left-[0.42rem] top-2 bottom-2 w-px ${darkMode ? 'bg-cyan-400/15' : 'bg-slate-200'}`}></div>
               <div className="space-y-5">
                 {content.timeline.map((item, idx) => {
                    const isWork = item.type === 'work';
@@ -2269,10 +2250,10 @@ export default function AcademicProfile() {
                      <div key={idx} className="group relative">
                         <div className={`absolute -left-[1.63rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 transition-transform duration-200 group-hover:scale-110 ${
                           isWork
-                            ? (darkMode ? 'border-purple-300 bg-purple-500 shadow-[0_0_0_4px_rgba(168,85,247,0.12)]' : 'border-purple-200 bg-purple-600 shadow-[0_0_0_4px_rgba(147,51,234,0.10)]')
+                            ? (darkMode ? 'border-cyan-200 bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.12)]' : 'border-purple-200 bg-purple-600 shadow-[0_0_0_4px_rgba(147,51,234,0.10)]')
                             : (darkMode ? 'border-emerald-300 bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]' : 'border-emerald-200 bg-emerald-600 shadow-[0_0_0_4px_rgba(5,150,105,0.10)]')
                         }`}></div>
-                        <div className={`pb-5 ${idx === content.timeline.length - 1 ? '' : (darkMode ? 'border-b border-slate-800' : 'border-b border-slate-200')}`}>
+                        <div className={`pb-5 ${idx === content.timeline.length - 1 ? '' : (darkMode ? 'border-b border-cyan-400/10' : 'border-b border-slate-200')}`}>
                           <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                             <span className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{item.year}</span>
                             <span className={`inline-flex items-center gap-1 text-[11px] font-bold ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
@@ -2280,7 +2261,7 @@ export default function AcademicProfile() {
                             </span>
                           </div>
                           <h3 className={`text-base font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{item.role}</h3>
-                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>{item.org}</div>
+                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-cyan-200' : 'text-indigo-700'}`}>{item.org}</div>
                           {advisor && (
                             <div className={`mt-1 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                               {lang === 'zh' ? '合作导师' : 'Advisor'}: {advisor.name} · {advisor.title}
@@ -2321,9 +2302,9 @@ export default function AcademicProfile() {
                 <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
                   <div className="relative min-w-0 flex-1 lg:w-80 lg:flex-none">
                     <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} />
-	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`h-11 w-full rounded-xl border pl-9 pr-4 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all ${darkMode ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500 focus:bg-slate-800' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
+	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`h-11 w-full rounded-xl border pl-9 pr-4 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/40 transition-all ${darkMode ? 'bg-[#0e2032]/102 border-cyan-400/15 text-white placeholder-slate-500 focus:bg-[#12314a]' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
                   </div>
-                  <label className={`flex h-11 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-extrabold shadow-sm transition-colors ${darkMode ? 'border-slate-700 bg-slate-800/80 text-slate-300' : 'border-gray-200 bg-white text-slate-600'}`}>
+                  <label className={`flex h-11 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-extrabold shadow-sm transition-colors ${darkMode ? 'border-cyan-400/15 bg-[#0e2032]/102 text-slate-300' : 'border-gray-200 bg-white text-slate-600'}`}>
                     <Tag size={14} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
                     <span className="whitespace-nowrap">{ui.venueFilter}</span>
                     <select
@@ -2383,31 +2364,22 @@ export default function AcademicProfile() {
 
            <div className="space-y-4">
              {groupedAwardYears.map((group) => (
-               <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+               <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                  <div>
                    <div className={`text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
                      {group.year}
                    </div>
                  </div>
-                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                    {group.awards.map((award, idx) => (
-                     <article
-                       key={`${group.year}-${award.title}-${idx}`}
-                       className={`grid gap-1.5 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 ${
-                         award.featured
-                           ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
-                           : (darkMode ? 'border-l-slate-800' : 'border-l-transparent')
-                       } ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                   <article
+                     key={`${group.year}-${award.title}-${idx}`}
+                       className={`grid gap-1.5 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10 border-l-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 border-l-transparent hover:bg-slate-50/75'}`}
                      >
                        <div className="flex flex-wrap items-center gap-1.5">
-                         <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+                         <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
                            {award.level}
                          </span>
-                         {award.featured && (
-                           <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
-                             {ui.selected}
-                           </span>
-                         )}
                        </div>
                        <h3 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
                          {award.title}
@@ -2452,80 +2424,105 @@ export default function AcademicProfile() {
         {/* --- Service & Contact --- */}
         {displaySection === 'service' && (
         <section id="service" className="scroll-mt-32 animate-fade-in">
-          <div className="flex items-center gap-4 mb-10">
-              <div className={`p-3 rounded-xl ${darkMode ? 'bg-purple-900/20 text-purple-400' : 'bg-purple-50 text-purple-600'}`}><Star size={24} /></div>
-              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h2>
+          <div className="mb-8 flex items-center gap-4">
+              <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-50 text-purple-600'}`}><Star size={24} /></div>
+              <div>
+                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h2>
+                <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.service}</p>
+              </div>
           </div>
           <div className="space-y-5">
-            <div className={`rounded-2xl border p-5 shadow-lg shadow-purple-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
-              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-                <h4 className={`flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>
-                  <Briefcase size={16} /> {ui.serviceReviewerTitle}
-                </h4>
-                <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${darkMode ? 'border-purple-400/25 bg-purple-400/10 text-purple-200' : 'border-purple-200 bg-purple-50 text-purple-800'}`}>
+            <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+              <div>
+                <div className={`text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
+                  {ui.serviceReviewerTitle}
+                </div>
+                <div className={`mt-1 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
                   {serviceReviewGroups.total} {lang === 'en' ? 'venues' : '项'}
-                </span>
+                </div>
               </div>
-
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                 {[
                   { key: 'journals', label: ui.serviceJournals, items: serviceReviewGroups.journals },
                   { key: 'conferences', label: ui.serviceConferences, items: serviceReviewGroups.conferences },
                 ].map(group => (
-                  <div key={group.key}>
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <h5 className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                  <div key={group.key} className={darkMode ? 'border-b border-cyan-400/10 last:border-b-0' : 'border-b border-slate-200 last:border-b-0'}>
+                    <div className={`flex items-center justify-between gap-3 px-3 py-2 ${darkMode ? 'bg-[#071827]/48' : 'bg-slate-50/65'}`}>
+                      <h3 className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                         <Tag size={12} /> {group.label}
-                      </h5>
-                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-black tabular-nums ${darkMode ? 'bg-white/5 text-slate-400' : 'bg-white text-slate-500'}`}>
+                      </h3>
+                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-purple-200 bg-purple-50 text-purple-800'}`}>
                         {group.items.length}
                       </span>
                     </div>
-                    <ul className="space-y-2.5">
-                      {group.items.map(item => (
-                        <li
-                          key={item.full}
-                          title={item.full}
-                          className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-purple-400/20 bg-purple-400/10 text-slate-100' : 'border-purple-100 bg-purple-50/70 text-slate-900'}`}
-                        >
-                          <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${darkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-                          <span className="leading-snug">{item.full}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {group.items.map(item => (
+                      <article
+                        key={item.full}
+                        title={item.full}
+                        className={`border-t border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-t-cyan-400/10 border-l-cyan-400/55 hover:bg-cyan-400/[0.035]' : 'border-t-slate-200 border-l-purple-400 hover:bg-slate-50/75'}`}
+                      >
+                        <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                          <CheckCircle2 size={14} className={`mt-0.5 shrink-0 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
+                          <span>{item.full}</span>
+                        </div>
+                      </article>
+                    ))}
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
 
-            <div className="grid gap-5 lg:grid-cols-2">
-              <div className={`rounded-2xl border p-5 shadow-lg shadow-emerald-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
-                <h4 className={`mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
-                  <Mic2 size={16} /> {ui.serviceChairTitle}
-                </h4>
-                <ul className="space-y-2.5">
-                  {content.service.chair.map((item, i) => (
-                    <li key={i} className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-emerald-400/15 bg-emerald-400/5 text-slate-200' : 'border-emerald-100 bg-emerald-50/60 text-slate-800'}`}>
-                      <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${darkMode ? 'text-emerald-300' : 'text-emerald-600'}`} />
-                      <span className="leading-snug">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className={`rounded-2xl border p-5 shadow-lg shadow-blue-500/5 ${darkMode ? 'border-slate-700 bg-slate-900/35' : 'border-slate-200 bg-white'}`}>
-                <h4 className={`mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
-                  <User size={16} /> {ui.serviceVolunteerTitle}
-                </h4>
-                <ul className="space-y-2.5">
-                  {content.service.volunteer.map((item, i) => (
-                    <li key={i} className={`flex items-start gap-2.5 rounded-xl border px-3 py-2 text-sm font-semibold ${darkMode ? 'border-blue-400/15 bg-blue-400/5 text-slate-300' : 'border-blue-100 bg-blue-50/60 text-slate-700'}`}>
-                      <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-blue-300' : 'bg-blue-600'}`} />
-                      <span className="leading-snug">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            {[
+              { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair, color: 'emerald' },
+              { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [], color: 'purple' },
+              { key: 'volunteer', label: ui.serviceVolunteerTitle, icon: User, items: content.service.volunteer, color: 'blue' },
+            ].map((group) => {
+              const Icon = group.icon;
+              const colorClass = {
+                emerald: {
+                  label: darkMode ? 'text-emerald-300' : 'text-emerald-700',
+                  border: darkMode ? 'border-l-emerald-400/70' : 'border-l-emerald-400',
+                  icon: darkMode ? 'text-emerald-300' : 'text-emerald-600',
+                  dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
+                },
+                purple: {
+                  label: darkMode ? 'text-cyan-200' : 'text-purple-700',
+                  border: darkMode ? 'border-l-cyan-400/55' : 'border-l-purple-400',
+                  icon: darkMode ? 'text-cyan-200' : 'text-purple-600',
+                  dot: darkMode ? 'bg-cyan-300' : 'bg-purple-600',
+                },
+                blue: {
+                  label: darkMode ? 'text-blue-300' : 'text-blue-700',
+                  border: darkMode ? 'border-l-blue-400/70' : 'border-l-blue-400',
+                  icon: darkMode ? 'text-blue-300' : 'text-blue-600',
+                  dot: darkMode ? 'bg-blue-300' : 'bg-blue-600',
+                },
+              }[group.color];
+              return (
+                <section key={group.key} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                  <div>
+                    <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${colorClass.label}`}>
+                      <Icon size={14} /> {group.label}
+                    </div>
+                  </div>
+                  <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                    {group.items.map((item, i) => (
+                      <article
+                        key={`${group.key}-${i}`}
+                        className={`border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${colorClass.border} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                      >
+                        <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                          {group.key === 'chair'
+                            ? <CheckCircle2 size={14} className={`mt-0.5 shrink-0 ${colorClass.icon}`} />
+                            : <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${colorClass.dot}`} />}
+                          <span>{item}</span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </section>
         )}
@@ -2544,20 +2541,20 @@ export default function AcademicProfile() {
           </div>
           <div className="space-y-4 animate-fade-in">
             {teachingRows.map((item, idx) => (
-              <section key={`${item.period}-${item.course}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[6.5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+              <section key={`${item.period}-${item.course}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[6.5rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                 <div className="flex items-baseline justify-between gap-2 md:block">
                   <div className={`text-xl font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
                     {item.period}
                   </div>
                 </div>
-                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                  <article className={`border-l-2 border-l-pink-400 py-2 pl-3 transition-colors ${darkMode ? 'border-b-slate-800 bg-pink-400/[0.04] hover:bg-slate-900/45' : 'border-b-slate-200 bg-pink-50/40 hover:bg-slate-50/75'}`}>
+                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                  <article className={`border-l-2 py-2 pl-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 border-b-cyan-400/10 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-pink-400 border-b-slate-200 bg-pink-50/40 hover:bg-slate-50/75'}`}>
                     <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-pink-400/25 bg-pink-400/10 text-pink-200' : 'border-pink-200 bg-pink-50 text-pink-800'}`}>
+                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-pink-200 bg-pink-50 text-pink-800'}`}>
                         {item.role}
                       </span>
                       {item.desc && (
-                        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-slate-700 bg-slate-900 text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
+                        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
                           {item.desc}
                         </span>
                       )}
@@ -2567,7 +2564,7 @@ export default function AcademicProfile() {
                     </h3>
                     <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                       <span className="inline-flex items-center gap-1.5">
-                        <School size={13} className={darkMode ? 'text-pink-300' : 'text-pink-700'} />
+                        <School size={13} className={darkMode ? 'text-cyan-200' : 'text-pink-700'} />
                         {item.org}
                       </span>
                     </div>
@@ -2582,145 +2579,137 @@ export default function AcademicProfile() {
         {/* --- Student Mentoring Section --- */}
         {displaySection === 'mentoring' && (
         <section id="mentoring" className="scroll-mt-32 animate-fade-in">
-          <div className={`relative overflow-hidden rounded-3xl border ${darkMode ? 'bg-slate-900/50 border-slate-700' : 'bg-white border-slate-200 shadow-xl shadow-slate-900/5'}`}>
-            <div className={`absolute inset-x-0 top-0 h-1 ${darkMode ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500'}`} />
-            <div className="p-5 md:p-6">
-              <div className="flex items-center gap-3 mb-5">
-                <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
-                  <Users size={22} />
-                </div>
-                <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
-              </div>
+          <div className="mb-8 flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+              <Users size={24} />
+            </div>
+            <div>
+              <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
+              <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.mentoring}</p>
+            </div>
+          </div>
 
-              <div className={`mb-5 rounded-xl border ${darkMode ? 'border-slate-700 bg-slate-950/35' : 'border-slate-200 bg-slate-50/70'}`}>
-                <div className="flex w-full items-center justify-between gap-4 px-4 py-3">
-                  <span className="flex min-w-0 items-center gap-3">
-                    <span className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-100 text-cyan-700'}`}>
-                      <Network size={17} />
-                    </span>
-                    <span className={`truncate text-sm font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
-                      {content.mentoring.leadershipTitle}
-                    </span>
-                  </span>
-                </div>
-                <div id="mentoring-leadership-note" className={`border-t px-4 py-3 text-[13px] leading-relaxed ${darkMode ? 'border-slate-800 text-slate-300' : 'border-slate-200 text-slate-600'}`}>
-                  {content.mentoring.leadershipSummary}
-                </div>
-              </div>
-
+          <div className="space-y-5">
+            <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
               <div>
-                <h3 className={`mb-3 text-base font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.collaborationTitle}</h3>
-                <div className="space-y-4">
-                  {visibleMentoringGroups.map((group) => {
-                    const accent = group.shortTitle === 'METU'
-                      ? {
-                          text: darkMode ? 'text-cyan-200' : 'text-cyan-800',
-                          border: darkMode ? 'border-cyan-400/25' : 'border-cyan-200',
-                          bg: darkMode ? 'bg-cyan-400/10' : 'bg-cyan-50',
-                          side: darkMode ? 'border-cyan-400' : 'border-cyan-500',
-                          dot: darkMode ? 'bg-cyan-300' : 'bg-cyan-600',
-                        }
-                      : group.shortTitle === 'ZZU'
-                        ? {
-                            text: darkMode ? 'text-emerald-200' : 'text-emerald-800',
-                            border: darkMode ? 'border-emerald-400/25' : 'border-emerald-200',
-                            bg: darkMode ? 'bg-emerald-400/10' : 'bg-emerald-50',
-                            side: darkMode ? 'border-emerald-400' : 'border-emerald-500',
-                            dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
-                          }
-                        : {
-                            text: darkMode ? 'text-indigo-200' : 'text-indigo-800',
-                            border: darkMode ? 'border-indigo-400/25' : 'border-indigo-200',
-                            bg: darkMode ? 'bg-indigo-400/10' : 'bg-indigo-50',
-                            side: darkMode ? 'border-indigo-400' : 'border-indigo-500',
-                            dot: darkMode ? 'bg-indigo-300' : 'bg-indigo-600',
-                          };
+                <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                  <Network size={14} /> {content.mentoring.leadershipTitle}
+                </div>
+              </div>
+              <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-cyan-400 bg-cyan-50/30 hover:bg-slate-50/75'}`}>
+                  <p className={`text-[13px] font-medium leading-relaxed md:text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                    {content.mentoring.leadershipSummary}
+                  </p>
+                </article>
+              </div>
+            </section>
 
-                    return (
-                      <section key={group.title} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                        <div className="flex items-start justify-between gap-3 md:block">
-                          <div>
-                            {group.shortTitle && (
-                              <div className={`inline-flex rounded-lg border px-2.5 py-1 text-xl font-black leading-none tracking-tight ${accent.border} ${accent.bg} ${accent.text}`}>
-                                {group.shortTitle}
-                              </div>
-                            )}
-                            <div className={`mt-2 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                              {group.totalCount} {lang === 'en' ? 'students' : '位学生'}
+            {visibleMentoringGroups.map((group) => {
+              const accent = group.shortTitle === 'METU'
+                ? {
+                    text: darkMode ? 'text-cyan-200' : 'text-cyan-800',
+                    border: darkMode ? 'border-cyan-400/25' : 'border-cyan-200',
+                    bg: darkMode ? 'bg-cyan-400/10' : 'bg-cyan-50',
+                    side: darkMode ? 'border-cyan-400' : 'border-cyan-500',
+                    dot: darkMode ? 'bg-cyan-300' : 'bg-cyan-600',
+                  }
+                : group.shortTitle === 'ZZU'
+                  ? {
+                      text: darkMode ? 'text-emerald-200' : 'text-emerald-800',
+                      border: darkMode ? 'border-emerald-400/25' : 'border-emerald-200',
+                      bg: darkMode ? 'bg-emerald-400/10' : 'bg-emerald-50',
+                      side: darkMode ? 'border-emerald-400' : 'border-emerald-500',
+                      dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
+                    }
+                  : {
+                      text: darkMode ? 'text-cyan-200' : 'text-indigo-800',
+                      border: darkMode ? 'border-cyan-400/20' : 'border-indigo-200',
+                      bg: darkMode ? 'bg-cyan-400/10' : 'bg-indigo-50',
+                      side: darkMode ? 'border-cyan-400/55' : 'border-indigo-500',
+                      dot: darkMode ? 'bg-cyan-300' : 'bg-indigo-600',
+                    };
+
+              return (
+                <section key={group.title} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                  <div>
+                    {group.shortTitle && (
+                      <div className={`inline-flex rounded-lg border px-2.5 py-1 text-xl font-black leading-none tracking-tight ${accent.border} ${accent.bg} ${accent.text}`}>
+                        {group.shortTitle}
+                      </div>
+                    )}
+                    <div className={`mt-2 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                      {group.totalCount} {lang === 'en' ? 'students' : '位学生'}
+                    </div>
+                  </div>
+
+                  <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                    <div className={`border-b px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/48' : 'border-slate-200 bg-slate-50/65'}`}>
+                      <div className={`text-sm font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{group.title}</div>
+                      {group.note && (
+                        <div className={`mt-0.5 text-[11px] font-medium leading-snug ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                          {group.note}
+                        </div>
+                      )}
+                    </div>
+
+                    {group.students.map((student) => (
+                      <article
+                        key={`${group.title}-${student.name}`}
+                        className={`grid gap-2 border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 md:grid-cols-[7.5rem_minmax(0,1fr)] md:items-start ${accent.side} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                      >
+                        <div className="flex flex-wrap items-center gap-1.5 md:block">
+                          {student.period && (
+                            <div className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                              {student.period}
                             </div>
-                          </div>
+                          )}
+                          {student.stage && (
+                            <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-black leading-none md:mt-1 ${accent.border} ${accent.bg} ${accent.text}`}>
+                              {student.stage}
+                            </span>
+                          )}
                         </div>
 
-                        <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                          <div className={`border-b px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/30' : 'border-slate-200 bg-slate-50/65'}`}>
-                            <div className={`text-sm font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{group.title}</div>
-                            {group.note && (
-                              <div className={`mt-0.5 text-[11px] font-medium leading-snug ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                                {group.note}
-                              </div>
-                            )}
+                        <div className="min-w-0">
+                          <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5">
+                            <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${accent.dot}`} />
+                            <h4 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                              {student.name}
+                            </h4>
                           </div>
-
-                          {group.students.map((student) => (
-                            <article
-                              key={`${group.title}-${student.name}`}
-                              className={`grid gap-2 border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 md:grid-cols-[7.5rem_minmax(0,1fr)] md:items-start ${accent.side} ${darkMode ? 'border-b-slate-800 hover:bg-slate-900/45' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
-                            >
-                              <div className="flex flex-wrap items-center gap-1.5 md:block">
-                                {student.period && (
-                                  <div className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                                    {student.period}
-                                  </div>
-                                )}
-                                {student.stage && (
-                                  <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-black leading-none md:mt-1 ${accent.border} ${accent.bg} ${accent.text}`}>
-                                    {student.stage}
-                                  </span>
-                                )}
-                              </div>
-
-                              <div className="min-w-0">
-                                <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5">
-                                  <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${accent.dot}`} />
-                                  <h4 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                                    {student.name}
-                                  </h4>
-                                </div>
-                                {student.outcome && (
-                                  <div className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                                    {student.outcome}
-                                  </div>
-                                )}
-                              </div>
-                            </article>
-                          ))}
-
-                          {(group.isExpanded || group.hiddenCount > 0) && (
-                            <div className={`border-t px-3 py-2 ${darkMode ? 'border-slate-800 bg-slate-950/45' : 'border-slate-100 bg-slate-50/70'}`}>
-                              <button
-                                type="button"
-                                onClick={() => toggleMentoringGroup(group.groupKey)}
-                                className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${accent.border} ${accent.bg} ${accent.text}`}
-                                aria-expanded={group.isExpanded}
-                                aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
-                                title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
-                              >
-                                <span>
-                                  {group.isExpanded
-                                    ? (lang === 'en' ? 'Less' : '收起')
-                                    : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
-                                </span>
-                                {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                              </button>
+                          {student.outcome && (
+                            <div className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                              {student.outcome}
                             </div>
                           )}
                         </div>
-                      </section>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+                      </article>
+                    ))}
+
+                    {(group.isExpanded || group.hiddenCount > 0) && (
+                      <div className={`border-t px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/60' : 'border-slate-100 bg-slate-50/70'}`}>
+                        <button
+                          type="button"
+                          onClick={() => toggleMentoringGroup(group.groupKey)}
+                          className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${accent.border} ${accent.bg} ${accent.text}`}
+                          aria-expanded={group.isExpanded}
+                          aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
+                          title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
+                        >
+                          <span>
+                            {group.isExpanded
+                              ? (lang === 'en' ? 'Less' : '收起')
+                              : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
+                          </span>
+                          {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </section>
         )}
@@ -2763,9 +2752,9 @@ export default function AcademicProfile() {
                   filter: darkMode ? 'brightness(0.5) grayscale(0.4)' : 'brightness(1.1) grayscale(0.2)'
                }}
           ></div>
-          <div className={`absolute inset-0 z-0 ${darkMode ? 'bg-slate-900/60' : 'bg-white/60'}`}></div>
+          <div className={`absolute inset-0 z-0 ${darkMode ? 'bg-[#071827]/70' : 'bg-white/60'}`}></div>
           <div className="relative z-10">
-            <Quote size={18} className={`mx-auto mb-3 opacity-60 ${darkMode ? 'text-purple-300' : 'text-purple-600'}`} />
+            <Quote size={18} className={`mx-auto mb-3 opacity-60 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
             <h2 className={`text-xl md:text-2xl font-serif italic tracking-wide leading-relaxed drop-shadow-sm ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
               复杂中见序，纷乱中求真
             </h2>
@@ -2778,7 +2767,7 @@ export default function AcademicProfile() {
               aria-label="Send email to hitliaimin@163.com"
               className={`mt-4 inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.16em] transition-colors ${
                 darkMode
-                  ? 'border-slate-300/25 bg-slate-950/25 text-slate-200 hover:border-purple-300/60 hover:text-purple-200'
+                  ? 'border-cyan-300/25 bg-[#071827]/35 text-slate-200 hover:border-cyan-300/60 hover:text-cyan-100'
                   : 'border-slate-700/10 bg-white/45 text-slate-700 hover:border-purple-400/45 hover:text-purple-700'
               }`}
             >
@@ -2788,7 +2777,7 @@ export default function AcademicProfile() {
         </div>
 
         {/* Footer */}
-        <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-slate-800 text-slate-600' : 'border-gray-100 text-gray-400'}`}>
+        <footer className={`pt-12 pb-8 border-t text-center text-sm ${darkMode ? 'border-cyan-400/10 text-slate-500' : 'border-gray-100 text-gray-400'}`}>
           <p>&copy; {new Date().getFullYear()} {content.name}. All rights reserved.</p>
         </footer>
 
@@ -2796,7 +2785,7 @@ export default function AcademicProfile() {
       
       {activeBibtex && <BibtexModal content={activeBibtex} onClose={() => setActiveBibtex(null)} darkMode={darkMode} />}
       
-      <button onClick={scrollToTop} className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'} ${darkMode ? 'bg-purple-600 text-white hover:bg-purple-500' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
+      <button onClick={scrollToTop} className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'} ${darkMode ? 'bg-cyan-500/90 text-slate-950 shadow-cyan-950/30 hover:bg-cyan-300' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
         <ArrowUp size={20} />
       </button>
     </div>

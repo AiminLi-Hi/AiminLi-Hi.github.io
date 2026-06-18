@@ -15,6 +15,8 @@ export const BASE_PUBLICATIONS = [
     venue: "IEEE Transactions on Mobile Computing",
     venue_short: "IEEE TMC",
     type: "Journal",
+    if: "9.2",
+    jcr: "Q1",
     tag: "Co-Author",
     featured: true,
     keywords: ["Age of Information", "UAV Swarms", "MARL", "Routing"],
@@ -29,6 +31,8 @@ export const BASE_PUBLICATIONS = [
     venue: "IEEE Internet of Things Journal",
     venue_short: "IEEE IoTJ",
     type: "Journal",
+    if: "8.9",
+    jcr: "Q1",
     tag: "Co-Author",
     featured: true,
     keywords: ["Remote Estimation", "Internet of Things", "Entropy", "Uncertainty of Information"],
@@ -80,6 +84,8 @@ export const BASE_PUBLICATIONS = [
     venue: "IEEE Transactions on Information Theory",
     venue_short: "IEEE TIT",
     type: "Journal",
+    if: "2.9",
+    jcr: "Q1",
     tag: "First Author",
     featured: true,
     keywords: ["Age of Information", "Value of Information", "Markov Decision Process", "Remote Decision Making", "Goal-Oriented Communications", "Effective Communications"],
@@ -674,6 +680,7 @@ export const PROFILE_DATA = {
         "IEEE International Wireless Communications and Mobile Computing Conference (IWCMC)"
       ],
       chair: [ "Session Chair, IEEE ITW 2024 (AoI Session)", "Session Chair, IEEE Globecom 2024 (Distributed Learning Session)" ],
+      tpc: [ "Technical Program Committee Member, ICFEEIE" ],
       volunteer: [ "IEEE VTC-Spring 2024 Singapore", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
     },
     teaching: [
@@ -853,6 +860,7 @@ export const PROFILE_DATA = {
         "IEEE International Wireless Communications and Mobile Computing Conference (IWCMC)"
       ],
       chair: [ "分会主席, IEEE ITW 2024信息年龄分会", "分会主席, IEEE Globecom 2024分布式学习分会" ],
+      tpc: [ "技术程序委员会委员，ICFEEIE" ],
       volunteer: [ "IEEE VTC-Spring 2024", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
     },
     teaching: [

@@ -5,6 +5,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ];
 const STORAGE_KEY = 'visitor-stats-v1';
 const HIT_EVENT_PREFIX = 'visitor-hit-v2:';
+const MANUAL_HIT_PREFIX = `${HIT_EVENT_PREFIX}manual:`;
 const INITIAL_STATS = {
   pageviews: 43,
   countries: {
@@ -434,6 +435,66 @@ function currentHit(request) {
   });
 }
 
+function adminToken(request) {
+  const auth = request.headers.get('Authorization') || '';
+  if (auth.startsWith('Bearer ')) return auth.slice(7).trim();
+  return request.headers.get('X-Visitor-Admin-Token') || '';
+}
+
+function hasAdminAccess(request, env) {
+  const expected = String(env.VISITOR_ADMIN_TOKEN || '').trim();
+  return Boolean(expected && adminToken(request) === expected);
+}
+
+async function requestJson(request) {
+  try {
+    return await request.json();
+  } catch {
+    return null;
+  }
+}
+
+function normalizeManualAdjustments(payload) {
+  const entries = Array.isArray(payload?.adjustments) ? payload.adjustments : [];
+  return entries
+    .map(entry => {
+      const hit = normalizeHit({
+        country: entry?.country,
+        regionCode: entry?.regionCode,
+        regionName: entry?.regionName,
+      });
+      const count = Math.floor(Number(entry?.count) || 0);
+      return { ...hit, count };
+    })
+    .filter(entry => entry.country !== 'XX' && entry.count > 0)
+    .slice(0, 50);
+}
+
+async function applyManualAdjustments(env, adjustments) {
+  if (!env.VISITOR_KV) throw new Error('VISITOR_KV binding is not configured');
+  const updatedAt = new Date().toISOString();
+  let written = 0;
+
+  for (const adjustment of adjustments) {
+    const count = Math.min(adjustment.count, 200);
+    for (let index = 0; index < count; index += 1) {
+      const key = `${MANUAL_HIT_PREFIX}${Date.now()}:${adjustment.country}:${crypto.randomUUID()}`;
+      await env.VISITOR_KV.put(key, '1', {
+        metadata: {
+          country: adjustment.country,
+          regionCode: adjustment.regionCode,
+          regionName: adjustment.regionName,
+          updatedAt,
+          source: 'manual-adjustment',
+        },
+      });
+      written += 1;
+    }
+  }
+
+  return { written, updatedAt };
+}
+
 function callbackName(value) {
   const name = String(value || '').trim();
   return /^[A-Za-z_$][\w$]*$/.test(name) ? name : '__aiminVisitorHit';
@@ -469,6 +530,28 @@ export default {
 
     if (url.pathname === '/stats') {
       return json(publicSnapshot(await readStats(env)), env, request);
+    }
+
+    if (url.pathname === '/admin/adjust') {
+      if (request.method !== 'POST') {
+        return json({ error: 'Method not allowed' }, env, request, 405);
+      }
+      if (!hasAdminAccess(request, env)) {
+        return json({ error: 'Not found' }, env, request, 404);
+      }
+
+      const payload = await requestJson(request);
+      const adjustments = normalizeManualAdjustments(payload);
+      if (!adjustments.length) {
+        return json({ error: 'No valid adjustments' }, env, request, 400);
+      }
+
+      const result = await applyManualAdjustments(env, adjustments);
+      return json({
+        ok: true,
+        ...result,
+        ...publicSnapshot(await readStats(env)),
+      }, env, request);
     }
 
     if (url.pathname === '/hit' || url.pathname === '/hit.gif' || url.pathname === '/hit.js') {

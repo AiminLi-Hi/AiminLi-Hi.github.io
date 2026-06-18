@@ -15,6 +15,7 @@ It exposes:
 - `GET /hit.gif`: records one pageview through a 1x1 image beacon. This is the browser fallback when the script counter is blocked.
 - `GET /hit`: records one pageview and returns the latest snapshot as JSON.
 - `GET /stats`: returns the latest snapshot without incrementing.
+- `POST /admin/adjust`: manually adds aggregate visitor events. Requires `VISITOR_ADMIN_TOKEN`.
 - `GET /health`: health check.
 
 The homepage uses the realtime API only when `VITE_VISITOR_STATS_ENDPOINT` is set. Without that env var, the site keeps using the GitHub Action generated static snapshot.
@@ -34,6 +35,28 @@ VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors-api.pages.dev
 ```
 
 The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys used to avoid lost updates. It does not store IP addresses, user agents, city-level data, or individual visitor identities.
+
+## Visitor data preservation during homepage deploys
+
+Homepage deployments intentionally preserve the already-published visitor files:
+
+- `homepage-sync-data.js` keeps its previous `visitorSnapshot`.
+- `visitor-map-data.js` is copied from the existing `gh-pages` branch.
+
+This keeps code/layout deployments from resetting or rewriting the visitor map. To intentionally publish a new generated visitor snapshot, run:
+
+```bash
+PRESERVE_VISITOR_DATA=0 npm run deploy:pages
+```
+
+Prefer updating realtime counts through the API instead of editing generated files. Example:
+
+```bash
+curl -X POST "https://aimin-homepage-visitors-api.pages.dev/admin/adjust" \
+  -H "Authorization: Bearer $VISITOR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  --data '{"adjustments":[{"country":"SE","regionCode":"AB","regionName":"Stockholm","count":2},{"country":"CN","regionCode":"ZJ","regionName":"Zhejiang","count":3}]}'
+```
 
 ## Durable Object Alternative
 
