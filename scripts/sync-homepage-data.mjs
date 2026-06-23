@@ -165,7 +165,7 @@ function normalizeVisitorRanking(rawRanking = []) {
   const skipRegionCountries = new Set();
 
   for (const country of rawRanking) {
-    const rawCode = String(country.code || '').toUpperCase();
+    const rawCode = String(country.code || '').trim().toUpperCase();
     const count = Number(country.count) || 0;
     if (!rawCode || count <= 0) continue;
 
@@ -243,7 +243,7 @@ async function fetchVisitorSnapshot(previous) {
     ? snapshot.ranking
       .filter(country => country?.code && Number.isFinite(Number(country.count)))
       .map((country, index) => ({
-        code: String(country.code).toUpperCase(),
+        code: String(country.code).trim().toUpperCase(),
         name: country.name || country.code,
         matchName: country.matchName || country.name || country.code,
         count: Number(country.count),
@@ -268,7 +268,7 @@ function cleanVisitorRegions(regions = {}, skipRegionCountries = new Set()) {
   if (!regions || typeof regions !== 'object') return {};
   const normalized = {};
   for (const [countryCode, regionRanking] of Object.entries(regions)) {
-    const rawCode = String(countryCode).toUpperCase();
+    const rawCode = String(countryCode).trim().toUpperCase();
     const rows = Array.isArray(regionRanking)
       ? regionRanking.filter(region => region?.code && Number.isFinite(Number(region.count)))
       : [];
@@ -281,7 +281,7 @@ function cleanVisitorRegions(regions = {}, skipRegionCountries = new Set()) {
     }
 
     for (const region of rows) {
-      const code = String(region.code).toUpperCase();
+      const code = String(region.code).trim().toUpperCase();
       addVisitorRegion(normalized, rawCode, code, region.name || code, Number(region.count) || 0);
     }
   }

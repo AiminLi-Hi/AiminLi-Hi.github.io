@@ -567,6 +567,7 @@
     repeating-linear-gradient(0deg, rgba(125, 211, 252, 0.045) 0 1px, transparent 1px 20px),
     repeating-linear-gradient(90deg, rgba(125, 211, 252, 0.035) 0 1px, transparent 1px 24px);
   mix-blend-mode: screen;
+  animation: visitor-map-grid-sync 1.75s ease-in-out infinite;
 }
 
 .visitor-world-map::after {
@@ -626,7 +627,7 @@
   paint-order: stroke fill markers;
   filter: drop-shadow(0 0 11px rgba(34, 211, 238, 0.52));
   vector-effect: non-scaling-stroke;
-  animation: visitor-country-pulse 3.2s ease-in-out infinite;
+  animation: visitor-country-pulse 1.75s ease-in-out infinite;
 }
 
 .visitor-map-route {
@@ -635,6 +636,7 @@
   stroke-width: 1;
   stroke-dasharray: 5 7;
   vector-effect: non-scaling-stroke;
+  animation: visitor-route-pulse 1.75s ease-in-out infinite;
 }
 
 .visitor-map-frame--expanded .visitor-map-country {
@@ -845,12 +847,32 @@
 
 @keyframes visitor-country-pulse {
   0%, 100% {
-    fill-opacity: 0.62;
-    stroke-opacity: 0.72;
+    fill-opacity: 0.55;
+    stroke-opacity: 0.66;
   }
   50% {
     fill-opacity: 1;
     stroke-opacity: 1;
+  }
+}
+
+@keyframes visitor-route-pulse {
+  0%, 100% {
+    opacity: 0.26;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    opacity: 0.72;
+    stroke-dashoffset: -6;
+  }
+}
+
+@keyframes visitor-map-grid-sync {
+  0%, 100% {
+    opacity: 0.58;
+  }
+  50% {
+    opacity: 0.92;
   }
 }
 

@@ -390,7 +390,7 @@ const normalizeVisitorRanking = (rawRanking = []) => {
   const skipRegionCountries = new Set();
 
   for (const country of rawRanking) {
-    const rawCode = String(country.code || '').toUpperCase();
+    const rawCode = String(country.code || '').trim().toUpperCase();
     const count = Number(country.count) || 0;
     if (!rawCode || count <= 0) continue;
 
@@ -429,7 +429,7 @@ const normalizeVisitorPayload = (payload = {}) => {
       .filter(country => country?.code && Number.isFinite(Number(country.count)))
       .map((country, index) => ({
         ...country,
-        code: String(country.code).toUpperCase(),
+        code: String(country.code).trim().toUpperCase(),
         name: country.name || country.code,
         matchName: country.matchName || country.name || country.code,
         count: Number(country.count),
@@ -453,7 +453,7 @@ const normalizeVisitorRegions = (regions = {}, skipRegionCountries = new Set()) 
   if (!regions || typeof regions !== 'object') return {};
   const normalized = {};
   for (const [countryCode, regionRanking] of Object.entries(regions)) {
-    const rawCode = String(countryCode).toUpperCase();
+    const rawCode = String(countryCode).trim().toUpperCase();
     const rows = Array.isArray(regionRanking)
       ? regionRanking.filter(region => region?.code && Number.isFinite(Number(region.count)))
       : [];
@@ -466,7 +466,7 @@ const normalizeVisitorRegions = (regions = {}, skipRegionCountries = new Set()) 
     }
 
     for (const region of rows) {
-      const code = String(region.code).toUpperCase();
+      const code = String(region.code).trim().toUpperCase();
       addVisitorRegion(normalized, rawCode, code, region.name || code, Number(region.count) || 0);
     }
   }
@@ -792,6 +792,8 @@ const COUNTRY_NAME_ALIASES = new Map([
   ['tanzania', 'united republic of tanzania'],
 ]);
 
+const GREATER_CHINA_MAP_NAMES = ['taiwan', 'hong kong', 'macao', 'macau'];
+
 const normalizeCountryName = (value = '') => String(value)
   .normalize('NFKD')
   .replace(/[\u0300-\u036f]/g, '')
@@ -799,6 +801,24 @@ const normalizeCountryName = (value = '') => String(value)
   .replace(/&/g, 'and')
   .replace(/[^a-z0-9]+/g, ' ')
   .trim();
+
+const mergeVisitorMapPaths = (...paths) => (
+  [...new Set(paths.filter(Boolean))].join('')
+);
+
+const visitorGeometryForCountry = (country, geometry, mapCountryByName) => {
+  if (country.code !== 'CN') return geometry;
+  if (geometry?.mergedMapRegions?.length) return geometry;
+  const greaterChinaPaths = GREATER_CHINA_MAP_NAMES
+    .map(name => mapCountryByName.get(name)?.d)
+    .filter(Boolean);
+  if (!greaterChinaPaths.length) return geometry;
+  return {
+    ...geometry,
+    d: mergeVisitorMapPaths(geometry?.d, ...greaterChinaPaths),
+    mergedMapRegions: GREATER_CHINA_MAP_NAMES.filter(name => mapCountryByName.has(name)),
+  };
+};
 
 const getActiveVisitorCountries = (snapshot, mapData) => {
   const activeByCode = new Map((mapData?.activeCountries || []).map(country => [country.code, country]));
@@ -810,7 +830,8 @@ const getActiveVisitorCountries = (snapshot, mapData) => {
   return snapshot.ranking.map((country, index) => {
     const normalized = normalizeCountryName(country.matchName || country.name);
     const aliased = COUNTRY_NAME_ALIASES.get(normalized) || normalized;
-    const geometry = activeByCode.get(country.code) || mapCountryByName.get(aliased) || mapCountryByName.get(normalized);
+    const baseGeometry = activeByCode.get(country.code) || mapCountryByName.get(aliased) || mapCountryByName.get(normalized);
+    const geometry = visitorGeometryForCountry(country, baseGeometry, mapCountryByName);
     const fallbackPoint = VISITOR_COUNTRY_FALLBACK_POINTS.get(country.code);
     return {
       ...country,
@@ -818,6 +839,7 @@ const getActiveVisitorCountries = (snapshot, mapData) => {
       x: geometry?.x || fallbackPoint?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
       y: geometry?.y || fallbackPoint?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
       d: geometry?.d || '',
+      mergedMapRegions: geometry?.mergedMapRegions || [],
     };
   });
 };
@@ -1341,13 +1363,14 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                   <path
                     key={country.code}
                     className="visitor-map-country-active"
+                    data-country-code={country.code}
+                    data-merged-map-regions={(country.mergedMapRegions || []).join(' ')}
                     d={country.d}
                     style={{
                       fill: visuals.fill,
                       stroke: visuals.stroke,
                       strokeWidth: visuals.strokeWidth,
                       filter: visuals.glow,
-                      animationDelay: `${country.delay || 0}s`,
                     }}
                   >
                     <title>{country.name}: {country.count} {ui.pageviews}</title>

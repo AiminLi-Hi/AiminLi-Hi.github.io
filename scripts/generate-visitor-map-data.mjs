@@ -72,6 +72,8 @@ const countryNameAliases = new Map([
   ['tanzania', 'united republic of tanzania']
 ]);
 
+const GREATER_CHINA_DETAIL_NAMES = ['taiwan', 'hong kong', 'macao'];
+
 const countryPaths = overviewCountries.features
   .map((country, index) => {
     const [x, y] = pathGenerator.centroid(country);
@@ -102,15 +104,35 @@ function findCountryGeometry(country) {
   return detailCountriesByName.get(countryNameAliases.get(normalized) || normalized);
 }
 
+function visitorGeometry(country) {
+  const baseGeometry = findCountryGeometry(country);
+  if (String(country.code || '').trim().toUpperCase() !== 'CN') return baseGeometry;
+
+  const geometries = [
+    baseGeometry,
+    ...GREATER_CHINA_DETAIL_NAMES.map(name => detailCountriesByName.get(name))
+  ].filter(Boolean);
+
+  if (geometries.length <= 1) return baseGeometry;
+  return {
+    type: 'FeatureCollection',
+    features: geometries
+  };
+}
+
 const activeCountries = readVisitorCountries().map((country, index) => {
-  const geometry = findCountryGeometry(country);
+  const geometry = visitorGeometry(country);
   const [x, y] = geometry ? pathGenerator.centroid(geometry) : [viewBox.width / 2, viewBox.height / 2];
+  const mergedMapRegions = String(country.code || '').trim().toUpperCase() === 'CN'
+    ? GREATER_CHINA_DETAIL_NAMES
+    : undefined;
   return {
     ...country,
     delay: country.delay ?? Number((index * 0.4).toFixed(1)),
     x: Number(x.toFixed(1)),
     y: Number(y.toFixed(1)),
-    d: geometry ? pathGenerator(geometry) : ''
+    d: geometry ? pathGenerator(geometry) : '',
+    ...(mergedMapRegions ? { mergedMapRegions } : {})
   };
 });
 
