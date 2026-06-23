@@ -205,6 +205,7 @@ const UI_COPY = {
     showTopVisitorCountriesOnly: 'Show top 5 only',
     activeVisitorRegions: 'Active visitor regions',
     countrySignal: 'aggregate country-level signal',
+    visitorIntensity: 'Visitor density',
     pageviews: 'unique visitors',
     countries: 'countries',
     visitorUpdated: 'Updated (Istanbul)',
@@ -292,6 +293,7 @@ const UI_COPY = {
     showTopVisitorCountriesOnly: '只显示前五名',
     activeVisitorRegions: '已点亮访问区域',
     countrySignal: '国家级聚合访问统计',
+    visitorIntensity: '访问热度',
     pageviews: '位独立访客',
     countries: '个国家',
     visitorUpdated: '更新于（伊斯坦布尔）',
@@ -772,16 +774,6 @@ const VISITOR_COUNTRY_FALLBACK_POINTS = new Map([
   ['AU', { x: 575.9, y: 224.1 }],
 ]);
 
-const VISITOR_MARKER_LABEL_OFFSETS = new Map([
-  ['CN', { side: 'left', y: -12 }],
-  ['JP', { side: 'right', y: -32 }],
-  ['KR', { side: 'right', y: 10 }],
-  ['SG', { side: 'right', y: 12 }],
-  ['TR', { side: 'right', y: -14 }],
-  ['NL', { side: 'left', y: -24 }],
-  ['RS', { side: 'left', y: 6 }],
-]);
-
 const COUNTRY_NAME_ALIASES = new Map([
   ['united states', 'united states of america'],
   ['usa', 'united states of america'],
@@ -857,6 +849,38 @@ const buildVisitorRoutes = (activeCountries) => {
         d: `M${source.x},${source.y} Q${midX.toFixed(1)},${midY.toFixed(1)} ${country.x},${country.y}`,
       };
     });
+};
+
+const mixVisitorRgb = (start, end, amount) => start.map((value, index) => (
+  Math.round(value + (end[index] - value) * amount)
+));
+
+const visitorHeatDomainFor = (maxCount = 1) => {
+  const value = Math.max(1, Number(maxCount) || 1);
+  const domains = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
+  return domains.find(domain => value <= domain) || Math.ceil(value / 100000) * 100000;
+};
+
+const formatVisitorHeatValue = (value) => {
+  const count = Number(value) || 0;
+  if (count >= 1000000) return `${Number((count / 1000000).toFixed(count >= 10000000 ? 0 : 1))}M+`;
+  if (count >= 1000) return `${Number((count / 1000).toFixed(count >= 10000 ? 0 : 1))}k+`;
+  return `${Math.round(count)}+`;
+};
+
+const visitorMapVisualsFor = (count = 0, heatDomain = 10) => {
+  const safeDomain = Math.max(10, Number(heatDomain) || 10);
+  const score = Math.max(0, Math.min(1, Math.log1p(Number(count) || 0) / Math.log1p(safeDomain)));
+  const fill = mixVisitorRgb([34, 211, 238], [251, 191, 36], score);
+  const stroke = mixVisitorRgb([125, 249, 255], [253, 224, 71], score);
+  const glow = mixVisitorRgb([34, 211, 238], [251, 191, 36], score);
+  return {
+    score,
+    fill: `rgba(${fill.join(', ')}, ${Number((0.22 + score * 0.5).toFixed(3))})`,
+    stroke: `rgba(${stroke.join(', ')}, ${Number((0.58 + score * 0.34).toFixed(3))})`,
+    glow: `drop-shadow(0 0 ${Number((4 + score * 10).toFixed(1))}px rgba(${glow.join(', ')}, ${Number((0.22 + score * 0.42).toFixed(3))}))`,
+    strokeWidth: Number((0.75 + score * 0.55).toFixed(2)),
+  };
 };
 
 const TIMELINE_REFLECTION_SPLIT_PATTERN = /(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love the warmth of Turkish people and Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)/g;
@@ -1180,6 +1204,8 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
+  const maxVisitorCountryCount = Math.max(1, ...activeCountries.map(country => Number(country.count) || 0));
+  const visitorHeatDomain = visitorHeatDomainFor(maxVisitorCountryCount);
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
@@ -1309,38 +1335,29 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           {mapData?.borders && <path className="visitor-map-borders" d={mapData.borders} />}
           <g>
             {activeCountries.filter(country => country.d).map(country => (
-              <path key={country.code} className="visitor-map-country-active" d={country.d} style={{ animationDelay: `${country.delay || 0}s` }}>
-                <title>{country.name}: {country.count} {ui.pageviews}</title>
-              </path>
+              (() => {
+                const visuals = visitorMapVisualsFor(country.count, visitorHeatDomain);
+                return (
+                  <path
+                    key={country.code}
+                    className="visitor-map-country-active"
+                    d={country.d}
+                    style={{
+                      fill: visuals.fill,
+                      stroke: visuals.stroke,
+                      strokeWidth: visuals.strokeWidth,
+                      filter: visuals.glow,
+                      animationDelay: `${country.delay || 0}s`,
+                    }}
+                  >
+                    <title>{country.name}: {country.count} {ui.pageviews}</title>
+                  </path>
+                );
+              })()
             ))}
           </g>
           <g>
             {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
-          </g>
-          <g>
-            {activeCountries.map((country, index) => {
-              const countText = String(country.count);
-              const pillWidth = Math.max(56, 46 + countText.length * 7);
-              const labelOffset = VISITOR_MARKER_LABEL_OFFSETS.get(country.code);
-              const labelX = (labelOffset?.side === 'left' || (!labelOffset && country.x > viewBox.width * 0.78))
-                ? -pillWidth - 12
-                : 10;
-              const labelY = labelOffset?.y ?? (index % 3 === 1 ? 8 : -12);
-              const leaderEndX = labelX < 0 ? labelX + pillWidth : labelX;
-              const leaderEndY = labelY + 10;
-              return (
-                <g key={`marker-${country.code}`} className="visitor-map-svg-marker" data-country-code={country.code} transform={`translate(${country.x} ${country.y})`} style={{ animationDelay: `${country.delay || 0}s` }}>
-                  <title>{country.name}: {country.count} {ui.pageviews}</title>
-                  <line className="visitor-map-svg-leader" x1="0" y1="0" x2={leaderEndX} y2={leaderEndY} />
-                  <circle className="visitor-map-svg-region" r={expanded ? 11 : 9} />
-                  <g className="visitor-map-svg-pill" transform={`translate(${labelX} ${labelY})`}>
-                    <rect width={pillWidth} height="20" rx="10" />
-                    <text x="10" y="14" className="visitor-map-svg-code">{country.code}</text>
-                    <text x={pillWidth - 10} y="14" className="visitor-map-svg-count">{countText}</text>
-                  </g>
-                </g>
-              );
-            })}
           </g>
         </svg>
 
@@ -1348,15 +1365,13 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           {ui.activeVisitorRegions}
           <span>{ui.countrySignal}</span>
         </div>
-        <div className="visitor-map-summary">
-          {isVisitorSnapshotLoading ? (
-            <span>{ui.loadingVisitors}</span>
-          ) : (
-            <>
-              <span>{snapshot.pageviews} {ui.pageviews}</span>
-              <span>{snapshot.countries} {ui.countries}</span>
-            </>
-          )}
+        <div className="visitor-map-legend" aria-label={ui.visitorIntensity}>
+          <span>{ui.visitorIntensity}</span>
+          <div className="visitor-map-legend-ramp" />
+          <div className="visitor-map-legend-scale">
+            <small>1</small>
+            <small>{formatVisitorHeatValue(visitorHeatDomain)}</small>
+          </div>
         </div>
         {!expanded && (
           <span className="visitor-map-expand-badge" aria-hidden="true">
@@ -1452,6 +1467,16 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           <div>
             <h2 id="global-visitors-title" className={`text-2xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-950'}`}>{ui.globalVisitors}</h2>
             <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.globalVisitorsDesc}</p>
+            {!isVisitorSnapshotLoading && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className={`rounded-full border px-3 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/15 bg-cyan-400/10 text-cyan-200' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
+                  {snapshot.pageviews} {ui.pageviews}
+                </span>
+                <span className={`rounded-full border px-3 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/15 bg-cyan-400/10 text-cyan-200' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
+                  {snapshot.countries} {ui.countries}
+                </span>
+              </div>
+            )}
             {formattedUpdatedAt && !isVisitorSnapshotLoading && (
               <div className={`mt-2 text-[0.72rem] font-semibold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                 {ui.visitorUpdated} {formattedUpdatedAt}
