@@ -91,7 +91,7 @@ const MENTORING_GROUP_PREVIEW_LIMIT = 1;
 const PAGE_FADE_OUT_MS = 220;
 const PAGE_FADE_IN_MS = 520;
 let visitorHitRecordedForPage = false;
-const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring'];
+const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring', 'talks'];
 const PUBLICATION_HASH_PREFIX = 'pub-';
 const getCurrentHashValue = () => (
   typeof window === 'undefined'
@@ -175,6 +175,7 @@ const UI_COPY = {
     homeNavCards: {
       about: 'Home page and latest news',
       publications: 'Papers, projects, code, and citations',
+      talks: 'Invited and conference presentations',
       timeline: 'Research path and academic heritage',
       mentoring: 'Student mentoring and collaborations',
       awards: 'Honors and recognitions',
@@ -263,6 +264,7 @@ const UI_COPY = {
     homeNavCards: {
       about: '主页简介与最新动态',
       publications: '论文、项目、代码与引用',
+      talks: '邀请报告与会议报告',
       timeline: '科研经历与学术谱系',
       mentoring: '学生指导与科研合作',
       awards: '代表性荣誉与奖励',
@@ -1788,6 +1790,13 @@ export default function AcademicProfile() {
     ))
   ), [content.teaching]);
 
+  const talkRows = useMemo(() => (
+    [...(content.talks || [])].sort((a, b) => (
+      String(b.date || '').localeCompare(String(a.date || ''))
+      || String(a.title || '').localeCompare(String(b.title || ''))
+    ))
+  ), [content.talks]);
+
   useEffect(() => {
     recordVisitorHit().catch(() => {});
   }, []);
@@ -1958,6 +1967,12 @@ export default function AcademicProfile() {
       icon: Users,
       metric: mentoringStudentCount,
       accent: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/25' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100/70',
+    },
+    {
+      key: 'talks',
+      icon: Mic2,
+      metric: talkRows.length,
+      accent: darkMode ? 'border-teal-400/25 bg-teal-400/10 text-teal-200 shadow-teal-950/25' : 'border-teal-200 bg-teal-50 text-teal-800 shadow-teal-100/70',
     },
     {
       key: 'cv',
@@ -2274,6 +2289,60 @@ export default function AcademicProfile() {
                    </div>
                  )}
               </div>
+          </div>
+        </section>
+        )}
+
+        {/* --- Talks Section --- */}
+        {displaySection === 'talks' && (
+        <section id="talks" className="scroll-mt-32 animate-fade-in">
+          <div className="mb-8 flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${darkMode ? 'bg-teal-400/10 text-teal-300' : 'bg-teal-50 text-teal-700'}`}>
+              <Mic2 size={24} />
+            </div>
+            <div>
+              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.talks}</h2>
+              <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.talks}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 animate-fade-in">
+            {talkRows.map((talk, idx) => (
+              <section key={`${talk.date}-${talk.title}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                <div className="flex items-baseline justify-between gap-2 md:block">
+                  <div className={`font-mono text-lg font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                    {talk.date}
+                  </div>
+                  {talk.type && (
+                    <div className={`mt-1 inline-flex rounded-md border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider md:mt-2 ${darkMode ? 'border-teal-400/25 bg-teal-400/10 text-teal-200' : 'border-teal-200 bg-teal-50 text-teal-800'}`}>
+                      {talk.type}
+                    </div>
+                  )}
+                </div>
+                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                  <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-teal-400/70 bg-teal-400/[0.03] hover:bg-teal-400/[0.045]' : 'border-l-teal-400 bg-teal-50/35 hover:bg-slate-50/75'}`}>
+                    <h3 className={`text-[15px] font-extrabold leading-snug md:text-base ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                      {talk.title}
+                    </h3>
+                    <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Presentation size={13} className={darkMode ? 'text-teal-300' : 'text-teal-700'} />
+                        {talk.event}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin size={13} className={darkMode ? 'text-teal-300' : 'text-teal-700'} />
+                        {talk.location}
+                      </span>
+                    </div>
+                    {talk.note && (
+                      <p className={`mt-1.5 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                        {talk.note}
+                      </p>
+                    )}
+                  </article>
+                </div>
+              </section>
+            ))}
           </div>
         </section>
         )}

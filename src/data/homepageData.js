@@ -594,9 +594,10 @@ export const PROFILE_DATA = {
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
       email: "mailto:hitliaimin@163.com"
     },
-    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring" },
+    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+      { date: "2026-07", label: "Talk", content: "🎤 I gave a research talk at <strong>Sun Yat-sen University, Shenzhen</strong> in July, sharing our work <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>.", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 Our paper <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>. Congratulations to my collaborator and partner, <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 Our paper <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>. Congratulations to <strong>Haoxu Wu</strong>!", link: "#pub-j17" },
       { date: "2026-05", label: "IoTJ", content: "Our paper <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>. Congratulations to <strong>Xiaomeng Chen</strong>!", link: "#pub-j18" },
@@ -686,6 +687,40 @@ export const PROFILE_DATA = {
     teaching: [
       { role: "Teaching Assistant", course: "Communication Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2020", desc: "Undergraduate Course" },
       { role: "Teaching Assistant", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2022", desc: "Graduate Course" }
+    ],
+    talks: [
+      {
+        date: "2026-07",
+        type: "Invited Talk",
+        title: "Taming the Heavy Tail: Age-Optimal Preemption",
+        event: "Research Seminar, Sun Yat-sen University, Shenzhen",
+        location: "Shenzhen, China",
+        note: "I shared our ISIT 2026 work on heavy-tailed delay and age-optimal preemption."
+      },
+      {
+        date: "2026-07",
+        type: "Conference Talk",
+        title: "Taming the Heavy Tail: Age-Optimal Preemption",
+        event: "IEEE International Symposium on Information Theory (ISIT 2026)",
+        location: "Guangzhou, China",
+        note: "Conference presentation of our age-optimal preemption work."
+      },
+      {
+        date: "2024-12",
+        type: "Competition Talk",
+        title: "4MT Thesis Presentation",
+        event: "IEEE Globecom 2024 4MT Thesis Competition",
+        location: "Cape Town, South Africa",
+        note: "I presented my Ph.D. thesis and won the 3rd Prize."
+      },
+      {
+        date: "2024-04",
+        type: "Conference Talk",
+        title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
+        event: "IEEE Wireless Communications and Networking Conference (WCNC)",
+        location: "Dubai, UAE",
+        note: "First-author conference presentation."
+      }
     ],
     mentoring: {
       title: "Student Mentorship and Collaboration",
@@ -782,9 +817,10 @@ export const PROFILE_DATA = {
       linkedin: "https://linkedin.com",
       email: "mailto:hitliaimin@163.com"
     },
-    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导" },
+    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+      { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 我们的论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。恭喜 <strong>吴豪旭</strong>！", link: "#pub-j17" },
       { date: "2026-05", label: "IoTJ", content: "我们的论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。恭喜 <strong>霄萌</strong>！", link: "#pub-j18" },
@@ -866,6 +902,40 @@ export const PROFILE_DATA = {
     teaching: [
       { role: "助教", course: "通信原理 (本科)", org: "哈尔滨工业大学（深圳）", period: "2020 秋", desc: "合作教师：吴绍华教授" },
       { role: "助教", course: "信息论基础 (研究生)", org: "哈尔滨工业大学（深圳）", period: "2022 秋", desc: "合作教师：吴绍华教授" }
+    ],
+    talks: [
+      {
+        date: "2026-07",
+        type: "邀请报告",
+        title: "Taming the Heavy Tail: Age-Optimal Preemption",
+        event: "中山大学深圳学术报告",
+        location: "中国深圳",
+        note: "分享我们 ISIT 2026 关于重尾时延与最优抢占的信息时效工作。"
+      },
+      {
+        date: "2026-07",
+        type: "会议报告",
+        title: "Taming the Heavy Tail: Age-Optimal Preemption",
+        event: "IEEE International Symposium on Information Theory (ISIT 2026)",
+        location: "中国广州",
+        note: "报告我们的最优抢占与信息时效研究。"
+      },
+      {
+        date: "2024-12",
+        type: "竞赛报告",
+        title: "4MT Thesis Presentation",
+        event: "IEEE Globecom 2024 四分钟博士学位论文竞赛",
+        location: "南非开普敦",
+        note: "我在比赛中报告博士论文并获得三等奖。"
+      },
+      {
+        date: "2024-04",
+        type: "会议报告",
+        title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
+        event: "IEEE Wireless Communications and Networking Conference (WCNC)",
+        location: "阿联酋迪拜",
+        note: "一作会议报告。"
+      }
     ],
     mentoring: {
       title: "学生指导与合作",
