@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Academic profile and research portfolio of Aimin Li, Postdoctoral Researcher at Middle East Technical University, working on information theory, semantic communications, Age of Information, channel coding, and network optimization." />
     <meta name="author" content="Aimin Li" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#f8fafc" />
     <link rel="canonical" href="https://aiminli-hi.github.io/" />
     <meta property="og:type" content="profile" />
     <meta property="og:title" content="Aimin Li | Postdoc Researcher | METU" />
     <meta property="og:description" content="Academic profile, publications, honors, and research updates of Aimin Li." />
     <meta property="og:url" content="https://aiminli-hi.github.io/" />
     <meta property="og:image" content="https://aiminli-hi.github.io/images/profile.jpg" />
+    <meta property="og:image:alt" content="Portrait of Aimin Li" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Aimin Li | Postdoc Researcher | METU" />
     <meta name="twitter:description" content="Academic profile, publications, honors, and research updates of Aimin Li." />
@@ -21,11 +22,19 @@
         "@context": "https://schema.org",
         "@graph": [
           {
+            "@type": "ProfilePage",
+            "@id": "https://aiminli-hi.github.io/#profile-page",
+            "url": "https://aiminli-hi.github.io/",
+            "name": "Aimin Li | Postdoc Researcher | METU",
+            "mainEntity": { "@id": "https://aiminli-hi.github.io/#person" }
+          },
+          {
             "@type": "Person",
             "@id": "https://aiminli-hi.github.io/#person",
             "name": "Aimin Li",
-            "alternateName": "黎爱民",
+            "alternateName": ["黎爱民", "Eamon"],
             "jobTitle": "Postdoctoral Researcher",
+            "email": "mailto:hitliaimin@163.com",
             "affiliation": {
               "@type": "CollegeOrUniversity",
               "name": "Middle East Technical University",
@@ -49,132 +58,14 @@
               "Channel Coding",
               "Network Optimization"
             ]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://ieeexplore.ieee.org/abstract/document/11547874/",
-            "headline": "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
-            "name": "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
-            "datePublished": "2026",
-            "url": "https://ieeexplore.ieee.org/abstract/document/11547874/",
-            "isPartOf": {
-              "@type": "Periodical",
-              "name": "IEEE Transactions on Mobile Computing"
-            },
-            "author": [
-              { "@type": "Person", "name": "Hanyu Wu" },
-              { "@type": "Person", "name": "Shaohua Wu" },
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Siqi Meng" },
-              { "@type": "Person", "name": "Qinyu Zhang" }
-            ],
-            "keywords": ["Age of Information", "UAV Swarms", "Multi-Agent Reinforcement Learning", "Routing"]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://doi.org/10.1109/JIOT.2026.3663721",
-            "headline": "Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems",
-            "name": "Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems",
-            "datePublished": "2026",
-            "url": "https://doi.org/10.1109/JIOT.2026.3663721",
-            "isPartOf": {
-              "@type": "Periodical",
-              "name": "IEEE Internet of Things Journal"
-            },
-            "author": [
-              { "@type": "Person", "name": "Xiaomeng Chen" },
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Yajing Deng" },
-              { "@type": "Person", "name": "Shaohua Wu" }
-            ],
-            "keywords": ["Remote Estimation", "Internet of Things", "Entropy", "Uncertainty of Information"]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://aiminli-hi.github.io/papers/paper26TIT.pdf",
-            "headline": "From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making",
-            "name": "From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making",
-            "datePublished": "2025",
-            "url": "https://aiminli-hi.github.io/papers/paper26TIT.pdf",
-            "isPartOf": {
-              "@type": "Periodical",
-              "name": "IEEE Transactions on Information Theory"
-            },
-            "author": [
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Shaohua Wu" },
-              { "@type": "Person", "name": "Gary Lee" },
-              { "@type": "Person", "name": "Sumei Sun" }
-            ],
-            "keywords": ["Age of Information", "Value of Information", "Remote Decision Making", "Goal-Oriented Communications"]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://arxiv.org/abs/2601.16624",
-            "headline": "Taming the Heavy Tail: Age-Optimal Preemption",
-            "name": "Taming the Heavy Tail: Age-Optimal Preemption",
-            "datePublished": "2026",
-            "url": "https://arxiv.org/abs/2601.16624",
-            "isPartOf": {
-              "@type": "CreativeWork",
-              "name": "IEEE International Symposium on Information Theory"
-            },
-            "author": [
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Yigit Ince" },
-              { "@type": "Person", "name": "Elif Uysal" }
-            ],
-            "keywords": ["Age of Information", "Preemption", "Heavy-Tailed Delay", "Impulse Control"]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://aiminli-hi.github.io/papers/paper25TWC.pdf",
-            "headline": "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels",
-            "name": "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels",
-            "datePublished": "2025",
-            "url": "https://aiminli-hi.github.io/papers/paper25TWC.pdf",
-            "isPartOf": {
-              "@type": "Periodical",
-              "name": "IEEE Transactions on Wireless Communications"
-            },
-            "author": [
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Xiaomeng Chen" },
-              { "@type": "Person", "name": "Shaohua Wu" },
-              { "@type": "Person", "name": "Gary C.F. Lee" },
-              { "@type": "Person", "name": "Sumei Sun" }
-            ],
-            "keywords": ["Channel Coding", "Spinal Codes", "Fading Channels"]
-          },
-          {
-            "@type": "ScholarlyArticle",
-            "@id": "https://aiminli-hi.github.io/papers/paper1WCM.pdf",
-            "headline": "Toward Goal-Oriented Semantic Communications: New Metrics, Framework, and Open Challenges",
-            "name": "Toward Goal-Oriented Semantic Communications: New Metrics, Framework, and Open Challenges",
-            "datePublished": "2024",
-            "url": "https://aiminli-hi.github.io/papers/paper1WCM.pdf",
-            "isPartOf": {
-              "@type": "Periodical",
-              "name": "IEEE Wireless Communications"
-            },
-            "author": [
-              { "@id": "https://aiminli-hi.github.io/#person" },
-              { "@type": "Person", "name": "Shaohua Wu" },
-              { "@type": "Person", "name": "Siqi Meng" },
-              { "@type": "Person", "name": "Rongxing Lu" },
-              { "@type": "Person", "name": "Sumei Sun" },
-              { "@type": "Person", "name": "Qinyu Zhang" }
-            ],
-            "keywords": ["Semantic Communications", "6G", "Goal-Oriented Communications"]
           }
         ]
       }
     </script>
     <script src="/homepage-sync-data.js?v=20260623twfix1"></script>
-    <script src="/visitor-map-data.js?v=20260623twfix1"></script>
     <title>Aimin Li | Postdoc Researcher | METU</title>
-    <script type="module" crossorigin src="/assets/index-Bm5jeC7p.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-8ga1X7Dw.css">
+    <script type="module" crossorigin src="/assets/index-DHuxlZYr.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BMRr5Gpt.css">
   </head>
   <body>
     <div id="root"></div>
