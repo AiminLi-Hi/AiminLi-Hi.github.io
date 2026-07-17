@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "audit:homepage": "node scripts/audit-homepage-data.mjs",
     "generate:visitor-map": "node scripts/generate-visitor-map-data.mjs",
     "sync:homepage": "node scripts/sync-homepage-data.mjs && npm run generate:visitor-map",
     "sync:visitors": "node scripts/sync-homepage-data.mjs --visitors-only && npm run generate:visitor-map",

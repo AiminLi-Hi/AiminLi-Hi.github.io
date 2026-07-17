@@ -27,6 +27,7 @@ const INITIAL_STATS = {
 const COUNTRY_REGION_OVERRIDES = {
   HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
+  MO: { country: 'CN', regionCode: 'MO', regionName: 'Macao' },
 };
 
 function allowedOrigins(env) {
@@ -34,6 +35,21 @@ function allowedOrigins(env) {
     .split(',')
     .map(origin => origin.trim())
     .filter(Boolean);
+}
+
+function isAllowedHitRequest(env, request) {
+  const origins = allowedOrigins(env);
+  const requestOrigin = request.headers.get('Origin');
+  if (requestOrigin) return origins.includes('*') || origins.includes(requestOrigin);
+
+  const referer = request.headers.get('Referer');
+  if (!referer) return false;
+  try {
+    const refererOrigin = new URL(referer).origin;
+    return origins.includes('*') || origins.includes(refererOrigin);
+  } catch {
+    return false;
+  }
 }
 
 function corsHeaders(env, request) {
@@ -107,6 +123,7 @@ function normalizeRegionName(value, fallback = '') {
 function regionNameFor(country, regionCode, value) {
   if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  if (country === 'CN' && regionCode === 'MO') return 'Macao';
   return normalizeRegionName(value, regionCode);
 }
 
@@ -559,13 +576,17 @@ export default {
         return json({ error: 'Method not allowed' }, env, request, 405);
       }
 
+      const shouldRecordHit = isAllowedHitRequest(env, request);
+
       if (url.pathname === '/hit.gif') {
-        await recordHit(env, request);
+        if (shouldRecordHit) await recordHit(env, request);
         return image('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />', env, request);
       }
 
       const stats = await readStats(env);
-      const hit = await recordHit(env, request);
+      const hit = shouldRecordHit
+        ? await recordHit(env, request)
+        : { ...currentHit(request), counted: false };
       const snapshot = publicSnapshot(hit.counted ? addHitToStats(stats, hit) : stats);
 
       if (url.pathname === '/hit.js') {

@@ -614,7 +614,8 @@ export const PROFILE_DATA = {
     ],
     timeline: [
       { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
-        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.\nResearch is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love the warmth of Turkish people and Türkiye’s distinct four seasons.", 
+        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.",
+        reflection: "Research is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love the warmth of Turkish people and Türkiye’s distinct four seasons.",
         lineage: [
           { name: "Claude Shannon", title: "A Mathematical Theory of Communication (1948) — laid the mathematical foundation of information theory", era: "1948", role: "ancestor", highlight: false },
           { name: "Robert Gallager", title: "Invented LDPC codes (1960)", era: "MIT", role: "ancestor", highlight: false },
@@ -622,10 +623,12 @@ export const PROFILE_DATA = {
         ],
         type: "work" },
       { year: "2023.10 - 2024.10", location: "Singapore", role: "Visiting Researcher", org: "Institute for Infocomm Research (I2R), A*STAR", 
-        desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).\nSingapore came to me when I needed light the most. It gave me direction, confidence, and a renewed belief in research. Under the guidance of Prof. Sumei Sun and Dr. Gary Lee, I gradually grew into a more independent researcher. This journey will always remain a warm and luminous chapter in my life.", 
+        desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
+        reflection: "Singapore came to me when I needed light the most. It gave me direction, confidence, and a renewed belief in research. Under the guidance of Prof. Sumei Sun and Dr. Gary Lee, I gradually grew into a more independent researcher. This journey will always remain a warm and luminous chapter in my life.",
         type: "work" },
       { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Info. & Comm. Eng.", org: "Harbin Institute of Technology, Shenzhen", 
-        desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).\nI spent nine years of my youth, learning, searching, and finding my own path at HIT. I was introduced to the world of research and learned to face problems with persistence and discipline.", 
+        desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).",
+        reflection: "I spent nine years of my youth, learning, searching, and finding my own path at HIT. I was introduced to the world of research and learned to face problems with persistence and discipline.",
         type: "edu" },
       { year: "2017.07 - 2017.08", location: "California, USA", role: "Visiting Student", org: "University of California, Riverside (UCR)", desc: "International exchange program.", type: "edu" },
       { 
@@ -774,30 +777,6 @@ export const PROFILE_DATA = {
             { name: "Mingxiao Sun", period: "2025", stage: "M.S.", outcome: "M.S. research collaboration; IEEE TCOM / IEEE ICCT papers." }
           ]
         }
-      ],
-      students: [
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / IEEE TMC papers; METU Ph.D." },
-        { name: "Çağrı Arı", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; ACM MobiHoc paper; Aselsan." },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper; Caltech Ph.D. admission." },
-        { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. thesis supervision and Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE TWC / IEEE ISIT / IEEE ITW papers; KTH Ph.D. admission." },
-        { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
-        { name: "Haojie Bai", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; IEEE IROS paper and IEEE TMC submission; Huawei." },
-        { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. research collaboration; IEEE VTC paper; HKU Ph.D. admission." },
-        { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. research collaboration." },
-        { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; IAC paper; NUS M.S. admission." },
-        { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; Asilomar paper." },
-        { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
-        { name: "Süleyman Çıtır", period: "", stage: "M.S.", outcome: "M.S. research collaboration; METU M.S. student." },
-        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop paper." },
-        { name: "Kunpeng Liu", period: "2024-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
-        { name: "Jiaming Zhang", period: "2022-2025", stage: "B.S. + M.S.", outcome: "B.S. thesis supervision and M.S. research mentorship; IEEE VTC paper." },
-        { name: "Xin Jin", period: "2022", stage: "B.S.", outcome: "B.S. thesis supervision." },
-        { name: "Selay Nisa Şahin", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
-        { name: "Yusuf", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
-        { name: "Aral", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
-        { name: "Yinglei Yang", period: "2026", stage: "M.S.", outcome: "M.S. research collaboration; IEEE Globecom paper." },
-        { name: "Mingxiao Sun", period: "2025", stage: "M.S.", outcome: "M.S. research collaboration; IEEE TCOM / IEEE ICCT papers." }
       ]
     }
   },
@@ -837,7 +816,8 @@ export const PROFILE_DATA = {
     ],
     timeline: [
       { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
-        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。\n科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。", 
+        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。",
+        reflection: "科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。",
         lineage: [
           { name: "Claude Shannon", title: "《通信的数学理论》(1948) — 奠定信息论的数学基础", era: "1948", role: "ancestor", highlight: false },
           { name: "Robert Gallager", title: "LDPC 码提出者 (1960)", era: "MIT", role: "ancestor", highlight: false },
@@ -845,10 +825,12 @@ export const PROFILE_DATA = {
         ],
         type: "work" },
       { year: "2023.10 - 2024.10", location: "新加坡", role: "访问研究员", org: "新加坡资讯通信研究院 (I2R), A*STAR", 
-        desc: "我主要研究目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。\n新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。", 
+        desc: "我主要研究目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。",
+        reflection: "新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。",
         type: "work" },
       { year: "2020.09 - 2025", location: "中国，深圳", role: "工学博士 (信息与通信工程)", org: "哈尔滨工业大学（深圳）", 
-        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。\n我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。", 
+        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。",
+        reflection: "我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。",
         type: "edu" },
       { year: "2017", location: "美国，加州", role: "访问学生", org: "加州大学河滨分校 (UCR)", desc: "国际交换生项目。", type: "edu" },
       { year: "2016.09 - 2020.06", location: "中国，深圳", role: "工学学士 (通信工程)", org: "哈尔滨工业大学（深圳）", desc: "获得清华大学提前录取。获哈尔滨工业大学校优秀毕业论文、黑龙江省三好学生。", type: "edu" }
@@ -869,9 +851,10 @@ export const PROFILE_DATA = {
       { year: "2017", title: "哈工大年度优秀学生", desc: "校前10%", level: "University" },
       { year: "2019", title: "清华大学电子系推免夏令营优秀营员", desc: "获得清华大学提前录取。", level: "University", featured: true },
       { year: "2018", title: "黑龙江省三好学生", desc: "黑龙江省前1%", level: "Provincial", featured: true },
-      { year: "2019", title: "共进奖学金", desc: "电子系仅3名", level: "University" },
+      { year: "2018", title: "共进奖学金", desc: "电子系仅3名", level: "University" },
       { year: "2017", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
       { year: "2016", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
+      { year: "2017", title: "综合优秀一等奖学金", desc: "哈尔滨工业大学前5%", level: "National" },
     ],
     service: {
       reviewer:[ 
@@ -989,30 +972,6 @@ export const PROFILE_DATA = {
             { name: "Mingxiao Sun", period: "2025", stage: "硕士", outcome: "硕士科研合作；IEEE TCOM / IEEE ICCT 论文。" }
           ]
         }
-      ],
-      students: [
-        { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "硕士毕业论文指导；ACM MobiHoc / IEEE TMC 论文；现于中东技术大学攻读博士。" },
-        { name: "Çağrı Arı", period: "", stage: "博士", outcome: "博士科研合作；ACM MobiHoc 论文；现就职于 Aselsan。" },
-        { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科科研指导；IEEE ITW 论文；获加州理工学院博士录取。" },
-        { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科毕业论文指导、博士科研指导；IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT 论文。" },
-        { name: "Xiaomeng Chen", period: "2023-2026", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士毕业论文指导；IEEE TWC / IEEE ISIT / IEEE ITW 论文；获瑞典皇家理工学院博士录取。" },
-        { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士科研指导；IEEE TMC 论文。" },
-        { name: "Haojie Bai", period: "", stage: "博士", outcome: "博士科研合作；IEEE IROS 论文录用、IEEE TMC 投稿；现就职于华为。" },
-        { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科科研合作；IEEE VTC 论文；获香港大学博士录取。" },
-        { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士科研合作。" },
-        { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "本科", outcome: "本科毕业论文指导；IAC 论文；获新加坡国立大学硕士录取。" },
-        { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科毕业论文指导；Asilomar 论文。" },
-        { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
-        { name: "Süleyman Çıtır", period: "", stage: "硕士", outcome: "硕士科研合作；中东技术大学硕士生。" },
-        { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop 论文。" },
-        { name: "Kunpeng Liu", period: "2024-2026", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士毕业论文指导；IEEE ICC / IEEE INFOCOM Workshop 论文；现就职于华为。" },
-        { name: "Jiaming Zhang", period: "2022-2025", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士科研指导；IEEE VTC 论文。" },
-        { name: "Xin Jin", period: "2022", stage: "本科", outcome: "本科毕业论文指导。" },
-        { name: "Selay Nisa Şahin", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
-        { name: "Yusuf", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
-        { name: "Aral", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
-        { name: "Yinglei Yang", period: "2026", stage: "硕士", outcome: "硕士科研合作；IEEE Globecom 论文。" },
-        { name: "Mingxiao Sun", period: "2025", stage: "硕士", outcome: "硕士科研合作；IEEE TCOM / IEEE ICCT 论文。" }
       ]
     }
   }

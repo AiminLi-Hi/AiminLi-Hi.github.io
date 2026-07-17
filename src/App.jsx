@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { 
   Moon, Sun, MapPin, Mail, Linkedin, 
   Github, GraduationCap, Briefcase, FileText, 
@@ -46,18 +46,27 @@ const ArxivIcon = ({ size = 24, className }) => (
 // --- 逻辑层 & 组件 (Logic & Components) ---
 // ==========================================
 
-const useSEO = (title, description, lang = 'en') => {
+const upsertMeta = (selector, attributes) => {
+  let element = document.head.querySelector(selector);
+  if (!element) {
+    element = document.createElement('meta');
+    document.head.appendChild(element);
+  }
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+};
+
+const useSEO = (title, description, lang = 'en', darkMode = false) => {
   useEffect(() => {
     document.title = title;
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    let metaDesc = document.querySelector("meta[name='description']");
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute("content", description);
-  }, [title, description, lang]);
+    document.documentElement.style.colorScheme = darkMode ? 'dark' : 'light';
+    upsertMeta("meta[name='description']", { name: 'description', content: description });
+    upsertMeta("meta[name='theme-color']", { name: 'theme-color', content: darkMode ? '#081524' : '#f8fafc' });
+    upsertMeta("meta[property='og:title']", { property: 'og:title', content: title });
+    upsertMeta("meta[property='og:description']", { property: 'og:description', content: description });
+    upsertMeta("meta[name='twitter:title']", { name: 'twitter:title', content: title });
+    upsertMeta("meta[name='twitter:description']", { name: 'twitter:description', content: description });
+  }, [title, description, lang, darkMode]);
 };
 
 const generateBibtex = (pub) => {
@@ -68,9 +77,10 @@ const generateBibtex = (pub) => {
   const entryType = pub.type === 'Journal' ? 'article' : pub.type === 'Thesis' ? 'phdthesis' : 'inproceedings';
   const venueField = pub.type === 'Thesis' ? 'school' : pub.type === 'Journal' ? 'journal' : 'booktitle';
   const venueValue = pub.type === 'Thesis' ? pub.venue.replace(/^Ph\.D\. Dissertation,\s*/i, '') : pub.venue;
+  const bibtexAuthors = getAuthorList(pub.authors).join(' and ');
   return `@${entryType}{${id},
   title={${pub.title}},
-  author={${pub.authors}},
+  author={${bibtexAuthors}},
   ${venueField}={${venueValue}},
   year={${year}}
 }`;
@@ -128,6 +138,7 @@ const DEFAULT_VISITOR_SNAPSHOT = {
 const VISITOR_COUNTRY_REGION_OVERRIDES = {
   HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong', countryName: 'China', matchName: 'China' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' },
+  MO: { country: 'CN', regionCode: 'MO', regionName: 'Macao', countryName: 'China', matchName: 'China' },
 };
 const EMPTY_VISITOR_SNAPSHOT = {
   pageviews: 0,
@@ -174,6 +185,7 @@ const UI_COPY = {
     homeNavDesc: 'Jump directly to focused pages.',
     homeNavCards: {
       about: 'Home page and latest news',
+      news: 'Latest research and career updates',
       publications: 'Papers, projects, code, and citations',
       talks: 'Invited and conference presentations',
       timeline: 'Research path and academic heritage',
@@ -207,6 +219,8 @@ const UI_COPY = {
     activeVisitorRegions: 'Active visitor regions',
     countrySignal: 'aggregate country-level signal',
     visitorIntensity: 'Visitor density',
+    visitorMapSummary: 'World map highlighting countries with recorded visitors.',
+    loadingVisitorMap: 'Loading visitor map...',
     pageviews: 'unique visitors',
     countries: 'countries',
     visitorUpdated: 'Updated (Istanbul)',
@@ -263,6 +277,7 @@ const UI_COPY = {
     homeNavDesc: '直接进入不同内容页。',
     homeNavCards: {
       about: '主页简介与最新动态',
+      news: '最新科研与职业动态',
       publications: '论文、项目、代码与引用',
       talks: '邀请报告与会议报告',
       timeline: '科研经历与学术谱系',
@@ -296,6 +311,8 @@ const UI_COPY = {
     activeVisitorRegions: '已点亮访问区域',
     countrySignal: '国家级聚合访问统计',
     visitorIntensity: '访问热度',
+    visitorMapSummary: '点亮已有访客国家和地区的世界地图。',
+    loadingVisitorMap: '正在加载访客地图...',
     pageviews: '位独立访客',
     countries: '个国家',
     visitorUpdated: '更新于（伊斯坦布尔）',
@@ -330,9 +347,36 @@ const getRuntimeMapData = () => (
     : null
 );
 
+let visitorMapDataPromise = null;
+const loadVisitorMapData = () => {
+  const existing = getRuntimeMapData();
+  if (existing) return Promise.resolve(existing);
+  if (visitorMapDataPromise) return visitorMapDataPromise;
+
+  visitorMapDataPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = '/visitor-map-data.js?v=20260715-lazy';
+    script.async = true;
+    script.dataset.visitorMapLoader = 'true';
+    script.onload = () => {
+      const mapData = getRuntimeMapData();
+      if (mapData) resolve(mapData);
+      else reject(new Error('Visitor map data did not initialize.'));
+    };
+    script.onerror = () => reject(new Error('Visitor map data could not be loaded.'));
+    document.head.appendChild(script);
+  }).catch((error) => {
+    visitorMapDataPromise = null;
+    throw error;
+  });
+
+  return visitorMapDataPromise;
+};
+
 const visitorRegionNameFor = (country, regionCode, value) => {
   if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  if (country === 'CN' && regionCode === 'MO') return 'Macao';
   return value || regionCode;
 };
 
@@ -509,6 +553,7 @@ const recordVisitorImageBeacon = () => {
     let settled = false;
     let timeoutId;
     const beacon = new Image(1, 1);
+    beacon.referrerPolicy = 'origin';
     const finish = (ok) => {
       if (settled) return;
       settled = true;
@@ -569,6 +614,7 @@ const recordVisitorHit = () => {
     };
 
     script.async = true;
+    script.referrerPolicy = 'origin';
     script.onerror = () => {
       recordVisitorImageBeacon().finally(() => finish(null));
     };
@@ -583,6 +629,38 @@ const recordVisitorHit = () => {
 };
 
 const stripHtml = (value = '') => String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+const escapeHtml = (value = '') => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const sanitizeNewsHtml = (value = '') => {
+  if (typeof document === 'undefined') return escapeHtml(stripHtml(value));
+  const template = document.createElement('template');
+  template.innerHTML = String(value);
+
+  const sanitizeNode = (node) => {
+    if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.textContent || '');
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+    const children = Array.from(node.childNodes).map(sanitizeNode).join('');
+    if (node.tagName === 'STRONG') return `<strong>${children}</strong>`;
+    if (node.tagName === 'SPAN' && node.classList.contains('news-mobihoc-count')) {
+      return `<span class="news-mobihoc-count">${children}</span>`;
+    }
+    return children;
+  };
+
+  return Array.from(template.content.childNodes).map(sanitizeNode).join('');
+};
+
+const SafeNewsContent = ({ content, title }) => {
+  const sanitized = useMemo(() => sanitizeNewsHtml(content), [content]);
+  return <span title={title} className="block min-w-0 whitespace-normal break-words" dangerouslySetInnerHTML={{ __html: sanitized }} />;
+};
 
 const normalizeTitle = (value = '') => stripHtml(value)
   .toLowerCase()
@@ -607,9 +685,10 @@ const getPublicationTitle = (pub = {}, lang = 'en') => (
 
 const getMentoringStudentNames = (mentoring = {}) => {
   const groups = Array.isArray(mentoring.groups) ? mentoring.groups : [];
-  const groupedStudents = groups.flatMap(group => group.students || []);
-  const flatStudents = Array.isArray(mentoring.students) ? mentoring.students : [];
-  return [...groupedStudents, ...flatStudents]
+  const students = groups.length
+    ? groups.flatMap(group => group.students || [])
+    : (Array.isArray(mentoring.students) ? mentoring.students : []);
+  return students
     .map(student => student.name)
     .filter(Boolean);
 };
@@ -907,32 +986,10 @@ const visitorMapVisualsFor = (count = 0, heatDomain = 10) => {
   };
 };
 
-const TIMELINE_REFLECTION_SPLIT_PATTERN = /(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love the warmth of Turkish people and Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)/g;
-const TIMELINE_REFLECTION_TEST_PATTERN = /^(Research is not only a path one walks alone, but also a light one can pass on to others\. From Prof\. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life\. I also love the warmth of Turkish people and Türkiye’s distinct four seasons\.|科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。|Singapore came to me when I needed light the most\. It gave me direction, confidence, and a renewed belief in research\. Under the guidance of Prof\. Sumei Sun and Dr\. Gary Lee, I gradually grew into a more independent researcher\. This journey will always remain a warm and luminous chapter in my life\.|新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。|I spent nine years of my youth, learning, searching, and finding my own path at HIT\. I was introduced to the world of research and learned to face problems with persistence and discipline\.|我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。)$/;
-
 const HighlightText = ({ text, darkMode }) => {
   if (!text) return null;
   const parts = text.split(/(\[[^\]]+\]\([^)]+\))|(\*\*.*?\*\*)/g).filter(Boolean);
-  const renderPlainText = (value, keyPrefix) => String(value)
-    .split(TIMELINE_REFLECTION_SPLIT_PATTERN)
-    .filter(Boolean)
-    .map((segment, index) => {
-      if (TIMELINE_REFLECTION_TEST_PATTERN.test(segment)) {
-        return (
-          <em
-            key={`${keyPrefix}-warm-${index}`}
-            className={`mt-2 block border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${
-              darkMode
-                ? 'border-indigo-300/60 text-slate-100'
-                : 'border-indigo-300 text-slate-800'
-            }`}
-          >
-            {segment}
-          </em>
-        );
-      }
-      return segment;
-    });
+  const renderPlainText = (value) => String(value);
   
   return (
     <span>
@@ -1013,7 +1070,7 @@ const HonorText = ({ text, darkMode }) => {
     ));
 };
 
-const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }) => {
+const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMode }) => {
   if (!href && !onClick) return null;
   const styles = {
     pdf: darkMode ? "bg-red-900/20 text-red-400 border-red-800/50 hover:bg-red-900/40" : "bg-red-50 text-red-700 border-red-100 hover:bg-red-100",
@@ -1029,8 +1086,10 @@ const ActionButton = ({ icon, label, href, onClick, type = "default", darkMode }
   
   return (
     <Component 
+      id={id}
+      type={href ? undefined : 'button'}
       href={href} 
-      onClick={(e) => { e.stopPropagation(); onClick && onClick(); }} 
+      onClick={(e) => { e.stopPropagation(); onClick?.(e); }}
       target={href ? "_blank" : undefined} 
       rel={href ? "noreferrer" : undefined} 
       className={`inline-flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border px-2.5 text-[11px] font-extrabold leading-none shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow cursor-pointer ${colorClass}`}
@@ -1050,7 +1109,7 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   };
   const activeColor = colors[colorType] || (darkMode ? "bg-slate-800 text-white border-slate-700" : "bg-white text-slate-700 border-gray-200");
   return (
-    <a href={href} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label} aria-label={label}>
+    <a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'} className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label} aria-label={label}>
       {React.createElement(icon, { size: 22 })}
     </a>
   );
@@ -1074,20 +1133,46 @@ const LanguageToggle = ({ lang, darkMode, onToggle, fullWidth = false }) => {
   );
 };
 
-const BibtexModal = ({ content, onClose, darkMode }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#061523]/70 backdrop-blur-sm animate-fade-in" onClick={onClose}>
-    <div className={`w-full max-w-2xl p-6 rounded-xl shadow-2xl transform transition-all scale-100 ${darkMode ? 'bg-[#0b1b2b] border border-cyan-400/15' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>BibTeX</h3>
-        <button onClick={onClose} className="p-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"><ChevronRight className="rotate-45" /></button>
-      </div>
-      <pre className={`p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed mb-4 whitespace-pre-wrap ${darkMode ? 'bg-[#071827] text-cyan-200' : 'bg-gray-50 text-gray-700 border'}`}>{content}</pre>
-      <div className="flex justify-end gap-3">
-        <button onClick={() => { navigator.clipboard.writeText(content); onClose(); }} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm flex items-center gap-2"><Copy size={16} /> Copy & Close</button>
+const BibtexModal = ({ content, onClose, darkMode, lang }) => {
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  const closeLabel = lang === 'zh' ? '关闭 BibTeX 对话框' : 'Close BibTeX dialog';
+  const copyLabel = lang === 'zh' ? '复制并关闭' : 'Copy and close';
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#061523]/70 p-4 backdrop-blur-sm animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bibtex-dialog-title"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className={`w-full max-w-2xl rounded-xl p-6 shadow-2xl ${darkMode ? 'bg-[#0b1b2b] border border-cyan-400/15' : 'bg-white'}`}>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 id="bibtex-dialog-title" className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>BibTeX</h2>
+          <button ref={closeButtonRef} type="button" onClick={onClose} aria-label={closeLabel} title={closeLabel} className="rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"><X size={20} /></button>
+        </div>
+        <pre className={`mb-4 overflow-x-auto whitespace-pre-wrap rounded-lg p-4 font-mono text-sm leading-relaxed ${darkMode ? 'bg-[#071827] text-cyan-200' : 'bg-gray-50 text-gray-700 border'}`}>{content}</pre>
+        <div className="flex justify-end gap-3">
+          <button type="button" onClick={() => { navigator.clipboard.writeText(content); onClose(); }} className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"><Copy size={16} /> {copyLabel}</button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const JcrBadge = ({ zone, ifVal, darkMode }) => {
   if (!zone && !ifVal) return null;
@@ -1223,8 +1308,12 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
   const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
   const [selectedVisitorCountryCode, setSelectedVisitorCountryCode] = useState('');
+  const [mapData, setMapData] = useState(() => getRuntimeMapData());
+  const visitorSectionRef = useRef(null);
+  const mapTriggerRef = useRef(null);
+  const mapDialogRef = useRef(null);
+  const mapCloseButtonRef = useRef(null);
   const snapshotRef = useRef(REALTIME_VISITOR_ENDPOINT ? EMPTY_VISITOR_SNAPSHOT : staticSnapshot);
-  const mapData = getRuntimeMapData();
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const activeCountries = getActiveVisitorCountries(snapshot, mapData);
   const routes = buildVisitorRoutes(activeCountries);
@@ -1247,7 +1336,10 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const selectedRegionTotal = selectedRegionRanking.reduce((sum, region) => sum + region.count, 0);
 
   const openVisitorMapModal = () => setShowVisitorMapModal(true);
-  const closeVisitorMapModal = () => setShowVisitorMapModal(false);
+  const closeVisitorMapModal = () => {
+    setShowVisitorMapModal(false);
+    window.requestAnimationFrame(() => mapTriggerRef.current?.focus());
+  };
   const handleVisitorMapKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -1327,6 +1419,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
   const renderVisitorMap = ({ expanded = false } = {}) => (
     <div
+      ref={expanded ? undefined : mapTriggerRef}
       className={`visitor-map-frame ${expanded ? 'visitor-map-frame--expanded' : 'visitor-map-frame--interactive'} ${darkMode ? 'visitor-map-frame--dark' : ''}`}
       role={expanded ? undefined : 'button'}
       tabIndex={expanded ? undefined : 0}
@@ -1334,8 +1427,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       onClick={expanded ? undefined : openVisitorMapModal}
       onKeyDown={expanded ? undefined : handleVisitorMapKeyDown}
     >
-      <div className="visitor-world-map">
-        <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map visitor snapshot" focusable="false">
+      <div className="visitor-world-map" aria-busy={!mapData}>
+        <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby={expanded ? 'visitor-map-summary-expanded' : 'visitor-map-summary'} focusable="false">
+          <title id={expanded ? 'visitor-map-summary-expanded' : 'visitor-map-summary'}>{ui.visitorMapSummary}</title>
           <defs>
             <linearGradient id={expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'} x1="0" x2="1" y1="0" y2="1">
               <stop offset="0%" stopColor="#071a2d" />
@@ -1349,15 +1443,13 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
           <rect className="visitor-map-ocean-base" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'})`} />
           <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'})`} />
           <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
-          <g>
+          <g aria-hidden="true">
             {(mapData?.countries || []).map((country, index) => (
-              <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d}>
-                <title>{country.name}</title>
-              </path>
+              <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d} />
             ))}
           </g>
-          {mapData?.borders && <path className="visitor-map-borders" d={mapData.borders} />}
-          <g>
+          {mapData?.borders && <path aria-hidden="true" className="visitor-map-borders" d={mapData.borders} />}
+          <g aria-hidden="true">
             {activeCountries.filter(country => country.d).map(country => (
               (() => {
                 const visuals = visitorMapVisualsFor(country.count, visitorHeatDomain);
@@ -1374,17 +1466,22 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                       strokeWidth: visuals.strokeWidth,
                       filter: visuals.glow,
                     }}
-                  >
-                    <title>{country.name}: {country.count} {ui.pageviews}</title>
-                  </path>
+                  />
                 );
               })()
             ))}
           </g>
-          <g>
+          <g aria-hidden="true">
             {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
           </g>
         </svg>
+
+        {!mapData && (
+          <div className="visitor-map-loading" role="status">
+            <span className="visitor-map-loading__pulse" aria-hidden="true" />
+            {ui.loadingVisitorMap}
+          </div>
+        )}
 
         <div className="visitor-map-label">
           {ui.activeVisitorRegions}
@@ -1409,14 +1506,60 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   );
 
   useEffect(() => {
+    const target = visitorSectionRef.current;
+    if (!target || mapData) return undefined;
+
+    let cancelled = false;
+    const load = () => {
+      loadVisitorMapData()
+        .then((data) => {
+          if (!cancelled) setMapData(data);
+        })
+        .catch(() => {});
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      load();
+      return () => { cancelled = true; };
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      observer.disconnect();
+      load();
+    }, { rootMargin: '700px 0px' });
+    observer.observe(target);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, [mapData]);
+
+  useEffect(() => {
     if (!showVisitorMapModal) return undefined;
 
     const originalOverflow = document.body.style.overflow;
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') closeVisitorMapModal();
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(mapDialogRef.current?.querySelectorAll(
+        'button:not([disabled]), [href], select, [tabindex]:not([tabindex="-1"])'
+      ) || []);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     document.body.style.overflow = 'hidden';
+    mapCloseButtonRef.current?.focus();
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
@@ -1483,7 +1626,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   }, [staticSnapshot, syncData.generatedAt]);
 
   return (
-    <section className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-cyan-950/10' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
+    <section ref={visitorSectionRef} className={`rounded-3xl border overflow-hidden shadow-xl shadow-slate-900/5 ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-cyan-950/10' : 'bg-white border-slate-200/80'}`} aria-labelledby="global-visitors-title">
       <div className={`px-6 py-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b ${darkMode ? 'border-slate-700/70' : 'border-slate-100'}`}>
         <div className="flex items-center gap-4">
           <div className={`p-3 rounded-2xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-blue-50 text-blue-600'}`} aria-hidden="true">
@@ -1557,7 +1700,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       </div>
       {showVisitorMapModal && (
         <div
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-[#061523]/106 p-3 backdrop-blur-md sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-[#061523]/80 p-3 backdrop-blur-md sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="visitor-map-modal-title"
@@ -1565,7 +1708,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             if (event.target === event.currentTarget) closeVisitorMapModal();
           }}
         >
-          <div className={`flex h-[min(86vh,780px)] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border shadow-2xl ${darkMode ? 'border-cyan-400/20 bg-[#071827] text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}>
+          <div ref={mapDialogRef} className={`flex h-[min(86vh,780px)] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border shadow-2xl ${darkMode ? 'border-cyan-400/20 bg-[#071827] text-slate-100' : 'border-slate-200 bg-white text-slate-900'}`}>
             <div className={`flex items-center justify-between gap-4 border-b px-4 py-3 sm:px-5 ${darkMode ? 'border-slate-800' : 'border-slate-100'}`}>
               <div className="min-w-0">
                 <h3 id="visitor-map-modal-title" className="truncate text-base font-extrabold sm:text-lg">{ui.visitorMapModalTitle}</h3>
@@ -1576,6 +1719,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                 </p>
               </div>
               <button
+                ref={mapCloseButtonRef}
                 type="button"
                 onClick={closeVisitorMapModal}
                 className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${darkMode ? 'border-cyan-400/15 text-slate-200 hover:bg-cyan-400/10' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
@@ -1606,12 +1750,26 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
 export default function AcademicProfile() {
   const [darkMode, setDarkMode] = useState(() => (
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
+    typeof window !== 'undefined'
+      ? window.localStorage.getItem('aimin-homepage-theme') === 'dark'
+        || (
+          !window.localStorage.getItem('aimin-homepage-theme')
+          && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+        )
+      : false
   ));
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState(() => (
+    typeof window !== 'undefined' && window.localStorage.getItem('aimin-homepage-language') === 'zh'
+      ? 'zh'
+      : 'en'
+  ));
   const [activeBibtex, setActiveBibtex] = useState(null);
+  const bibtexReturnFocusIdRef = useRef('');
+  const closeBibtex = useCallback(() => {
+    const returnFocusId = bibtexReturnFocusIdRef.current;
+    setActiveBibtex(null);
+    window.setTimeout(() => document.getElementById(returnFocusId)?.focus(), 0);
+  }, []);
   const [activeSection, setActiveSection] = useState(() => resolvePageFromHash());
   const [pageTransition, setPageTransition] = useState(() => ({
     displaySection: resolvePageFromHash(),
@@ -1635,12 +1793,17 @@ export default function AcademicProfile() {
   const publications = useMemo(() => buildPublications(BASE_PUBLICATIONS, syncData), [syncData]);
   const content = PROFILE_DATA[lang];
   const ui = UI_COPY[lang];
-  useSEO(content.meta_title, content.meta_desc, lang);
-  const isHomePage = activeSection === 'about' || activeSection === 'news';
   const displaySection = pageTransition.displaySection;
   const displayIsHomePage = displaySection === 'about' || displaySection === 'news';
   const displaySectionRef = useRef(displaySection);
   const newsItems = useMemo(() => buildNewsItems(content.news, syncData), [content.news, syncData]);
+  const pageTitle = activeSection === 'about'
+    ? content.meta_title
+    : `${content.nav[activeSection] || content.name} | ${lang === 'zh' ? '黎爱民' : 'Aimin Li'}`;
+  const pageDescription = activeSection === 'about'
+    ? content.meta_desc
+    : `${content.nav[activeSection] || content.name}. ${ui.homeNavCards[activeSection] || content.meta_desc}`;
+  useSEO(pageTitle, pageDescription, lang, darkMode);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
   const matchesMentoredStudent = useMemo(
     () => createStudentMatcher(getMentoringStudentNames(content.mentoring)),
@@ -1802,6 +1965,14 @@ export default function AcademicProfile() {
   }, []);
 
   useEffect(() => {
+    window.localStorage.setItem('aimin-homepage-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
+  useEffect(() => {
+    window.localStorage.setItem('aimin-homepage-language', lang);
+  }, [lang]);
+
+  useEffect(() => {
     displaySectionRef.current = displaySection;
   }, [displaySection]);
 
@@ -1894,6 +2065,7 @@ export default function AcademicProfile() {
   const navigateToPage = (key, event) => {
     event?.preventDefault();
     if (!PAGE_KEYS.includes(key)) return;
+    const isSamePage = activeSection === key && displaySection === key;
     setActiveSection(key);
     setIsMobileMenuOpen(false);
     if (typeof window !== 'undefined') {
@@ -1901,10 +2073,16 @@ export default function AcademicProfile() {
       if (window.location.hash !== nextHash) {
         window.history.pushState(null, '', nextHash);
       }
+      if (isSamePage) {
+        window.requestAnimationFrame(() => {
+          if (key === 'news') document.getElementById('news')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          else window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
     }
   };
   const scrollToTop = () => {
-    if (isHomePage) {
+    if (activeSection === 'about') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -1922,56 +2100,52 @@ export default function AcademicProfile() {
     resetPublicationView();
   };
 
-  const mentoringStudentCount = mentoringGroups.reduce((sum, group) => sum + group.students.length, 0);
   const homeNavItems = [
     {
       key: 'about',
       targetKey: 'about',
       label: lang === 'en' ? 'Home' : '主页',
       icon: Sparkles,
-      metric: newsItems.length,
       accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-violet-200 bg-violet-50 text-violet-800 shadow-violet-100/70',
+    },
+    {
+      key: 'news',
+      icon: MessageCircle,
+      accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100/70',
     },
     {
       key: 'publications',
       icon: BookOpen,
-      metric: publications.length,
       accent: darkMode ? 'border-emerald-400/25 bg-emerald-400/10 text-emerald-200 shadow-emerald-950/25' : 'border-emerald-200 bg-emerald-50 text-emerald-800 shadow-emerald-100/70',
     },
     {
       key: 'timeline',
       icon: Plane,
-      metric: content.timeline.length,
       accent: darkMode ? 'border-blue-400/25 bg-blue-400/10 text-blue-200 shadow-blue-950/25' : 'border-blue-200 bg-blue-50 text-blue-800 shadow-blue-100/70',
     },
     {
       key: 'awards',
       icon: Trophy,
-      metric: content.awards.length,
       accent: darkMode ? 'border-amber-400/25 bg-amber-400/10 text-amber-200 shadow-amber-950/25' : 'border-amber-200 bg-amber-50 text-amber-800 shadow-amber-100/70',
     },
     {
       key: 'service',
       icon: Star,
-      metric: content.service.reviewer.length,
       accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-purple-200 bg-purple-50 text-purple-800 shadow-purple-100/70',
     },
     {
       key: 'teaching',
       icon: Presentation,
-      metric: content.teaching.length,
       accent: darkMode ? 'border-pink-400/25 bg-pink-400/10 text-pink-200 shadow-pink-950/25' : 'border-pink-200 bg-pink-50 text-pink-800 shadow-pink-100/70',
     },
     {
       key: 'mentoring',
       icon: Users,
-      metric: mentoringStudentCount,
       accent: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/25' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100/70',
     },
     {
       key: 'talks',
       icon: Mic2,
-      metric: talkRows.length,
       accent: darkMode ? 'border-teal-400/25 bg-teal-400/10 text-teal-200 shadow-teal-950/25' : 'border-teal-200 bg-teal-50 text-teal-800 shadow-teal-100/70',
     },
     {
@@ -1980,23 +2154,22 @@ export default function AcademicProfile() {
       href: '/files/Aimin_Li_CV.pdf',
       download: 'Aimin_Li_CV.pdf',
       icon: Download,
-      metric: null,
       accent: darkMode ? 'border-sky-400/25 bg-sky-400/10 text-sky-200 shadow-sky-950/25' : 'border-sky-200 bg-sky-50 text-sky-800 shadow-sky-100/70',
     },
   ];
   const activeHomeNavIndex = Math.max(0, homeNavItems.findIndex((item) => (
-    item.key === 'about' ? isHomePage : activeSection === item.key
+    activeSection === item.key
   )));
 
   const profileSidebar = (
-    <aside className="profile-sidebar md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:sticky md:top-24 md:items-start md:text-left space-y-5">
-      <div className="profile-avatar relative group w-48 h-48 mx-auto md:mx-0">
+    <aside className={`profile-sidebar lg:col-span-3 flex-col items-center text-center lg:sticky lg:top-24 lg:flex lg:items-start lg:text-left space-y-5 ${displayIsHomePage ? 'flex' : 'hidden'}`}>
+      <div className="profile-avatar relative group w-48 h-48 mx-auto lg:mx-0">
         <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-cyan-500 via-sky-500 to-emerald-400' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
         <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
-          <img src={`/images/profile.jpg`} alt="Profile" className="w-full h-full object-cover bg-slate-100" />
+          <img src="/images/profile.jpg" alt={lang === 'zh' ? '黎爱民头像' : 'Portrait of Aimin Li'} width="192" height="192" decoding="async" className="w-full h-full object-cover bg-slate-100" />
         </div>
       </div>
-      <div className="profile-socials w-full flex flex-wrap justify-center md:justify-start gap-3">
+      <div className="profile-socials w-full flex flex-wrap justify-center lg:justify-start gap-3">
          <SocialButton icon={Mail} href={content.social.email} label="Email" colorType="email" darkMode={darkMode} />
          <SocialButton icon={GoogleScholarIcon} href={content.social.scholar} label="Google Scholar" colorType="scholar" darkMode={darkMode} />
          <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
@@ -2004,7 +2177,7 @@ export default function AcademicProfile() {
          <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
       </div>
       <nav
-        className={`profile-page-nav relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 md:block ${darkMode ? 'profile-page-nav--dark border-cyan-400/15 bg-[#0b1b2b]/70 shadow-cyan-950/10' : 'border-slate-200 bg-white'}`}
+        className={`profile-page-nav relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 lg:block ${darkMode ? 'profile-page-nav--dark border-cyan-400/15 bg-[#0b1b2b]/70 shadow-cyan-950/10' : 'border-slate-200 bg-white'}`}
         style={{ '--active-nav-index': activeHomeNavIndex }}
         aria-label={ui.homeNavTitle}
       >
@@ -2014,7 +2187,7 @@ export default function AcademicProfile() {
           {homeNavItems.map((item) => {
             const Icon = item.icon;
             const targetKey = item.targetKey || item.key;
-            const isActive = item.key === 'about' ? isHomePage : activeSection === item.key;
+            const isActive = activeSection === item.key;
             const itemLabel = item.label || content.nav[item.key];
             const itemTitle = ui.homeNavCards[item.key];
             return (
@@ -2023,6 +2196,7 @@ export default function AcademicProfile() {
                 href={item.href || `#${targetKey}`}
                 download={item.download}
                 onClick={item.href ? undefined : (event) => navigateToPage(targetKey, event)}
+                aria-current={isActive ? 'page' : undefined}
                 title={itemTitle}
                 className={`profile-page-nav__link group relative z-10 flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[10px] font-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
                   isActive
@@ -2150,7 +2324,17 @@ export default function AcademicProfile() {
             {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
             {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
             {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
-            <ActionButton icon={Quote} label="Cite" onClick={() => setActiveBibtex(generateBibtex(pub))} type="bibtex" darkMode={darkMode} />
+            <ActionButton
+              icon={Quote}
+              label="Cite"
+              id={`cite-${pub.id}`}
+              onClick={() => {
+                bibtexReturnFocusIdRef.current = `cite-${pub.id}`;
+                setActiveBibtex(generateBibtex(pub));
+              }}
+              type="bibtex"
+              darkMode={darkMode}
+            />
           </div>
         </div>
       </article>
@@ -2159,14 +2343,15 @@ export default function AcademicProfile() {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-400/25 ${darkMode ? 'theme-dark-ink text-slate-300' : 'bg-gray-50 text-slate-600'}`}>
+      <a href="#main-content" className="skip-link">{lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}</a>
       
       {/* --- Navigation --- */}
       <div className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-[#0a1828]/90 border-cyan-400/10 shadow-[0_1px_0_rgba(34,211,238,0.05)]' : 'bg-white/80 border-gray-200'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
-          <div className={`min-w-0 text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={() => navigateToPage('about')}>
+          <a href="#about" className={`min-w-0 text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={(event) => navigateToPage('about', event)}>
             <Sparkles size={18} className={`shrink-0 ${darkMode ? 'text-cyan-300' : 'text-purple-500'}`} />
             <span className="truncate">{content.name}</span>
-          </div>
+          </a>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-4">
             <div className="hidden lg:flex items-center gap-1 mr-2">
               {Object.entries(content.nav).map(([key, label]) => (
@@ -2174,6 +2359,7 @@ export default function AcademicProfile() {
                   key={key}
                   href={`#${key}`}
                   onClick={(event) => navigateToPage(key, event)}
+                  aria-current={activeSection === key ? 'page' : undefined}
                   className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100 ring-1 ring-cyan-400/15' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
                 >
                   {label}
@@ -2195,11 +2381,15 @@ export default function AcademicProfile() {
               darkMode={darkMode}
               onToggle={() => setLang(l => l === 'en' ? 'zh' : 'en')}
             />
-            <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button type="button" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? (lang === 'zh' ? '切换到浅色模式' : 'Switch to light mode') : (lang === 'zh' ? '切换到深色模式' : 'Switch to dark mode')} title={darkMode ? (lang === 'zh' ? '浅色模式' : 'Light mode') : (lang === 'zh' ? '深色模式' : 'Dark mode')} className={`p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
             
             {/* Mobile Menu Button */}
             <button 
+              type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              aria-label={isMobileMenuOpen ? (lang === 'zh' ? '关闭导航菜单' : 'Close navigation menu') : (lang === 'zh' ? '打开导航菜单' : 'Open navigation menu')}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
               className={`lg:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-slate-300' : 'hover:bg-gray-100 text-slate-600'}`}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -2209,12 +2399,13 @@ export default function AcademicProfile() {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-[#0a1828] border-cyan-400/10' : 'bg-white border-gray-200'}`}>
+          <div id="mobile-navigation" className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-[#0a1828] border-cyan-400/10' : 'bg-white border-gray-200'}`}>
             {Object.entries(content.nav).map(([key, label]) => (
               <a 
                 key={key} 
                 href={`#${key}`} 
                 onClick={(event) => navigateToPage(key, event)}
+                aria-current={activeSection === key ? 'page' : undefined}
                 className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
               >
                 {label}
@@ -2244,10 +2435,10 @@ export default function AcademicProfile() {
         )}
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
-        <div className="grid md:grid-cols-12 gap-12 items-start">
+      <main id="main-content" tabIndex="-1" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 space-y-12 lg:space-y-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {profileSidebar}
-          <div className="md:col-span-8 lg:col-span-9 min-w-0">
+          <div className="lg:col-span-9 min-w-0">
             <div key={`${displaySection}-${lang}`} className={`page-transition-shell page-transition-shell--${pageTransition.phase} space-y-8`}>
             {displayIsHomePage && (
             <section id="about" className="scroll-mt-32 animate-fade-in-up">
@@ -2263,19 +2454,19 @@ export default function AcademicProfile() {
                    <span className="relative flex h-2 w-2"><span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${darkMode ? 'bg-cyan-300' : 'bg-purple-400'}`}></span><span className={`relative inline-flex rounded-full h-2 w-2 ${darkMode ? 'bg-cyan-400' : 'bg-purple-500'}`}></span></span>
                    {content.nav.news}
                  </h3>
-                 <div className={`divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-gray-100'}`}>
+	                 <div id="news-list" className={`divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-gray-100'}`}>
                    {visibleNewsItems.map((item, idx) => (
-                     <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[4.35rem_4.2rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[11px] leading-snug items-start">
+	                     <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[4.35rem_4.2rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[12px] leading-snug items-start">
                         <span className="font-mono text-[10px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
                         <div className="contents">
                              <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
                                <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-cyan-200' : 'hover:text-purple-600'}`}>
-                                  <span className="block min-w-0 whitespace-normal break-words" dangerouslySetInnerHTML={{__html: item.content}} />
+	                                  <SafeNewsContent content={item.content} />
                                   {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
                              ) : (
-                               <span className="block min-w-0 whitespace-normal break-words" title={stripHtml(item.content)} dangerouslySetInnerHTML={{__html: item.content}} />
+	                               <SafeNewsContent content={item.content} title={stripHtml(item.content)} />
                              )}
                         </div>
                      </div>
@@ -2283,7 +2474,7 @@ export default function AcademicProfile() {
                  </div>
                  {newsItems.length > 6 && (
                    <div className="pt-2 flex justify-end">
-                     <button onClick={() => setShowAllNews(value => !value)} className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}>
+	                     <button type="button" onClick={() => setShowAllNews(value => !value)} aria-expanded={showAllNews} aria-controls="news-list" className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}>
                        {showAllNews ? ui.fewerNews : ui.moreNews} <ChevronDown size={12} className={showAllNews ? 'rotate-180' : ''} />
                      </button>
                    </div>
@@ -2301,7 +2492,7 @@ export default function AcademicProfile() {
               <Mic2 size={24} />
             </div>
             <div>
-              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.talks}</h2>
+	              <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.talks}</h1>
               <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.talks}</p>
             </div>
           </div>
@@ -2352,7 +2543,7 @@ export default function AcademicProfile() {
         <section id="timeline" className="scroll-mt-32 animate-fade-in">
            <div className="flex items-center gap-3 mb-8">
             <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}><Plane size={20} /></div>
-            <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.timeline}</h2>
+	            <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.timeline}</h1>
           </div>
           
           <div className="space-y-8">
@@ -2389,6 +2580,11 @@ export default function AcademicProfile() {
                               <HighlightText text={item.desc} darkMode={darkMode} />
                             </div>
                           )}
+                          {item.reflection && (
+                            <blockquote className={`mt-2 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-indigo-300 text-slate-800'}`}>
+                              {item.reflection}
+                            </blockquote>
+                          )}
                           {item.lineage?.length > 0 && (
                             <div className="mt-4">
                               <AcademicLineage lineage={item.lineage} darkMode={darkMode} lang={lang} />
@@ -2412,16 +2608,16 @@ export default function AcademicProfile() {
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-xl ${darkMode ? 'bg-emerald-900/20 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}`}><BookOpen size={24} /></div>
                   <div>
-                    <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.publications}</h2>
+	                    <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.publications}</h1>
 	                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.publicationDesc}</p>
                   </div>
                 </div>
                 <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
                   <div className="relative min-w-0 flex-1 lg:w-80 lg:flex-none">
                     <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} size={16} />
-	                  <input type="text" placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`h-11 w-full rounded-xl border pl-9 pr-4 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/40 transition-all ${darkMode ? 'bg-[#0e2032]/102 border-cyan-400/15 text-white placeholder-slate-500 focus:bg-[#12314a]' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
+	                  <input type="search" aria-label={ui.searchPlaceholder} placeholder={ui.searchPlaceholder} value={searchQuery} onChange={(e) => updateSearchQuery(e.target.value)} className={`h-11 w-full rounded-xl border pl-9 pr-4 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/40 transition-all ${darkMode ? 'bg-[#0e2032]/95 border-cyan-400/15 text-white placeholder-slate-500 focus:bg-[#12314a]' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-emerald-300'}`} />
                   </div>
-                  <label className={`flex h-11 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-extrabold shadow-sm transition-colors ${darkMode ? 'border-cyan-400/15 bg-[#0e2032]/102 text-slate-300' : 'border-gray-200 bg-white text-slate-600'}`}>
+	                  <label className={`flex h-11 shrink-0 items-center gap-2 rounded-xl border px-3 text-xs font-extrabold shadow-sm transition-colors ${darkMode ? 'border-cyan-400/15 bg-[#0e2032]/95 text-slate-300' : 'border-gray-200 bg-white text-slate-600'}`}>
                     <Tag size={14} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
                     <span className="whitespace-nowrap">{ui.venueFilter}</span>
                     <select
@@ -2459,7 +2655,7 @@ export default function AcademicProfile() {
 
           {filteredPubs.length > visiblePubs && (
             <div className="flex justify-center pt-2">
-              <button onClick={() => setVisiblePubs(prev => prev + 12)} className={`group flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
+	              <button type="button" onClick={() => setVisiblePubs(prev => prev + 12)} className={`group flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
                 {ui.viewMorePublications} ({filteredPubs.length - visiblePubs} {ui.remaining}) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
               </button>
             </div>
@@ -2474,7 +2670,7 @@ export default function AcademicProfile() {
            <div className="flex items-center gap-3 mb-6">
               <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-amber-900/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}><Trophy size={20} /></div>
               <div>
-                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.awards}</h2>
+	                <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.awards}</h1>
                 <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.awardsDesc}</p>
               </div>
            </div>
@@ -2544,7 +2740,7 @@ export default function AcademicProfile() {
           <div className="mb-8 flex items-center gap-4">
               <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-50 text-purple-600'}`}><Star size={24} /></div>
               <div>
-                <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h2>
+	                <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h1>
                 <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.service}</p>
               </div>
           </div>
@@ -2652,7 +2848,7 @@ export default function AcademicProfile() {
               <Presentation size={24} />
             </div>
             <div>
-              <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.teaching}</h2>
+	              <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.teaching}</h1>
               <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.teaching}</p>
             </div>
           </div>
@@ -2701,7 +2897,7 @@ export default function AcademicProfile() {
               <Users size={24} />
             </div>
             <div>
-              <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h2>
+	              <h1 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h1>
               <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.mentoring}</p>
             </div>
           </div>
@@ -2860,15 +3056,15 @@ export default function AcademicProfile() {
         )}
 
         {/* Motto Banner */}
-        <div className={`py-8 px-6 text-center relative overflow-hidden group`}>
-          <div className="absolute inset-0 z-0 transition-transform duration-1000 group-hover:scale-105" 
-               style={{ 
-                  backgroundImage: `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`, 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center',
-                  filter: darkMode ? 'brightness(0.5) grayscale(0.4)' : 'brightness(1.1) grayscale(0.2)'
-               }}
-          ></div>
+        <div className="group relative overflow-hidden px-6 py-8 text-center">
+          <img
+            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=76"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            aria-hidden="true"
+            className={`absolute inset-0 z-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105 ${darkMode ? 'brightness-50 grayscale-[0.4]' : 'brightness-110 grayscale-[0.2]'}`}
+          />
           <div className={`absolute inset-0 z-0 ${darkMode ? 'bg-[#071827]/70' : 'bg-white/60'}`}></div>
           <div className="relative z-10">
             <Quote size={18} className={`mx-auto mb-3 opacity-60 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
@@ -2900,9 +3096,16 @@ export default function AcademicProfile() {
 
       </main>
       
-      {activeBibtex && <BibtexModal content={activeBibtex} onClose={() => setActiveBibtex(null)} darkMode={darkMode} />}
+      {activeBibtex && (
+        <BibtexModal
+          content={activeBibtex}
+          onClose={closeBibtex}
+          darkMode={darkMode}
+          lang={lang}
+        />
+      )}
       
-      <button onClick={scrollToTop} className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'} ${darkMode ? 'bg-cyan-500/90 text-slate-950 shadow-cyan-950/30 hover:bg-cyan-300' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
+      <button type="button" onClick={scrollToTop} tabIndex={showBackToTop ? 0 : -1} aria-hidden={!showBackToTop} aria-label={lang === 'zh' ? '返回顶部' : 'Back to top'} title={lang === 'zh' ? '返回顶部' : 'Back to top'} className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-16 opacity-0'} ${darkMode ? 'bg-cyan-500/90 text-slate-950 shadow-cyan-950/30 hover:bg-cyan-300' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
         <ArrowUp size={20} />
       </button>
     </div>

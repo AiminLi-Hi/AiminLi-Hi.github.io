@@ -10,6 +10,7 @@ const UNIQUE_VISITOR_PREFIX = 'visitor-unique-v1:';
 const COUNTRY_REGION_OVERRIDES = {
   HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong' },
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan' },
+  MO: { country: 'CN', regionCode: 'MO', regionName: 'Macao' },
 };
 
 function allowedOrigins(env) {
@@ -68,6 +69,7 @@ function normalizeRegionName(value, fallback = '') {
 function regionNameFor(country, regionCode, value) {
   if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  if (country === 'CN' && regionCode === 'MO') return 'Macao';
   return normalizeRegionName(value, regionCode);
 }
 

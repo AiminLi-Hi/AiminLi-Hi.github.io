@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+.skip-link {
+  position: fixed;
+  z-index: 120;
+  top: 0.75rem;
+  left: 0.75rem;
+  transform: translateY(-180%);
+  border-radius: 0.65rem;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 900;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid rgba(6, 182, 212, 0.42);
+  outline-offset: 2px;
+}
+
 .language-switcher {
   display: inline-flex;
   align-items: center;
@@ -127,6 +149,25 @@
     min-width: 2rem;
     padding: 0.42rem 0.48rem;
     font-size: 0.69rem;
+  }
+
+  .profile-avatar {
+    width: 9.5rem;
+    height: 9.5rem;
+  }
+
+  .profile-socials {
+    gap: 0.55rem;
+  }
+
+  .profile-socials a {
+    padding: 0.62rem;
+    border-radius: 0.8rem;
+  }
+
+  .profile-socials svg {
+    width: 1.1rem;
+    height: 1.1rem;
   }
 }
 
@@ -258,7 +299,7 @@
   height: 2.05rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .profile-sidebar {
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
@@ -278,7 +319,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-height: 880px) {
+@media (min-width: 1024px) and (max-height: 880px) {
   .profile-sidebar {
     top: 4.5rem;
     max-height: calc(100vh - 5rem);
@@ -343,7 +384,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-height: 740px) {
+@media (min-width: 1024px) and (max-height: 740px) {
   .profile-sidebar {
     top: 4rem;
     max-height: calc(100vh - 4.25rem);
@@ -589,6 +630,29 @@
   height: 100%;
   shape-rendering: geometricPrecision;
   z-index: 1;
+}
+
+.visitor-map-loading {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: rgba(224, 242, 254, 0.82);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.visitor-map-loading__pulse {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #22d3ee;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.72);
+  animation: visitor-map-grid-sync 1.2s ease-in-out infinite;
 }
 
 .visitor-map-ocean-base {

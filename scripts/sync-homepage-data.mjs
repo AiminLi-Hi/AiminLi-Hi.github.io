@@ -45,7 +45,8 @@ const FALLBACK_DATA = {
 };
 const VISITOR_COUNTRY_REGION_OVERRIDES = {
   HK: { country: 'CN', regionCode: 'HK', regionName: 'Hong Kong', countryName: 'China', matchName: 'China' },
-  TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' }
+  TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' },
+  MO: { country: 'CN', regionCode: 'MO', regionName: 'Macao', countryName: 'China', matchName: 'China' }
 };
 
 const VENUE_PATTERNS = [
@@ -104,9 +105,19 @@ function decodeHtml(value = '') {
     .trim();
 }
 
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function regionNameFor(country, regionCode, value) {
   if (country === 'CN' && regionCode === 'HK') return 'Hong Kong';
   if (country === 'CN' && regionCode === 'TW') return 'Taiwan';
+  if (country === 'CN' && regionCode === 'MO') return 'Macao';
   return String(value || regionCode).replace(/\s+/g, ' ').trim() || regionCode;
 }
 
@@ -397,7 +408,7 @@ async function fetchScholarData(previous) {
     date: month,
     label: pub.newsLabel,
     title: pub.title,
-    html: `Our paper <strong>${pub.title}</strong> was added to <strong>Google Scholar</strong>${pub.venue ? ` (${pub.venue})` : ''}.`,
+    html: `Our paper <strong>${escapeHtml(pub.title)}</strong> was added to <strong>Google Scholar</strong>${pub.venue ? ` (${escapeHtml(pub.venue)})` : ''}.`,
     href: pub.href
   }));
 
