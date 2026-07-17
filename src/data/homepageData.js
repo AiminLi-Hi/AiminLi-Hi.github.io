@@ -11,7 +11,7 @@ export const BASE_PUBLICATIONS = [
     id: "j17",
     year: 2026,
     title: "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
-    authors: "Hanyu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang",
+    authors: "Haoxu Wu, Shaohua Wu, Aimin Li, Siqi Meng, Qinyu Zhang",
     venue: "IEEE Transactions on Mobile Computing",
     venue_short: "IEEE TMC",
     type: "Journal",
@@ -60,9 +60,9 @@ export const BASE_PUBLICATIONS = [
   },
   {
     id: "j1",
-    year: 2025,
-    title: "Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels",
-    authors: "Aimin Li, Xiaomeng Chen, Shaohua Wu, Gary C.F. Lee, Sumei Sun",
+    year: 2026,
+    title: "Unified Upper Bounds on the ML Decoding Error Probability of Spinal Codes Over Fading Channels",
+    authors: "Aimin Li, Xiaomeng Chen, Shaohua Wu, Gary C. F. Lee, Sumei Sun",
     venue: "IEEE Transactions on Wireless Communications",
     venue_short: "IEEE TWC",
     type: "Journal",
@@ -79,8 +79,8 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j16",
     year: 2026,
-    title: "From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making",
-    authors: "Aimin Li, Shaohua Wu, Gary Lee, Sumei Sun",
+    title: "From Freshness to Effectiveness: Goal-Oriented Sampling for Remote Decision Making",
+    authors: "Aimin Li, Shaohua Wu, Gary C. F. Lee, Sumei Sun",
     venue: "IEEE Transactions on Information Theory",
     venue_short: "IEEE TIT",
     type: "Journal",
@@ -110,8 +110,8 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j15",
     year: 2025,
-    title: "MARHLO: Hybrid task Offloading in Maritime MEC via Multi-Agent Reinforcement Learning",
-    authors: "Jiahong Ning, Aimin Li, Gary C.F. Lee, Tingting Yang, Sumei Sun",
+    title: "MARHO: Hybrid Task Offloading in Maritime MEC via Multi-Agent Reinforcement Learning",
+    authors: "Jiahong Ning, Aimin Li, Gary C. F. Lee, Sumei Sun, Tingting Yang",
     venue: "IEEE Open Journal of the Communications Society",
     venue_short: "IEEE OJ-COMS",
     type: "Journal",
@@ -143,8 +143,8 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j3",
     year: 2025,
-    title: "Information Freshness and Timeliness Analysis in The Finite Blocklength Regime for Mission-Critical Applications",
-    authors: "Mingxiao Sun, Lulu Song, Di Zhang, Shaobo Jia, Aimin Li, Al-Dulaimi, Shahid Mumtaz",
+    title: "Information Freshness and Timeliness Analysis in the Finite Blocklength Regime for Mission-Critical Applications",
+    authors: "Di Zhang, Mingxiao Sun, Lulu Song, Shaobo Jia, Aimin Li, Tingting Zhang, Anwer Al-Dulaimi, Shahid Mumtaz",
     venue: "IEEE Transactions on Communications",
     venue_short: "IEEE TCOM",
     type: "Journal",
@@ -159,8 +159,8 @@ export const BASE_PUBLICATIONS = [
   },
   {
     id: "j4",
-    year: 2024,
-    title: "Tight Upper Bounds on the BLER of Spinal codes over the AWGN Channel",
+    year: 2025,
+    title: "Tight Upper Bounds on the BLER of Spinal Codes Over the AWGN Channel",
     authors: "Aimin Li, Shaohua Wu, Xiaomeng Chen, Sumei Sun",
     venue: "IEEE Transactions on Communications",
     venue_short: "IEEE TCOM",
@@ -258,7 +258,7 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j11",
     year: 2022,
-    title: "Analysis and Optimization of HARQ Based Spinal Coded Timely Status Update System",
+    title: "Analysis and Optimization of the HARQ-Based Spinal Coded Timely Status Update System",
     authors: "Siqi Meng, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
     venue: "IEEE Transactions on Communications",
     venue_short: "IEEE TCOM",
@@ -274,7 +274,7 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j12",
     year: 2022,
-    title: "A Weighted Graph-based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks",
+    title: "A Weighted Graph-Based Handover Strategy for Aeronautical Traffic in LEO SatCom Networks",
     authors: "Xiyu Lv, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
     venue: "IEEE Networking Letters",
     venue_short: "IEEE LNET",
@@ -288,7 +288,7 @@ export const BASE_PUBLICATIONS = [
   {
     id: "j13",
     year: 2022,
-    title: "Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes over Rayleigh Fading Channel",
+    title: "Partial Self-Concatenation Structure and Performance Analysis of Spinal Codes Over Rayleigh Fading Channel",
     authors: "Siqi Meng, Shaohua Wu, Aimin Li, Jian Jiao, Ning Zhang, Qinyu Zhang",
     venue: "IEEE Transactions on Vehicular Technology",
     venue_short: "IEEE TVT",
@@ -400,7 +400,7 @@ export const BASE_PUBLICATIONS = [
     id: "c2",
     year: 2025,
     title: "Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information",
-    authors: "Adem Utku Atasayar, Aimin Li, Cagri Ari, Elif Uysal",
+    authors: "Adem Utku Atasayar, Aimin Li, Çağrı Arı, Elif Uysal",
     venue: "ACM International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing",
     venue_short: "ACM MobiHoc",
     type: "Conference",
@@ -410,7 +410,10 @@ export const BASE_PUBLICATIONS = [
     acceptedWorldwide: 39,
     keywords: ["AoI", "Routing", "Sampling"],
     summary: "Joint sampling and routing design for AoI minimization in networks with random delay, establishing a remarkably simple threshold-based optimal policy.",
-    links: { pdf: "/papers/paper22Mobihoc.pdf" },
+    links: {
+      pdf: "/papers/paper22Mobihoc.pdf",
+      poster: "/papers/mobihoc_poster.pdf"
+    },
     url: "https://dl.acm.org/action/doSearch?AllField=Fresh+Data+Delivery%3A+Joint+Sampling+and+Routing+for+Minimizing+the+Age+of+Information" // ACM link fallback
   },
   {
@@ -463,7 +466,7 @@ export const BASE_PUBLICATIONS = [
   },
   {
     id: "c6",
-    year: 2024,
+    year: 2025,
     title: "Joint Transmission and Control in a Goal-oriented NOMA Network",
     authors: "Kunpeng Liu, Shaohua Wu, Aimin Li, Qinyu Zhang",
     venue: "IEEE International Communications Conference",
@@ -478,7 +481,7 @@ export const BASE_PUBLICATIONS = [
   {
     id: "c7",
     year: 2024,
-    title: "Packet Management of AoI in The Finite Block-length Regime",
+    title: "Packet Management of AoI in the Finite Block-Length Regime",
     authors: "Mingxiao Sun, Di Zhang, Shaobo Jia, Aimin Li",
     venue: "IEEE International Conference on Communication Technology",
     venue_short: "IEEE ICCT",
@@ -666,6 +669,7 @@ export const PROFILE_DATA = {
         "IEEE Transactions on Information Theory (TIT)", 
         "IEEE Journal on Selected Areas in Communications (JSAC)", 
         "IEEE Transactions on Mobile Computing (TMC)", 
+        "IEEE Internet of Things Journal (IoTJ)",
         "IEEE Transactions on Communications (TCOM)", 
         "IEEE Transactions on Wireless Communications (TWC)",
         "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
@@ -861,6 +865,7 @@ export const PROFILE_DATA = {
         "IEEE Transactions on Information Theory (TIT)", 
         "IEEE Journal on Selected Areas in Communications (JSAC)", 
         "IEEE Transactions on Mobile Computing (TMC)", 
+        "IEEE Internet of Things Journal (IoTJ)",
         "IEEE Transactions on Communications (TCOM)", 
         "IEEE Transactions on Wireless Communications (TWC)",
         "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",

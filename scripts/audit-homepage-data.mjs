@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from '../src/data/homepageData.js';
+import { CITATION_METADATA } from '../src/data/citationMetadata.js';
+import { generateBibtex, generateIeeeCitation } from '../src/utils/citations.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const failures = [];
@@ -36,6 +38,29 @@ for (const publication of BASE_PUBLICATIONS) {
   }
 }
 pass(`${BASE_PUBLICATIONS.length} publications include the required metadata and local assets.`);
+
+const publicationIds = new Set(BASE_PUBLICATIONS.map((publication) => publication.id));
+const citationIds = Object.keys(CITATION_METADATA);
+for (const id of citationIds) {
+  if (!publicationIds.has(id)) fail(`Citation metadata references an unknown publication: ${id}`);
+}
+for (const publication of BASE_PUBLICATIONS) {
+  if (!CITATION_METADATA[publication.id]) fail(`${publication.id} is missing formal citation metadata.`);
+  const ieee = generateIeeeCitation(publication);
+  const bibtex = generateBibtex(publication);
+  if (!ieee || /undefined|null/.test(ieee)) fail(`${publication.id} generated an invalid IEEE reference.`);
+  if (!/^@(article|inproceedings|phdthesis)\{/.test(bibtex) || /undefined|null/.test(bibtex)) {
+    fail(`${publication.id} generated invalid BibTeX.`);
+  }
+  if (publication.type === 'Journal' && !/journal = \{/.test(bibtex)) fail(`${publication.id} BibTeX is missing journal metadata.`);
+  if (publication.type === 'Conference' && !/booktitle = \{/.test(bibtex)) fail(`${publication.id} BibTeX is missing proceedings metadata.`);
+  if (publication.type === 'Thesis' && !/school = \{/.test(bibtex)) fail(`${publication.id} BibTeX is missing school metadata.`);
+}
+pass(`${BASE_PUBLICATIONS.length} IEEE references and BibTeX entries render from formal citation metadata.`);
+
+const mobihoc = BASE_PUBLICATIONS.find((publication) => publication.id === 'c2');
+if (mobihoc?.links?.poster !== '/papers/mobihoc_poster.pdf') fail('MobiHoc poster is not linked from publication c2.');
+else pass('MobiHoc poster is linked and covered by the local asset audit.');
 
 const en = PROFILE_DATA.en;
 const zh = PROFILE_DATA.zh;

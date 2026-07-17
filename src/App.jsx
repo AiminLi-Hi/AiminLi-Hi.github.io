@@ -9,9 +9,10 @@ import {
   Sparkles, Medal, Calendar, Mic2, CheckCircle2,
   Map as MapIcon, ArrowUp, Presentation, Send, Tag, Plus,
   MessageCircle, Plane, Landmark, Network, GitCommit,
-  Maximize2, Menu, X
+  Maximize2, Menu, X, FileImage
 } from 'lucide-react';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
+import { getAuthorList, getCitationFormats } from './utils/citations';
 
 // ==========================================
 // --- 自定义图标组件 (Custom Icons) ---
@@ -67,23 +68,6 @@ const useSEO = (title, description, lang = 'en', darkMode = false) => {
     upsertMeta("meta[name='twitter:title']", { name: 'twitter:title', content: title });
     upsertMeta("meta[name='twitter:description']", { name: 'twitter:description', content: description });
   }, [title, description, lang, darkMode]);
-};
-
-const generateBibtex = (pub) => {
-  const year = pub.year;
-  const firstAuthorSurname = pub.authors.split(',')[0]?.trim().split(' ').pop() || 'Author';
-  const firstTitleWord = pub.title.split(' ')[0] || 'Title';
-  const id = (firstAuthorSurname + year + firstTitleWord).toLowerCase();
-  const entryType = pub.type === 'Journal' ? 'article' : pub.type === 'Thesis' ? 'phdthesis' : 'inproceedings';
-  const venueField = pub.type === 'Thesis' ? 'school' : pub.type === 'Journal' ? 'journal' : 'booktitle';
-  const venueValue = pub.type === 'Thesis' ? pub.venue.replace(/^Ph\.D\. Dissertation,\s*/i, '') : pub.venue;
-  const bibtexAuthors = getAuthorList(pub.authors).join(' and ');
-  return `@${entryType}{${id},
-  title={${pub.title}},
-  author={${bibtexAuthors}},
-  ${venueField}={${venueValue}},
-  year={${year}}
-}`;
 };
 
 const DEFAULT_PRODUCTION_VISITOR_ENDPOINT = 'https://aimin-homepage-visitors-api.pages.dev';
@@ -240,6 +224,13 @@ const UI_COPY = {
     serviceChairTitle: 'Session Chair',
     serviceTpcTitle: 'TPC Member',
     serviceVolunteerTitle: 'Volunteer & Service',
+    citationTitle: 'Cite this publication',
+    ieeeCitation: 'IEEE reference',
+    bibtexCitation: 'BibTeX',
+    copyCitation: 'Copy',
+    copiedCitation: 'Copied',
+    closeCitation: 'Close citation dialog',
+    poster: 'Poster',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -332,6 +323,13 @@ const UI_COPY = {
     serviceChairTitle: '分会主席',
     serviceTpcTitle: 'TPC 委员',
     serviceVolunteerTitle: '志愿服务',
+    citationTitle: '引用此论文',
+    ieeeCitation: 'IEEE 格式',
+    bibtexCitation: 'BibTeX',
+    copyCitation: '复制',
+    copiedCitation: '已复制',
+    closeCitation: '关闭引用对话框',
+    poster: '海报',
   },
 };
 
@@ -673,11 +671,6 @@ const normalizePersonName = (value = '') => stripHtml(value)
   .toLowerCase()
   .replace(/[^a-z]+/g, ' ')
   .trim();
-
-const getAuthorList = (authors = '') => String(authors)
-  .split(',')
-  .map(author => author.trim())
-  .filter(Boolean);
 
 const getPublicationTitle = (pub = {}, lang = 'en') => (
   lang === 'zh' && pub.title_zh ? pub.title_zh : pub.title
@@ -1078,6 +1071,7 @@ const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMo
     bibtex: darkMode ? "bg-blue-900/20 text-blue-400 border-blue-800/50 hover:bg-blue-900/40" : "bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100",
     arxiv: darkMode ? "bg-red-900/10 text-red-400 border-red-800/30 hover:bg-red-900/30" : "bg-red-50 text-red-800 border-red-100 hover:bg-red-100",
     project: darkMode ? "bg-cyan-900/20 text-cyan-300 border-cyan-800/50 hover:bg-cyan-900/40" : "bg-cyan-50 text-cyan-800 border-cyan-100 hover:bg-cyan-100",
+    poster: darkMode ? "bg-fuchsia-900/15 text-fuchsia-200 border-fuchsia-700/35 hover:bg-fuchsia-900/30" : "bg-fuchsia-50 text-fuchsia-800 border-fuchsia-100 hover:bg-fuchsia-100",
     default: darkMode ? "bg-[#0e2032] text-slate-300 border-cyan-400/10 hover:bg-[#12314a]" : "bg-white text-slate-600 border-gray-200 hover:bg-gray-50"
   };
   
@@ -1133,8 +1127,9 @@ const LanguageToggle = ({ lang, darkMode, onToggle, fullWidth = false }) => {
   );
 };
 
-const BibtexModal = ({ content, onClose, darkMode, lang }) => {
+const CitationModal = ({ formats, onClose, darkMode, ui }) => {
   const closeButtonRef = useRef(null);
+  const [copiedFormat, setCopiedFormat] = useState('');
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -1147,28 +1142,50 @@ const BibtexModal = ({ content, onClose, darkMode, lang }) => {
     };
   }, [onClose]);
 
-  const closeLabel = lang === 'zh' ? '关闭 BibTeX 对话框' : 'Close BibTeX dialog';
-  const copyLabel = lang === 'zh' ? '复制并关闭' : 'Copy and close';
+  const copyCitation = async (format, content) => {
+    await navigator.clipboard.writeText(content);
+    setCopiedFormat(format);
+    window.setTimeout(() => setCopiedFormat(''), 1600);
+  };
+
+  const citationBlocks = [
+    { key: 'ieee', title: ui.ieeeCitation, content: formats.ieee, mono: false },
+    { key: 'bibtex', title: ui.bibtexCitation, content: formats.bibtex, mono: true },
+  ];
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#061523]/70 p-4 backdrop-blur-sm animate-fade-in"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="bibtex-dialog-title"
+      aria-labelledby="citation-dialog-title"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className={`w-full max-w-2xl rounded-xl p-6 shadow-2xl ${darkMode ? 'bg-[#0b1b2b] border border-cyan-400/15' : 'bg-white'}`}>
+      <div className={`max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-xl p-5 shadow-2xl sm:p-6 ${darkMode ? 'bg-[#0b1b2b] border border-cyan-400/15' : 'bg-white'}`}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="bibtex-dialog-title" className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>BibTeX</h2>
-          <button ref={closeButtonRef} type="button" onClick={onClose} aria-label={closeLabel} title={closeLabel} className="rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"><X size={20} /></button>
+          <h2 id="citation-dialog-title" className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{ui.citationTitle}</h2>
+          <button ref={closeButtonRef} type="button" onClick={onClose} aria-label={ui.closeCitation} title={ui.closeCitation} className="rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:bg-slate-800"><X size={20} /></button>
         </div>
-        <pre className={`mb-4 overflow-x-auto whitespace-pre-wrap rounded-lg p-4 font-mono text-sm leading-relaxed ${darkMode ? 'bg-[#071827] text-cyan-200' : 'bg-gray-50 text-gray-700 border'}`}>{content}</pre>
-        <div className="flex justify-end gap-3">
-          <button type="button" onClick={() => { navigator.clipboard.writeText(content); onClose(); }} className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"><Copy size={16} /> {copyLabel}</button>
+        <div className="space-y-4">
+          {citationBlocks.map(block => (
+            <section key={block.key} aria-labelledby={`citation-${block.key}-title`}>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <h3 id={`citation-${block.key}-title`} className={`text-xs font-black uppercase tracking-[0.12em] ${darkMode ? 'text-cyan-200' : 'text-cyan-800'}`}>{block.title}</h3>
+                <button
+                  type="button"
+                  onClick={() => copyCitation(block.key, block.content)}
+                  className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-bold transition-colors ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/15' : 'border-blue-100 bg-blue-50 text-blue-700 hover:bg-blue-100'}`}
+                >
+                  <Copy size={14} /> {copiedFormat === block.key ? ui.copiedCitation : ui.copyCitation}
+                </button>
+              </div>
+              <div className={`overflow-x-auto whitespace-pre-wrap break-words rounded-lg border p-4 text-sm leading-relaxed ${block.mono ? 'font-mono' : 'font-serif'} ${darkMode ? 'border-cyan-400/10 bg-[#071827] text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>{block.content}</div>
+            </section>
+          ))}
         </div>
+        <span className="sr-only" aria-live="polite">{copiedFormat ? ui.copiedCitation : ''}</span>
       </div>
     </div>
   );
@@ -1763,11 +1780,11 @@ export default function AcademicProfile() {
       ? 'zh'
       : 'en'
   ));
-  const [activeBibtex, setActiveBibtex] = useState(null);
-  const bibtexReturnFocusIdRef = useRef('');
-  const closeBibtex = useCallback(() => {
-    const returnFocusId = bibtexReturnFocusIdRef.current;
-    setActiveBibtex(null);
+  const [activeCitation, setActiveCitation] = useState(null);
+  const citationReturnFocusIdRef = useRef('');
+  const closeCitation = useCallback(() => {
+    const returnFocusId = citationReturnFocusIdRef.current;
+    setActiveCitation(null);
     window.setTimeout(() => document.getElementById(returnFocusId)?.focus(), 0);
   }, []);
   const [activeSection, setActiveSection] = useState(() => resolvePageFromHash());
@@ -2321,6 +2338,7 @@ export default function AcademicProfile() {
 
           <div className="mt-2 flex max-w-full flex-wrap items-center gap-1.5">
             {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
+            {pub.links?.poster && <ActionButton icon={FileImage} label={ui.poster} href={pub.links.poster} type="poster" darkMode={darkMode} />}
             {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
             {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
             {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
@@ -2329,8 +2347,8 @@ export default function AcademicProfile() {
               label="Cite"
               id={`cite-${pub.id}`}
               onClick={() => {
-                bibtexReturnFocusIdRef.current = `cite-${pub.id}`;
-                setActiveBibtex(generateBibtex(pub));
+                citationReturnFocusIdRef.current = `cite-${pub.id}`;
+                setActiveCitation(getCitationFormats(pub));
               }}
               type="bibtex"
               darkMode={darkMode}
@@ -3096,12 +3114,12 @@ export default function AcademicProfile() {
 
       </main>
       
-      {activeBibtex && (
-        <BibtexModal
-          content={activeBibtex}
-          onClose={closeBibtex}
+      {activeCitation && (
+        <CitationModal
+          formats={activeCitation}
+          onClose={closeCitation}
           darkMode={darkMode}
-          lang={lang}
+          ui={ui}
         />
       )}
       
