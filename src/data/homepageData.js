@@ -778,7 +778,7 @@ export const PROFILE_DATA = {
             { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
             { name: "Süleyman Çıtır", period: "", stage: "M.S.", outcome: "M.S. research collaboration; METU M.S. student." },
             { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; Asilomar paper." },
-            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop and IEEE WiSEE papers." },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; IEEE WiSEE paper." },
             { name: "Selay Nisa Şahin", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
             { name: "Yusuf", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
             { name: "Aral", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." }
@@ -975,7 +975,7 @@ export const PROFILE_DATA = {
             { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
             { name: "Süleyman Çıtır", period: "", stage: "硕士", outcome: "硕士科研合作；中东技术大学硕士生。" },
             { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科毕业论文指导；Asilomar 论文。" },
-            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop、IEEE WiSEE 论文。" },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；IEEE WiSEE 论文。" },
             { name: "Selay Nisa Şahin", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
             { name: "Yusuf", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
             { name: "Aral", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" }
