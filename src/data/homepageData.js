@@ -347,6 +347,19 @@ export const BASE_PUBLICATIONS = [
     summary: "Develops reinforcement learning based bundle management and flow control for goal-oriented deep-space communications."
   },
   {
+    id: "c18",
+    year: 2026,
+    title: "In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity",
+    authors: "Ayşe Nur Pehlivanoğlu, Aimin Li, Elif Uysal, Selami Ciftci, Mehmet Ozdem",
+    venue: "2026 IEEE International Conference on Wireless for Space and Extreme Environments",
+    venue_short: "IEEE WiSEE",
+    type: "Conference",
+    tag: "Co-Author",
+    studentOutcome: true,
+    keywords: ["LEO Satellite Communications", "Edge Intelligence", "Inference Freshness", "Intermittent Connectivity"],
+    summary: "Studies the balance between in-orbit intelligence and ground offloading to preserve inference freshness under intermittent LEO satellite connectivity."
+  },
+  {
     id: "c14",
     year: 2026,
     title: "Taming the Heavy Tail: Age-Optimal Preemption",
@@ -600,6 +613,7 @@ export const PROFILE_DATA = {
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+      { date: "2026-07-20", label: "WiSEE", content: "🛰️ Our paper <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> was accepted by the <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments (WiSEE 2026)</strong>. Congratulations to <strong>Ayşe Nur Pehlivanoğlu</strong>!", link: "#pub-c18" },
       { date: "2026-07", label: "Talk", content: "🎤 I gave a research talk at <strong>Sun Yat-sen University, Shenzhen</strong> in July, sharing our work <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>.", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 Our paper <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>. Congratulations to my collaborator and partner, <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 Our paper <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>. Congratulations to <strong>Haoxu Wu</strong>!", link: "#pub-j17" },
@@ -764,7 +778,7 @@ export const PROFILE_DATA = {
             { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
             { name: "Süleyman Çıtır", period: "", stage: "M.S.", outcome: "M.S. research collaboration; METU M.S. student." },
             { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; Asilomar paper." },
-            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop paper." },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; ACM SIGCOMM Workshop and IEEE WiSEE papers." },
             { name: "Selay Nisa Şahin", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
             { name: "Yusuf", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
             { name: "Aral", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." }
@@ -803,6 +817,7 @@ export const PROFILE_DATA = {
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+      { date: "2026-07-20", label: "WiSEE", content: "🛰️ 我们的论文 <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> 被 <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments（WiSEE 2026）</strong> 录用。恭喜 <strong>Ayşe（艾雪）</strong>！", link: "#pub-c18" },
       { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 我们的论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。恭喜 <strong>吴豪旭</strong>！", link: "#pub-j17" },
@@ -960,7 +975,7 @@ export const PROFILE_DATA = {
             { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
             { name: "Süleyman Çıtır", period: "", stage: "硕士", outcome: "硕士科研合作；中东技术大学硕士生。" },
             { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科毕业论文指导；Asilomar 论文。" },
-            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop 论文。" },
+            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；ACM SIGCOMM Workshop、IEEE WiSEE 论文。" },
             { name: "Selay Nisa Şahin", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
             { name: "Yusuf", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
             { name: "Aral", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" }

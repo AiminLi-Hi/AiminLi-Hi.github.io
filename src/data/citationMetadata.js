@@ -180,6 +180,11 @@ export const CITATION_METADATA = {
     year: 2026,
     status: 'accepted',
   },
+  c18: {
+    containerTitle: '2026 IEEE International Conference on Wireless for Space and Extreme Environments (WiSEE)',
+    year: 2026,
+    status: 'accepted',
+  },
   c14: {
     containerTitle: '2026 IEEE International Symposium on Information Theory (ISIT)',
     year: 2026,
