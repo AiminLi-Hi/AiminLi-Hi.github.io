@@ -107,7 +107,8 @@ export const BASE_PUBLICATIONS = [
     tag: "Sole Author",
     showSoleAuthorBadge: false,
     keywords: ["Ph.D. Dissertation", "Space-Air Communications", "Perception-Decision Loop", "Effectiveness"],
-    summary: "Ph.D. dissertation on key technologies for timeliness-enhanced space-air communications in perception-decision closed-loop systems."
+    summary: "Ph.D. dissertation on key technologies for timeliness-enhanced space-air communications in perception-decision closed-loop systems.",
+    links: { pdf: "https://aiminli-hi.github.io/papers/Aimin-Li-PhD-Dissertation-2025.pdf" }
   },
   {
     id: "j15",
