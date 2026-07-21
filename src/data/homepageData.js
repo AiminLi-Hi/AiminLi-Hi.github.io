@@ -379,6 +379,7 @@ export const BASE_PUBLICATIONS = [
     summary: "Studies age-optimal sampling and preemption under general, especially heavy-tailed, service-time distributions.",
     links: {
       pdf: "/papers/paper30ISIT.pdf",
+      slides: "https://aiminli-hi.github.io/slides/taming-heavy-tail-isit2026.pdf",
       project: "https://yigiti.github.io/Preemption/",
       code: "https://github.com/AiminLi-Hi/aoi-preemption-heavy-tail"
     },
@@ -742,35 +743,57 @@ export const PROFILE_DATA = {
     talks: [
       {
         date: "2026-07",
-        type: "Invited Talk",
+        type: "Conference & Invited Talks",
         title: "Taming the Heavy Tail: Age-Optimal Preemption",
-        event: "Research Seminar, Sun Yat-sen University, Shenzhen",
-        location: "Shenzhen, China",
-        note: "I shared our ISIT 2026 work on heavy-tailed delay and age-optimal preemption."
-      },
-      {
-        date: "2026-07",
-        type: "Conference Talk",
-        title: "Taming the Heavy Tail: Age-Optimal Preemption",
-        event: "IEEE International Symposium on Information Theory (ISIT 2026)",
-        location: "Guangzhou, China",
-        note: "Conference presentation of our age-optimal preemption work."
+        link: "#pub-c14",
+        appearances: [
+          {
+            event: "IEEE International Symposium on Information Theory (ISIT 2026)",
+            location: "Guangzhou, China"
+          },
+          {
+            event: "Research Seminar, Sun Yat-sen University",
+            location: "Shenzhen, China"
+          }
+        ]
       },
       {
         date: "2024-12",
         type: "Competition Talk",
         title: "4MT Thesis Presentation",
         event: "IEEE Globecom 2024 4MT Thesis Competition",
-        location: "Cape Town, South Africa",
-        note: "I presented my Ph.D. thesis and won the 3rd Prize."
+        location: "Cape Town, South Africa"
+      },
+      {
+        date: "2024-11",
+        type: "Conference Talk",
+        title: "Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process",
+        event: "IEEE Information Theory Workshop (ITW 2024)",
+        location: "Shenzhen, China",
+        link: "#pub-c3"
       },
       {
         date: "2024-04",
         type: "Conference Talk",
         title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
         event: "IEEE Wireless Communications and Networking Conference (WCNC)",
-        location: "Dubai, UAE",
-        note: "First-author conference presentation."
+        location: "Dubai, United Arab Emirates"
+      },
+      {
+        date: "2022-12",
+        type: "Virtual Conference Talk",
+        title: "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result",
+        event: "IEEE Global Communications Conference (GLOBECOM 2022)",
+        location: "Rio de Janeiro, Brazil (Virtual)",
+        link: "#pub-c10"
+      },
+      {
+        date: "2020-05",
+        type: "Virtual Conference Talk",
+        title: "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design",
+        event: "IEEE Vehicular Technology Conference (VTC2020-Spring)",
+        location: "Antwerp, Belgium (Virtual)",
+        link: "#pub-c13"
       }
     ],
     mentoring: {
@@ -948,35 +971,57 @@ export const PROFILE_DATA = {
     talks: [
       {
         date: "2026-07",
-        type: "邀请报告",
+        type: "会议与邀请报告",
         title: "Taming the Heavy Tail: Age-Optimal Preemption",
-        event: "中山大学深圳学术报告",
-        location: "中国深圳",
-        note: "分享我们 ISIT 2026 关于重尾时延与最优抢占的信息时效工作。"
-      },
-      {
-        date: "2026-07",
-        type: "会议报告",
-        title: "Taming the Heavy Tail: Age-Optimal Preemption",
-        event: "IEEE International Symposium on Information Theory (ISIT 2026)",
-        location: "中国广州",
-        note: "报告我们的最优抢占与信息时效研究。"
+        link: "#pub-c14",
+        appearances: [
+          {
+            event: "IEEE International Symposium on Information Theory (ISIT 2026)",
+            location: "中国广州"
+          },
+          {
+            event: "中山大学学术报告",
+            location: "中国深圳"
+          }
+        ]
       },
       {
         date: "2024-12",
         type: "竞赛报告",
         title: "4MT Thesis Presentation",
         event: "IEEE Globecom 2024 四分钟博士学位论文竞赛",
-        location: "南非开普敦",
-        note: "我在比赛中报告博士论文并获得三等奖。"
+        location: "南非开普敦"
+      },
+      {
+        date: "2024-11",
+        type: "会议报告",
+        title: "Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process",
+        event: "IEEE Information Theory Workshop (ITW 2024)",
+        location: "中国深圳",
+        link: "#pub-c3"
       },
       {
         date: "2024-04",
         type: "会议报告",
         title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
         event: "IEEE Wireless Communications and Networking Conference (WCNC)",
-        location: "阿联酋迪拜",
-        note: "一作会议报告。"
+        location: "阿拉伯联合酋长国迪拜"
+      },
+      {
+        date: "2022-12",
+        type: "线上会议报告",
+        title: "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result",
+        event: "IEEE Global Communications Conference (GLOBECOM 2022)",
+        location: "巴西里约热内卢（线上）",
+        link: "#pub-c10"
+      },
+      {
+        date: "2020-05",
+        type: "线上会议报告",
+        title: "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design",
+        event: "IEEE Vehicular Technology Conference (VTC2020-Spring)",
+        location: "比利时安特卫普（线上）",
+        link: "#pub-c13"
       }
     ],
     mentoring: {

@@ -134,6 +134,41 @@
   color: #062033;
 }
 
+.profile-avatar {
+  isolation: isolate;
+}
+
+.profile-avatar__halo {
+  position: absolute;
+  inset: 0.45rem;
+  z-index: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0.72;
+  transform: scale(0.98);
+  box-shadow:
+    -1.15rem -0.35rem 2.65rem rgba(139, 92, 246, 0.2),
+    1.15rem -0.1rem 2.7rem rgba(16, 185, 129, 0.2),
+    0 1.3rem 2.5rem rgba(15, 23, 42, 0.16);
+  transition:
+    opacity 700ms ease,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 700ms ease;
+}
+
+.profile-avatar:hover .profile-avatar__halo {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+.profile-avatar__halo--dark {
+  opacity: 0.66;
+  box-shadow:
+    -1.1rem -0.35rem 2.6rem rgba(34, 211, 238, 0.2),
+    1.15rem -0.05rem 2.75rem rgba(16, 185, 129, 0.18),
+    0 1.3rem 2.6rem rgba(2, 8, 23, 0.42);
+}
+
 @media (max-width: 560px) {
   .language-switcher {
     min-height: 2.1rem;

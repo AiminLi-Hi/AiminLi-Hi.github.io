@@ -231,6 +231,7 @@ const UI_COPY = {
     copiedCitation: 'Copied',
     closeCitation: 'Close citation dialog',
     poster: 'Poster',
+    slides: 'Slides',
   },
   zh: {
     publicationDesc: '精选论文与学术成果。',
@@ -330,6 +331,7 @@ const UI_COPY = {
     copiedCitation: '已复制',
     closeCitation: '关闭引用对话框',
     poster: '海报',
+    slides: '幻灯片',
   },
 };
 
@@ -1074,6 +1076,7 @@ const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMo
     arxiv: darkMode ? "bg-red-900/10 text-red-400 border-red-800/30 hover:bg-red-900/30" : "bg-red-50 text-red-800 border-red-100 hover:bg-red-100",
     project: darkMode ? "bg-cyan-900/20 text-cyan-300 border-cyan-800/50 hover:bg-cyan-900/40" : "bg-cyan-50 text-cyan-800 border-cyan-100 hover:bg-cyan-100",
     poster: darkMode ? "bg-fuchsia-900/15 text-fuchsia-200 border-fuchsia-700/35 hover:bg-fuchsia-900/30" : "bg-fuchsia-50 text-fuchsia-800 border-fuchsia-100 hover:bg-fuchsia-100",
+    slides: darkMode ? "bg-amber-400/10 text-amber-200 border-amber-300/20 hover:bg-amber-400/20" : "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100",
     default: darkMode ? "bg-[#0e2032] text-slate-300 border-cyan-400/10 hover:bg-[#12314a]" : "bg-white text-slate-600 border-gray-200 hover:bg-gray-50"
   };
   
@@ -2183,8 +2186,8 @@ export default function AcademicProfile() {
   const profileSidebar = (
     <aside className={`profile-sidebar lg:col-span-3 flex-col items-center text-center lg:sticky lg:top-24 lg:flex lg:items-start lg:text-left space-y-5 ${displayIsHomePage ? 'flex' : 'hidden'}`}>
       <div className="profile-avatar relative group w-48 h-48 mx-auto lg:mx-0">
-        <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-cyan-500 via-sky-500 to-emerald-400' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
-        <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
+        <div aria-hidden="true" className={`profile-avatar__halo ${darkMode ? 'profile-avatar__halo--dark' : ''}`}></div>
+        <div className={`relative z-10 w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
           <img src="/images/aimin-li-portrait-2026.jpg" alt={lang === 'zh' ? '黎爱民头像' : 'Portrait of Aimin Li'} width="192" height="192" decoding="async" className="w-full h-full object-cover bg-slate-100" />
         </div>
       </div>
@@ -2341,6 +2344,7 @@ export default function AcademicProfile() {
           <div className="mt-2 flex max-w-full flex-wrap items-center gap-1.5">
             {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
             {pub.links?.poster && <ActionButton icon={FileImage} label={ui.poster} href={pub.links.poster} type="poster" darkMode={darkMode} />}
+            {pub.links?.slides && <ActionButton icon={Presentation} label={ui.slides} href={pub.links.slides} type="slides" darkMode={darkMode} />}
             {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
             {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
             {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
@@ -2518,7 +2522,11 @@ export default function AcademicProfile() {
           </div>
 
           <div className="space-y-4 animate-fade-in">
-            {talkRows.map((talk, idx) => (
+            {talkRows.map((talk, idx) => {
+              const appearances = talk.appearances || [{ event: talk.event, location: talk.location }];
+              const isGroupedTalk = appearances.length > 1;
+
+              return (
               <section key={`${talk.date}-${talk.title}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                 <div className="flex items-baseline justify-between gap-2 md:block">
                   <div className={`font-mono text-lg font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
@@ -2533,27 +2541,36 @@ export default function AcademicProfile() {
                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                   <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-teal-400/70 bg-teal-400/[0.03] hover:bg-teal-400/[0.045]' : 'border-l-teal-400 bg-teal-50/35 hover:bg-slate-50/75'}`}>
                     <h3 className={`text-[15px] font-extrabold leading-snug md:text-base ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                      {talk.title}
+                      {talk.link ? (
+                        <a href={talk.link} className={`transition-colors hover:underline hover:underline-offset-4 ${darkMode ? 'hover:text-teal-200' : 'hover:text-teal-800'}`}>
+                          {talk.title}
+                        </a>
+                      ) : talk.title}
                     </h3>
-                    <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                      <span className="inline-flex items-center gap-1.5">
-                        <Presentation size={13} className={darkMode ? 'text-teal-300' : 'text-teal-700'} />
-                        {talk.event}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <MapPin size={13} className={darkMode ? 'text-teal-300' : 'text-teal-700'} />
-                        {talk.location}
-                      </span>
+                    <div className={`mt-1.5 text-[12px] font-semibold leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'} ${isGroupedTalk ? `divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-slate-200'}` : ''}`}>
+                      {appearances.map((appearance, appearanceIdx) => (
+                        <div key={`${appearance.event}-${appearance.location}`} className={`grid gap-1 ${isGroupedTalk ? 'py-1.5 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4' : 'sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4'}`}>
+                          <span className="inline-flex min-w-0 items-start gap-1.5">
+                            {isGroupedTalk && (
+                              <span className={`mt-px shrink-0 font-mono text-[10px] font-black tabular-nums ${darkMode ? 'text-teal-300/80' : 'text-teal-700/80'}`}>
+                                {String(appearanceIdx + 1).padStart(2, '0')}
+                              </span>
+                            )}
+                            <Presentation size={13} className={`mt-px shrink-0 ${darkMode ? 'text-teal-300' : 'text-teal-700'}`} />
+                            <span>{appearance.event}</span>
+                          </span>
+                          <span className="inline-flex items-start gap-1.5 sm:justify-self-end">
+                            <MapPin size={13} className={`mt-px shrink-0 ${darkMode ? 'text-teal-300' : 'text-teal-700'}`} />
+                            <span>{appearance.location}</span>
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    {talk.note && (
-                      <p className={`mt-1.5 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {talk.note}
-                      </p>
-                    )}
                   </article>
                 </div>
               </section>
-            ))}
+              );
+            })}
           </div>
         </section>
         )}
