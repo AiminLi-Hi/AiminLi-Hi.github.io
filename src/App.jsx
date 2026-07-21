@@ -2183,7 +2183,7 @@ export default function AcademicProfile() {
       <div className="profile-avatar relative group w-48 h-48 mx-auto lg:mx-0">
         <div className={`absolute -inset-1 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 ${darkMode ? 'bg-gradient-to-tr from-cyan-500 via-sky-500 to-emerald-400' : 'bg-gradient-to-tr from-purple-400 to-emerald-300'}`}></div>
         <div className={`relative w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
-          <img src="/images/profile.jpg" alt={lang === 'zh' ? '黎爱民头像' : 'Portrait of Aimin Li'} width="192" height="192" decoding="async" className="w-full h-full object-cover bg-slate-100" />
+          <img src="/images/aimin-li-portrait-2026.jpg" alt={lang === 'zh' ? '黎爱民头像' : 'Portrait of Aimin Li'} width="192" height="192" decoding="async" className="w-full h-full object-cover bg-slate-100" />
         </div>
       </div>
       <div className="profile-socials w-full flex flex-wrap justify-center lg:justify-start gap-3">
