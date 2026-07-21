@@ -124,7 +124,9 @@ try {
     ? fs.readFileSync(previousVisitorMapPath, 'utf8')
     : '';
 
-  run('rsync', ['-a', '--delete', '--exclude', '.git', `${distDir}/`, `${deployDir}/`]);
+  // Git worktree checkout times can match a fresh build to the second. Compare
+  // content as well so same-sized index files are never skipped as unchanged.
+  run('rsync', ['-a', '--checksum', '--delete', '--exclude', '.git', `${distDir}/`, `${deployDir}/`]);
 
   if (preserveVisitorData) {
     const preservedSnapshot = preserveVisitorSnapshot(previousVisitorSync, path.join(deployDir, visitorSyncFile));
