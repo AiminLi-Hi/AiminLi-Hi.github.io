@@ -21,6 +21,7 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     keywords: ["Age of Information", "UAV Swarms", "MARL", "Routing"],
     summary: "Develops an AoI-aware joint sampling, buffering, and routing optimization framework for autonomous UAV swarms using multi-agent reinforcement learning.",
+    links: { pdf: "https://aiminli-hi.github.io/papers/paper34TMC.pdf" },
     url: "https://ieeexplore.ieee.org/abstract/document/11547874/"
   },
   {
@@ -37,6 +38,7 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     keywords: ["Remote Estimation", "Internet of Things", "Entropy", "Uncertainty of Information"],
     summary: "Uses uncertainty of information to guide sampling for remote estimation over randomly delayed IoT systems.",
+    links: { pdf: "https://aiminli-hi.github.io/papers/paper35IoTJ.pdf" },
     url: "https://doi.org/10.1109/JIOT.2026.3663721"
   },
   {
