@@ -739,7 +739,9 @@ const awardYearValue = (award = {}) => (
 );
 
 const getServiceVenueMeta = (venue = '') => {
-  const isJournal = /Transactions|Journal|Letters|Computer Networks/i.test(venue);
+  const isConference = /Conference|Symposium|Workshop|VTC|ISIT|Infocom|IWCMC|APWCS/i.test(venue);
+  const isJournal = !isConference
+    && /Transactions|Journal|Letters|Computer Networks|Computer Communications|^Engineering$/i.test(venue);
   return {
     full: venue,
     type: isJournal ? 'journal' : 'conference',
