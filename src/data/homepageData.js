@@ -321,7 +321,7 @@ export const BASE_PUBLICATIONS = [
   {
     id: "c16",
     year: 2026,
-    title: "Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving",
+    title: "SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving",
     authors: "Haojie Bai, Aimin Li, Ruoyu Yao, Xiongwei Zhao, Tingting Zhang, Xing Zhang, Lin Gao, Jun Ma",
     venue: "IEEE/RSJ International Conference on Intelligent Robots and Systems",
     venue_short: "IEEE IROS",
@@ -329,8 +329,11 @@ export const BASE_PUBLICATIONS = [
     tag: "Co-First Author",
     studentOutcome: false,
     keywords: ["Multi-Agent Planning", "Diffusion Models", "Reinforcement Learning", "Cooperative Driving"],
-    summary: "Develops stable online reinforcement fine-tuning for scene-consistent multi-agent diffusion planning in cooperative driving.",
-    links: { project: "https://zebai9.github.io/SCORP/" },
+    summary: "Develops scene-consistent multi-agent diffusion planning with stable online reinforcement post-training for cooperative driving.",
+    links: {
+      pdf: "/papers/paper29IROS.pdf",
+      project: "https://zebai9.github.io/SCORP/"
+    },
     url: "https://arxiv.org/abs/2604.11734"
   },
   {
@@ -344,7 +347,8 @@ export const BASE_PUBLICATIONS = [
     tag: "Co-Author",
     studentOutcome: false,
     keywords: ["Deep-Space Communications", "Bundle Management", "Flow Control", "Reinforcement Learning", "Goal-Oriented Communications"],
-    summary: "Develops reinforcement learning based bundle management and flow control for goal-oriented deep-space communications."
+    summary: "Develops reinforcement learning based bundle management and flow control for goal-oriented deep-space communications.",
+    links: { pdf: "/papers/paper32IAC.pdf" }
   },
   {
     id: "c18",
@@ -357,7 +361,9 @@ export const BASE_PUBLICATIONS = [
     tag: "Co-Author",
     studentOutcome: true,
     keywords: ["LEO Satellite Communications", "Edge Intelligence", "Inference Freshness", "Intermittent Connectivity"],
-    summary: "Studies the balance between in-orbit intelligence and ground offloading to preserve inference freshness under intermittent LEO satellite connectivity."
+    summary: "Studies the balance between in-orbit intelligence and ground offloading to preserve inference freshness under intermittent LEO satellite connectivity.",
+    links: { pdf: "/papers/paper31WiSEE.pdf" },
+    url: "https://arxiv.org/abs/2605.27021"
   },
   {
     id: "c14",
@@ -372,10 +378,25 @@ export const BASE_PUBLICATIONS = [
     keywords: ["Age of Information", "Preemption", "Heavy-Tailed Delay", "Impulse Control"],
     summary: "Studies age-optimal sampling and preemption under general, especially heavy-tailed, service-time distributions.",
     links: {
+      pdf: "/papers/paper30ISIT.pdf",
       project: "https://yigiti.github.io/Preemption/",
       code: "https://github.com/AiminLi-Hi/aoi-preemption-heavy-tail"
     },
     url: "https://arxiv.org/abs/2601.16624"
+  },
+  {
+    id: "c19",
+    year: 2026,
+    title: "Age of Information in Time-Varying Multi-Priority Queues",
+    authors: "Burak Karasakal, Aimin Li, Elif Uysal",
+    venue: "IEEE Information Theory Workshop",
+    venue_short: "IEEE ITW",
+    type: "Conference",
+    tag: "Co-Author",
+    studentOutcome: true,
+    keywords: ["Age of Information", "Time-Varying Queues", "Priority Queues", "Periodic Systems"],
+    summary: "Characterizes age of information in time-varying multi-priority queues through a finite-dimensional periodic system.",
+    links: { pdf: "/papers/paper33ITW2026.pdf" }
   },
   {
     id: "c15",
@@ -613,9 +634,10 @@ export const PROFILE_DATA = {
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+      { date: "2026-07", label: "ITW", content: "🎉 Our paper <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> was accepted by the <strong>2026 IEEE Information Theory Workshop (ITW 2026)</strong>. Congratulations to <strong>Burak Karasakal</strong>!", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ Our paper <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> was accepted by the <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments (WiSEE 2026)</strong>. Congratulations to <strong>Ayşe Nur Pehlivanoğlu</strong>!", link: "#pub-c18" },
       { date: "2026-07", label: "Talk", content: "🎤 I gave a research talk at <strong>Sun Yat-sen University, Shenzhen</strong> in July, sharing our work <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>.", link: "#talks" },
-      { date: "2026-06", label: "IROS", content: "🤖 Our paper <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>. Congratulations to my collaborator and partner, <strong>Haojie</strong> ✌️", link: "#pub-c16" },
+      { date: "2026-06", label: "IROS", content: "🤖 Our paper <strong>SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>. Congratulations to my collaborator and partner, <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 Our paper <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> appeared in <strong>IEEE Transactions on Mobile Computing (TMC)</strong>. Congratulations to <strong>Haoxu Wu</strong>!", link: "#pub-j17" },
       { date: "2026-05", label: "IoTJ", content: "Our paper <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> appeared in <strong>IEEE Internet of Things Journal (IoTJ)</strong>. Congratulations to <strong>Xiaomeng Chen</strong>!", link: "#pub-j18" },
       { date: "2026-04", label: "IAC", content: "🚀 Our paper <strong>Goal-Oriented Bundle Management and Flow Control for Deep-Space Communications via Reinforcement Learning</strong> was accepted by the <strong>77th International Astronautical Congress (IAC 2026)</strong>. Congratulations to my partner <strong>Sajjad Baghaee</strong>!", link: "#pub-c17" },
@@ -817,9 +839,10 @@ export const PROFILE_DATA = {
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+      { date: "2026-07", label: "ITW", content: "🎉 我们的论文 <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> 被 <strong>2026 IEEE Information Theory Workshop（ITW 2026）</strong> 录用。恭喜 <strong>Burak Karasakal</strong>！", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ 我们的论文 <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> 被 <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments（WiSEE 2026）</strong> 录用。恭喜 <strong>Ayşe（艾雪）</strong>！", link: "#pub-c18" },
       { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
-      { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
+      { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
       { date: "2026-06", label: "TMC", content: "🚁 我们的论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。恭喜 <strong>吴豪旭</strong>！", link: "#pub-j17" },
       { date: "2026-05", label: "IoTJ", content: "我们的论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。恭喜 <strong>霄萌</strong>！", link: "#pub-j18" },
       { date: "2026-04", label: "IAC", content: "🚀 我们的论文 <strong>Goal-Oriented Bundle Management and Flow Control for Deep-Space Communications via Reinforcement Learning</strong> 被 <strong>第 77 届国际宇航大会（IAC 2026）</strong> 录用。恭喜我的伙伴 <strong>Sajjad Baghaee</strong>！", link: "#pub-c17" },

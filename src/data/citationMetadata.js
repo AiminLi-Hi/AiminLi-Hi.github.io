@@ -190,6 +190,11 @@ export const CITATION_METADATA = {
     year: 2026,
     status: 'accepted',
   },
+  c19: {
+    containerTitle: '2026 IEEE Information Theory Workshop (ITW)',
+    year: 2026,
+    status: 'accepted',
+  },
   c15: {
     containerTitle: '2026 IEEE Vehicular Technology Conference (VTC-Spring)',
     year: 2026,
