@@ -195,6 +195,11 @@ export const CITATION_METADATA = {
     year: 2026,
     status: 'accepted',
   },
+  c20: {
+    containerTitle: '60th Asilomar Conference on Signals, Systems, and Computers',
+    year: 2026,
+    status: 'accepted',
+  },
   c15: {
     containerTitle: '2026 IEEE Vehicular Technology Conference (VTC-Spring)',
     year: 2026,

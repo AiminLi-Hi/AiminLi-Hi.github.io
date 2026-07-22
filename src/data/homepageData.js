@@ -406,6 +406,19 @@ export const BASE_PUBLICATIONS = [
     links: { pdf: "/papers/paper33ITW2026.pdf" }
   },
   {
+    id: "c20",
+    year: 2026,
+    title: "ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control",
+    authors: "Sayam Chakraborty, Aimin Li, Yigit Ince, Sajjad Baghaee, Elif Uysal",
+    venue: "60th Asilomar Conference on Signals, Systems, and Computers",
+    venue_short: "Asilomar",
+    type: "Conference",
+    tag: "Co-Author",
+    studentOutcome: true,
+    keywords: ["Satellite Random Access", "Age of Information", "Mean-Field Control", "Asynchronous Access"],
+    summary: "Develops ASTRA, an asynchronous age-aware satellite random-access framework using mean-field control."
+  },
+  {
     id: "c15",
     year: 2026,
     title: "Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications",
@@ -641,6 +654,7 @@ export const PROFILE_DATA = {
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+      { date: "2026-07", label: "Asilomar", content: "🛰️ Our paper <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> was accepted by the <strong>60th Asilomar Conference on Signals, Systems, and Computers</strong>. Congratulations to <strong>Sayam Chakraborty</strong>!", link: "#pub-c20" },
       { date: "2026-07", label: "ITW", content: "🎉 Our paper <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> was accepted by the <strong>2026 IEEE Information Theory Workshop (ITW 2026)</strong>. Congratulations to <strong>Burak Karasakal</strong>!", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ Our paper <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> was accepted by the <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments (WiSEE 2026)</strong>. Congratulations to <strong>Ayşe Nur Pehlivanoğlu</strong>!", link: "#pub-c18" },
       { date: "2026-07", label: "Talk", content: "🎤 I gave a research talk at <strong>Sun Yat-sen University, Shenzhen</strong> in July, sharing our work <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>.", link: "#talks" },
@@ -876,6 +890,7 @@ export const PROFILE_DATA = {
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+      { date: "2026-07", label: "Asilomar", content: "🛰️ 我们的论文 <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> 被<strong>第 60 届 Asilomar Conference on Signals, Systems, and Computers</strong>录用。恭喜 <strong>Sayam Chakraborty</strong>！", link: "#pub-c20" },
       { date: "2026-07", label: "ITW", content: "🎉 我们的论文 <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> 被 <strong>2026 IEEE Information Theory Workshop（ITW 2026）</strong> 录用。恭喜 <strong>Burak Karasakal</strong>！", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ 我们的论文 <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> 被 <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments（WiSEE 2026）</strong> 录用。恭喜 <strong>Ayşe（艾雪）</strong>！", link: "#pub-c18" },
       { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
