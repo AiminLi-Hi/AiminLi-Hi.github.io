@@ -325,22 +325,5 @@ window.HOMEPAGE_SYNC_DATA = {
     "updatedAt": "2026-07-23T05:35:11.024Z"
   },
   "extraNews": [],
-  "extraPublications": [
-    {
-      "key": "scholar-multi-orft-stable-online-reinforcement-fine-tuning-for-multi-agent-diffu",
-      "year": 2026,
-      "tag": "Google Scholar",
-      "title": "Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving",
-      "authors": "H Bai*, Aimin Li*, R Yao, X Zhao, T Zhang, X Zhang, L Gao, J Ma",
-      "venue": "IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2026",
-      "shortVenue": "IEEE IROS",
-      "type": "Conference",
-      "keywords": [
-        "Age of Information"
-      ],
-      "summary": "Latest Google Scholar record: IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2026.",
-      "href": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=nyl1-EMAAAAJ&pagesize=100&sortby=pubdate&citation_for_view=nyl1-EMAAAAJ:4aZ_i-5WJEQC",
-      "newsLabel": "IROS"
-    }
-  ]
+  "extraPublications": []
 };
