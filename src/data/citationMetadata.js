@@ -18,6 +18,12 @@ export const CITATION_METADATA = {
     pages: '19235-19249',
     doi: '10.1109/JIOT.2026.3663721',
   },
+  j19: {
+    containerTitle: 'IEEE Communications Magazine',
+    abbreviation: 'IEEE Commun. Mag.',
+    year: 2026,
+    status: 'accepted',
+  },
   j5: {
     containerTitle: 'IEEE Wireless Communications',
     abbreviation: 'IEEE Wireless Commun.',

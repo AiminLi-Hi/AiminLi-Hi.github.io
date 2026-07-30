@@ -6,7 +6,7 @@ The production realtime API is deployed as a Cloudflare Pages Function at:
 https://aimin-homepage-visitors-api.pages.dev
 ```
 
-It provides realtime country-level aggregate visitor counts for the homepage.
+It provides realtime country-level aggregate visit counts for the homepage.
 
 It exposes:
 
@@ -16,6 +16,7 @@ It exposes:
 - `GET /hit`: records one pageview and returns the latest snapshot as JSON.
 - `GET /stats`: returns the latest snapshot without incrementing.
 - `POST /admin/adjust`: manually adds aggregate visitor events. Requires `VISITOR_ADMIN_TOKEN`.
+- `POST /admin/owner/register`: registers the caller's salted network hash as the site owner. Requires `VISITOR_ADMIN_TOKEN`.
 - `GET /health`: health check.
 
 The homepage automatically uses this production API on `aiminli-hi.github.io`. `VITE_VISITOR_STATS_ENDPOINT` is only needed when overriding the endpoint for builds, previews, or a future API migration. Local development falls back to the static snapshot unless the endpoint is explicitly configured.
@@ -34,7 +35,18 @@ Then set the homepage build environment variable:
 VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors-api.pages.dev
 ```
 
-The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys used to avoid lost updates. It does not store IP addresses, user agents, city-level data, or individual visitor identities.
+Every full homepage entry or reload records one visit. Internal navigation within the single-page site does not create extra visits. The script and image fallback share an anonymous page-entry ID, so a network retry cannot count the same entry twice. Registered owner networks retain a fixed salted hash key and count only once; all other networks create a new anonymous event on every entry.
+
+The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys used to avoid lost updates. It does not store raw IP addresses, user agents, city-level data, or individual visitor identities.
+
+Register the current owner network after deploying a counting-rule update:
+
+```bash
+curl -X POST "https://aimin-homepage-visitors-api.pages.dev/admin/owner/register" \
+  -H "Authorization: Bearer $VISITOR_ADMIN_TOKEN"
+```
+
+Repeat the registration only when the owner's public network changes. Existing visitor counters are not modified by registration.
 
 ## Visitor data preservation during homepage deploys
 

@@ -53,7 +53,9 @@ export const generateBibtex = (publication = {}) => {
     bibtexField('doi', data.doi),
   );
 
-  if (data.status === 'accepted') fields.push(bibtexField('note', 'Accepted for presentation'));
+  if (data.status === 'accepted') {
+    fields.push(bibtexField('note', data.type === 'Journal' ? 'Accepted for publication' : 'Accepted for presentation'));
+  }
   if (data.status === 'early-access') fields.push(bibtexField('note', 'Early Access'));
   if (!data.doi && publication.url) fields.push(bibtexField('url', publication.url));
 
@@ -105,6 +107,10 @@ export const generateIeeeCitation = (publication = {}) => {
       data.doi ? `doi: ${data.doi}` : '',
     ].filter(Boolean).join(', ');
     return `${authors}, ${title} ${details}.`;
+  }
+
+  if (data.type === 'Journal' && data.status === 'accepted') {
+    return `${authors}, ${title} accepted for publication in ${data.abbreviation || data.containerTitle || data.venue}, ${year}.`;
   }
 
   const details = [

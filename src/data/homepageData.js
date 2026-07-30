@@ -42,6 +42,22 @@ export const BASE_PUBLICATIONS = [
     url: "https://doi.org/10.1109/JIOT.2026.3663721"
   },
   {
+    id: "j19",
+    year: 2026,
+    title: "Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks",
+    authors: "Elif Uysal, Aimin Li",
+    venue: "IEEE Communications Magazine",
+    venue_short: "IEEE ComMag",
+    type: "Journal",
+    if: "8.3",
+    jcr: "Q1",
+    tag: "Co-Author",
+    studentOutcome: false,
+    keywords: ["Goal-Oriented Communications", "Interplanetary Networks", "Non-Terrestrial Networks", "Delay/Disruption Tolerant Networking"],
+    summary: "Presents a goal-oriented networking vision for interplanetary and non-terrestrial networks, spanning decision metrics, random access, and delay/disruption-tolerant flow control.",
+    links: { pdf: "https://arxiv.org/pdf/2409.14534" }
+  },
+  {
     id: "j5",
     year: 2024,
     title: "Toward Goal-Oriented Semantic Communications: New Metrics, Framework, and Open Challenges",
@@ -416,7 +432,8 @@ export const BASE_PUBLICATIONS = [
     tag: "Co-First Author",
     studentOutcome: true,
     keywords: ["Satellite Random Access", "Age of Information", "Mean-Field Control", "Asynchronous Access"],
-    summary: "Develops ASTRA, an asynchronous age-aware satellite random-access framework using mean-field control."
+    summary: "Develops ASTRA, an asynchronous age-aware satellite random-access framework using mean-field control.",
+    url: "https://arxiv.org/abs/2605.18282"
   },
   {
     id: "c15",
@@ -641,21 +658,23 @@ export const PROFILE_DATA = {
     role: "Postdoctoral Researcher",
     org: "Middle East Technical University (METU)",
     org_full: "Middle East Technical University (METU)",
-    bio: "Welcome to my homepage!\n\nI am Aimin Li, a Postdoctoral Researcher at METU, working with IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/) on the ERC Advanced Grant project **GO-SPACE**. You can also call me **Eamon**.\n\nMy research explores how future communication systems can become more goal-oriented, timely, and intelligent. My interests lie in **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**, with a focus on communication systems that deliver information not only reliably, but also at the right time and for the right purpose.\n\nI received my Ph.D. from Harbin Institute of Technology, Shenzhen, under the supervision of [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
+    bio: "Welcome to my homepage!\n\nI am Aimin Li, a Postdoctoral Researcher at METU, working with IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal) on the ERC Advanced Grant project **GO-SPACE**. You can also call me **Eamon**.\n\nMy research explores how future communication systems can become more goal-oriented, timely, and intelligent. My interests lie in **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**, with a focus on communication systems that deliver information not only reliably, but also at the right time and for the right purpose.\n\nI received my Ph.D. from Harbin Institute of Technology, Shenzhen, under the supervision of [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
     location: "Ankara, Türkiye",
     social: {
       scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=en",
       orcid: "https://orcid.org/0000-0003-3687-4378",
       github: "https://github.com/aiminli-hi",
       linkedin: "https://linkedin.com", 
+      xiaohongshu: "https://xhslink.com/m/2CfyBndWr4f",
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
       email: "mailto:hitliaimin@163.com"
     },
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+      { date: "2026-07", label: "ComMag", content: "🌌 Our paper <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> was accepted by <strong>IEEE Communications Magazine</strong>. Congratulations to my advisor, <strong>Prof. Elif Uysal</strong>, and heartfelt thanks for her guidance - I learned so much from her throughout this work.", link: "#pub-j19" },
       { date: "2026-07", label: "Asilomar", content: "🛰️ Our paper <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> was accepted by the <strong>60th Asilomar Conference on Signals, Systems, and Computers</strong>. Congratulations to <strong>Sayam Chakraborty</strong>!", link: "#pub-c20" },
-      { date: "2026-07", label: "ITW", content: "🎉 Our paper <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> was accepted by the <strong>2026 IEEE Information Theory Workshop (ITW 2026)</strong>. Congratulations to <strong>Burak Karasakal</strong>!", link: "#pub-c19" },
+      { date: "2026-07", label: "ITW", content: "🎉 Our paper <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> was accepted by the <strong>2026 IEEE Information Theory Workshop (ITW 2026)</strong>, with reviewer scores of <span class=\"news-mobihoc-count\">5/5, 4/5, and 4/5</span>. Congratulations to <strong>Burak Karasakal</strong>!", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ Our paper <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> was accepted by the <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments (WiSEE 2026)</strong>. Congratulations to <strong>Ayşe Nur Pehlivanoğlu</strong>!", link: "#pub-c18" },
       { date: "2026-07", label: "Talk", content: "🎤 I gave a research talk at <strong>Sun Yat-sen University, Shenzhen</strong> in July, sharing our work <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>.", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 Our paper <strong>SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving</strong> was accepted by <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong>. Congratulations to my collaborator and partner, <strong>Haojie</strong> ✌️", link: "#pub-c16" },
@@ -674,7 +693,7 @@ export const PROFILE_DATA = {
     ],
     timeline: [
       { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
-        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.",
+        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.",
         reflection: "Research is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love the warmth of Turkish people and Türkiye’s distinct four seasons.",
         lineage: [
           { name: "Claude Shannon", title: "A Mathematical Theory of Communication (1948) — laid the mathematical foundation of information theory", era: "1948", role: "ancestor", highlight: false },
@@ -878,20 +897,22 @@ export const PROFILE_DATA = {
     role: "博士后研究员",
     org: "土耳其中东技术大学 (METU)",
     org_full: "土耳其中东技术大学 (METU)",
-    bio: "欢迎来到我的个人主页！\n\n我是黎爱民，现为土耳其中东技术大学 (METU) 博士后研究员，与 IEEE Fellow [Elif Uysal 教授](https://users.metu.edu.tr/ueelif/) 合作参与 ERC Advanced Grant 项目 **GO-SPACE**。我的英文名是 **Eamon**，也欢迎大家这样称呼我。\n\n我的研究探索未来通信系统如何变得更加目标导向、及时与智能。我的研究兴趣包括**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**，重点关注不仅可靠传递信息，而且能够在正确时间、服务正确目标的通信系统。\n\n我博士毕业于哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)，并曾在新加坡科技研究局（A*STAR I²R）访问研究，期间受 IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导。",
+    bio: "欢迎来到我的个人主页！\n\n我是黎爱民，现为土耳其中东技术大学 (METU) 博士后研究员，与 IEEE Fellow [Elif Uysal 教授](https://eee.metu.edu.tr/personel/elif-uysal) 合作参与 ERC Advanced Grant 项目 **GO-SPACE**。我的英文名是 **Eamon**，也欢迎大家这样称呼我。\n\n我的研究探索未来通信系统如何变得更加目标导向、及时与智能。我的研究兴趣包括**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**，重点关注不仅可靠传递信息，而且能够在正确时间、服务正确目标的通信系统。\n\n我博士毕业于哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)，并曾在新加坡科技研究局（A*STAR I²R）访问研究，期间受 IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导。",
     location: "土耳其安卡拉",
     social: {
       scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=zh-CN",
       orcid: "https://orcid.org/0000-0003-3687-4378",
       github: "https://github.com/aiminli-hi",
       linkedin: "https://linkedin.com",
+      xiaohongshu: "https://xhslink.com/m/2CfyBndWr4f",
       email: "mailto:hitliaimin@163.com"
     },
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+      { date: "2026-07", label: "ComMag", content: "🌌 我们的论文 <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> 被 <strong>IEEE Communications Magazine</strong> 录用。恭喜并衷心感谢我的导师 <strong>Elif Uysal 教授</strong>；在这项工作中，我从她身上学到了很多。", link: "#pub-j19" },
       { date: "2026-07", label: "Asilomar", content: "🛰️ 我们的论文 <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> 被<strong>第 60 届 Asilomar Conference on Signals, Systems, and Computers</strong>录用。恭喜 <strong>Sayam Chakraborty</strong>！", link: "#pub-c20" },
-      { date: "2026-07", label: "ITW", content: "🎉 我们的论文 <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> 被 <strong>2026 IEEE Information Theory Workshop（ITW 2026）</strong> 录用。恭喜 <strong>Burak Karasakal</strong>！", link: "#pub-c19" },
+      { date: "2026-07", label: "ITW", content: "🎉 我们的论文 <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> 被 <strong>2026 IEEE Information Theory Workshop（ITW 2026）</strong> 录用，审稿评分为 <span class=\"news-mobihoc-count\">5/5、4/5、4/5</span>。恭喜 <strong>Burak Karasakal</strong>！", link: "#pub-c19" },
       { date: "2026-07-20", label: "WiSEE", content: "🛰️ 我们的论文 <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> 被 <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments（WiSEE 2026）</strong> 录用。恭喜 <strong>Ayşe（艾雪）</strong>！", link: "#pub-c18" },
       { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
       { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
@@ -910,7 +931,7 @@ export const PROFILE_DATA = {
     ],
     timeline: [
       { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
-        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://users.metu.edu.tr/ueelif/)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。",
+        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。",
         reflection: "科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。",
         lineage: [
           { name: "Claude Shannon", title: "《通信的数学理论》(1948) — 奠定信息论的数学基础", era: "1948", role: "ancestor", highlight: false },

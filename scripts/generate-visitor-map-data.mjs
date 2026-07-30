@@ -15,12 +15,24 @@ const overviewTopo = JSON.parse(fs.readFileSync(overviewSourcePath, 'utf8'));
 const detailTopo = JSON.parse(fs.readFileSync(detailSourcePath, 'utf8'));
 const overviewCountries = feature(overviewTopo, overviewTopo.objects.countries);
 const detailCountries = feature(detailTopo, detailTopo.objects.countries);
-const borders = mesh(overviewTopo, overviewTopo.objects.countries, (a, b) => a !== b);
+const isAntarctica = country => (
+  String(country?.id ?? '').padStart(3, '0') === '010'
+  || String(country?.properties?.name || '').trim().toLowerCase() === 'antarctica'
+);
+const visibleOverviewCountries = {
+  type: 'FeatureCollection',
+  features: overviewCountries.features.filter(country => !isAntarctica(country))
+};
+const borders = mesh(
+  overviewTopo,
+  overviewTopo.objects.countries,
+  (a, b) => a !== b && !isAntarctica(a) && !isAntarctica(b)
+);
 
 const viewBox = { width: 720, height: 330 };
 const projection = geoNaturalEarth1().fitExtent(
   [[18, 16], [viewBox.width - 18, viewBox.height - 14]],
-  { type: 'Sphere' }
+  visibleOverviewCountries
 );
 const pathGenerator = geoPath(projection);
 
@@ -74,7 +86,7 @@ const countryNameAliases = new Map([
 
 const GREATER_CHINA_DETAIL_NAMES = ['taiwan', 'hong kong', 'macao'];
 
-const countryPaths = overviewCountries.features
+const countryPaths = visibleOverviewCountries.features
   .map((country, index) => {
     const [x, y] = pathGenerator.centroid(country);
     return {
@@ -139,7 +151,7 @@ const activeCountries = readVisitorCountries().map((country, index) => {
 const payload = {
   viewBox,
   projection: 'Natural Earth',
-  source: 'Natural Earth via topojson/world-atlas countries-110m background and countries-50m active regions',
+  source: 'Natural Earth via topojson/world-atlas countries-110m background excluding Antarctica and countries-50m active regions',
   borders: pathGenerator(borders),
   countries: countryPaths,
   activeCountries

@@ -62,7 +62,7 @@ const useSEO = (title, description, lang = 'en', darkMode = false) => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     document.documentElement.style.colorScheme = darkMode ? 'dark' : 'light';
     upsertMeta("meta[name='description']", { name: 'description', content: description });
-    upsertMeta("meta[name='theme-color']", { name: 'theme-color', content: darkMode ? '#081524' : '#f8fafc' });
+    upsertMeta("meta[name='theme-color']", { name: 'theme-color', content: darkMode ? '#081524' : '#f4f7f1' });
     upsertMeta("meta[property='og:title']", { property: 'og:title', content: title });
     upsertMeta("meta[property='og:description']", { property: 'og:description', content: description });
     upsertMeta("meta[name='twitter:title']", { name: 'twitter:title', content: title });
@@ -85,6 +85,11 @@ const MENTORING_GROUP_PREVIEW_LIMIT = 1;
 const PAGE_FADE_OUT_MS = 220;
 const PAGE_FADE_IN_MS = 520;
 let visitorHitRecordedForPage = false;
+const VISITOR_PAGE_ENTRY_ID = (
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+).replace(/[^A-Za-z0-9_-]/g, '');
 const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring', 'talks'];
 const PUBLICATION_HASH_PREFIX = 'pub-';
 const getCurrentHashValue = () => (
@@ -107,6 +112,9 @@ const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
   /\bIROS\b|intelligent robots and systems/i,
   /\bVTC\b|vehicular technology conference/i,
   /\bTIT\b|transactions on information theory/i,
+];
+const HOMEPAGE_BLOCKED_SYNC_TITLE_PATTERNS = [
+  /\bmulti[\s-]?orft\b/i,
 ];
 const DEFAULT_VISITOR_SNAPSHOT = {
   pageviews: 39,
@@ -147,6 +155,8 @@ const UI_COPY = {
     remaining: 'remaining',
     noPapers: 'No papers found matching your criteria.',
     papersInYear: 'papers',
+    expandYear: 'Show papers',
+    collapseYear: 'Hide papers',
     acceptanceRate: 'acceptance',
     acceptedWorldwide: 'accepted worldwide',
     firstAuthorBadge: 'First author',
@@ -189,7 +199,7 @@ const UI_COPY = {
     locationLabel: 'Location',
     emailLabel: 'Email',
     globalVisitors: 'Global Visitors',
-    globalVisitorsDesc: 'Country-level unique visitor statistics.',
+    globalVisitorsDesc: 'Country-level visit statistics.',
     loadingVisitors: 'Updating visitor stats...',
     viewStats: 'View Stats',
     hideStats: 'Hide Stats',
@@ -200,15 +210,24 @@ const UI_COPY = {
     topVisitorCountries: 'Top Visitor Countries',
     showRemainingCountries: 'Show remaining',
     showTopVisitorCountriesOnly: 'Show top 5 only',
-    activeVisitorRegions: 'Active visitor regions',
-    countrySignal: 'aggregate country-level signal',
-    visitorIntensity: 'Visitor density',
+    activeVisitorRegions: 'Visitor activity',
+    visitorIntensity: 'Recorded visits',
     visitorMapSummary: 'World map highlighting countries with recorded visitors.',
     loadingVisitorMap: 'Loading visitor map...',
-    pageviews: 'unique visitors',
+    visitorMapAllTime: 'All time',
+    visitorMapThisWeek: 'This week',
+    visitorMapAllTimeLabel: 'All-time visit footprint',
+    visitorMapThisWeekLabel: 'Visitor sources this week',
+    pageviews: 'visits',
     countries: 'countries',
     visitorUpdated: 'Updated (Istanbul)',
-    statsTotalViews: 'Unique visitors',
+    weeklyNewVisitors: 'Visits this week',
+    weeklyVisitorSources: 'Visitor sources',
+    weeklySource: 'source',
+    weeklySources: 'sources',
+    weeklyFirstVisits: 'Homepage visits recorded this week.',
+    weeklyNoVisitors: 'No homepage visits recorded yet this week.',
+    statsTotalViews: 'Visits',
     statsCountries: 'Visitor countries',
     statsTopCountry: 'Top country',
     statsLastUpdate: 'Last update',
@@ -247,6 +266,8 @@ const UI_COPY = {
     remaining: '篇未显示',
     noPapers: '没有找到符合条件的论文。',
     papersInYear: '篇论文',
+    expandYear: '展开论文',
+    collapseYear: '收起论文',
     acceptanceRate: '录用率',
     acceptedWorldwide: '全球录用',
     firstAuthorBadge: '一作',
@@ -289,7 +310,7 @@ const UI_COPY = {
     locationLabel: '所在地',
     emailLabel: '邮箱',
     globalVisitors: '全球访客',
-    globalVisitorsDesc: '按国家聚合的独立访客统计。',
+    globalVisitorsDesc: '按国家聚合的主页访问统计。',
     loadingVisitors: '正在更新访客统计...',
     viewStats: '查看统计',
     hideStats: '收起统计',
@@ -300,15 +321,24 @@ const UI_COPY = {
     topVisitorCountries: '访问国家排名',
     showRemainingCountries: '展开其余',
     showTopVisitorCountriesOnly: '只显示前五名',
-    activeVisitorRegions: '已点亮访问区域',
-    countrySignal: '国家级聚合访问统计',
-    visitorIntensity: '访问热度',
+    activeVisitorRegions: '访客足迹',
+    visitorIntensity: '访问次数',
     visitorMapSummary: '点亮已有访客国家和地区的世界地图。',
     loadingVisitorMap: '正在加载访客地图...',
-    pageviews: '位独立访客',
+    visitorMapAllTime: '全部',
+    visitorMapThisWeek: '本周',
+    visitorMapAllTimeLabel: '全部访问足迹',
+    visitorMapThisWeekLabel: '本周访客来源',
+    pageviews: '次访问',
     countries: '个国家',
     visitorUpdated: '更新于（伊斯坦布尔）',
-    statsTotalViews: '独立访客',
+    weeklyNewVisitors: '本周访问',
+    weeklyVisitorSources: '本周访客来源',
+    weeklySource: '个来源',
+    weeklySources: '个来源',
+    weeklyFirstVisits: '统计本周主页访问记录。',
+    weeklyNoVisitors: '本周暂未记录到主页访问。',
+    statsTotalViews: '访问次数',
     statsCountries: '访问国家',
     statsTopCountry: '最高国家',
     statsLastUpdate: '最近更新',
@@ -355,7 +385,7 @@ const loadVisitorMapData = () => {
 
   visitorMapDataPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = '/visitor-map-data.js?v=20260715-lazy';
+    script.src = '/visitor-map-data.js?v=20260730-tricolor-no-antarctica';
     script.async = true;
     script.dataset.visitorMapLoader = 'true';
     script.onload = () => {
@@ -483,6 +513,33 @@ const normalizeVisitorPayload = (payload = {}) => {
       }))
     : [];
   const { ranking, overrideRegions, skipRegionCountries } = normalizeVisitorRanking(rawRanking);
+  const rawWeekly = visitorSnapshot.weekly || payload.weekly;
+  const weeklyRanking = Array.isArray(rawWeekly?.ranking)
+    ? rawWeekly.ranking
+      .filter(country => country?.code && Number.isFinite(Number(country.count)))
+      .map(country => ({
+        ...country,
+        code: String(country.code).trim().toUpperCase(),
+        name: country.name || country.code,
+        matchName: country.matchName || country.name || country.code,
+        count: Number(country.count),
+      }))
+    : [];
+  const normalizedWeeklyRanking = normalizeVisitorRanking(weeklyRanking).ranking;
+  const weekly = /^\d{4}-\d{2}-\d{2}$/.test(rawWeekly?.weekStart || '')
+    ? {
+      weekStart: rawWeekly.weekStart,
+      weekEnd: /^\d{4}-\d{2}-\d{2}$/.test(rawWeekly?.weekEnd || '') ? rawWeekly.weekEnd : rawWeekly.weekStart,
+      newVisitors: Math.max(
+        0,
+        Number(rawWeekly?.newVisitors)
+          || normalizedWeeklyRanking.reduce((sum, country) => sum + country.count, 0)
+      ),
+      countries: normalizedWeeklyRanking.length,
+      ranking: normalizedWeeklyRanking,
+      updatedAt: rawWeekly?.updatedAt || null,
+    }
+    : null;
 
   if (!ranking.length) return null;
 
@@ -491,6 +548,7 @@ const normalizeVisitorPayload = (payload = {}) => {
     countries: ranking.length,
     ranking,
     regions: mergeVisitorRegions(normalizeVisitorRegions(visitorSnapshot.regions, skipRegionCountries), overrideRegions),
+    ...(weekly ? { weekly } : {}),
     updatedAt: payload.generatedAt || payload.updatedAt || visitorSnapshot.updatedAt || null,
   };
 };
@@ -565,6 +623,7 @@ const recordVisitorImageBeacon = () => {
 
     timeoutId = window.setTimeout(() => finish(false), VISITOR_BEACON_TIMEOUT_MS);
     const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/hit.gif`);
+    url.searchParams.set('entry', VISITOR_PAGE_ENTRY_ID);
     url.searchParams.set('t', String(Date.now()));
     beacon.onload = () => finish(true);
     beacon.onerror = () => finish(false);
@@ -622,6 +681,7 @@ const recordVisitorHit = () => {
     timeoutId = window.setTimeout(() => finish(null), VISITOR_BEACON_TIMEOUT_MS);
     const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/hit.js`);
     url.searchParams.set('callback', callback);
+    url.searchParams.set('entry', VISITOR_PAGE_ENTRY_ID);
     url.searchParams.set('t', String(Date.now()));
     script.src = url.toString();
     document.head.appendChild(script);
@@ -759,6 +819,7 @@ const normalizeNewsDate = (date = '') => {
 };
 
 const isAllowedSyncedHomepageItem = (item = {}) => {
+  if (HOMEPAGE_BLOCKED_SYNC_TITLE_PATTERNS.some(pattern => pattern.test(item.title || ''))) return false;
   const haystack = [
     item.label,
     item.newsLabel,
@@ -935,20 +996,28 @@ const formatVisitorUpdatedAt = (value, lang) => {
   }).format(date);
 };
 
-const buildVisitorRoutes = (activeCountries) => {
-  const source = activeCountries.find(country => country.code === 'TR') || activeCountries[0];
-  if (!source) return [];
-  return activeCountries
-    .filter(country => country.code !== source.code)
-    .map(country => {
-      const midX = (source.x + country.x) / 2;
-      const lift = Math.max(22, Math.abs(source.x - country.x) * 0.11);
-      const midY = Math.min(source.y, country.y) - lift;
-      return {
-        key: `${source.code}-${country.code}`,
-        d: `M${source.x},${source.y} Q${midX.toFixed(1)},${midY.toFixed(1)} ${country.x},${country.y}`,
-      };
-    });
+const formatVisitorWeekRange = (weekStart, weekEnd, lang) => {
+  const start = new Date(`${weekStart}T00:00:00Z`);
+  const end = new Date(`${weekEnd}T00:00:00Z`);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return '';
+
+  if (lang === 'zh') {
+    const startLabel = `${start.getUTCMonth() + 1}月${start.getUTCDate()}日`;
+    const endLabel = start.getUTCMonth() === end.getUTCMonth()
+      ? `${end.getUTCDate()}日`
+      : `${end.getUTCMonth() + 1}月${end.getUTCDate()}日`;
+    return `${startLabel}–${endLabel}`;
+  }
+
+  const formatter = new Intl.DateTimeFormat('en', {
+    timeZone: 'UTC',
+    month: 'short',
+    day: 'numeric',
+  });
+  const endLabel = start.getUTCMonth() === end.getUTCMonth()
+    ? String(end.getUTCDate())
+    : formatter.format(end);
+  return `${formatter.format(start)}–${endLabel}`;
 };
 
 const mixVisitorRgb = (start, end, amount) => start.map((value, index) => (
@@ -968,18 +1037,49 @@ const formatVisitorHeatValue = (value) => {
   return `${Math.round(count)}+`;
 };
 
+const visitorHeatTicksFor = (heatDomain = 10) => {
+  const domain = Math.max(1, Number(heatDomain) || 1);
+  const decadeTicks = [1, 10, 100, 1000, 10000, 100000, 1000000]
+    .filter(tick => tick <= domain);
+  const ticks = [...new Set([...decadeTicks, domain])];
+
+  // Keep the logarithmic legend readable in its compact map overlay.
+  if (ticks.length <= 3) return ticks;
+  return [ticks[0], ticks[Math.floor((ticks.length - 1) / 2)], ticks[ticks.length - 1]];
+};
+
+const visitorHeatPositionFor = (value, heatDomain = 10) => {
+  const domain = Math.max(1, Number(heatDomain) || 1);
+  if (domain <= 1) return 0;
+  const safeValue = Math.min(domain, Math.max(1, Number(value) || 1));
+  return (Math.log10(safeValue) / Math.log10(domain)) * 100;
+};
+
 const visitorMapVisualsFor = (count = 0, heatDomain = 10) => {
   const safeDomain = Math.max(10, Number(heatDomain) || 10);
-  const score = Math.max(0, Math.min(1, Math.log1p(Number(count) || 0) / Math.log1p(safeDomain)));
-  const fill = mixVisitorRgb([34, 211, 238], [251, 191, 36], score);
-  const stroke = mixVisitorRgb([125, 249, 255], [253, 224, 71], score);
-  const glow = mixVisitorRgb([34, 211, 238], [251, 191, 36], score);
+  const safeCount = Math.min(safeDomain, Math.max(1, Number(count) || 1));
+  const score = Math.max(0, Math.min(1, Math.log10(safeCount) / Math.log10(safeDomain)));
+  // Give even a single visit a clear visual floor, while preserving logarithmic
+  // separation as counts grow into the hundreds or thousands.
+  const intensity = Math.pow(score, 0.72);
+  const scalePosition = intensity * 2;
+  const useWarmRange = scalePosition > 1;
+  const segmentPosition = useWarmRange ? scalePosition - 1 : scalePosition;
+  const fill = useWarmRange
+    ? mixVisitorRgb([242, 190, 73], [239, 111, 88], segmentPosition)
+    : mixVisitorRgb([62, 201, 211], [242, 190, 73], segmentPosition);
+  const stroke = useWarmRange
+    ? mixVisitorRgb([255, 230, 139], [255, 190, 165], segmentPosition)
+    : mixVisitorRgb([172, 244, 246], [255, 230, 139], segmentPosition);
+  const glow = useWarmRange
+    ? mixVisitorRgb([255, 201, 83], [255, 126, 99], segmentPosition)
+    : mixVisitorRgb([72, 224, 231], [255, 201, 83], segmentPosition);
   return {
     score,
-    fill: `rgba(${fill.join(', ')}, ${Number((0.22 + score * 0.5).toFixed(3))})`,
-    stroke: `rgba(${stroke.join(', ')}, ${Number((0.58 + score * 0.34).toFixed(3))})`,
-    glow: `drop-shadow(0 0 ${Number((4 + score * 10).toFixed(1))}px rgba(${glow.join(', ')}, ${Number((0.22 + score * 0.42).toFixed(3))}))`,
-    strokeWidth: Number((0.75 + score * 0.55).toFixed(2)),
+    fill: `rgba(${fill.join(', ')}, ${Number((0.62 + intensity * 0.26).toFixed(3))})`,
+    stroke: `rgba(${stroke.join(', ')}, ${Number((0.88 + intensity * 0.1).toFixed(3))})`,
+    glow: `drop-shadow(0 0 ${Number((4 + intensity * 7).toFixed(1))}px rgba(${glow.join(', ')}, ${Number((0.3 + intensity * 0.22).toFixed(3))}))`,
+    strokeWidth: Number((1 + intensity * 0.45).toFixed(2)),
   };
 };
 
@@ -1002,7 +1102,7 @@ const HighlightText = ({ text, darkMode }) => {
               href={url} 
               target="_blank" 
               rel="noreferrer" 
-              className={`font-bold underline decoration-2 underline-offset-2 transition-colors mx-1 ${darkMode ? 'text-blue-400 decoration-blue-400/50 hover:text-blue-300' : 'text-blue-600 decoration-blue-600/30 hover:text-blue-700'}`}
+              className={`content-link font-bold underline decoration-2 underline-offset-2 transition-colors mx-1 ${darkMode ? 'text-blue-400 decoration-blue-400/50 hover:text-blue-300' : 'text-blue-600 decoration-blue-600/30 hover:text-blue-700'}`}
             >
               {label}
             </a>
@@ -1099,16 +1199,8 @@ const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMo
 };
 
 const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
-  const colors = {
-    email: darkMode ? "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426]" : "bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#d33426] shadow-sm",
-    scholar: darkMode ? "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6]" : "bg-[#4285F4] text-white border-[#4285F4] hover:bg-[#3367d6] shadow-sm",
-    orcid: darkMode ? "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f]" : "bg-[#A6CE39] text-slate-950 border-[#A6CE39] hover:bg-[#93b82f] shadow-sm",
-    github: darkMode ? "bg-[#101a25] text-white border-cyan-400/15 hover:bg-[#15263a]" : "bg-[#24292e] text-white border-[#24292e] hover:bg-[#000] shadow-sm",
-    linkedin: darkMode ? "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097]" : "bg-[#0077b5] text-white border-[#0077b5] hover:bg-[#006097] shadow-sm",
-  };
-  const activeColor = colors[colorType] || (darkMode ? "bg-slate-800 text-white border-slate-700" : "bg-white text-slate-700 border-gray-200");
   return (
-    <a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'} className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-xl border flex items-center justify-center ${activeColor}`} title={label} aria-label={label}>
+    <a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'} className={`social-button social-button--${colorType} ${darkMode ? 'social-button--dark' : ''}`} title={label} aria-label={label}>
       {React.createElement(icon, { size: 22 })}
     </a>
   );
@@ -1132,20 +1224,61 @@ const LanguageToggle = ({ lang, darkMode, onToggle, fullWidth = false }) => {
   );
 };
 
+const getDialogFocusableElements = (dialog) => Array.from(
+  dialog?.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  ) || []
+).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+
+const useDialogAccessibility = (isOpen, dialogRef, initialFocusRef, onClose) => {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousActiveElement = document.activeElement;
+    const originalOverflow = document.body.style.overflow;
+    const frameId = window.requestAnimationFrame(() => initialFocusRef.current?.focus());
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusable = getDialogFocusableElements(dialogRef.current);
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+      if (previousActiveElement instanceof HTMLElement && document.contains(previousActiveElement)) {
+        window.requestAnimationFrame(() => previousActiveElement.focus());
+      }
+    };
+  }, [isOpen, dialogRef, initialFocusRef, onClose]);
+};
+
 const CitationModal = ({ formats, onClose, darkMode, ui }) => {
+  const dialogRef = useRef(null);
   const closeButtonRef = useRef(null);
   const [copiedFormat, setCopiedFormat] = useState('');
 
-  useEffect(() => {
-    closeButtonRef.current?.focus();
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
+  useDialogAccessibility(true, dialogRef, closeButtonRef, onClose);
 
   const copyCitation = async (format, content) => {
     await navigator.clipboard.writeText(content);
@@ -1160,6 +1293,7 @@ const CitationModal = ({ formats, onClose, darkMode, ui }) => {
 
   return (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-[#061523]/70 p-4 backdrop-blur-sm animate-fade-in"
       role="dialog"
       aria-modal="true"
@@ -1270,7 +1404,7 @@ const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
 
   return (
     <div className={`w-full min-w-0 rounded-2xl border p-3 ${darkMode ? 'border-cyan-400/15 bg-[#0b1b2b]/60 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'border-slate-200 bg-white'}`}>
-      <h4 className={`mb-2.5 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-indigo-700'}`}>
+      <h4 className={`mb-2.5 flex flex-wrap items-center gap-2 text-[12px] font-extrabold uppercase tracking-widest sm:text-[11px] ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>
         <Network size={14} /> {labels.title}
       </h4>
 
@@ -1288,21 +1422,21 @@ const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
 
               <div className={`lineage-chain-card flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2 text-left transition-colors ${node.card}`}>
                 <div className="flex min-w-0 flex-wrap items-start gap-1">
-                  <span className={`inline-flex max-w-full items-center rounded-md border px-1.5 py-0.5 text-[8px] font-black uppercase leading-tight tracking-[0.08em] break-words ${node.pill}`}>
+                  <span className={`inline-flex max-w-full items-center rounded-md border px-1.5 py-0.5 text-[11px] font-black uppercase leading-tight tracking-[0.08em] break-words sm:text-[8px] ${node.pill}`}>
                     {node.label}
                   </span>
                   {person.era && (
-                    <span className={`max-w-full rounded-md px-1.5 py-0.5 text-[8px] font-black leading-tight tabular-nums break-words ${darkMode ? 'bg-white/5 text-slate-500' : 'bg-white text-slate-500 shadow-sm'}`}>
+                    <span className={`max-w-full rounded-md px-1.5 py-0.5 text-[11px] font-black leading-tight tabular-nums break-words sm:text-[8px] ${darkMode ? 'bg-white/5 text-slate-500' : 'bg-white text-slate-500 shadow-sm'}`}>
                     {person.era}
                   </span>
                   )}
                 </div>
 
                 <div className="min-w-0">
-                  <div className={`break-words text-xs font-extrabold leading-tight ${node.name}`}>
+                  <div className={`break-words text-[15px] font-extrabold leading-tight sm:text-xs ${node.name}`}>
                     {person.name}
                   </div>
-                  <div className={`mt-0.5 text-[9px] font-semibold leading-snug ${node.meta}`}>
+                  <div className={`mt-1 text-[12px] font-semibold leading-snug sm:mt-0.5 sm:text-[9px] ${node.meta}`}>
                     {person.title}
                   </div>
                 </div>
@@ -1328,20 +1462,38 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   ));
   const [isVisitorSnapshotLoading, setIsVisitorSnapshotLoading] = useState(Boolean(REALTIME_VISITOR_ENDPOINT));
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
+  const [showWeeklyVisitors, setShowWeeklyVisitors] = useState(false);
   const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
+  const [visitorMapScope, setVisitorMapScope] = useState('all');
   const [selectedVisitorCountryCode, setSelectedVisitorCountryCode] = useState('');
+  const [hoveredVisitorCountryCode, setHoveredVisitorCountryCode] = useState('');
+  const [selectedMapCountryCode, setSelectedMapCountryCode] = useState('');
   const [mapData, setMapData] = useState(() => getRuntimeMapData());
   const visitorSectionRef = useRef(null);
   const mapTriggerRef = useRef(null);
   const mapDialogRef = useRef(null);
   const mapCloseButtonRef = useRef(null);
+  const weeklySummaryRef = useRef(null);
   const snapshotRef = useRef(REALTIME_VISITOR_ENDPOINT ? EMPTY_VISITOR_SNAPSHOT : staticSnapshot);
+  const weeklySnapshot = snapshot.weekly || null;
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
-  const activeCountries = getActiveVisitorCountries(snapshot, mapData);
-  const routes = buildVisitorRoutes(activeCountries);
-  const maxVisitorCountryCount = Math.max(1, ...activeCountries.map(country => Number(country.count) || 0));
-  const visitorHeatDomain = visitorHeatDomainFor(maxVisitorCountryCount);
+  const getVisitorMapLayer = (scope = 'all') => {
+    const isWeeklyScope = scope === 'weekly' && Boolean(weeklySnapshot);
+    const sourceSnapshot = isWeeklyScope
+      ? { ...snapshot, ranking: weeklySnapshot.ranking || [] }
+      : snapshot;
+    const countries = getActiveVisitorCountries(sourceSnapshot, mapData);
+    const maxCount = Math.max(1, ...countries.map(country => Number(country.count) || 0));
+    return {
+      scope: isWeeklyScope ? 'weekly' : 'all',
+      countries,
+      heatDomain: visitorHeatDomainFor(maxCount),
+    };
+  };
   const formattedUpdatedAt = formatVisitorUpdatedAt(visitorUpdatedAt, lang);
+  const formattedWeeklyRange = weeklySnapshot
+    ? formatVisitorWeekRange(weeklySnapshot.weekStart, weeklySnapshot.weekEnd, lang)
+    : '';
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
   const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
@@ -1360,6 +1512,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const openVisitorMapModal = () => setShowVisitorMapModal(true);
   const closeVisitorMapModal = () => {
     setShowVisitorMapModal(false);
+    setVisitorMapScope('all');
+    setHoveredVisitorCountryCode('');
+    setSelectedMapCountryCode('');
     window.requestAnimationFrame(() => mapTriggerRef.current?.focus());
   };
   const handleVisitorMapKeyDown = (event) => {
@@ -1369,7 +1524,47 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
     }
   };
 
-  const renderRegionalDetails = () => (
+  const renderWeeklyDetails = () => (
+    <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-emerald-300/15 bg-[#10221d]/80' : 'border-emerald-100 bg-[#f7faf5]'}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-emerald-200' : 'text-emerald-900'}`}>{ui.visitorMapThisWeekLabel}</h4>
+          <p className={`mt-1 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+            {formattedWeeklyRange || ui.weeklyFirstVisits}
+          </p>
+        </div>
+        {weeklySnapshot && (
+          <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-extrabold tabular-nums ${darkMode ? 'border-emerald-300/20 bg-emerald-300/10 text-emerald-200' : 'border-emerald-200 bg-white text-emerald-800'}`}>
+            +{weeklySnapshot.newVisitors}
+          </span>
+        )}
+      </div>
+
+      {weeklySnapshot?.ranking?.length ? (
+        <div className={`mt-4 divide-y ${darkMode ? 'divide-emerald-200/10' : 'divide-emerald-100'}`}>
+          {weeklySnapshot.ranking.map(country => (
+            <div key={`weekly-map-${country.code}`} className="grid grid-cols-[2.6rem_minmax(0,1fr)_2rem] items-center gap-2 py-2.5 text-sm">
+              <span className={darkMode ? 'font-extrabold text-emerald-300' : 'font-extrabold text-emerald-700'}>{country.code}</span>
+              <span className={`min-w-0 truncate font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{country.name}</span>
+              <span className={`text-right font-extrabold tabular-nums ${darkMode ? 'text-white' : 'text-slate-950'}`}>{country.count}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={`mt-4 rounded-2xl border border-dashed px-4 py-8 text-center text-sm font-semibold leading-relaxed ${darkMode ? 'border-slate-700 text-slate-400' : 'border-slate-200 text-slate-500'}`}>
+          {ui.weeklyNoVisitors}
+        </div>
+      )}
+
+      <p className={`mt-4 border-t pt-3 text-xs font-semibold leading-relaxed ${darkMode ? 'border-emerald-200/10 text-slate-500' : 'border-emerald-100 text-slate-500'}`}>
+        {ui.weeklyFirstVisits}
+      </p>
+    </aside>
+  );
+
+  const renderRegionalDetails = (scope = 'all') => {
+    if (scope === 'weekly') return renderWeeklyDetails();
+    return (
     <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-cyan-400/10 bg-[#0b1b2b]/75' : 'border-slate-200 bg-slate-50/80'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -1437,48 +1632,99 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
         )}
       </div>
     </aside>
-  );
+    );
+  };
 
-  const renderVisitorMap = ({ expanded = false } = {}) => (
-    <div
-      ref={expanded ? undefined : mapTriggerRef}
-      className={`visitor-map-frame ${expanded ? 'visitor-map-frame--expanded' : 'visitor-map-frame--interactive'} ${darkMode ? 'visitor-map-frame--dark' : ''}`}
-      role={expanded ? undefined : 'button'}
-      tabIndex={expanded ? undefined : 0}
-      aria-label={expanded ? ui.visitorMapModalTitle : ui.expandVisitorMap}
-      onClick={expanded ? undefined : openVisitorMapModal}
-      onKeyDown={expanded ? undefined : handleVisitorMapKeyDown}
-    >
-      <div className="visitor-world-map" aria-busy={!mapData}>
-        <svg className="visitor-real-map" viewBox={`0 0 ${viewBox.width} ${viewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby={expanded ? 'visitor-map-summary-expanded' : 'visitor-map-summary'} focusable="false">
-          <title id={expanded ? 'visitor-map-summary-expanded' : 'visitor-map-summary'}>{ui.visitorMapSummary}</title>
-          <defs>
-            <linearGradient id={expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'} x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0%" stopColor="#071a2d" />
-              <stop offset="52%" stopColor="#08283b" />
-              <stop offset="100%" stopColor="#06323a" />
-            </linearGradient>
-            <pattern id={expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'} width="42" height="42" patternUnits="userSpaceOnUse">
-              <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect className="visitor-map-ocean-base" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'})`} />
-          <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'})`} />
-          <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
-          <g aria-hidden="true">
-            {(mapData?.countries || []).map((country, index) => (
-              <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d} />
-            ))}
-          </g>
-          {mapData?.borders && <path aria-hidden="true" className="visitor-map-borders" d={mapData.borders} />}
-          <g aria-hidden="true">
-            {activeCountries.filter(country => country.d).map(country => (
-              (() => {
-                const visuals = visitorMapVisualsFor(country.count, visitorHeatDomain);
+  const renderVisitorMap = ({ expanded = false, scope = 'all' } = {}) => {
+    const layer = getVisitorMapLayer(scope);
+    const interactiveCountryCode = hoveredVisitorCountryCode || selectedMapCountryCode;
+    const tooltipCountry = expanded
+      ? layer.countries.find(country => country.code === interactiveCountryCode)
+      : null;
+    const tooltipStyle = tooltipCountry ? {
+      left: `${Math.min(89, Math.max(11, (tooltipCountry.x / viewBox.width) * 100))}%`,
+      top: `${Math.min(84, Math.max(16, (tooltipCountry.y / viewBox.height) * 100))}%`,
+    } : undefined;
+    const heatTicks = visitorHeatTicksFor(layer.heatDomain);
+    const scopeLabel = layer.scope === 'weekly' ? ui.visitorMapThisWeekLabel : ui.visitorMapAllTimeLabel;
+    const selectMapCountry = (country) => {
+      setSelectedMapCountryCode(country.code);
+      setSelectedVisitorCountryCode(country.code);
+    };
+
+    return (
+      <div
+        ref={expanded ? undefined : mapTriggerRef}
+        className={`visitor-map-frame visitor-map-frame--${layer.scope} ${expanded ? 'visitor-map-frame--expanded' : 'visitor-map-frame--interactive'} ${darkMode ? 'visitor-map-frame--dark' : ''}`}
+        role={expanded ? undefined : 'button'}
+        tabIndex={expanded ? undefined : 0}
+        aria-label={expanded ? ui.visitorMapModalTitle : ui.expandVisitorMap}
+        onClick={expanded ? undefined : openVisitorMapModal}
+        onKeyDown={expanded ? undefined : handleVisitorMapKeyDown}
+      >
+        <div className="visitor-world-map" aria-busy={!mapData}>
+          <svg
+            className="visitor-real-map"
+            viewBox={`0 0 ${viewBox.width} ${viewBox.height}`}
+            preserveAspectRatio="xMidYMid meet"
+            role={expanded ? 'group' : 'img'}
+            aria-labelledby={expanded ? undefined : 'visitor-map-summary'}
+            aria-label={expanded ? `${ui.visitorMapSummary} ${scopeLabel}.` : undefined}
+            focusable="false"
+          >
+            <title id={expanded ? 'visitor-map-summary-expanded' : 'visitor-map-summary'}>{`${ui.visitorMapSummary} ${scopeLabel}.`}</title>
+            <defs>
+              <linearGradient id={expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'} x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stopColor="#10241d" />
+                <stop offset="52%" stopColor="#183126" />
+                <stop offset="100%" stopColor="#24331f" />
+              </linearGradient>
+              <pattern id={expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'} width="42" height="42" patternUnits="userSpaceOnUse">
+                <path d="M42 0H0V42" fill="none" stroke="currentColor" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect className="visitor-map-ocean-base" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-ocean-expanded' : 'visitor-map-ocean'})`} />
+            <rect className="visitor-map-ocean-grid" width={viewBox.width} height={viewBox.height} fill={`url(#${expanded ? 'visitor-map-grid-expanded' : 'visitor-map-grid'})`} />
+            <path className="visitor-map-graticule" d={`M0 ${viewBox.height * .25}H${viewBox.width}M0 ${viewBox.height * .5}H${viewBox.width}M0 ${viewBox.height * .75}H${viewBox.width}M${viewBox.width / 6} 0V${viewBox.height}M${viewBox.width / 3} 0V${viewBox.height}M${viewBox.width / 2} 0V${viewBox.height}M${viewBox.width * 2 / 3} 0V${viewBox.height}M${viewBox.width * 5 / 6} 0V${viewBox.height}`} />
+            <g aria-hidden="true">
+              {(mapData?.countries || [])
+                .filter(country => String(country.name || '').trim().toLowerCase() !== 'antarctica')
+                .map((country, index) => (
+                <path key={`${country.id || 'country'}-${country.name}-${index}`} className="visitor-map-country" d={country.d} />
+              ))}
+            </g>
+            {mapData?.borders && <path aria-hidden="true" className="visitor-map-borders" d={mapData.borders} />}
+            <g aria-hidden={expanded ? undefined : true}>
+              {layer.countries.filter(country => country.d).map(country => {
+                const visuals = visitorMapVisualsFor(country.count, layer.heatDomain);
+                const isSelected = selectedMapCountryCode === country.code;
+                const isHovered = hoveredVisitorCountryCode === country.code;
+                const interactiveProps = expanded ? {
+                  role: 'button',
+                  tabIndex: 0,
+                  'aria-label': `${country.name}: ${country.count} ${ui.pageviews}`,
+                  'aria-pressed': isSelected,
+                  onMouseEnter: () => setHoveredVisitorCountryCode(country.code),
+                  onMouseLeave: () => setHoveredVisitorCountryCode(''),
+                  onFocus: () => setHoveredVisitorCountryCode(country.code),
+                  onBlur: () => setHoveredVisitorCountryCode(''),
+                  onClick: (event) => {
+                    selectMapCountry(country);
+                    event.currentTarget.blur();
+                  },
+                  onKeyDown: (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      selectMapCountry(country);
+                    }
+                  },
+                } : { 'aria-hidden': true };
+
                 return (
                   <path
                     key={country.code}
-                    className="visitor-map-country-active"
+                    {...interactiveProps}
+                    className={`visitor-map-country-active ${expanded ? 'visitor-map-country-active--interactive' : ''} ${isSelected ? 'visitor-map-country-active--selected' : ''} ${isHovered ? 'visitor-map-country-active--hovered' : ''}`}
                     data-country-code={country.code}
                     data-merged-map-regions={(country.mergedMapRegions || []).join(' ')}
                     d={country.d}
@@ -1490,42 +1736,50 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                     }}
                   />
                 );
-              })()
-            ))}
-          </g>
-          <g aria-hidden="true">
-            {routes.map(route => <path key={route.key} className="visitor-map-route" d={route.d} />)}
-          </g>
-        </svg>
+              })}
+            </g>
+          </svg>
 
-        {!mapData && (
-          <div className="visitor-map-loading" role="status">
-            <span className="visitor-map-loading__pulse" aria-hidden="true" />
-            {ui.loadingVisitorMap}
-          </div>
-        )}
+          {!mapData && (
+            <div className="visitor-map-loading" role="status">
+              <span className="visitor-map-loading__pulse" aria-hidden="true" />
+              {ui.loadingVisitorMap}
+            </div>
+          )}
 
-        <div className="visitor-map-label">
-          {ui.activeVisitorRegions}
-          <span>{ui.countrySignal}</span>
-        </div>
-        <div className="visitor-map-legend" aria-label={ui.visitorIntensity}>
-          <span>{ui.visitorIntensity}</span>
-          <div className="visitor-map-legend-ramp" />
-          <div className="visitor-map-legend-scale">
-            <small>1</small>
-            <small>{formatVisitorHeatValue(visitorHeatDomain)}</small>
+          {tooltipCountry && (
+            <div className="visitor-map-tooltip" style={tooltipStyle} role="status">
+              <span>{tooltipCountry.code}</span>
+              <strong>{tooltipCountry.name}</strong>
+              <em>{tooltipCountry.count}</em>
+            </div>
+          )}
+
+          <div className="visitor-map-label">
+            <strong>{ui.activeVisitorRegions}</strong>
+            <span className="visitor-map-label__scope">{scopeLabel}</span>
           </div>
+          <div className={`visitor-map-legend ${expanded ? 'visitor-map-legend--expanded' : 'visitor-map-legend--compact'}`} aria-label={ui.visitorIntensity}>
+            <span>{ui.visitorIntensity}</span>
+            <div className="visitor-map-legend-ramp" />
+            <div className="visitor-map-legend-scale">
+              {heatTicks.map(tick => (
+                <small key={`heat-${tick}`} style={{ left: `${visitorHeatPositionFor(tick, layer.heatDomain)}%` }}>
+                  {formatVisitorHeatValue(tick)}
+                </small>
+              ))}
+            </div>
+          </div>
+          {!expanded && (
+            <span className="visitor-map-expand-badge" aria-hidden="true">
+              <Maximize2 size={14} />
+              <span className="visitor-map-expand-badge__label">{ui.expandVisitorMap}</span>
+            </span>
+          )}
         </div>
-        {!expanded && (
-          <span className="visitor-map-expand-badge" aria-hidden="true">
-            <Maximize2 size={14} />
-            {ui.expandVisitorMap}
-          </span>
-        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   useEffect(() => {
     const target = visitorSectionRef.current;
@@ -1589,6 +1843,24 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [showVisitorMapModal]);
+
+  useEffect(() => {
+    if (!showWeeklyVisitors) return undefined;
+    const handlePointerDown = (event) => {
+      if (!weeklySummaryRef.current?.contains(event.target)) {
+        setShowWeeklyVisitors(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setShowWeeklyVisitors(false);
+    };
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showWeeklyVisitors]);
 
   useEffect(() => {
     if (!REALTIME_VISITOR_ENDPOINT) {
@@ -1658,13 +1930,81 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             <h2 id="global-visitors-title" className={`text-2xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-950'}`}>{ui.globalVisitors}</h2>
             <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.globalVisitorsDesc}</p>
             {!isVisitorSnapshotLoading && (
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className={`rounded-full border px-3 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/15 bg-cyan-400/10 text-cyan-200' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
                   {snapshot.pageviews} {ui.pageviews}
                 </span>
                 <span className={`rounded-full border px-3 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/15 bg-cyan-400/10 text-cyan-200' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
                   {snapshot.countries} {ui.countries}
                 </span>
+                {weeklySnapshot && (
+                  <div ref={weeklySummaryRef} className="relative">
+                    <button
+                      type="button"
+                      className={`visitor-weekly-trigger inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-extrabold transition-colors ${darkMode ? 'border-cyan-300/25 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15' : 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'}`}
+                      aria-expanded={showWeeklyVisitors}
+                      aria-controls="visitor-weekly-sources"
+                      onClick={() => setShowWeeklyVisitors(value => !value)}
+                    >
+                      <Calendar size={13} aria-hidden="true" />
+                      <span>{ui.weeklyNewVisitors}</span>
+                      <strong className="tabular-nums">+{weeklySnapshot.newVisitors}</strong>
+                      <span aria-hidden="true">·</span>
+                      <span>
+                        {weeklySnapshot.countries}{' '}
+                        {weeklySnapshot.countries === 1 ? ui.weeklySource : ui.weeklySources}
+                      </span>
+                      <ChevronDown
+                        size={13}
+                        aria-hidden="true"
+                        className={`transition-transform ${showWeeklyVisitors ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+
+                    {showWeeklyVisitors && (
+                      <div
+                        id="visitor-weekly-sources"
+                        className={`visitor-weekly-popover rounded-2xl border p-3.5 shadow-2xl ${darkMode ? 'border-cyan-300/20 bg-[#071827]/95 text-slate-100 shadow-black/30' : 'border-emerald-100 bg-white/95 text-slate-800 shadow-slate-900/15'}`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className={`text-[0.68rem] font-black uppercase tracking-[0.12em] ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>
+                              {ui.weeklyVisitorSources}
+                            </div>
+                            {formattedWeeklyRange && (
+                              <div className={`mt-0.5 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                {formattedWeeklyRange}
+                              </div>
+                            )}
+                          </div>
+                          <span className={`shrink-0 rounded-full px-2.5 py-1 text-sm font-black tabular-nums ${darkMode ? 'bg-cyan-300/10 text-cyan-200' : 'bg-emerald-50 text-emerald-800'}`}>
+                            +{weeklySnapshot.newVisitors}
+                          </span>
+                        </div>
+
+                        {weeklySnapshot.ranking.length ? (
+                          <div className={`mt-3 divide-y ${darkMode ? 'divide-cyan-300/10' : 'divide-slate-100'}`}>
+                            {weeklySnapshot.ranking.slice(0, 8).map(country => (
+                              <div key={`weekly-${country.code}`} className="grid grid-cols-[2.4rem_minmax(0,1fr)_2rem] items-center gap-2 py-2 text-sm">
+                                <span className={darkMode ? 'font-black text-cyan-300' : 'font-black text-emerald-700'}>{country.code}</span>
+                                <span className="min-w-0 truncate font-semibold">{country.name}</span>
+                                <span className="text-right font-black tabular-nums">{country.count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className={`mt-3 text-sm font-semibold leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                            {ui.weeklyNoVisitors}
+                          </p>
+                        )}
+
+                        <p className={`mt-2 border-t pt-2 text-[0.68rem] font-semibold leading-relaxed ${darkMode ? 'border-cyan-300/10 text-slate-500' : 'border-slate-100 text-slate-400'}`}>
+                          {ui.weeklyFirstVisits}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
             {formattedUpdatedAt && !isVisitorSnapshotLoading && (
@@ -1737,8 +2077,37 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                 <p className={`mt-0.5 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                   {isVisitorSnapshotLoading
                     ? ui.loadingVisitors
-                    : `${snapshot.pageviews} ${ui.pageviews} · ${snapshot.countries} ${ui.countries}`}
+                    : visitorMapScope === 'weekly' && weeklySnapshot
+                      ? `${ui.weeklyNewVisitors} +${weeklySnapshot.newVisitors} · ${formattedWeeklyRange || ui.visitorMapThisWeek}`
+                      : `${snapshot.pageviews} ${ui.pageviews} · ${snapshot.countries} ${ui.countries}`}
                 </p>
+                <div className={`visitor-map-scope-toggle mt-2 ${darkMode ? 'visitor-map-scope-toggle--dark' : ''}`} role="group" aria-label={ui.visitorMapModalTitle}>
+                  <button
+                    type="button"
+                    className={visitorMapScope === 'all' ? 'visitor-map-scope-toggle__button--active' : ''}
+                    aria-pressed={visitorMapScope === 'all'}
+                    onClick={() => {
+                      setVisitorMapScope('all');
+                      setHoveredVisitorCountryCode('');
+                      setSelectedMapCountryCode('');
+                    }}
+                  >
+                    {ui.visitorMapAllTime}
+                  </button>
+                  <button
+                    type="button"
+                    className={visitorMapScope === 'weekly' ? 'visitor-map-scope-toggle__button--active' : ''}
+                    aria-pressed={visitorMapScope === 'weekly'}
+                    disabled={!weeklySnapshot}
+                    onClick={() => {
+                      setVisitorMapScope('weekly');
+                      setHoveredVisitorCountryCode('');
+                      setSelectedMapCountryCode('');
+                    }}
+                  >
+                    {ui.visitorMapThisWeek}
+                  </button>
+                </div>
               </div>
               <button
                 ref={mapCloseButtonRef}
@@ -1754,9 +2123,9 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             <div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
               <div className="grid min-h-full gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(19rem,0.75fr)]">
                 <div className="min-h-[22rem]">
-                  {renderVisitorMap({ expanded: true })}
+                  {renderVisitorMap({ expanded: true, scope: visitorMapScope })}
                 </div>
-                {renderRegionalDetails()}
+                {renderRegionalDetails(visitorMapScope)}
               </div>
             </div>
           </div>
@@ -1808,7 +2177,7 @@ export default function AcademicProfile() {
   // -- Filter & Search States --
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("All");
-  const [visiblePubs, setVisiblePubs] = useState(12);
+  const [expandedPublicationYears, setExpandedPublicationYears] = useState({});
   const [showAllNews, setShowAllNews] = useState(false);
 
   const syncData = useMemo(() => getRuntimeSyncData(), []);
@@ -1917,12 +2286,7 @@ export default function AcademicProfile() {
 
   const groupedPublicationYears = useMemo(() => {
     const groups = new Map();
-    const yearCounts = new Map();
     filteredPubs.forEach((pub) => {
-      const year = String(pub.year || 'N/A');
-      yearCounts.set(year, (yearCounts.get(year) || 0) + 1);
-    });
-    filteredPubs.slice(0, visiblePubs).forEach((pub) => {
       const year = String(pub.year || 'N/A');
       if (!groups.has(year)) groups.set(year, []);
       groups.get(year).push(pub);
@@ -1930,9 +2294,9 @@ export default function AcademicProfile() {
     return Array.from(groups.entries()).map(([year, pubs]) => ({
       year,
       pubs,
-      totalCount: yearCounts.get(year) || pubs.length,
+      totalCount: pubs.length,
     }));
-  }, [filteredPubs, visiblePubs]);
+  }, [filteredPubs]);
 
   const groupedAwardYears = useMemo(() => {
     const sortedAwards = [...content.awards].sort((a, b) => (
@@ -2044,7 +2408,9 @@ export default function AcademicProfile() {
       if (isPublicationHashValue(hash)) {
         setSearchQuery("");
         setSelectedVenue("All");
-        setVisiblePubs(publications.length);
+        const publicationId = hash.slice(PUBLICATION_HASH_PREFIX.length);
+        const targetPublication = publications.find(pub => String(pub.id || slugify(pub.title)) === publicationId);
+        setExpandedPublicationYears(targetPublication ? { [String(targetPublication.year || 'N/A')]: true } : {});
         setPendingPublicationAnchor(hash);
       } else {
         setPendingPublicationAnchor('');
@@ -2058,7 +2424,7 @@ export default function AcademicProfile() {
       window.removeEventListener('hashchange', syncPageFromHash);
       window.removeEventListener('popstate', syncPageFromHash);
     };
-  }, [publications.length]);
+  }, [publications]);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -2111,7 +2477,7 @@ export default function AcademicProfile() {
     navigateToPage('about');
   };
   const resetPublicationView = () => {
-    setVisiblePubs(12);
+    setExpandedPublicationYears({});
   };
   const updateSearchQuery = (value) => {
     setSearchQuery(value);
@@ -2187,7 +2553,7 @@ export default function AcademicProfile() {
     <aside className={`profile-sidebar lg:col-span-3 flex-col items-center text-center lg:sticky lg:top-24 lg:flex lg:items-start lg:text-left space-y-5 ${displayIsHomePage ? 'flex' : 'hidden'}`}>
       <div className="profile-avatar relative group w-48 h-48 mx-auto lg:mx-0">
         <div aria-hidden="true" className={`profile-avatar__halo ${darkMode ? 'profile-avatar__halo--dark' : ''}`}></div>
-        <div className={`relative z-10 w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
+        <div className={`profile-avatar__frame relative z-10 w-full h-full rounded-full overflow-hidden border-[3px] shadow-2xl ${darkMode ? 'border-cyan-400/15' : 'border-white'}`}>
           <img src="/images/aimin-li-portrait-2026.jpg" alt={lang === 'zh' ? '黎爱民头像' : 'Portrait of Aimin Li'} width="192" height="192" decoding="async" className="w-full h-full object-cover bg-slate-100" />
         </div>
       </div>
@@ -2197,6 +2563,7 @@ export default function AcademicProfile() {
          <SocialButton icon={OrcidIcon} href={content.social.orcid} label="ORCID" colorType="orcid" darkMode={darkMode} />
          <SocialButton icon={Github} href={content.social.github} label="GitHub" colorType="github" darkMode={darkMode} />
          <SocialButton icon={Linkedin} href={content.social.linkedin} label="LinkedIn" colorType="linkedin" darkMode={darkMode} />
+         <SocialButton icon={BookOpen} href={content.social.xiaohongshu} label={lang === 'zh' ? '小红书' : 'Xiaohongshu'} colorType="xiaohongshu" darkMode={darkMode} />
       </div>
       <nav
         className={`profile-page-nav relative hidden w-full max-w-[16rem] overflow-hidden rounded-2xl border p-2.5 text-left shadow-lg shadow-slate-900/5 lg:block ${darkMode ? 'profile-page-nav--dark border-cyan-400/15 bg-[#0b1b2b]/70 shadow-cyan-950/10' : 'border-slate-200 bg-white'}`}
@@ -2220,7 +2587,7 @@ export default function AcademicProfile() {
                 onClick={item.href ? undefined : (event) => navigateToPage(targetKey, event)}
                 aria-current={isActive ? 'page' : undefined}
                 title={itemTitle}
-                className={`profile-page-nav__link group relative z-10 flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[10px] font-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
+                className={`profile-page-nav__link group relative z-10 flex h-7 min-w-0 items-center gap-2 rounded-lg border px-2 text-[11px] font-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm ${
                   isActive
                     ? (darkMode ? 'border-transparent bg-transparent text-white' : 'border-transparent bg-transparent text-slate-950')
                     : (darkMode ? 'border-cyan-400/10 bg-[#071827]/62 text-slate-300 hover:border-cyan-400/35 hover:bg-cyan-400/10' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-900')
@@ -2249,16 +2616,16 @@ export default function AcademicProfile() {
     const isStudentOutcome = !isAuthorLead && isStudentOutcomePublication(pub);
     const typeLabel = pub.type === 'Journal' ? ui.journalShort : pub.type === 'Thesis' ? ui.thesisShort : ui.conferenceShort;
     const inlineCoFirstLabel = lang === 'zh' ? '共同一作' : 'co-first';
-    const highlightClass = isAuthorLead
-      ? (darkMode ? 'border-l-amber-400 bg-amber-400/[0.04]' : 'border-l-amber-400 bg-amber-50/40')
+    const emphasisClass = isAuthorLead
+      ? 'publication-row--lead'
       : isStudentOutcome
-        ? (darkMode ? 'border-l-emerald-400 bg-emerald-400/[0.04]' : 'border-l-emerald-400 bg-emerald-50/40')
-        : (darkMode ? 'border-l-cyan-400/10' : 'border-l-transparent');
+        ? 'publication-row--mentorship'
+        : 'publication-row--standard';
 
     return (
       <article
         id={getPublicationAnchorId(pub)}
-        className={`scroll-mt-28 border-b border-l-2 py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${highlightClass} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+        className={`publication-row ${emphasisClass} scroll-mt-28 border-b border-l-2 border-l-transparent py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
       >
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -2268,7 +2635,7 @@ export default function AcademicProfile() {
             <button
               type="button"
               onClick={() => updateSelectedVenue(pub.venue_short)}
-              className={`rounded-md border px-2 py-0.5 text-[10px] font-black transition-colors ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/45' : 'border-cyan-200 bg-cyan-50 text-cyan-800 hover:border-cyan-300'}`}
+              className={`publication-venue-chip rounded-md border px-2 py-0.5 text-[10px] font-black transition-colors ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 hover:border-cyan-300/45' : 'border-cyan-200 bg-cyan-50 text-cyan-800 hover:border-cyan-300'}`}
               title={pub.venue}
             >
               {pub.venue_short}
@@ -2315,10 +2682,10 @@ export default function AcademicProfile() {
 
           {(pub.venue || pub.venue_short) && (
             <div
-              className={`mt-1 flex w-full max-w-full items-start gap-1.5 text-[10px] font-black leading-snug tracking-[0.08em] ${darkMode ? 'text-cyan-300/80' : 'text-cyan-700/80'}`}
+              className={`publication-venue-line mt-1 flex w-full max-w-full items-start gap-1.5 text-[10px] font-black leading-snug tracking-[0.08em] ${darkMode ? 'text-cyan-300/80' : 'text-cyan-700/80'}`}
               title={pub.venue_short}
             >
-              <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-cyan-300/70' : 'bg-cyan-600/70'}`} />
+              <span className={`publication-venue-dot mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-cyan-300/70' : 'bg-cyan-600/70'}`} />
               <span className="min-w-0 whitespace-normal break-words">{pub.venue || pub.venue_short}</span>
             </div>
           )}
@@ -2328,7 +2695,7 @@ export default function AcademicProfile() {
               <span key={`${pub.id}-author-${i}`}>
                 {author.includes('Aimin Li') ? (
                   <>
-                    <strong className={`font-black underline underline-offset-2 ${darkMode ? 'text-cyan-200 decoration-cyan-300/60' : 'text-cyan-800 decoration-cyan-500/45'}`}>{author}</strong>
+                    <strong className={`publication-self-author font-black underline underline-offset-2 ${darkMode ? 'text-cyan-200 decoration-cyan-300/60' : 'text-cyan-800 decoration-cyan-500/45'}`}>{author}</strong>
                     {isCoFirstAuthor && (
                       <span className={`ml-1 inline-flex translate-y-[-1px] items-center rounded-full border px-1.5 py-0.5 text-[9px] font-black leading-none ${darkMode ? 'border-amber-400/30 bg-amber-400/10 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
                         {inlineCoFirstLabel}
@@ -2366,25 +2733,25 @@ export default function AcademicProfile() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-400/25 ${darkMode ? 'theme-dark-ink text-slate-300' : 'bg-gray-50 text-slate-600'}`}>
+    <div className={`min-h-screen transition-colors duration-500 font-sans selection:bg-cyan-400/25 ${darkMode ? 'theme-dark-ink text-slate-300' : 'theme-soft-sage text-slate-600'}`}>
       <a href="#main-content" className="skip-link">{lang === 'zh' ? '跳到主要内容' : 'Skip to main content'}</a>
       
       {/* --- Navigation --- */}
-      <div className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-[#0a1828]/90 border-cyan-400/10 shadow-[0_1px_0_rgba(34,211,238,0.05)]' : 'bg-white/80 border-gray-200'}`}>
+      <div className={`site-header sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${darkMode ? 'bg-[#0a1828]/90 border-cyan-400/10 shadow-[0_1px_0_rgba(34,211,238,0.05)]' : 'bg-white/80 border-gray-200'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
           <a href="#about" className={`min-w-0 text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={(event) => navigateToPage('about', event)}>
-            <Sparkles size={18} className={`shrink-0 ${darkMode ? 'text-cyan-300' : 'text-purple-500'}`} />
+            <Sparkles size={18} className={`site-brand__mark shrink-0 ${darkMode ? 'text-cyan-300' : 'text-purple-500'}`} />
             <span className="truncate">{content.name}</span>
           </a>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-4">
-            <div className="hidden lg:flex items-center gap-1 mr-2">
+            <div className="hidden xl:flex items-center gap-1 mr-2">
               {Object.entries(content.nav).map(([key, label]) => (
                 <a
                   key={key}
                   href={`#${key}`}
                   onClick={(event) => navigateToPage(key, event)}
                   aria-current={activeSection === key ? 'page' : undefined}
-                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100 ring-1 ring-cyan-400/15' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
+                  className={`site-header__nav-link px-3 py-2 rounded-full text-sm font-medium transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100 ring-1 ring-cyan-400/15' : 'bg-purple-100 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
                 >
                   {label}
                 </a>
@@ -2392,7 +2759,7 @@ export default function AcademicProfile() {
               <a
                 href="/files/Aimin_Li_CV.pdf"
                 download="Aimin_Li_CV.pdf"
-                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
+                className={`site-header__cv inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
                 title={lang === 'en' ? 'Download CV' : '下载简历'}
                 aria-label={lang === 'en' ? 'Download CV' : '下载简历'}
               >
@@ -2405,7 +2772,7 @@ export default function AcademicProfile() {
               darkMode={darkMode}
               onToggle={() => setLang(l => l === 'en' ? 'zh' : 'en')}
             />
-            <button type="button" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? (lang === 'zh' ? '切换到浅色模式' : 'Switch to light mode') : (lang === 'zh' ? '切换到深色模式' : 'Switch to dark mode')} title={darkMode ? (lang === 'zh' ? '浅色模式' : 'Light mode') : (lang === 'zh' ? '深色模式' : 'Dark mode')} className={`p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button type="button" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? (lang === 'zh' ? '切换到浅色模式' : 'Switch to light mode') : (lang === 'zh' ? '切换到深色模式' : 'Switch to dark mode')} title={darkMode ? (lang === 'zh' ? '浅色模式' : 'Light mode') : (lang === 'zh' ? '深色模式' : 'Dark mode')} className={`theme-toggle inline-flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
             
             {/* Mobile Menu Button */}
             <button 
@@ -2414,7 +2781,7 @@ export default function AcademicProfile() {
               aria-label={isMobileMenuOpen ? (lang === 'zh' ? '关闭导航菜单' : 'Close navigation menu') : (lang === 'zh' ? '打开导航菜单' : 'Open navigation menu')}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navigation"
-              className={`lg:hidden p-2 rounded-full transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-slate-300' : 'hover:bg-gray-100 text-slate-600'}`}
+              className={`theme-toggle inline-flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 transition-colors xl:hidden ${darkMode ? 'hover:bg-cyan-400/10 text-slate-300' : 'hover:bg-gray-100 text-slate-600'}`}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -2423,14 +2790,14 @@ export default function AcademicProfile() {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div id="mobile-navigation" className={`lg:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-[#0a1828] border-cyan-400/10' : 'bg-white border-gray-200'}`}>
+          <div id="mobile-navigation" className={`mobile-nav-panel xl:hidden absolute top-16 left-0 w-full border-b shadow-lg px-4 py-4 flex flex-col gap-2 ${darkMode ? 'bg-[#0a1828] border-cyan-400/10' : 'bg-white border-gray-200'}`}>
             {Object.entries(content.nav).map(([key, label]) => (
               <a 
                 key={key} 
                 href={`#${key}`} 
                 onClick={(event) => navigateToPage(key, event)}
                 aria-current={activeSection === key ? 'page' : undefined}
-                className={`px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
+                className={`mobile-nav-link px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeSection === key ? (darkMode ? 'bg-cyan-400/10 text-cyan-100' : 'bg-purple-50 text-purple-700') : (darkMode ? 'text-slate-400 hover:text-cyan-100 hover:bg-cyan-400/10' : 'text-slate-600 hover:text-purple-600 hover:bg-purple-50')}`}
               >
                 {label}
               </a>
@@ -2439,7 +2806,7 @@ export default function AcademicProfile() {
               href="/files/Aimin_Li_CV.pdf"
               download="Aimin_Li_CV.pdf"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
+              className={`mobile-nav-cv flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all ${darkMode ? 'text-cyan-300 hover:text-white hover:bg-cyan-400/10' : 'text-cyan-700 hover:text-cyan-800 hover:bg-cyan-50'}`}
             >
               <Download size={16} />
               <span>{lang === 'en' ? 'Download CV' : '简历下载'}</span>
@@ -2459,7 +2826,7 @@ export default function AcademicProfile() {
         )}
       </div>
 
-      <main id="main-content" tabIndex="-1" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 space-y-12 lg:space-y-16">
+      <main id="main-content" tabIndex="-1" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-24 sm:pb-20 lg:py-12 lg:pb-12 space-y-12 lg:space-y-16">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {profileSidebar}
           <div className="lg:col-span-9 min-w-0">
@@ -2469,23 +2836,23 @@ export default function AcademicProfile() {
               <div className="space-y-8">
               <div>
                 <h1 className={`text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r ${darkMode ? 'from-white to-slate-400' : 'from-gray-900 to-slate-600'}`}>{content.name}</h1>
-                <div className={`text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-cyan-300' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
+                <div className={`profile-role text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-cyan-300' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
                 <BioText text={content.bio} darkMode={darkMode} />
               </div>
               
-              <div id="news" className={`p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
-                 <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
-                   <span className="relative flex h-2 w-2"><span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${darkMode ? 'bg-cyan-300' : 'bg-purple-400'}`}></span><span className={`relative inline-flex rounded-full h-2 w-2 ${darkMode ? 'bg-cyan-400' : 'bg-purple-500'}`}></span></span>
+              <div id="news" className={`news-panel p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
+                 <h3 className={`news-heading text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
+                   <span className="relative flex h-2 w-2"><span className={`news-pulse animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${darkMode ? 'bg-cyan-300' : 'bg-purple-400'}`}></span><span className={`news-dot relative inline-flex rounded-full h-2 w-2 ${darkMode ? 'bg-cyan-400' : 'bg-purple-500'}`}></span></span>
                    {content.nav.news}
                  </h3>
 	                 <div id="news-list" className={`divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-gray-100'}`}>
                    {visibleNewsItems.map((item, idx) => (
-	                     <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[4.35rem_4.2rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[12px] leading-snug items-start">
-                        <span className="font-mono text-[10px] leading-5 font-semibold opacity-50 whitespace-nowrap shrink-0">{item.date}</span>
-                        <div className="contents">
-                             <span className={`inline-flex items-center justify-center w-full text-center text-[9px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
+                     <div key={`${item.date}-${item.label}-${idx}`} className="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-2 gap-y-0.5 py-1.5 text-[13px] leading-[1.45] items-start sm:grid-cols-[4.5rem_4.35rem_minmax(0,1fr)] sm:text-[12px] sm:leading-snug">
+	                        <span className="font-mono text-[11px] leading-5 font-semibold opacity-55 whitespace-nowrap shrink-0">{item.date}</span>
+	                        <div className="min-w-0 sm:contents">
+                             <span className={`news-label mb-1 flex w-fit max-w-full items-center justify-center text-center text-[11px] leading-4 font-bold px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap sm:mb-0 sm:inline-flex sm:w-full sm:text-[10px] ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-100 text-purple-700'}`}>{item.label}</span>
                              {item.link ? (
-                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`min-w-0 hover:underline decoration-1 underline-offset-2 inline-flex items-start gap-1 group ${darkMode ? 'hover:text-cyan-200' : 'hover:text-purple-600'}`}>
+                               <a href={item.link} target={item.link.startsWith('#') ? "_self" : "_blank"} rel="noreferrer" title={stripHtml(item.content)} className={`news-link min-w-0 hover:underline decoration-1 underline-offset-2 flex items-start gap-1 group sm:inline-flex ${darkMode ? 'hover:text-cyan-200' : 'hover:text-purple-600'}`}>
 	                                  <SafeNewsContent content={item.content} />
                                   {!item.link.startsWith('#') && <ExternalLink size={9} className="mt-0.5 opacity-50 group-hover:opacity-100 shrink-0" />}
                                </a>
@@ -2498,7 +2865,7 @@ export default function AcademicProfile() {
                  </div>
                  {newsItems.length > 6 && (
                    <div className="pt-2 flex justify-end">
-	                     <button type="button" onClick={() => setShowAllNews(value => !value)} aria-expanded={showAllNews} aria-controls="news-list" className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}>
+	                     <button type="button" onClick={() => setShowAllNews(value => !value)} aria-expanded={showAllNews} aria-controls="news-list" className={`news-toggle inline-flex items-center gap-1.5 text-[11px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}>
                        {showAllNews ? ui.fewerNews : ui.moreNews} <ChevronDown size={12} className={showAllNews ? 'rotate-180' : ''} />
                      </button>
                    </div>
@@ -2579,7 +2946,7 @@ export default function AcademicProfile() {
         {displaySection === 'timeline' && (
         <section id="timeline" className="scroll-mt-32 animate-fade-in">
            <div className="flex items-center gap-3 mb-8">
-            <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-blue-900/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}><Plane size={20} /></div>
+            <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-amber-50 text-amber-700'}`}><Plane size={20} /></div>
 	            <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.timeline}</h1>
           </div>
           
@@ -2595,7 +2962,7 @@ export default function AcademicProfile() {
                      <div key={idx} className="group relative">
                         <div className={`absolute -left-[1.63rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 transition-transform duration-200 group-hover:scale-110 ${
                           isWork
-                            ? (darkMode ? 'border-cyan-200 bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.12)]' : 'border-purple-200 bg-purple-600 shadow-[0_0_0_4px_rgba(147,51,234,0.10)]')
+                            ? (darkMode ? 'border-cyan-200 bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.12)]' : 'border-amber-200 bg-amber-500 shadow-[0_0_0_4px_rgba(217,166,73,0.12)]')
                             : (darkMode ? 'border-emerald-300 bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]' : 'border-emerald-200 bg-emerald-600 shadow-[0_0_0_4px_rgba(5,150,105,0.10)]')
                         }`}></div>
                         <div className={`pb-5 ${idx === content.timeline.length - 1 ? '' : (darkMode ? 'border-b border-cyan-400/10' : 'border-b border-slate-200')}`}>
@@ -2606,7 +2973,7 @@ export default function AcademicProfile() {
                             </span>
                           </div>
                           <h3 className={`text-base font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{item.role}</h3>
-                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-cyan-200' : 'text-indigo-700'}`}>{item.org}</div>
+                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>{item.org}</div>
                           {advisor && (
                             <div className={`mt-1 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                               {lang === 'zh' ? '合作导师' : 'Advisor'}: {advisor.name} · {advisor.title}
@@ -2618,7 +2985,7 @@ export default function AcademicProfile() {
                             </div>
                           )}
                           {item.reflection && (
-                            <blockquote className={`mt-2 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-indigo-300 text-slate-800'}`}>
+                            <blockquote className={`mt-2 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-amber-300 text-slate-800'}`}>
                               {item.reflection}
                             </blockquote>
                           )}
@@ -2673,30 +3040,40 @@ export default function AcademicProfile() {
           </div>
 
           <div className="space-y-4 animate-fade-in">
-            {groupedPublicationYears.map((group) => (
-              <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className="flex items-baseline justify-between gap-2 md:block">
-                  <div className={`text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                    {group.year}
-                  </div>
-                  <div className={`mt-1 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest md:mt-2 ${darkMode ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
-                    {group.totalCount} {ui.papersInYear}
-                  </div>
-                </div>
-                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                  {group.pubs.map(pub => <PublicationRow key={pub.id} pub={pub} />)}
-                </div>
-              </section>
-            ))}
+            {groupedPublicationYears.map((group, index) => {
+              const isExpanded = expandedPublicationYears[group.year] ?? index === 0;
+              const yearId = `publication-year-${group.year.replace(/[^a-z0-9]+/gi, '-')}`;
+              return (
+                <section key={group.year} className={`border-t pt-3 ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedPublicationYears(current => ({
+                      ...current,
+                      [group.year]: !(current[group.year] ?? index === 0),
+                    }))}
+                    aria-expanded={isExpanded}
+                    aria-controls={yearId}
+                    aria-label={`${isExpanded ? ui.collapseYear : ui.expandYear} ${group.year}`}
+                    className={`group flex w-full items-center gap-3 rounded-lg px-1 py-1 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 ${darkMode ? 'hover:bg-cyan-400/[0.035]' : 'hover:bg-emerald-50/70'}`}
+                  >
+                    <span className={`w-20 shrink-0 text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                      {group.year}
+                    </span>
+                    <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${darkMode ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
+                      {group.totalCount} {ui.papersInYear}
+                    </span>
+                    <ChevronDown size={17} className={`ml-auto shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} ${darkMode ? 'text-cyan-300' : 'text-emerald-700'}`} />
+                  </button>
+                  {isExpanded && (
+                    <div id={yearId} className={`mt-2 overflow-hidden border-l ${darkMode ? 'border-cyan-400/20' : 'border-emerald-200'}`}>
+                      {group.pubs.map(pub => <PublicationRow key={pub.id} pub={pub} />)}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
           </div>
 
-          {filteredPubs.length > visiblePubs && (
-            <div className="flex justify-center pt-2">
-	              <button type="button" onClick={() => setVisiblePubs(prev => prev + 12)} className={`group flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all ${darkMode ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:border-emerald-300 hover:text-emerald-600 shadow-sm hover:shadow-md'}`}>
-                {ui.viewMorePublications} ({filteredPubs.length - visiblePubs} {ui.remaining}) <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
-              </button>
-            </div>
-          )}
           {filteredPubs.length === 0 && <div className="text-center py-12 opacity-50">{ui.noPapers}</div>}
         </section>
         )}
@@ -2784,8 +3161,8 @@ export default function AcademicProfile() {
           <div className="space-y-5">
             <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
               <div>
-                <div className={`text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
-                  {ui.serviceReviewerTitle}
+                <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
+                  <Star size={14} /> {ui.serviceReviewerTitle}
                 </div>
                 <div className={`mt-1 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
                   {serviceReviewGroups.total} {lang === 'en' ? 'venues' : '项'}
@@ -2801,7 +3178,7 @@ export default function AcademicProfile() {
                       <h3 className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                         <Tag size={12} /> {group.label}
                       </h3>
-                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-purple-200 bg-purple-50 text-purple-800'}`}>
+                      <span className="service-group-count rounded-md border px-2 py-0.5 text-[10px] font-black">
                         {group.items.length}
                       </span>
                     </div>
@@ -2809,10 +3186,10 @@ export default function AcademicProfile() {
                       <article
                         key={item.full}
                         title={item.full}
-                        className={`border-t border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-t-cyan-400/10 border-l-cyan-400/55 hover:bg-cyan-400/[0.035]' : 'border-t-slate-200 border-l-purple-400 hover:bg-slate-50/75'}`}
+                        className={`service-row border-t border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-t-cyan-400/10' : 'border-t-slate-200'}`}
                       >
                         <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                          <CheckCircle2 size={14} className={`mt-0.5 shrink-0 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
+                          <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
                           <span>{item.full}</span>
                         </div>
                       </article>
@@ -2823,35 +3200,15 @@ export default function AcademicProfile() {
             </section>
 
             {[
-              { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair, color: 'emerald' },
-              { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [], color: 'purple' },
-              { key: 'volunteer', label: ui.serviceVolunteerTitle, icon: User, items: content.service.volunteer, color: 'blue' },
+              { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair },
+              { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [] },
+              { key: 'volunteer', label: ui.serviceVolunteerTitle, icon: User, items: content.service.volunteer },
             ].map((group) => {
               const Icon = group.icon;
-              const colorClass = {
-                emerald: {
-                  label: darkMode ? 'text-emerald-300' : 'text-emerald-700',
-                  border: darkMode ? 'border-l-emerald-400/70' : 'border-l-emerald-400',
-                  icon: darkMode ? 'text-emerald-300' : 'text-emerald-600',
-                  dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
-                },
-                purple: {
-                  label: darkMode ? 'text-cyan-200' : 'text-purple-700',
-                  border: darkMode ? 'border-l-cyan-400/55' : 'border-l-purple-400',
-                  icon: darkMode ? 'text-cyan-200' : 'text-purple-600',
-                  dot: darkMode ? 'bg-cyan-300' : 'bg-purple-600',
-                },
-                blue: {
-                  label: darkMode ? 'text-blue-300' : 'text-blue-700',
-                  border: darkMode ? 'border-l-blue-400/70' : 'border-l-blue-400',
-                  icon: darkMode ? 'text-blue-300' : 'text-blue-600',
-                  dot: darkMode ? 'bg-blue-300' : 'bg-blue-600',
-                },
-              }[group.color];
               return (
                 <section key={group.key} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                   <div>
-                    <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${colorClass.label}`}>
+                    <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
                       <Icon size={14} /> {group.label}
                     </div>
                   </div>
@@ -2859,12 +3216,10 @@ export default function AcademicProfile() {
                     {group.items.map((item, i) => (
                       <article
                         key={`${group.key}-${i}`}
-                        className={`border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${colorClass.border} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+                        className={`service-row border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10' : 'border-b-slate-200'}`}
                       >
                         <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                          {group.key === 'chair'
-                            ? <CheckCircle2 size={14} className={`mt-0.5 shrink-0 ${colorClass.icon}`} />
-                            : <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${colorClass.dot}`} />}
+                          <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
                           <span>{item}</span>
                         </div>
                       </article>
@@ -2881,7 +3236,7 @@ export default function AcademicProfile() {
         {displaySection === 'teaching' && (
         <section id="teaching" className="scroll-mt-32 animate-fade-in">
           <div className="mb-8 flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${darkMode ? 'bg-pink-900/20 text-pink-400' : 'bg-pink-50 text-pink-600'}`}>
+            <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-amber-50 text-amber-700'}`}>
               <Presentation size={24} />
             </div>
             <div>
@@ -2898,9 +3253,9 @@ export default function AcademicProfile() {
                   </div>
                 </div>
                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                  <article className={`border-l-2 py-2 pl-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 border-b-cyan-400/10 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-pink-400 border-b-slate-200 bg-pink-50/40 hover:bg-slate-50/75'}`}>
+                  <article className={`border-l-2 py-2 pl-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 border-b-cyan-400/10 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-amber-400 border-b-slate-200 bg-amber-50/40 hover:bg-slate-50/75'}`}>
                     <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-pink-200 bg-pink-50 text-pink-800'}`}>
+                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
                         {item.role}
                       </span>
                       {item.desc && (
@@ -2914,7 +3269,7 @@ export default function AcademicProfile() {
                     </h3>
                     <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                       <span className="inline-flex items-center gap-1.5">
-                        <School size={13} className={darkMode ? 'text-cyan-200' : 'text-pink-700'} />
+                        <School size={13} className={darkMode ? 'text-cyan-200' : 'text-amber-700'} />
                         {item.org}
                       </span>
                     </div>
@@ -2930,7 +3285,7 @@ export default function AcademicProfile() {
         {displaySection === 'mentoring' && (
         <section id="mentoring" className="scroll-mt-32 animate-fade-in">
           <div className="mb-8 flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-cyan-50 text-cyan-700'}`}>
+            <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-emerald-50 text-emerald-700'}`}>
               <Users size={24} />
             </div>
             <div>
@@ -2942,12 +3297,12 @@ export default function AcademicProfile() {
           <div className="space-y-5">
             <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
               <div>
-                <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-300' : 'text-emerald-700'}`}>
                   <Network size={14} /> {content.mentoring.leadershipTitle}
                 </div>
               </div>
               <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-cyan-400 bg-cyan-50/30 hover:bg-slate-50/75'}`}>
+                <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-emerald-400 bg-emerald-50/30 hover:bg-slate-50/75'}`}>
                   <p className={`text-[13px] font-medium leading-relaxed md:text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                     {content.mentoring.leadershipSummary}
                   </p>
@@ -2958,26 +3313,26 @@ export default function AcademicProfile() {
             {visibleMentoringGroups.map((group) => {
               const accent = group.shortTitle === 'METU'
                 ? {
-                    text: darkMode ? 'text-cyan-200' : 'text-cyan-800',
-                    border: darkMode ? 'border-cyan-400/25' : 'border-cyan-200',
-                    bg: darkMode ? 'bg-cyan-400/10' : 'bg-cyan-50',
-                    side: darkMode ? 'border-cyan-400' : 'border-cyan-500',
-                    dot: darkMode ? 'bg-cyan-300' : 'bg-cyan-600',
+                    text: darkMode ? 'text-cyan-200' : 'text-emerald-800',
+                    border: darkMode ? 'border-cyan-400/25' : 'border-emerald-200',
+                    bg: darkMode ? 'bg-cyan-400/10' : 'bg-emerald-50',
+                    side: darkMode ? 'border-cyan-400' : 'border-emerald-500',
+                    dot: darkMode ? 'bg-cyan-300' : 'bg-emerald-600',
                   }
                 : group.shortTitle === 'ZZU'
                   ? {
-                      text: darkMode ? 'text-emerald-200' : 'text-emerald-800',
-                      border: darkMode ? 'border-emerald-400/25' : 'border-emerald-200',
-                      bg: darkMode ? 'bg-emerald-400/10' : 'bg-emerald-50',
-                      side: darkMode ? 'border-emerald-400' : 'border-emerald-500',
-                      dot: darkMode ? 'bg-emerald-300' : 'bg-emerald-600',
+                      text: darkMode ? 'text-amber-200' : 'text-amber-800',
+                      border: darkMode ? 'border-amber-300/25' : 'border-amber-200',
+                      bg: darkMode ? 'bg-amber-300/10' : 'bg-amber-50',
+                      side: darkMode ? 'border-amber-300' : 'border-amber-500',
+                      dot: darkMode ? 'bg-amber-200' : 'bg-amber-600',
                     }
                   : {
-                      text: darkMode ? 'text-cyan-200' : 'text-indigo-800',
-                      border: darkMode ? 'border-cyan-400/20' : 'border-indigo-200',
-                      bg: darkMode ? 'bg-cyan-400/10' : 'bg-indigo-50',
-                      side: darkMode ? 'border-cyan-400/55' : 'border-indigo-500',
-                      dot: darkMode ? 'bg-cyan-300' : 'bg-indigo-600',
+                      text: darkMode ? 'text-cyan-200' : 'text-slate-700',
+                      border: darkMode ? 'border-cyan-400/20' : 'border-slate-200',
+                      bg: darkMode ? 'bg-cyan-400/10' : 'bg-slate-50',
+                      side: darkMode ? 'border-cyan-400/55' : 'border-slate-400',
+                      dot: darkMode ? 'bg-cyan-300' : 'bg-slate-500',
                     };
 
               return (
@@ -3068,7 +3423,7 @@ export default function AcademicProfile() {
           </div>
         </div>
 
-        <div className={`mx-auto mt-5 mb-2 max-w-4xl border-y py-2.5 text-center ${
+        <div className={`collaboration-callout mx-auto mt-4 mb-1 max-w-4xl border-y py-2 text-center ${
           darkMode ? 'border-slate-700/70' : 'border-slate-200'
         }`}>
             <p className={`mx-auto max-w-3xl font-serif text-[15px] italic leading-snug md:text-lg ${
@@ -3078,14 +3433,14 @@ export default function AcademicProfile() {
                 ? '始终欢迎聪慧的伙伴与我联系，一起探索未知。'
                 : 'Always welcome brilliant minds to connect and explore the unknown together.'}
             </p>
-            <p className={`mx-auto mt-1 max-w-3xl text-[11px] font-semibold leading-snug md:text-xs ${
-              darkMode ? 'text-slate-400' : 'text-slate-500'
+            <p className={`mx-auto mt-1 max-w-3xl text-xs font-semibold leading-snug md:text-sm ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
             }`}>
               {lang === 'zh'
                 ? '如果你对合作感兴趣，欢迎给我发邮件：hitliaimin AT 163.com'
                 : 'Drop me an email if you are interested in collaborations: hitliaimin AT 163.com'}
             </p>
-            <div className={`mx-auto mt-1.5 h-px w-12 ${darkMode ? 'bg-cyan-300/55' : 'bg-cyan-500/55'}`} />
+            <div className={`collaboration-callout__rule mx-auto mt-1.5 h-px w-12 ${darkMode ? 'bg-cyan-300/55' : 'bg-cyan-500/55'}`} />
         </div>
 
         {displayIsHomePage && (
@@ -3093,9 +3448,9 @@ export default function AcademicProfile() {
         )}
 
         {/* Motto Banner */}
-        <div className="group relative overflow-hidden px-6 py-8 text-center">
+        <div className="motto-banner group relative overflow-hidden px-6 py-8 text-center">
           <img
-            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=76"
+            src="/images/motto-mountains.jpg"
             alt=""
             loading="lazy"
             decoding="async"
@@ -3104,7 +3459,7 @@ export default function AcademicProfile() {
           />
           <div className={`absolute inset-0 z-0 ${darkMode ? 'bg-[#071827]/70' : 'bg-white/60'}`}></div>
           <div className="relative z-10">
-            <Quote size={18} className={`mx-auto mb-3 opacity-60 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
+            <Quote size={18} className={`motto-quote-mark mx-auto mb-3 opacity-60 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
             <h2 className={`text-xl md:text-2xl font-serif italic tracking-wide leading-relaxed drop-shadow-sm ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
               复杂中见序，纷乱中求真
             </h2>
@@ -3142,7 +3497,7 @@ export default function AcademicProfile() {
         />
       )}
       
-      <button type="button" onClick={scrollToTop} tabIndex={showBackToTop ? 0 : -1} aria-hidden={!showBackToTop} aria-label={lang === 'zh' ? '返回顶部' : 'Back to top'} title={lang === 'zh' ? '返回顶部' : 'Back to top'} className={`fixed bottom-8 right-8 p-3 rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-16 opacity-0'} ${darkMode ? 'bg-cyan-500/90 text-slate-950 shadow-cyan-950/30 hover:bg-cyan-300' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
+      <button type="button" onClick={scrollToTop} tabIndex={showBackToTop ? 0 : -1} aria-hidden={!showBackToTop} aria-label={lang === 'zh' ? '返回顶部' : 'Back to top'} title={lang === 'zh' ? '返回顶部' : 'Back to top'} className={`back-to-top fixed inline-flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all duration-300 transform ${showBackToTop ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-16 opacity-0'} ${darkMode ? 'bg-cyan-500/90 text-slate-950 shadow-cyan-950/30 hover:bg-cyan-300' : 'bg-white text-purple-600 hover:bg-purple-50 border border-purple-100'}`}>
         <ArrowUp size={20} />
       </button>
     </div>

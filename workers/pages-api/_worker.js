@@ -6,6 +6,15 @@ const DEFAULT_ALLOWED_ORIGINS = [
 const STORAGE_KEY = 'visitor-stats-v1';
 const HIT_EVENT_PREFIX = 'visitor-hit-v2:';
 const MANUAL_HIT_PREFIX = `${HIT_EVENT_PREFIX}manual:`;
+const OWNER_VISITOR_CONFIG_KEY = 'visitor-config-v1:owner-visitor-ids';
+const MAX_OWNER_VISITOR_IDS = 20;
+const ISTANBUL_TIME_ZONE = 'Europe/Istanbul';
+const ISTANBUL_DATE_FORMATTER = new Intl.DateTimeFormat('en-CA', {
+  timeZone: ISTANBUL_TIME_ZONE,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
 const INITIAL_STATS = {
   pageviews: 43,
   countries: {
@@ -159,6 +168,62 @@ async function uniqueVisitorId(env, request) {
   return hexDigest(digest);
 }
 
+function normalizeVisitorId(value) {
+  const visitorId = String(value || '').trim().toLowerCase();
+  return /^[a-f0-9]{64}$/.test(visitorId) ? visitorId : '';
+}
+
+function pageEntryId(request) {
+  const value = new URL(request.url).searchParams.get('entry');
+  const entryId = String(value || '').trim();
+  return /^[A-Za-z0-9_-]{16,80}$/.test(entryId) ? entryId : '';
+}
+
+function configuredOwnerVisitorIds(env) {
+  return String(env.VISITOR_OWNER_HASHES || env.OWNER_VISITOR_HASHES || '')
+    .split(',')
+    .map(normalizeVisitorId)
+    .filter(Boolean);
+}
+
+async function readOwnerVisitorIds(env) {
+  const visitorIds = new Set(configuredOwnerVisitorIds(env));
+  if (!env.VISITOR_KV) return visitorIds;
+
+  const stored = await env.VISITOR_KV.get(OWNER_VISITOR_CONFIG_KEY, 'json');
+  const storedIds = Array.isArray(stored)
+    ? stored
+    : Array.isArray(stored?.visitorIds)
+      ? stored.visitorIds
+      : [];
+  for (const value of storedIds) {
+    const visitorId = normalizeVisitorId(value);
+    if (visitorId) visitorIds.add(visitorId);
+  }
+  return visitorIds;
+}
+
+async function registerOwnerVisitor(env, request) {
+  if (!env.VISITOR_KV) throw new Error('VISITOR_KV binding is not configured');
+  const visitorId = await uniqueVisitorId(env, request);
+  if (!visitorId) throw new Error('Unable to identify the current network');
+
+  const visitorIds = await readOwnerVisitorIds(env);
+  visitorIds.add(visitorId);
+  const storedVisitorIds = [...visitorIds].slice(-MAX_OWNER_VISITOR_IDS);
+  const updatedAt = new Date().toISOString();
+  await env.VISITOR_KV.put(OWNER_VISITOR_CONFIG_KEY, JSON.stringify({
+    visitorIds: storedVisitorIds,
+    updatedAt,
+  }));
+
+  return {
+    registered: true,
+    ownerNetworks: storedVisitorIds.length,
+    updatedAt,
+  };
+}
+
 function addCountryCount(countries, country, count) {
   if (country === 'XX' || count <= 0) return;
   countries[country] = (countries[country] || 0) + count;
@@ -184,6 +249,90 @@ function countryName(code) {
   } catch {
     return code;
   }
+}
+
+function isoDate(date) {
+  return [
+    date.getUTCFullYear(),
+    String(date.getUTCMonth() + 1).padStart(2, '0'),
+    String(date.getUTCDate()).padStart(2, '0'),
+  ].join('-');
+}
+
+function istanbulDateParts(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  const parts = Object.fromEntries(
+    ISTANBUL_DATE_FORMATTER
+      .formatToParts(date)
+      .filter(part => part.type !== 'literal')
+      .map(part => [part.type, Number(part.value)])
+  );
+  if (!parts.year || !parts.month || !parts.day) return null;
+  return parts;
+}
+
+function istanbulWeekRange(value = new Date()) {
+  const parts = istanbulDateParts(value) || istanbulDateParts(new Date());
+  const start = new Date(Date.UTC(parts.year, parts.month - 1, parts.day));
+  const weekday = start.getUTCDay() || 7;
+  start.setUTCDate(start.getUTCDate() - weekday + 1);
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 6);
+  return {
+    weekStart: isoDate(start),
+    weekEnd: isoDate(end),
+  };
+}
+
+function emptyWeeklyStats(value = new Date()) {
+  return {
+    ...istanbulWeekRange(value),
+    pageviews: 0,
+    countries: {},
+    updatedAt: null,
+  };
+}
+
+function normalizeWeeklyStats(value = {}, now = new Date()) {
+  const current = emptyWeeklyStats(now);
+  if (value?.weekStart !== current.weekStart) return current;
+
+  const countries = {};
+  for (const [countryValue, countValue] of Object.entries(value.countries || {})) {
+    const rawCountry = normalizeCountryCode(countryValue);
+    const count = Number(countValue) || 0;
+    if (rawCountry === 'XX' || count <= 0) continue;
+    addCountryCount(countries, COUNTRY_REGION_OVERRIDES[rawCountry]?.country || rawCountry, count);
+  }
+
+  return {
+    ...current,
+    pageviews: Math.max(0, Number(value.pageviews) || Object.values(countries).reduce((sum, count) => sum + count, 0)),
+    countries,
+    updatedAt: value.updatedAt || null,
+  };
+}
+
+function addHitToWeeklyStats(weekly, hit) {
+  const current = normalizeWeeklyStats(weekly);
+  if (
+    hit.country === 'XX'
+    || hit.source === 'manual-adjustment'
+    || istanbulWeekRange(hit.updatedAt).weekStart !== current.weekStart
+  ) {
+    return current;
+  }
+
+  return {
+    ...current,
+    pageviews: current.pageviews + 1,
+    countries: {
+      ...current.countries,
+      [hit.country]: (current.countries[hit.country] || 0) + 1,
+    },
+    updatedAt: hit.updatedAt || current.updatedAt,
+  };
 }
 
 function seedStats(env) {
@@ -230,6 +379,7 @@ function normalizeStats(value) {
     pageviews: Math.max(0, Number(value?.pageviews) || 0),
     countries,
     regions,
+    weekly: normalizeWeeklyStats(value?.weekly),
     updatedAt: value?.updatedAt || null,
   };
 }
@@ -308,15 +458,32 @@ function publicSnapshot(stats) {
       ...country,
       delay: Number((index * 0.4).toFixed(1)),
     }));
+  const weekly = normalizeWeeklyStats(stats.weekly);
+  const weeklyRanking = Object.entries(weekly.countries || {})
+    .map(([code, count]) => ({
+      code,
+      name: countryName(code),
+      matchName: countryName(code),
+      count,
+    }))
+    .sort((a, b) => b.count - a.count || a.code.localeCompare(b.code));
 
   return {
     generatedAt: stats.updatedAt,
     visitorSnapshot: {
       pageviews: stats.pageviews || 0,
-      uniqueVisitors: stats.pageviews || 0,
+      visits: stats.pageviews || 0,
       countries: ranking.length,
       ranking,
       regions: publicRegions(stats.regions),
+      weekly: {
+        weekStart: weekly.weekStart,
+        weekEnd: weekly.weekEnd,
+        newVisitors: weekly.pageviews,
+        countries: weeklyRanking.length,
+        ranking: weeklyRanking,
+        updatedAt: weekly.updatedAt,
+      },
       updatedAt: stats.updatedAt,
     },
   };
@@ -348,6 +515,7 @@ function addHitToStats(stats, hit) {
       [normalizedHit.country]: ((stats.countries || {})[normalizedHit.country] || 0) + 1,
     },
     regions: addRegionToStats(stats, normalizedHit),
+    weekly: addHitToWeeklyStats(stats.weekly, normalizedHit),
     updatedAt: normalizedHit.updatedAt || new Date().toISOString(),
   };
 }
@@ -374,12 +542,14 @@ async function readStats(env) {
         country: key.metadata?.country || countryFromName,
         regionCode: key.metadata?.regionCode,
         regionName: key.metadata?.regionName || key.metadata?.region,
+        source: key.metadata?.source,
         updatedAt: eventUpdatedAt,
       });
       const nextStats = addHitToStats(stats, hit);
       stats.pageviews = nextStats.pageviews;
       stats.countries = nextStats.countries;
       stats.regions = nextStats.regions;
+      stats.weekly = nextStats.weekly;
 
       if (eventUpdatedAt && (!stats.updatedAt || eventUpdatedAt > stats.updatedAt)) {
         stats.updatedAt = eventUpdatedAt;
@@ -399,14 +569,19 @@ async function recordHit(env, request) {
 
   if (env.VISITOR_KV) {
     const visitorId = await uniqueVisitorId(env, request);
-    const key = visitorId
+    const ownerVisitorIds = visitorId ? await readOwnerVisitorIds(env) : new Set();
+    const isOwner = Boolean(visitorId && ownerVisitorIds.has(visitorId));
+    const entryId = pageEntryId(request);
+    const key = isOwner
       ? `${HIT_EVENT_PREFIX}${visitorId}`
-      : `${HIT_EVENT_PREFIX}${Date.now()}:${event.country}:${crypto.randomUUID()}`;
+      : entryId
+        ? `${HIT_EVENT_PREFIX}entry:${entryId}`
+        : `${HIT_EVENT_PREFIX}${Date.now()}:${event.country}:${crypto.randomUUID()}`;
 
-    if (visitorId) {
+    if (isOwner || entryId) {
       const existingHit = await env.VISITOR_KV.get(key);
       if (existingHit) {
-        return { ...event, counted: false };
+        return { ...event, counted: false, owner: isOwner };
       }
     }
 
@@ -415,9 +590,11 @@ async function recordHit(env, request) {
         country: event.country,
         regionCode: event.regionCode,
         regionName: event.regionName,
+        source: isOwner ? 'owner-first-visit' : 'page-entry',
         updatedAt,
       },
     });
+    return { ...event, counted: true, owner: isOwner };
   }
 
   return { ...event, counted: true };
@@ -426,12 +603,14 @@ async function recordHit(env, request) {
 function normalizeHit(value = {}) {
   const rawCountry = normalizeCountryCode(value.country);
   const regionCode = normalizeRegionCode(value.regionCode);
+  const source = String(value.source || '').trim().slice(0, 64);
   const override = COUNTRY_REGION_OVERRIDES[rawCountry];
   if (override) {
     return {
       country: override.country,
       regionCode: override.regionCode,
       regionName: override.regionName,
+      source,
       updatedAt: value.updatedAt || new Date().toISOString(),
     };
   }
@@ -440,6 +619,7 @@ function normalizeHit(value = {}) {
     country: rawCountry,
     regionCode,
     regionName: regionNameFor(rawCountry, regionCode, value.regionName),
+    source,
     updatedAt: value.updatedAt || new Date().toISOString(),
   };
 }
@@ -541,7 +721,8 @@ export default {
       return json({
         ok: true,
         storage: env.VISITOR_KV ? 'kv-events' : 'seed',
-        unique: env.VISITOR_KV ? 'hashed-ip' : 'unavailable',
+        counting: env.VISITOR_KV ? 'owner-once-others-every-entry' : 'unavailable',
+        privacy: env.VISITOR_KV ? 'anonymous-events-no-raw-ip' : 'seed-only',
       }, env, request);
     }
 
@@ -569,6 +750,24 @@ export default {
         ...result,
         ...publicSnapshot(await readStats(env)),
       }, env, request);
+    }
+
+    if (url.pathname === '/admin/owner/register') {
+      if (request.method !== 'POST') {
+        return json({ error: 'Method not allowed' }, env, request, 405);
+      }
+      if (!hasAdminAccess(request, env)) {
+        return json({ error: 'Not found' }, env, request, 404);
+      }
+
+      try {
+        return json({
+          ok: true,
+          ...(await registerOwnerVisitor(env, request)),
+        }, env, request);
+      } catch (error) {
+        return json({ error: error.message || 'Unable to register owner network' }, env, request, 400);
+      }
     }
 
     if (url.pathname === '/hit' || url.pathname === '/hit.gif' || url.pathname === '/hit.js') {
