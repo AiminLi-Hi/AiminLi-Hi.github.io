@@ -346,6 +346,16 @@ function seedStats(env) {
   }
 }
 
+function eventBaseStats(env) {
+  if (!env.VISITOR_EVENT_BASE_STATS) return normalizeStats(INITIAL_STATS);
+
+  try {
+    return normalizeStats(JSON.parse(env.VISITOR_EVENT_BASE_STATS));
+  } catch {
+    return normalizeStats(INITIAL_STATS);
+  }
+}
+
 function normalizeStats(value) {
   const countries = {};
   const regionCountsFromCountries = {};
@@ -522,9 +532,21 @@ function addHitToStats(stats, hit) {
 
 async function readStats(env) {
   if (!env.VISITOR_KV) return seedStats(env);
-
   const stored = await env.VISITOR_KV.get(STORAGE_KEY, 'json');
-  const stats = stored ? normalizeStats(stored) : seedStats(env);
+  return stored ? normalizeStats(stored) : seedStats(env);
+}
+
+async function writeStats(env, stats) {
+  const normalized = normalizeStats(stats);
+  if (env.VISITOR_KV) {
+    await env.VISITOR_KV.put(STORAGE_KEY, JSON.stringify(normalized));
+  }
+  return normalized;
+}
+
+async function rebuildStatsFromEvents(env) {
+  if (!env.VISITOR_KV) return seedStats(env);
+  const stats = eventBaseStats(env);
   let cursor;
 
   do {
@@ -581,20 +603,38 @@ async function recordHit(env, request) {
     if (isOwner || entryId) {
       const existingHit = await env.VISITOR_KV.get(key);
       if (existingHit) {
-        return { ...event, counted: false, owner: isOwner };
+        return {
+          ...event,
+          counted: false,
+          owner: isOwner,
+          stats: await readStats(env),
+        };
       }
     }
 
-    await env.VISITOR_KV.put(key, '1', {
-      metadata: {
-        country: event.country,
-        regionCode: event.regionCode,
-        regionName: event.regionName,
-        source: isOwner ? 'owner-first-visit' : 'page-entry',
-        updatedAt,
-      },
-    });
-    return { ...event, counted: true, owner: isOwner };
+    const recordedEvent = {
+      ...event,
+      source: isOwner ? 'owner-first-visit' : 'page-entry',
+    };
+    const nextStats = addHitToStats(await readStats(env), recordedEvent);
+    await Promise.all([
+      env.VISITOR_KV.put(key, '1', {
+        metadata: {
+          country: recordedEvent.country,
+          regionCode: recordedEvent.regionCode,
+          regionName: recordedEvent.regionName,
+          source: recordedEvent.source,
+          updatedAt,
+        },
+      }),
+      writeStats(env, nextStats),
+    ]);
+    return {
+      ...recordedEvent,
+      counted: true,
+      owner: isOwner,
+      stats: nextStats,
+    };
   }
 
   return { ...event, counted: true };
@@ -671,24 +711,32 @@ async function applyManualAdjustments(env, adjustments) {
   if (!env.VISITOR_KV) throw new Error('VISITOR_KV binding is not configured');
   const updatedAt = new Date().toISOString();
   let written = 0;
+  let stats = await readStats(env);
 
   for (const adjustment of adjustments) {
     const count = Math.min(adjustment.count, 200);
     for (let index = 0; index < count; index += 1) {
       const key = `${MANUAL_HIT_PREFIX}${Date.now()}:${adjustment.country}:${crypto.randomUUID()}`;
+      const event = {
+        ...adjustment,
+        updatedAt,
+        source: 'manual-adjustment',
+      };
       await env.VISITOR_KV.put(key, '1', {
         metadata: {
-          country: adjustment.country,
-          regionCode: adjustment.regionCode,
-          regionName: adjustment.regionName,
+          country: event.country,
+          regionCode: event.regionCode,
+          regionName: event.regionName,
           updatedAt,
-          source: 'manual-adjustment',
+          source: event.source,
         },
       });
+      stats = addHitToStats(stats, event);
       written += 1;
     }
   }
 
+  await writeStats(env, stats);
   return { written, updatedAt };
 }
 
@@ -720,7 +768,7 @@ export default {
     if (url.pathname === '/health') {
       return json({
         ok: true,
-        storage: env.VISITOR_KV ? 'kv-events' : 'seed',
+        storage: env.VISITOR_KV ? 'kv-aggregate-with-event-audit' : 'seed',
         counting: env.VISITOR_KV ? 'owner-once-others-every-entry' : 'unavailable',
         privacy: env.VISITOR_KV ? 'anonymous-events-no-raw-ip' : 'seed-only',
       }, env, request);
@@ -770,6 +818,26 @@ export default {
       }
     }
 
+    if (url.pathname === '/admin/rebuild') {
+      if (request.method !== 'POST') {
+        return json({ error: 'Method not allowed' }, env, request, 405);
+      }
+      if (!hasAdminAccess(request, env)) {
+        return json({ error: 'Not found' }, env, request, 404);
+      }
+
+      try {
+        const stats = await writeStats(env, await rebuildStatsFromEvents(env));
+        return json({
+          ok: true,
+          rebuilt: true,
+          ...publicSnapshot(stats),
+        }, env, request);
+      } catch (error) {
+        return json({ error: error.message || 'Unable to rebuild visitor statistics' }, env, request, 503);
+      }
+    }
+
     if (url.pathname === '/hit' || url.pathname === '/hit.gif' || url.pathname === '/hit.js') {
       if (request.method !== 'GET' && request.method !== 'POST') {
         return json({ error: 'Method not allowed' }, env, request, 405);
@@ -782,11 +850,13 @@ export default {
         return image('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />', env, request);
       }
 
-      const stats = await readStats(env);
       const hit = shouldRecordHit
         ? await recordHit(env, request)
         : { ...currentHit(request), counted: false };
-      const snapshot = publicSnapshot(hit.counted ? addHitToStats(stats, hit) : stats);
+      const stats = hit.stats || await readStats(env);
+      const snapshot = publicSnapshot(
+        hit.counted && !hit.stats ? addHitToStats(stats, hit) : stats
+      );
 
       if (url.pathname === '/hit.js') {
         const callback = callbackName(url.searchParams.get('callback'));

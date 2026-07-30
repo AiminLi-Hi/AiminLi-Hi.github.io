@@ -4,6 +4,7 @@ import visitorWorker from '../workers/pages-api/_worker.js';
 class MemoryKv {
   constructor() {
     this.entries = new Map();
+    this.listCalls = 0;
   }
 
   async get(key, type) {
@@ -20,6 +21,7 @@ class MemoryKv {
   }
 
   async list({ prefix = '' }) {
+    this.listCalls += 1;
     const keys = [...this.entries.entries()]
       .filter(([key]) => key.startsWith(prefix))
       .map(([name, entry]) => ({ name, metadata: entry.metadata }));
@@ -36,6 +38,12 @@ const env = {
     updatedAt: null,
   }),
   VISITOR_ADMIN_TOKEN: 'test-admin-token',
+  VISITOR_EVENT_BASE_STATS: JSON.stringify({
+    pageviews: 0,
+    countries: {},
+    regions: {},
+    updatedAt: null,
+  }),
   VISITOR_HASH_SALT: 'test-only-salt',
   VISITOR_KV: new MemoryKv(),
 };
@@ -86,9 +94,18 @@ assert.equal(snapshot.visitorSnapshot.visits, 3);
 assert.equal(snapshot.visitorSnapshot.ranking.find(({ code }) => code === 'TR')?.count, 1);
 assert.equal(snapshot.visitorSnapshot.ranking.find(({ code }) => code === 'US')?.count, 2);
 assert.equal(snapshot.visitorSnapshot.weekly.newVisitors, 3);
+assert.equal(env.VISITOR_KV.listCalls, 0);
+
+const rebuilt = await fetchJson('/admin/rebuild', ownerIp, 'TR', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${env.VISITOR_ADMIN_TOKEN}` },
+});
+assert.equal(rebuilt.rebuilt, true);
+assert.equal(rebuilt.visitorSnapshot.pageviews, 3);
+assert.equal(env.VISITOR_KV.listCalls, 1);
 
 const serializedKv = JSON.stringify([...env.VISITOR_KV.entries]);
 assert.equal(serializedKv.includes(ownerIp), false);
 assert.equal(serializedKv.includes(visitorIp), false);
 
-console.log('Visitor counting test passed: owner counted once, other entries counted repeatedly.');
+console.log('Visitor counting test passed: constant-time stats, owner counted once, other entries counted repeatedly.');

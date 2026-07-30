@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "audit:homepage": "node scripts/audit-homepage-data.mjs",
+    "export:visitor-aggregate": "node scripts/export-visitor-aggregate.mjs",
     "test:visitor": "node scripts/test-visitor-counting.mjs",
     "generate:visitor-map": "node scripts/generate-visitor-map-data.mjs",
     "sync:homepage": "node scripts/sync-homepage-data.mjs && npm run generate:visitor-map",

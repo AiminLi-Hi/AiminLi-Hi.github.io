@@ -17,6 +17,7 @@ It exposes:
 - `GET /stats`: returns the latest snapshot without incrementing.
 - `POST /admin/adjust`: manually adds aggregate visitor events. Requires `VISITOR_ADMIN_TOKEN`.
 - `POST /admin/owner/register`: registers the caller's salted network hash as the site owner. Requires `VISITOR_ADMIN_TOKEN`.
+- `POST /admin/rebuild`: manually rebuilds the aggregate snapshot from anonymous audit events. Requires `VISITOR_ADMIN_TOKEN` and should only be used for recovery or reconciliation.
 - `GET /health`: health check.
 
 The homepage automatically uses this production API on `aiminli-hi.github.io`. `VITE_VISITOR_STATS_ENDPOINT` is only needed when overriding the endpoint for builds, previews, or a future API migration. Local development falls back to the static snapshot unless the endpoint is explicitly configured.
@@ -37,7 +38,9 @@ VITE_VISITOR_STATS_ENDPOINT=https://aimin-homepage-visitors-api.pages.dev
 
 Every full homepage entry or reload records one visit. Internal navigation within the single-page site does not create extra visits. The script and image fallback share an anonymous page-entry ID, so a network retry cannot count the same entry twice. Registered owner networks retain a fixed salted hash key and count only once; all other networks create a new anonymous event on every entry.
 
-The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys used to avoid lost updates. It does not store raw IP addresses, user agents, city-level data, or individual visitor identities.
+Normal reads use one aggregate KV snapshot and never scan the event namespace. Each counted visit also keeps an anonymous event key for later audit or manual rebuilding. This keeps `/stats` constant-time as the lifetime count grows and avoids exhausting Cloudflare KV list quotas.
+
+The API stores only country-level aggregate counts and optional first-level region aggregates, such as U.S. states when Cloudflare provides them, plus anonymous per-hit KV event keys. It does not store raw IP addresses, user agents, city-level data, or individual visitor identities.
 
 Register the current owner network after deploying a counting-rule update:
 
