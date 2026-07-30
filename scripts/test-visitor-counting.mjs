@@ -104,8 +104,23 @@ assert.equal(rebuilt.rebuilt, true);
 assert.equal(rebuilt.visitorSnapshot.pageviews, 3);
 assert.equal(env.VISITOR_KV.listCalls, 1);
 
+await env.VISITOR_KV.put('visitor-stats-v1', JSON.stringify({
+  pageviews: 10,
+  countries: { TR: 1, US: 9 },
+  regions: {},
+  updatedAt: new Date().toISOString(),
+}));
+const rollbackResponse = await visitorWorker.fetch(request('/admin/rebuild', ownerIp, 'TR', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${env.VISITOR_ADMIN_TOKEN}` },
+}), env);
+assert.equal(rollbackResponse.status, 503);
+assert.match((await rollbackResponse.json()).error, /Refusing to reduce visitor pageviews/);
+const protectedSnapshot = await fetchJson('/stats', visitorIp, 'US');
+assert.equal(protectedSnapshot.visitorSnapshot.pageviews, 10);
+
 const serializedKv = JSON.stringify([...env.VISITOR_KV.entries]);
 assert.equal(serializedKv.includes(ownerIp), false);
 assert.equal(serializedKv.includes(visitorIp), false);
 
-console.log('Visitor counting test passed: constant-time stats, owner counted once, other entries counted repeatedly.');
+console.log('Visitor counting test passed: repeat counting, owner exclusion, and rollback protection.');

@@ -17,7 +17,7 @@ It exposes:
 - `GET /stats`: returns the latest snapshot without incrementing.
 - `POST /admin/adjust`: manually adds aggregate visitor events. Requires `VISITOR_ADMIN_TOKEN`.
 - `POST /admin/owner/register`: registers the caller's salted network hash as the site owner. Requires `VISITOR_ADMIN_TOKEN`.
-- `POST /admin/rebuild`: manually rebuilds the aggregate snapshot from anonymous audit events. Requires `VISITOR_ADMIN_TOKEN` and should only be used for recovery or reconciliation.
+- `POST /admin/rebuild`: manually rebuilds the aggregate snapshot from anonymous audit events. Requires `VISITOR_ADMIN_TOKEN`, refuses to lower the current total, and should only be used for recovery or reconciliation.
 - `GET /health`: health check.
 
 The homepage automatically uses this production API on `aiminli-hi.github.io`. `VITE_VISITOR_STATS_ENDPOINT` is only needed when overriding the endpoint for builds, previews, or a future API migration. Local development falls back to the static snapshot unless the endpoint is explicitly configured.
@@ -72,6 +72,12 @@ curl -X POST "https://aimin-homepage-visitors-api.pages.dev/admin/adjust" \
   -H "Content-Type: application/json" \
   --data '{"adjustments":[{"country":"SE","regionCode":"AB","regionName":"Stockholm","count":2},{"country":"CN","regionCode":"ZJ","regionName":"Zhejiang","count":3}]}'
 ```
+
+`npm run export:visitor-aggregate` is a recovery-only helper. It compares the
+static snapshot with the live API and refuses to export a lower total. The
+`ALLOW_VISITOR_ROLLBACK=1` override is destructive and must only be used after
+the site owner explicitly approves a rollback. Never pipe an unverified static
+snapshot directly into `wrangler kv key put`.
 
 ## Legacy Durable Object Alternative
 

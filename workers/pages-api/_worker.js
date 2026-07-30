@@ -827,7 +827,14 @@ export default {
       }
 
       try {
-        const stats = await writeStats(env, await rebuildStatsFromEvents(env));
+        const currentStats = await readStats(env);
+        const rebuiltStats = await rebuildStatsFromEvents(env);
+        if (rebuiltStats.pageviews < currentStats.pageviews) {
+          throw new Error(
+            `Refusing to reduce visitor pageviews from ${currentStats.pageviews} to ${rebuiltStats.pageviews}`
+          );
+        }
+        const stats = await writeStats(env, rebuiltStats);
         return json({
           ok: true,
           rebuilt: true,
