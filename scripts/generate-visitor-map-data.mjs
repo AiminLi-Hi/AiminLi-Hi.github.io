@@ -70,18 +70,18 @@ const countryNameAliases = new Map([
   ['united states', 'united states of america'],
   ['usa', 'united states of america'],
   ['turkiye', 'turkey'],
-  ['czechia', 'czech republic'],
-  ['russia', 'russian federation'],
+  ['czech republic', 'czechia'],
+  ['russian federation', 'russia'],
   ['republic of korea', 'south korea'],
   ['democratic people s republic of korea', 'north korea'],
-  ['vietnam', 'viet nam'],
-  ['laos', 'lao pdr'],
-  ['syria', 'syrian arab republic'],
-  ['iran', 'iran islamic republic of'],
-  ['moldova', 'moldova republic of'],
-  ['bolivia', 'bolivia plurinational state of'],
-  ['venezuela', 'venezuela bolivarian republic of'],
-  ['tanzania', 'united republic of tanzania']
+  ['viet nam', 'vietnam'],
+  ['lao pdr', 'laos'],
+  ['syrian arab republic', 'syria'],
+  ['iran islamic republic of', 'iran'],
+  ['moldova republic of', 'moldova'],
+  ['bolivia plurinational state of', 'bolivia'],
+  ['venezuela bolivarian republic of', 'venezuela'],
+  ['united republic of tanzania', 'tanzania']
 ]);
 
 const GREATER_CHINA_DETAIL_NAMES = ['taiwan', 'hong kong', 'macao'];
@@ -113,7 +113,8 @@ function findCountryGeometry(country) {
     return detailCountriesById.get(String(country.id).padStart(3, '0'));
   }
   const normalized = normalizeName(country.matchName || country.name);
-  return detailCountriesByName.get(countryNameAliases.get(normalized) || normalized);
+  return detailCountriesByName.get(normalized)
+    || detailCountriesByName.get(countryNameAliases.get(normalized));
 }
 
 function visitorGeometry(country) {

@@ -385,7 +385,7 @@ const loadVisitorMapData = () => {
 
   visitorMapDataPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = '/visitor-map-data.js?v=20260730-tricolor-no-antarctica';
+    script.src = '/visitor-map-data.js?v=20260730-country-geometry-fix';
     script.async = true;
     script.dataset.visitorMapLoader = 'true';
     script.onload = () => {
@@ -917,18 +917,18 @@ const COUNTRY_NAME_ALIASES = new Map([
   ['united states', 'united states of america'],
   ['usa', 'united states of america'],
   ['turkiye', 'turkey'],
-  ['czechia', 'czech republic'],
-  ['russia', 'russian federation'],
+  ['czech republic', 'czechia'],
+  ['russian federation', 'russia'],
   ['republic of korea', 'south korea'],
   ['democratic people s republic of korea', 'north korea'],
-  ['vietnam', 'viet nam'],
-  ['laos', 'lao pdr'],
-  ['syria', 'syrian arab republic'],
-  ['iran', 'iran islamic republic of'],
-  ['moldova', 'moldova republic of'],
-  ['bolivia', 'bolivia plurinational state of'],
-  ['venezuela', 'venezuela bolivarian republic of'],
-  ['tanzania', 'united republic of tanzania'],
+  ['viet nam', 'vietnam'],
+  ['lao pdr', 'laos'],
+  ['syrian arab republic', 'syria'],
+  ['iran islamic republic of', 'iran'],
+  ['moldova republic of', 'moldova'],
+  ['bolivia plurinational state of', 'bolivia'],
+  ['venezuela bolivarian republic of', 'venezuela'],
+  ['united republic of tanzania', 'tanzania'],
 ]);
 
 const GREATER_CHINA_MAP_NAMES = ['taiwan', 'hong kong', 'macao', 'macau'];
@@ -969,7 +969,7 @@ const getActiveVisitorCountries = (snapshot, mapData) => {
   return snapshot.ranking.map((country, index) => {
     const normalized = normalizeCountryName(country.matchName || country.name);
     const aliased = COUNTRY_NAME_ALIASES.get(normalized) || normalized;
-    const baseGeometry = activeByCode.get(country.code) || mapCountryByName.get(aliased) || mapCountryByName.get(normalized);
+    const baseGeometry = activeByCode.get(country.code) || mapCountryByName.get(normalized) || mapCountryByName.get(aliased);
     const geometry = visitorGeometryForCountry(country, baseGeometry, mapCountryByName);
     const fallbackPoint = VISITOR_COUNTRY_FALLBACK_POINTS.get(country.code);
     return {

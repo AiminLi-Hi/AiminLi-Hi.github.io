@@ -123,6 +123,22 @@ const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (/visitor-map-data\.js/.test(indexHtml)) fail('The large visitor map bundle is still loaded synchronously in index.html.');
 else pass('Visitor map data is lazy-loaded instead of blocking every page.');
 
+const visitorMapSource = fs.readFileSync(path.join(root, 'public', 'visitor-map-data.js'), 'utf8');
+const visitorMapMatch = visitorMapSource.match(/window\.HOMEPAGE_VISITOR_WORLD_MAP\s*=\s*(\{[\s\S]*\});?\s*$/);
+if (!visitorMapMatch) {
+  fail('Visitor map data does not contain a valid HOMEPAGE_VISITOR_WORLD_MAP payload.');
+} else {
+  const visitorMap = JSON.parse(visitorMapMatch[1]);
+  const missingGeometry = (visitorMap.activeCountries || [])
+    .filter((country) => !String(country.d || '').trim())
+    .map((country) => `${country.code || '??'} (${country.name || 'Unknown'})`);
+  if (missingGeometry.length) {
+    fail(`Active visitor countries are missing map geometry: ${missingGeometry.join(', ')}`);
+  } else {
+    pass(`${visitorMap.activeCountries.length} active visitor countries include map geometry.`);
+  }
+}
+
 if (failures.length) {
   console.error('Homepage audit failed:\n');
   failures.forEach((message) => console.error(`- ${message}`));
