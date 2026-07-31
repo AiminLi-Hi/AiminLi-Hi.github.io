@@ -290,6 +290,7 @@ function emptyWeeklyStats(value = new Date()) {
     ...istanbulWeekRange(value),
     pageviews: 0,
     countries: {},
+    regions: {},
     updatedAt: null,
   };
 }
@@ -299,17 +300,34 @@ function normalizeWeeklyStats(value = {}, now = new Date()) {
   if (value?.weekStart !== current.weekStart) return current;
 
   const countries = {};
+  const regionCountsFromCountries = {};
+  const skipRegionCountries = new Set();
   for (const [countryValue, countValue] of Object.entries(value.countries || {})) {
     const rawCountry = normalizeCountryCode(countryValue);
     const count = Number(countValue) || 0;
     if (rawCountry === 'XX' || count <= 0) continue;
-    addCountryCount(countries, COUNTRY_REGION_OVERRIDES[rawCountry]?.country || rawCountry, count);
+    const override = COUNTRY_REGION_OVERRIDES[rawCountry];
+    if (override) {
+      addCountryCount(countries, override.country, count);
+      addRegionCount(regionCountsFromCountries, override.country, override.regionCode, override.regionName, count);
+      skipRegionCountries.add(rawCountry);
+    } else {
+      addCountryCount(countries, rawCountry, count);
+    }
+  }
+
+  const regions = normalizeRegions(value.regions, skipRegionCountries);
+  for (const [country, regionMap] of Object.entries(regionCountsFromCountries)) {
+    for (const [regionCode, region] of Object.entries(regionMap)) {
+      addRegionCount(regions, country, regionCode, region.name, Number(region.count) || 0);
+    }
   }
 
   return {
     ...current,
     pageviews: Math.max(0, Number(value.pageviews) || Object.values(countries).reduce((sum, count) => sum + count, 0)),
     countries,
+    regions,
     updatedAt: value.updatedAt || null,
   };
 }
@@ -331,6 +349,7 @@ function addHitToWeeklyStats(weekly, hit) {
       ...current.countries,
       [hit.country]: (current.countries[hit.country] || 0) + 1,
     },
+    regions: addRegionToStats({ regions: current.regions }, hit),
     updatedAt: hit.updatedAt || current.updatedAt,
   };
 }
@@ -492,6 +511,7 @@ function publicSnapshot(stats) {
         newVisitors: weekly.pageviews,
         countries: weeklyRanking.length,
         ranking: weeklyRanking,
+        regions: publicRegions(weekly.regions),
         updatedAt: weekly.updatedAt,
       },
       updatedAt: stats.updatedAt,

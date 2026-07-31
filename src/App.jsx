@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
 import { getAuthorList, getCitationFormats } from './utils/citations';
+import { getVisitorSnapshotUpdatedAt, shouldApplyVisitorSnapshot } from './utils/visitorSnapshot';
 
 // ==========================================
 // --- 自定义图标组件 (Custom Icons) ---
@@ -525,7 +526,11 @@ const normalizeVisitorPayload = (payload = {}) => {
         count: Number(country.count),
       }))
     : [];
-  const normalizedWeeklyRanking = normalizeVisitorRanking(weeklyRanking).ranking;
+  const {
+    ranking: normalizedWeeklyRanking,
+    overrideRegions: weeklyOverrideRegions,
+    skipRegionCountries: weeklySkipRegionCountries,
+  } = normalizeVisitorRanking(weeklyRanking);
   const weekly = /^\d{4}-\d{2}-\d{2}$/.test(rawWeekly?.weekStart || '')
     ? {
       weekStart: rawWeekly.weekStart,
@@ -537,6 +542,10 @@ const normalizeVisitorPayload = (payload = {}) => {
       ),
       countries: normalizedWeeklyRanking.length,
       ranking: normalizedWeeklyRanking,
+      regions: mergeVisitorRegions(
+        normalizeVisitorRegions(rawWeekly?.regions, weeklySkipRegionCountries),
+        weeklyOverrideRegions
+      ),
       updatedAt: rawWeekly?.updatedAt || null,
     }
     : null;
@@ -549,7 +558,7 @@ const normalizeVisitorPayload = (payload = {}) => {
     ranking,
     regions: mergeVisitorRegions(normalizeVisitorRegions(visitorSnapshot.regions, skipRegionCountries), overrideRegions),
     ...(weekly ? { weekly } : {}),
-    updatedAt: payload.generatedAt || payload.updatedAt || visitorSnapshot.updatedAt || null,
+    updatedAt: getVisitorSnapshotUpdatedAt(payload, visitorSnapshot),
   };
 };
 
@@ -590,17 +599,6 @@ const fetchRealtimeVisitorSnapshot = async (action, signal) => {
   });
   if (!response.ok) throw new Error(`Visitor API returned ${response.status}`);
   return normalizeVisitorPayload(await response.json());
-};
-
-const shouldApplyVisitorSnapshot = (nextSnapshot, currentSnapshot) => {
-  if (!nextSnapshot) return false;
-  const nextViews = Number(nextSnapshot.pageviews) || 0;
-  const currentViews = Number(currentSnapshot?.pageviews) || 0;
-  const nextTime = Date.parse(nextSnapshot.updatedAt || '') || 0;
-  const currentTime = Date.parse(currentSnapshot?.updatedAt || '') || 0;
-
-  if (nextTime && currentTime && nextTime < currentTime) return false;
-  return nextViews >= currentViews || nextTime >= currentTime;
 };
 
 const recordVisitorImageBeacon = () => {
@@ -1497,18 +1495,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const previewVisitorCountries = snapshot.ranking.slice(0, VISITOR_COUNTRY_PREVIEW_LIMIT);
   const remainingVisitorCountries = snapshot.ranking.slice(VISITOR_COUNTRY_PREVIEW_LIMIT);
   const displayedVisitorCountries = showAllVisitorCountries ? snapshot.ranking : previewVisitorCountries;
-  const regionsByCountry = snapshot.regions || {};
-  const firstCountryWithRegions = snapshot.ranking.find(country => regionsByCountry[country.code]?.length);
-  const resolvedSelectedVisitorCountryCode = snapshot.ranking.some(country => country.code === selectedVisitorCountryCode)
-    ? selectedVisitorCountryCode
-    : firstCountryWithRegions?.code || snapshot.ranking[0]?.code || '';
-  const selectedVisitorCountry = snapshot.ranking.find(country => country.code === resolvedSelectedVisitorCountryCode)
-    || firstCountryWithRegions
-    || snapshot.ranking[0]
-    || null;
-  const selectedRegionRanking = selectedVisitorCountry ? (regionsByCountry[selectedVisitorCountry.code] || []) : [];
-  const selectedRegionTotal = selectedRegionRanking.reduce((sum, region) => sum + region.count, 0);
-
   const openVisitorMapModal = () => setShowVisitorMapModal(true);
   const closeVisitorMapModal = () => {
     setShowVisitorMapModal(false);
@@ -1524,54 +1510,35 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
     }
   };
 
-  const renderWeeklyDetails = () => (
-    <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-emerald-300/15 bg-[#10221d]/80' : 'border-emerald-100 bg-[#f7faf5]'}`}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-emerald-200' : 'text-emerald-900'}`}>{ui.visitorMapThisWeekLabel}</h4>
-          <p className={`mt-1 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-            {formattedWeeklyRange || ui.weeklyFirstVisits}
-          </p>
-        </div>
-        {weeklySnapshot && (
-          <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-extrabold tabular-nums ${darkMode ? 'border-emerald-300/20 bg-emerald-300/10 text-emerald-200' : 'border-emerald-200 bg-white text-emerald-800'}`}>
-            +{weeklySnapshot.newVisitors}
-          </span>
-        )}
-      </div>
-
-      {weeklySnapshot?.ranking?.length ? (
-        <div className={`mt-4 divide-y ${darkMode ? 'divide-emerald-200/10' : 'divide-emerald-100'}`}>
-          {weeklySnapshot.ranking.map(country => (
-            <div key={`weekly-map-${country.code}`} className="grid grid-cols-[2.6rem_minmax(0,1fr)_2rem] items-center gap-2 py-2.5 text-sm">
-              <span className={darkMode ? 'font-extrabold text-emerald-300' : 'font-extrabold text-emerald-700'}>{country.code}</span>
-              <span className={`min-w-0 truncate font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{country.name}</span>
-              <span className={`text-right font-extrabold tabular-nums ${darkMode ? 'text-white' : 'text-slate-950'}`}>{country.count}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className={`mt-4 rounded-2xl border border-dashed px-4 py-8 text-center text-sm font-semibold leading-relaxed ${darkMode ? 'border-slate-700 text-slate-400' : 'border-slate-200 text-slate-500'}`}>
-          {ui.weeklyNoVisitors}
-        </div>
-      )}
-
-      <p className={`mt-4 border-t pt-3 text-xs font-semibold leading-relaxed ${darkMode ? 'border-emerald-200/10 text-slate-500' : 'border-emerald-100 text-slate-500'}`}>
-        {ui.weeklyFirstVisits}
-      </p>
-    </aside>
-  );
-
   const renderRegionalDetails = (scope = 'all') => {
-    if (scope === 'weekly') return renderWeeklyDetails();
+    const isWeeklyScope = scope === 'weekly' && Boolean(weeklySnapshot);
+    const scopedRanking = isWeeklyScope ? weeklySnapshot.ranking || [] : snapshot.ranking;
+    const scopedRegions = isWeeklyScope ? weeklySnapshot.regions || {} : snapshot.regions || {};
+    const firstCountryWithRegions = scopedRanking.find(country => scopedRegions[country.code]?.length);
+    const resolvedSelectedVisitorCountryCode = scopedRanking.some(country => country.code === selectedVisitorCountryCode)
+      ? selectedVisitorCountryCode
+      : firstCountryWithRegions?.code || scopedRanking[0]?.code || '';
+    const selectedVisitorCountry = scopedRanking.find(country => country.code === resolvedSelectedVisitorCountryCode)
+      || firstCountryWithRegions
+      || scopedRanking[0]
+      || null;
+    const selectedRegionRanking = selectedVisitorCountry ? (scopedRegions[selectedVisitorCountry.code] || []) : [];
+    const selectedRegionTotal = selectedRegionRanking.reduce((sum, region) => sum + region.count, 0);
+    const panelTitle = isWeeklyScope ? ui.visitorMapThisWeekLabel : ui.regionalDetails;
+    const panelHint = isWeeklyScope ? formattedWeeklyRange || ui.weeklyFirstVisits : ui.regionalDetailsHint;
+
     return (
     <aside className={`visitor-region-panel rounded-2xl border p-4 ${darkMode ? 'border-cyan-400/10 bg-[#0b1b2b]/75' : 'border-slate-200 bg-slate-50/80'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-slate-800'}`}>{ui.regionalDetails}</h4>
-          <p className={`mt-1 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{ui.regionalDetailsHint}</p>
+          <h4 className={`text-sm font-extrabold uppercase tracking-widest ${darkMode ? 'text-cyan-200' : 'text-slate-800'}`}>{panelTitle}</h4>
+          <p className={`mt-1 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{panelHint}</p>
         </div>
-        {selectedVisitorCountry && (
+        {isWeeklyScope ? (
+          <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-extrabold tabular-nums ${darkMode ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200' : 'border-emerald-200 bg-white text-emerald-800'}`}>
+            +{weeklySnapshot.newVisitors}
+          </span>
+        ) : selectedVisitorCountry && (
           <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-extrabold ${darkMode ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200' : 'border-blue-200 bg-white text-blue-700'}`}>
             {selectedVisitorCountry.code}
           </span>
@@ -1581,12 +1548,12 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
       <div className="mt-4">
         <div className={`mb-2 text-[0.68rem] font-extrabold uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{ui.regionalCountrySelect}</div>
         <div className="visitor-region-country-strip">
-          {snapshot.ranking.map(country => {
-            const hasRegions = Boolean(regionsByCountry[country.code]?.length);
+          {scopedRanking.map(country => {
+            const hasRegions = Boolean(scopedRegions[country.code]?.length);
             const isSelected = resolvedSelectedVisitorCountryCode === country.code;
             return (
               <button
-                key={`regional-country-${country.code}`}
+                key={`${scope}-regional-country-${country.code}`}
                 type="button"
                 onClick={() => setSelectedVisitorCountryCode(country.code)}
                 className={`visitor-region-country-button ${isSelected ? 'visitor-region-country-button--active' : ''} ${darkMode ? 'visitor-region-country-button--dark' : ''}`}
@@ -1612,7 +1579,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
             {selectedRegionRanking.slice(0, 10).map(region => {
               const percent = selectedRegionTotal ? Math.round((region.count / selectedRegionTotal) * 100) : 0;
               return (
-                <div key={`${selectedVisitorCountry.code}-${region.code}`} className={`rounded-xl border px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/70' : 'border-slate-200 bg-white'}`}>
+                <div key={`${scope}-${selectedVisitorCountry.code}-${region.code}`} className={`rounded-xl border px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/70' : 'border-slate-200 bg-white'}`}>
                   <div className="grid grid-cols-[2.6rem_minmax(0,1fr)_2.4rem] items-center gap-2 text-sm">
                     <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{region.code}</span>
                     <span className={`min-w-0 truncate font-bold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{region.name}</span>
@@ -1911,11 +1878,18 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
 
     loadInitialSnapshot();
     const intervalId = window.setInterval(loadSnapshot, VISITOR_REFRESH_MS);
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') loadSnapshot();
+    };
+    window.addEventListener('focus', loadSnapshot);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
 
     return () => {
       cancelled = true;
       controller.abort();
       window.clearInterval(intervalId);
+      window.removeEventListener('focus', loadSnapshot);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
     };
   }, [staticSnapshot, syncData.generatedAt]);
 

@@ -76,14 +76,24 @@ const registration = await fetchJson('/admin/owner/register', ownerIp, 'TR', {
 });
 assert.equal(registration.registered, true);
 
-const ownerFirst = await fetchJson('/hit', ownerIp, 'TR');
-const ownerRepeat = await fetchJson('/hit', ownerIp, 'TR');
+const ownerFirst = await fetchJson('/hit', ownerIp, 'TR', {
+  headers: { 'CF-Region-Code': '06', 'CF-Region': 'Ankara' },
+});
+const ownerRepeat = await fetchJson('/hit', ownerIp, 'TR', {
+  headers: { 'CF-Region-Code': '06', 'CF-Region': 'Ankara' },
+});
 assert.equal(ownerFirst.visitorSnapshot.pageviews, 1);
 assert.equal(ownerRepeat.visitorSnapshot.pageviews, 1);
 
-const visitorFirst = await fetchJson('/hit?entry=page-entry-00000001', visitorIp, 'US');
-const visitorFallback = await fetchJson('/hit?entry=page-entry-00000001', visitorIp, 'US');
-const visitorRepeat = await fetchJson('/hit?entry=page-entry-00000002', visitorIp, 'US');
+const visitorFirst = await fetchJson('/hit?entry=page-entry-00000001', visitorIp, 'US', {
+  headers: { 'CF-Region-Code': 'GA', 'CF-Region': 'Georgia' },
+});
+const visitorFallback = await fetchJson('/hit?entry=page-entry-00000001', visitorIp, 'US', {
+  headers: { 'CF-Region-Code': 'GA', 'CF-Region': 'Georgia' },
+});
+const visitorRepeat = await fetchJson('/hit?entry=page-entry-00000002', visitorIp, 'US', {
+  headers: { 'CF-Region-Code': 'TX', 'CF-Region': 'Texas' },
+});
 assert.equal(visitorFirst.visitorSnapshot.pageviews, 2);
 assert.equal(visitorFallback.visitorSnapshot.pageviews, 2);
 assert.equal(visitorRepeat.visitorSnapshot.pageviews, 3);
@@ -94,6 +104,9 @@ assert.equal(snapshot.visitorSnapshot.visits, 3);
 assert.equal(snapshot.visitorSnapshot.ranking.find(({ code }) => code === 'TR')?.count, 1);
 assert.equal(snapshot.visitorSnapshot.ranking.find(({ code }) => code === 'US')?.count, 2);
 assert.equal(snapshot.visitorSnapshot.weekly.newVisitors, 3);
+assert.equal(snapshot.visitorSnapshot.weekly.regions.TR.find(({ code }) => code === '06')?.count, 1);
+assert.equal(snapshot.visitorSnapshot.weekly.regions.US.find(({ code }) => code === 'GA')?.count, 1);
+assert.equal(snapshot.visitorSnapshot.weekly.regions.US.find(({ code }) => code === 'TX')?.count, 1);
 assert.equal(env.VISITOR_KV.listCalls, 0);
 
 const rebuilt = await fetchJson('/admin/rebuild', ownerIp, 'TR', {
