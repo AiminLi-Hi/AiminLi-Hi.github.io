@@ -3435,10 +3435,10 @@ export default function AcademicProfile() {
           <div className="relative z-10">
             <Quote size={18} className={`motto-quote-mark mx-auto mb-3 opacity-60 ${darkMode ? 'text-cyan-200' : 'text-purple-600'}`} />
             <h2 className={`text-xl md:text-2xl font-serif italic tracking-wide leading-relaxed drop-shadow-sm ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
-              复杂中见序，纷乱中求真
+              复杂中见序
             </h2>
             <p className={`mt-2 text-[10px] font-sans uppercase tracking-[0.3em] opacity-70 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              Order in complexity, truth in chaos
+              Order in complexity
             </p>
             <a
               href="mailto:hitliaimin@163.com"

@@ -206,6 +206,11 @@ export const CITATION_METADATA = {
     year: 2026,
     status: 'accepted',
   },
+  c21: {
+    containerTitle: '2026 IEEE Global Communications Conference (GLOBECOM)',
+    year: 2026,
+    status: 'accepted',
+  },
   c15: {
     containerTitle: '2026 IEEE Vehicular Technology Conference (VTC-Spring)',
     year: 2026,
