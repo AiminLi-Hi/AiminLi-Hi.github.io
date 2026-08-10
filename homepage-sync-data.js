@@ -2,42 +2,42 @@
 window.HOMEPAGE_SYNC_DATA = {
   "generatedAt": "2026-07-23T05:35:11.024Z",
   "visitorSnapshot": {
-    "pageviews": 436,
-    "countries": 28,
+    "pageviews": 577,
+    "countries": 32,
     "ranking": [
       {
         "code": "US",
         "name": "United States",
         "matchName": "United States",
-        "count": 154,
+        "count": 179,
         "delay": 0
       },
       {
         "code": "SG",
         "name": "Singapore",
         "matchName": "Singapore",
-        "count": 120,
+        "count": 151,
         "delay": 0.4
-      },
-      {
-        "code": "CN",
-        "name": "China",
-        "matchName": "China",
-        "count": 72,
-        "delay": 0.8
       },
       {
         "code": "TR",
         "name": "Türkiye",
         "matchName": "Türkiye",
-        "count": 34,
+        "count": 93,
+        "delay": 0.8
+      },
+      {
+        "code": "CN",
+        "name": "China",
+        "matchName": "China",
+        "count": 79,
         "delay": 1.2
       },
       {
         "code": "IN",
         "name": "India",
         "matchName": "India",
-        "count": 12,
+        "count": 19,
         "delay": 1.6
       },
       {
@@ -48,23 +48,23 @@ window.HOMEPAGE_SYNC_DATA = {
         "delay": 2
       },
       {
-        "code": "DE",
-        "name": "Germany",
-        "matchName": "Germany",
-        "count": 4,
-        "delay": 2.4
-      },
-      {
         "code": "NL",
         "name": "Netherlands",
         "matchName": "Netherlands",
-        "count": 4,
-        "delay": 2.8
+        "count": 7,
+        "delay": 2.4
       },
       {
         "code": "SE",
         "name": "Sweden",
         "matchName": "Sweden",
+        "count": 6,
+        "delay": 2.8
+      },
+      {
+        "code": "DE",
+        "name": "Germany",
+        "matchName": "Germany",
         "count": 4,
         "delay": 3.2
       },
@@ -76,130 +76,158 @@ window.HOMEPAGE_SYNC_DATA = {
         "delay": 3.6
       },
       {
+        "code": "ID",
+        "name": "Indonesia",
+        "matchName": "Indonesia",
+        "count": 3,
+        "delay": 4
+      },
+      {
         "code": "GB",
         "name": "United Kingdom",
         "matchName": "United Kingdom",
         "count": 2,
-        "delay": 4
+        "delay": 4.4
       },
       {
-        "code": "ID",
-        "name": "Indonesia",
-        "matchName": "Indonesia",
+        "code": "JO",
+        "name": "Jordan",
+        "matchName": "Jordan",
         "count": 2,
-        "delay": 4.4
+        "delay": 4.8
       },
       {
         "code": "KR",
         "name": "South Korea",
         "matchName": "South Korea",
         "count": 2,
-        "delay": 4.8
+        "delay": 5.2
       },
       {
         "code": "PL",
         "name": "Poland",
         "matchName": "Poland",
         "count": 2,
-        "delay": 5.2
+        "delay": 5.6
+      },
+      {
+        "code": "SA",
+        "name": "Saudi Arabia",
+        "matchName": "Saudi Arabia",
+        "count": 2,
+        "delay": 6
       },
       {
         "code": "AO",
         "name": "Angola",
         "matchName": "Angola",
         "count": 1,
-        "delay": 5.6
+        "delay": 6.4
+      },
+      {
+        "code": "BE",
+        "name": "Belgium",
+        "matchName": "Belgium",
+        "count": 1,
+        "delay": 6.8
       },
       {
         "code": "CA",
         "name": "Canada",
         "matchName": "Canada",
         "count": 1,
-        "delay": 6
+        "delay": 7.2
+      },
+      {
+        "code": "CO",
+        "name": "Colombia",
+        "matchName": "Colombia",
+        "count": 1,
+        "delay": 7.6
       },
       {
         "code": "EG",
         "name": "Egypt",
         "matchName": "Egypt",
         "count": 1,
-        "delay": 6.4
+        "delay": 8
       },
       {
-        "code": "JO",
-        "name": "Jordan",
-        "matchName": "Jordan",
+        "code": "IQ",
+        "name": "Iraq",
+        "matchName": "Iraq",
         "count": 1,
-        "delay": 6.8
+        "delay": 8.4
       },
       {
         "code": "KE",
         "name": "Kenya",
         "matchName": "Kenya",
         "count": 1,
-        "delay": 7.2
+        "delay": 8.8
       },
       {
         "code": "MY",
         "name": "Malaysia",
         "matchName": "Malaysia",
         "count": 1,
-        "delay": 7.6
+        "delay": 9.2
+      },
+      {
+        "code": "PH",
+        "name": "Philippines",
+        "matchName": "Philippines",
+        "count": 1,
+        "delay": 9.6
       },
       {
         "code": "RS",
         "name": "Serbia",
         "matchName": "Serbia",
         "count": 1,
-        "delay": 8
+        "delay": 10
       },
       {
         "code": "RU",
         "name": "Russia",
         "matchName": "Russia",
         "count": 1,
-        "delay": 8.4
-      },
-      {
-        "code": "SA",
-        "name": "Saudi Arabia",
-        "matchName": "Saudi Arabia",
-        "count": 1,
-        "delay": 8.8
+        "delay": 10.4
       },
       {
         "code": "TG",
         "name": "Togo",
         "matchName": "Togo",
         "count": 1,
-        "delay": 9.2
+        "delay": 10.8
       },
       {
         "code": "TH",
         "name": "Thailand",
         "matchName": "Thailand",
         "count": 1,
-        "delay": 9.6
+        "delay": 11.2
       },
       {
         "code": "UZ",
         "name": "Uzbekistan",
         "matchName": "Uzbekistan",
         "count": 1,
-        "delay": 10
+        "delay": 11.6
       },
       {
         "code": "VE",
         "name": "Venezuela",
         "matchName": "Venezuela",
         "count": 1,
-        "delay": 10.4
+        "delay": 12
       },
       {
         "code": "ZA",
         "name": "South Africa",
         "matchName": "South Africa",
         "count": 1,
-        "delay": 10.8
+        "delay": 12.4
       }
     ],
     "regions": {
@@ -207,22 +235,32 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "06",
           "name": "Ankara",
-          "count": 16
-        },
-        {
-          "code": "38",
-          "name": "Kayseri",
-          "count": 9
+          "count": 57
         },
         {
           "code": "34",
           "name": "Istanbul",
-          "count": 5
+          "count": 15
+        },
+        {
+          "code": "38",
+          "name": "Kayseri",
+          "count": 11
         },
         {
           "code": "35",
           "name": "İzmir Province",
-          "count": 3
+          "count": 7
+        },
+        {
+          "code": "16",
+          "name": "Bursa Province",
+          "count": 1
+        },
+        {
+          "code": "48",
+          "name": "Muğla",
+          "count": 1
         },
         {
           "code": "52",
@@ -239,22 +277,22 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "TX",
           "name": "Texas",
-          "count": 18
+          "count": 24
         },
         {
           "code": "WA",
           "name": "Washington",
-          "count": 15
+          "count": 19
         },
         {
           "code": "CA",
           "name": "California",
-          "count": 14
+          "count": 17
         },
         {
           "code": "IA",
           "name": "Iowa",
-          "count": 6
+          "count": 17
         },
         {
           "code": "OK",
@@ -277,6 +315,11 @@ window.HOMEPAGE_SYNC_DATA = {
           "count": 2
         },
         {
+          "code": "MD",
+          "name": "Maryland",
+          "count": 1
+        },
+        {
           "code": "NY",
           "name": "New York",
           "count": 1
@@ -296,14 +339,14 @@ window.HOMEPAGE_SYNC_DATA = {
       ],
       "CN": [
         {
+          "code": "HE",
+          "name": "Hebei",
+          "count": 12
+        },
+        {
           "code": "GD",
           "name": "Guangdong",
           "count": 11
-        },
-        {
-          "code": "HE",
-          "name": "Hebei",
-          "count": 10
         },
         {
           "code": "HK",
@@ -313,17 +356,17 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "TW",
           "name": "Taiwan",
-          "count": 6
+          "count": 7
         },
         {
           "code": "BJ",
           "name": "Beijing",
-          "count": 3
+          "count": 5
         },
         {
           "code": "JS",
           "name": "Jiangsu",
-          "count": 3
+          "count": 4
         },
         {
           "code": "ZJ",
@@ -334,6 +377,11 @@ window.HOMEPAGE_SYNC_DATA = {
           "code": "MO",
           "name": "Macao",
           "count": 2
+        },
+        {
+          "code": "GZ",
+          "name": "Guizhou",
+          "count": 1
         },
         {
           "code": "SN",
@@ -379,6 +427,11 @@ window.HOMEPAGE_SYNC_DATA = {
       ],
       "NL": [
         {
+          "code": "NH",
+          "name": "North Holland",
+          "count": 3
+        },
+        {
           "code": "GR",
           "name": "Groningen",
           "count": 1
@@ -410,12 +463,12 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "KA",
           "name": "Karnataka",
-          "count": 5
+          "count": 11
         },
         {
           "code": "MH",
           "name": "Maharashtra",
-          "count": 3
+          "count": 4
         },
         {
           "code": "KL",
@@ -450,6 +503,11 @@ window.HOMEPAGE_SYNC_DATA = {
           "code": "AB",
           "name": "Stockholm",
           "count": 4
+        },
+        {
+          "code": "X",
+          "name": "Gävleborg",
+          "count": 2
         }
       ],
       "PL": [
@@ -470,6 +528,11 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "JT",
           "name": "Central Java",
+          "count": 1
+        },
+        {
+          "code": "JI",
+          "name": "East Java",
           "count": 1
         },
         {
@@ -517,7 +580,7 @@ window.HOMEPAGE_SYNC_DATA = {
         {
           "code": "AM",
           "name": "Amman",
-          "count": 1
+          "count": 2
         }
       ],
       "MY": [
@@ -528,6 +591,11 @@ window.HOMEPAGE_SYNC_DATA = {
         }
       ],
       "SA": [
+        {
+          "code": "02",
+          "name": "Mecca Region",
+          "count": 1
+        },
         {
           "code": "01",
           "name": "Riyadh Region",
@@ -554,9 +622,116 @@ window.HOMEPAGE_SYNC_DATA = {
           "name": "Distrito Federal",
           "count": 1
         }
+      ],
+      "PH": [
+        {
+          "code": "03",
+          "name": "Central Luzon",
+          "count": 1
+        }
+      ],
+      "BE": [
+        {
+          "code": "VLG",
+          "name": "Flanders",
+          "count": 1
+        }
+      ],
+      "CO": [
+        {
+          "code": "NSA",
+          "name": "Norte de Santander Department",
+          "count": 1
+        }
+      ],
+      "IQ": [
+        {
+          "code": "BG",
+          "name": "Baghdad",
+          "count": 1
+        }
       ]
     },
-    "updatedAt": "2026-07-24T11:51:27.398Z"
+    "weekly": {
+      "weekStart": "2026-08-10",
+      "weekEnd": "2026-08-16",
+      "newVisitors": 11,
+      "countries": 5,
+      "ranking": [
+        {
+          "code": "IN",
+          "name": "India",
+          "matchName": "India",
+          "count": 3,
+          "delay": 0
+        },
+        {
+          "code": "SG",
+          "name": "Singapore",
+          "matchName": "Singapore",
+          "count": 3,
+          "delay": 0.4
+        },
+        {
+          "code": "US",
+          "name": "United States",
+          "matchName": "United States",
+          "count": 3,
+          "delay": 0.8
+        },
+        {
+          "code": "IQ",
+          "name": "Iraq",
+          "matchName": "Iraq",
+          "count": 1,
+          "delay": 1.2
+        },
+        {
+          "code": "TR",
+          "name": "Türkiye",
+          "matchName": "Türkiye",
+          "count": 1,
+          "delay": 1.6
+        }
+      ],
+      "regions": {
+        "IN": [
+          {
+            "code": "KA",
+            "name": "Karnataka",
+            "count": 3
+          }
+        ],
+        "US": [
+          {
+            "code": "TX",
+            "name": "Texas",
+            "count": 2
+          },
+          {
+            "code": "IA",
+            "name": "Iowa",
+            "count": 1
+          }
+        ],
+        "TR": [
+          {
+            "code": "38",
+            "name": "Kayseri",
+            "count": 1
+          }
+        ],
+        "IQ": [
+          {
+            "code": "BG",
+            "name": "Baghdad",
+            "count": 1
+          }
+        ]
+      },
+      "updatedAt": "2026-08-10T20:26:01.361Z"
+    },
+    "updatedAt": "2026-08-10T20:26:01.361Z"
   },
   "scholar": {
     "profileUrl": "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=en&cstart=0&pagesize=100&sortby=pubdate",
