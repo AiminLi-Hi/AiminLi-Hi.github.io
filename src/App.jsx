@@ -81,6 +81,7 @@ const REALTIME_VISITOR_ENDPOINT = (
 ).replace(/\/+$/, '');
 const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
+const VISITOR_API_TIMEOUT_MS = 4_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
 const MENTORING_GROUP_PREVIEW_LIMIT = 1;
 const PAGE_FADE_OUT_MS = 220;
@@ -133,14 +134,6 @@ const VISITOR_COUNTRY_REGION_OVERRIDES = {
   TW: { country: 'CN', regionCode: 'TW', regionName: 'Taiwan', countryName: 'China', matchName: 'China' },
   MO: { country: 'CN', regionCode: 'MO', regionName: 'Macao', countryName: 'China', matchName: 'China' },
 };
-const EMPTY_VISITOR_SNAPSHOT = {
-  pageviews: 0,
-  countries: 0,
-  ranking: [],
-  regions: {},
-  updatedAt: null,
-};
-
 const UI_COPY = {
   en: {
     publicationDesc: 'Selected research works and academic contributions.',
@@ -386,7 +379,7 @@ const loadVisitorMapData = () => {
 
   visitorMapDataPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = '/visitor-map-data.js?v=20260730-country-geometry-fix';
+    script.src = '/visitor-map-data.js?v=20260810-fast-map-v1';
     script.async = true;
     script.dataset.visitorMapLoader = 'true';
     script.onload = () => {
@@ -591,14 +584,25 @@ const fetchRealtimeVisitorSnapshot = async (action, signal) => {
   if (!REALTIME_VISITOR_ENDPOINT) return null;
   const url = new URL(`${REALTIME_VISITOR_ENDPOINT}/${action}`);
   url.searchParams.set('t', String(Date.now()));
-  const response = await fetch(url, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-store',
-    signal,
-  });
-  if (!response.ok) throw new Error(`Visitor API returned ${response.status}`);
-  return normalizeVisitorPayload(await response.json());
+  const controller = new AbortController();
+  const abortRequest = () => controller.abort();
+  const timeoutId = window.setTimeout(abortRequest, VISITOR_API_TIMEOUT_MS);
+  if (signal?.aborted) abortRequest();
+  else signal?.addEventListener('abort', abortRequest, { once: true });
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-store',
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`Visitor API returned ${response.status}`);
+    return normalizeVisitorPayload(await response.json());
+  } finally {
+    window.clearTimeout(timeoutId);
+    signal?.removeEventListener('abort', abortRequest);
+  }
 };
 
 const recordVisitorImageBeacon = () => {
@@ -967,16 +971,23 @@ const getActiveVisitorCountries = (snapshot, mapData) => {
   return snapshot.ranking.map((country, index) => {
     const normalized = normalizeCountryName(country.matchName || country.name);
     const aliased = COUNTRY_NAME_ALIASES.get(normalized) || normalized;
-    const baseGeometry = activeByCode.get(country.code) || mapCountryByName.get(normalized) || mapCountryByName.get(aliased);
+    const activeGeometry = activeByCode.get(country.code);
+    const referencedGeometryName = normalizeCountryName(activeGeometry?.geometryName || '');
+    const backgroundGeometry = mapCountryByName.get(referencedGeometryName)
+      || mapCountryByName.get(normalized)
+      || mapCountryByName.get(aliased);
+    const baseGeometry = activeGeometry?.d
+      ? { ...backgroundGeometry, ...activeGeometry }
+      : backgroundGeometry;
     const geometry = visitorGeometryForCountry(country, baseGeometry, mapCountryByName);
     const fallbackPoint = VISITOR_COUNTRY_FALLBACK_POINTS.get(country.code);
     return {
       ...country,
       delay: country.delay ?? Number((index * 0.4).toFixed(1)),
-      x: geometry?.x || fallbackPoint?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
-      y: geometry?.y || fallbackPoint?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
+      x: activeGeometry?.x || geometry?.x || fallbackPoint?.x || (country.x ? (country.x > 100 ? country.x : viewBox.width * country.x / 100) : viewBox.width / 2),
+      y: activeGeometry?.y || geometry?.y || fallbackPoint?.y || (country.y ? (country.y > 100 ? country.y : viewBox.height * country.y / 100) : viewBox.height / 2),
       d: geometry?.d || '',
-      mergedMapRegions: geometry?.mergedMapRegions || [],
+      mergedMapRegions: geometry?.mergedMapRegions || activeGeometry?.mergedMapRegions || [],
     };
   });
 };
@@ -1452,13 +1463,11 @@ const AcademicLineage = ({ lineage, darkMode, lang = 'en' }) => {
 
 const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const staticSnapshot = useMemo(() => getVisitorSnapshot(syncData), [syncData]);
-  const [snapshot, setSnapshot] = useState(() => (
-    REALTIME_VISITOR_ENDPOINT ? EMPTY_VISITOR_SNAPSHOT : staticSnapshot
-  ));
-  const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(() => (
-    REALTIME_VISITOR_ENDPOINT ? null : staticSnapshot.updatedAt || syncData.generatedAt || null
-  ));
-  const [isVisitorSnapshotLoading, setIsVisitorSnapshotLoading] = useState(Boolean(REALTIME_VISITOR_ENDPOINT));
+  const [snapshot, setSnapshot] = useState(staticSnapshot);
+  const [visitorUpdatedAt, setVisitorUpdatedAt] = useState(
+    staticSnapshot.updatedAt || syncData.generatedAt || null
+  );
+  const isVisitorSnapshotLoading = snapshot.ranking.length === 0;
   const [showAllVisitorCountries, setShowAllVisitorCountries] = useState(false);
   const [showWeeklyVisitors, setShowWeeklyVisitors] = useState(false);
   const [showVisitorMapModal, setShowVisitorMapModal] = useState(false);
@@ -1472,7 +1481,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
   const mapDialogRef = useRef(null);
   const mapCloseButtonRef = useRef(null);
   const weeklySummaryRef = useRef(null);
-  const snapshotRef = useRef(REALTIME_VISITOR_ENDPOINT ? EMPTY_VISITOR_SNAPSHOT : staticSnapshot);
+  const snapshotRef = useRef(staticSnapshot);
   const weeklySnapshot = snapshot.weekly || null;
   const viewBox = mapData?.viewBox || { width: 720, height: 330 };
   const getVisitorMapLayer = (scope = 'all') => {
@@ -1753,7 +1762,12 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
     if (!target || mapData) return undefined;
 
     let cancelled = false;
+    let started = false;
+    let idleId;
+    let fallbackTimerId;
     const load = () => {
+      if (started) return;
+      started = true;
       loadVisitorMapData()
         .then((data) => {
           if (!cancelled) setMapData(data);
@@ -1761,21 +1775,27 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
         .catch(() => {});
     };
 
-    if (!('IntersectionObserver' in window)) {
-      load();
-      return () => { cancelled = true; };
+    let observer;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        observer.disconnect();
+        load();
+      }, { rootMargin: '900px 0px' });
+      observer.observe(target);
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries.some(entry => entry.isIntersecting)) return;
-      observer.disconnect();
-      load();
-    }, { rootMargin: '700px 0px' });
-    observer.observe(target);
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(load, { timeout: 1_500 });
+    } else {
+      fallbackTimerId = window.setTimeout(load, 600);
+    }
 
     return () => {
       cancelled = true;
-      observer.disconnect();
+      observer?.disconnect();
+      if (idleId) window.cancelIdleCallback(idleId);
+      if (fallbackTimerId) window.clearTimeout(fallbackTimerId);
     };
   }, [mapData]);
 
@@ -1862,8 +1882,6 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
         applyRealtimeSnapshot(realtimeSnapshot);
       } catch {
         applyStaticFallback();
-      } finally {
-        if (!cancelled) setIsVisitorSnapshotLoading(false);
       }
     };
 

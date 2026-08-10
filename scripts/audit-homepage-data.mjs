@@ -129,13 +129,23 @@ if (!visitorMapMatch) {
   fail('Visitor map data does not contain a valid HOMEPAGE_VISITOR_WORLD_MAP payload.');
 } else {
   const visitorMap = JSON.parse(visitorMapMatch[1]);
+  const countryGeometryNames = new Set((visitorMap.countries || []).map(country => String(country.name || '').trim()));
   const missingGeometry = (visitorMap.activeCountries || [])
-    .filter((country) => !String(country.d || '').trim())
+    .filter((country) => (
+      !String(country.d || '').trim()
+      && !countryGeometryNames.has(String(country.geometryName || '').trim())
+    ))
     .map((country) => `${country.code || '??'} (${country.name || 'Unknown'})`);
   if (missingGeometry.length) {
     fail(`Active visitor countries are missing map geometry: ${missingGeometry.join(', ')}`);
   } else {
-    pass(`${visitorMap.activeCountries.length} active visitor countries include map geometry.`);
+    pass(`${visitorMap.activeCountries.length} active visitor countries resolve to map geometry.`);
+  }
+  const visitorMapBytes = Buffer.byteLength(visitorMapSource);
+  if (visitorMapBytes > 300_000) {
+    fail(`Visitor map bundle is too large (${Math.round(visitorMapBytes / 1024)} KB; expected at most 293 KB).`);
+  } else {
+    pass(`Visitor map bundle is optimized (${Math.round(visitorMapBytes / 1024)} KB).`);
   }
 }
 

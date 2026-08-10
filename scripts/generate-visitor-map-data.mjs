@@ -107,23 +107,31 @@ const detailCountriesByName = new Map(detailCountries.features.map(country => [
   normalizeName(country.properties?.name || ''),
   country
 ]));
+const overviewCountriesById = new Map(visibleOverviewCountries.features.map(country => [
+  String(country.id).padStart(3, '0'),
+  country
+]));
+const overviewCountriesByName = new Map(visibleOverviewCountries.features.map(country => [
+  normalizeName(country.properties?.name || ''),
+  country
+]));
 
-function findCountryGeometry(country) {
-  if (country.id && detailCountriesById.has(String(country.id).padStart(3, '0'))) {
-    return detailCountriesById.get(String(country.id).padStart(3, '0'));
+function findCountryGeometry(country, countriesById, countriesByName) {
+  if (country.id && countriesById.has(String(country.id).padStart(3, '0'))) {
+    return countriesById.get(String(country.id).padStart(3, '0'));
   }
   const normalized = normalizeName(country.matchName || country.name);
-  return detailCountriesByName.get(normalized)
-    || detailCountriesByName.get(countryNameAliases.get(normalized));
+  return countriesByName.get(normalized)
+    || countriesByName.get(countryNameAliases.get(normalized));
 }
 
-function visitorGeometry(country) {
-  const baseGeometry = findCountryGeometry(country);
+function visitorGeometry(country, countriesById, countriesByName) {
+  const baseGeometry = findCountryGeometry(country, countriesById, countriesByName);
   if (String(country.code || '').trim().toUpperCase() !== 'CN') return baseGeometry;
 
   const geometries = [
     baseGeometry,
-    ...GREATER_CHINA_DETAIL_NAMES.map(name => detailCountriesByName.get(name))
+    ...GREATER_CHINA_DETAIL_NAMES.map(name => countriesByName.get(name))
   ].filter(Boolean);
 
   if (geometries.length <= 1) return baseGeometry;
@@ -134,7 +142,12 @@ function visitorGeometry(country) {
 }
 
 const activeCountries = readVisitorCountries().map((country, index) => {
-  const geometry = visitorGeometry(country);
+  const overviewGeometry = visitorGeometry(country, overviewCountriesById, overviewCountriesByName);
+  const detailGeometry = overviewGeometry
+    ? null
+    : visitorGeometry(country, detailCountriesById, detailCountriesByName);
+  const geometry = overviewGeometry || detailGeometry;
+  const overviewBase = findCountryGeometry(country, overviewCountriesById, overviewCountriesByName);
   const [x, y] = geometry ? pathGenerator.centroid(geometry) : [viewBox.width / 2, viewBox.height / 2];
   const mergedMapRegions = String(country.code || '').trim().toUpperCase() === 'CN'
     ? GREATER_CHINA_DETAIL_NAMES
@@ -144,7 +157,10 @@ const activeCountries = readVisitorCountries().map((country, index) => {
     delay: country.delay ?? Number((index * 0.4).toFixed(1)),
     x: Number(x.toFixed(1)),
     y: Number(y.toFixed(1)),
-    d: geometry ? pathGenerator(geometry) : '',
+    geometryName: overviewBase?.properties?.name || country.matchName || country.name,
+    // Most active countries reuse the 110m background path in the browser.
+    // Inline detail geometry only for small countries absent from that atlas.
+    ...(overviewGeometry ? {} : { d: detailGeometry ? pathGenerator(detailGeometry) : '' }),
     ...(mergedMapRegions ? { mergedMapRegions } : {})
   };
 });
