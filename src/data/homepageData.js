@@ -686,6 +686,7 @@ export const PROFILE_DATA = {
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
     news: [
+  { date: "2026-08", label: "ITW", content: "🏅 Congratulations to our student, <strong>Burak Karasakal</strong>, on receiving the <strong>IEEE ITW Student Travel Grant</strong>!", link: "#pub-c19" },
       { date: "2026-07", label: "GLOBECOM", content: "🎉 Our paper <strong>On the Multi-Weight Shift-Sum Iterative Decoding of Short BCH Codes</strong> was accepted by the <strong>2026 IEEE Global Communications Conference (GLOBECOM 2026)</strong>. Congratulations to <strong>Yinglei Yang</strong>!", link: "#pub-c21" },
       { date: "2026-07", label: "ComMag", content: "🌌 Our paper <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> was accepted by <strong>IEEE Communications Magazine</strong>. Congratulations to my advisor, <strong>Prof. Elif Uysal</strong>, and heartfelt thanks for her guidance - I learned so much from her throughout this work.", link: "#pub-j19" },
       { date: "2026-07", label: "Asilomar", content: "🛰️ Our paper <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> was accepted by the <strong>60th Asilomar Conference on Signals, Systems, and Computers</strong>. Congratulations to <strong>Sayam Chakraborty</strong>!", link: "#pub-c20" },
@@ -925,6 +926,7 @@ export const PROFILE_DATA = {
     nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
     cvDownload: "简历",
     news: [
+  { date: "2026-08", label: "ITW", content: "🏅 恭喜我们的学生 <strong>Burak Karasakal</strong> 获得 <strong>IEEE ITW Student Travel Grant</strong>！", link: "#pub-c19" },
       { date: "2026-07", label: "GLOBECOM", content: "🎉 我们的论文 <strong>On the Multi-Weight Shift-Sum Iterative Decoding of Short BCH Codes</strong> 被 <strong>2026 IEEE Global Communications Conference（GLOBECOM 2026）</strong>录用。恭喜 <strong>Yinglei Yang</strong>！", link: "#pub-c21" },
       { date: "2026-07", label: "ComMag", content: "🌌 我们的论文 <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> 被 <strong>IEEE Communications Magazine</strong> 录用。恭喜并衷心感谢我的导师 <strong>Elif Uysal 教授</strong>；在这项工作中，我从她身上学到了很多。", link: "#pub-j19" },
       { date: "2026-07", label: "Asilomar", content: "🛰️ 我们的论文 <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> 被<strong>第 60 届 Asilomar Conference on Signals, Systems, and Computers</strong>录用。恭喜 <strong>Sayam Chakraborty</strong>！", link: "#pub-c20" },
