@@ -119,6 +119,24 @@ for (const relativePath of greaterChinaFiles) {
 }
 pass('Hong Kong, Taiwan, and Macao are normalized under China in every visitor pipeline.');
 
+const visitorSyncSource = fs.readFileSync(path.join(root, 'public', 'homepage-sync-data.js'), 'utf8');
+const visitorSyncMatch = visitorSyncSource.match(/window\.HOMEPAGE_SYNC_DATA\s*=\s*(\{[\s\S]*\});?\s*$/);
+if (!visitorSyncMatch) {
+  fail('Static homepage sync data is invalid.');
+} else {
+  const visitorSyncData = JSON.parse(visitorSyncMatch[1]);
+  const weekly = visitorSyncData.visitorSnapshot?.weekly;
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(weekly?.weekStart || '')
+    || !Array.isArray(weekly?.ranking)
+    || !Number.isFinite(Number(weekly?.newVisitors))
+  ) {
+    fail('Static visitor fallback is missing a valid weekly snapshot.');
+  } else {
+    pass(`Static visitor fallback includes weekly data (${weekly.newVisitors} visits from ${weekly.ranking.length} countries).`);
+  }
+}
+
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 if (/visitor-map-data\.js/.test(indexHtml)) fail('The large visitor map bundle is still loaded synchronously in index.html.');
 else pass('Visitor map data is lazy-loaded instead of blocking every page.');

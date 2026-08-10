@@ -62,5 +62,7 @@ jobs:
         run: npm run deploy:pages
         env:
           VITE_VISITOR_STATS_ENDPOINT: https://aimin-homepage-visitors-api.pages.dev
+          PRESERVE_VISITOR_DATA: 0
+          PRESERVE_SCHOLAR_DATA: 1
           GIT_AUTHOR_NAME: github-actions-bot
           GIT_AUTHOR_EMAIL: github-actions-bot@users.noreply.github.com

@@ -16,6 +16,7 @@ if (args.has('--scholar-only') && args.has('--visitors-only')) {
 }
 
 const VISITOR_STATS_ENDPOINT = (process.env.VITE_VISITOR_STATS_ENDPOINT || process.env.VISITOR_STATS_ENDPOINT || '').replace(/\/+$/, '');
+const VISITOR_STATS_PAYLOAD_FILE = process.env.VISITOR_STATS_PAYLOAD_FILE || '';
 const SCHOLAR_USER_ID = process.env.SCHOLAR_USER_ID || 'nyl1-EMAAAAJ';
 const SCHOLAR_PROFILE_URL =
   process.env.SCHOLAR_PROFILE_URL ||
@@ -207,6 +208,53 @@ function normalizeVisitorRanking(rawRanking = []) {
   return { ranking, overrideRegions, skipRegionCountries };
 }
 
+function visitorCountryName(code) {
+  try {
+    const name = new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
+    return name === 'Turkey' ? 'Türkiye' : name || code;
+  } catch {
+    return code;
+  }
+}
+
+function visitorRankingRows(snapshot = {}) {
+  if (Array.isArray(snapshot.ranking)) return snapshot.ranking;
+  return Object.entries(snapshot.countries || {}).map(([code, count]) => ({
+    code,
+    name: visitorCountryName(code),
+    matchName: visitorCountryName(code),
+    count
+  }));
+}
+
+function normalizeWeeklyVisitorSnapshot(rawWeekly = {}) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(rawWeekly.weekStart || '')) return null;
+
+  const { ranking, overrideRegions, skipRegionCountries } = normalizeVisitorRanking(
+    visitorRankingRows(rawWeekly)
+  );
+  const rankingTotal = ranking.reduce((sum, country) => sum + country.count, 0);
+  const newVisitors = Math.max(
+    0,
+    Number(rawWeekly.newVisitors ?? rawWeekly.pageviews) || rankingTotal
+  );
+
+  return {
+    weekStart: rawWeekly.weekStart,
+    weekEnd: /^\d{4}-\d{2}-\d{2}$/.test(rawWeekly.weekEnd || '')
+      ? rawWeekly.weekEnd
+      : rawWeekly.weekStart,
+    newVisitors,
+    countries: ranking.length,
+    ranking,
+    regions: mergeVisitorRegions(
+      cleanVisitorRegions(rawWeekly.regions, skipRegionCountries),
+      overrideRegions
+    ),
+    updatedAt: rawWeekly.updatedAt || null
+  };
+}
+
 function stripTags(value = '') {
   return decodeHtml(value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' '));
 }
@@ -236,22 +284,27 @@ async function fetchText(url) {
 }
 
 async function fetchVisitorSnapshot(previous) {
-  if (!VISITOR_STATS_ENDPOINT) {
+  if (!VISITOR_STATS_ENDPOINT && !VISITOR_STATS_PAYLOAD_FILE) {
     return previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
   }
 
-  const response = await fetch(`${VISITOR_STATS_ENDPOINT}/stats?t=${Date.now()}`, {
-    headers: {
-      'accept': 'application/json',
-      'user-agent': 'Mozilla/5.0 (compatible; homepage-sync/1.0; +https://aiminli-hi.github.io/)'
-    }
-  });
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+  let payload;
+  if (VISITOR_STATS_PAYLOAD_FILE) {
+    const payloadPath = path.resolve(process.cwd(), VISITOR_STATS_PAYLOAD_FILE);
+    payload = JSON.parse(fs.readFileSync(payloadPath, 'utf8'));
+  } else {
+    const response = await fetch(`${VISITOR_STATS_ENDPOINT}/stats?t=${Date.now()}`, {
+      headers: {
+        'accept': 'application/json',
+        'user-agent': 'Mozilla/5.0 (compatible; homepage-sync/1.0; +https://aiminli-hi.github.io/)'
+      }
+    });
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    payload = await response.json();
+  }
 
-  const payload = await response.json();
   const snapshot = payload.visitorSnapshot || payload;
-  const rawRanking = Array.isArray(snapshot.ranking)
-    ? snapshot.ranking
+  const rawRanking = visitorRankingRows(snapshot)
       .filter(country => country?.code && Number.isFinite(Number(country.count)))
       .map((country, index) => ({
         code: String(country.code).trim().toUpperCase(),
@@ -259,18 +312,20 @@ async function fetchVisitorSnapshot(previous) {
         matchName: country.matchName || country.name || country.code,
         count: Number(country.count),
         delay: Number((index * 0.4).toFixed(1))
-      }))
-    : [];
+      }));
   const { ranking, overrideRegions, skipRegionCountries } = normalizeVisitorRanking(rawRanking);
 
   if (!ranking.length) throw new Error('No visitor API countries were returned.');
   const previousSnapshot = previous.visitorSnapshot || FALLBACK_DATA.visitorSnapshot;
   const countryTotal = ranking.reduce((sum, country) => sum + country.count, 0);
+  const weekly = normalizeWeeklyVisitorSnapshot(snapshot.weekly)
+    || normalizeWeeklyVisitorSnapshot(previousSnapshot.weekly);
   return {
     pageviews: Math.max(Number(snapshot.pageviews) || 0, countryTotal),
     countries: ranking.length,
     ranking,
     regions: mergeVisitorRegions(cleanVisitorRegions(snapshot.regions, skipRegionCountries), overrideRegions),
+    ...(weekly ? { weekly } : {}),
     updatedAt: snapshot.updatedAt || payload.generatedAt || previousSnapshot.updatedAt || null
   };
 }
@@ -280,9 +335,8 @@ function cleanVisitorRegions(regions = {}, skipRegionCountries = new Set()) {
   const normalized = {};
   for (const [countryCode, regionRanking] of Object.entries(regions)) {
     const rawCode = String(countryCode).trim().toUpperCase();
-    const rows = Array.isArray(regionRanking)
-      ? regionRanking.filter(region => region?.code && Number.isFinite(Number(region.count)))
-      : [];
+    const rows = visitorRegionRows(regionRanking)
+      .filter(region => region?.code && Number.isFinite(Number(region.count)));
     const override = VISITOR_COUNTRY_REGION_OVERRIDES[rawCode];
     if (override) {
       if (skipRegionCountries.has(rawCode)) continue;
@@ -440,6 +494,7 @@ function cloneData(value) {
 
 function cleanVisitorSnapshot(snapshot = {}) {
   const { ranking, overrideRegions, skipRegionCountries } = normalizeVisitorRanking(snapshot.ranking || []);
+  const weekly = normalizeWeeklyVisitorSnapshot(snapshot.weekly);
   return {
     pageviews: Number(snapshot.pageviews) || 0,
     countries: ranking.length,
@@ -449,7 +504,22 @@ function cleanVisitorSnapshot(snapshot = {}) {
       matchName: country.matchName || country.name,
       count: Number(country.count) || 0
     })),
-    regions: mergeVisitorRegions(cleanVisitorRegions(snapshot.regions, skipRegionCountries), overrideRegions)
+    regions: mergeVisitorRegions(cleanVisitorRegions(snapshot.regions, skipRegionCountries), overrideRegions),
+    ...(weekly ? {
+      weekly: {
+        weekStart: weekly.weekStart,
+        weekEnd: weekly.weekEnd,
+        newVisitors: weekly.newVisitors,
+        countries: weekly.countries,
+        ranking: weekly.ranking.map(country => ({
+          code: country.code,
+          name: country.name,
+          matchName: country.matchName || country.name,
+          count: Number(country.count) || 0
+        })),
+        regions: weekly.regions
+      }
+    } : {})
   };
 }
 
