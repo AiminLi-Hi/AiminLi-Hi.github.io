@@ -138,6 +138,12 @@
   isolation: isolate;
 }
 
+.profile-avatar__image {
+  object-position: 50% 47%;
+  transform: scale(1.38);
+  transform-origin: 50% 47%;
+}
+
 .profile-avatar__halo {
   position: absolute;
   inset: 0.45rem;
