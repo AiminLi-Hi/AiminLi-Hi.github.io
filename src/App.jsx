@@ -3070,7 +3070,12 @@ export default function AcademicProfile() {
                    <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{award.title}</strong>
                    {(award.title_zh || award.title_zh_note) && (
                      <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                       ({award.title_zh}{award.title_zh && award.title_zh_note && '，'}{award.title_zh_note && <span className="honor-note whitespace-nowrap font-bold">{award.title_zh_note}</span>})
+                       ({[
+                         award.title_zh,
+                         ...[].concat(award.title_zh_note || []).map(note => (
+                           <span key={note} className="honor-note whitespace-nowrap font-bold">{note}</span>
+                         )),
+                       ].filter(Boolean).map((part, i) => <React.Fragment key={i}>{i > 0 && '，'}{part}</React.Fragment>)})
                      </span>
                    )}
                    {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
