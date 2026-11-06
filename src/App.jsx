@@ -1074,7 +1074,7 @@ const HonorText = ({ text, darkMode, subtle = false }) => {
     ));
 };
 
-const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMode }) => {
+const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMode, size = "md" }) => {
   if (!href && !onClick) return null;
   const styles = {
     pdf: darkMode ? "bg-red-900/20 text-red-400 border-red-800/50 hover:bg-red-900/40" : "bg-red-50 text-red-700 border-red-100 hover:bg-red-100",
@@ -1098,9 +1098,9 @@ const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMo
       onClick={(e) => { e.stopPropagation(); onClick?.(e); }}
       target={href ? "_blank" : undefined} 
       rel={href ? "noreferrer" : undefined} 
-      className={`inline-flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border px-2.5 text-[11px] font-extrabold leading-none shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow cursor-pointer ${colorClass}`}
+      className={`inline-flex shrink-0 items-center justify-center whitespace-nowrap border font-extrabold leading-none shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow cursor-pointer ${size === 'sm' ? 'h-6 gap-1 rounded-md px-2 text-[10.5px]' : 'h-8 gap-1.5 rounded-lg px-2.5 text-[11px]'} ${colorClass}`}
     >
-      {React.createElement(icon, { size: 13, strokeWidth: 2.3 })}{label}
+      {React.createElement(icon, { size: size === 'sm' ? 11 : 13, strokeWidth: 2.3 })}{label}
     </Component>
   );
 };
@@ -2812,13 +2812,12 @@ export default function AcademicProfile() {
                           {pub.venue_short} {pub.year}
                         </span>
                         {pub.type === 'Journal' && pub.if && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
-                        {[['PDF', pub.links?.pdf], ['Code', pub.links?.code], ['Project', pub.links?.project]]
-                          .filter(([, href]) => href)
-                          .map(([label, href]) => (
-                            <a key={label} href={href} target="_blank" rel="noreferrer" className={`text-[11px] font-bold underline-offset-2 hover:underline ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
-                              {label}
-                            </a>
-                          ))}
+                        <span className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
+                          {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} size="sm" />}
+                          {pub.links?.slides && <ActionButton icon={Presentation} label={ui.slides} href={pub.links.slides} type="slides" darkMode={darkMode} size="sm" />}
+                          {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} size="sm" />}
+                          {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} size="sm" />}
+                        </span>
                       </div>
                       <h4 className={`mt-1 text-[14px] font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
                         <a href={`#${getPublicationAnchorId(pub)}`} className={darkMode ? 'hover:text-cyan-300' : 'hover:text-cyan-700'}>
