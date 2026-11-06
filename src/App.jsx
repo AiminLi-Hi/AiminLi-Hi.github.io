@@ -188,6 +188,7 @@ const UI_COPY = {
     },
     awardsDesc: 'Recognition for research excellence and academic achievements.',
     selectedHonors: 'Selected Honors',
+    viewAllHonors: 'All honors',
     otherAwards: 'Other Awards & Recognition',
     viewMoreAwards: 'View More Awards',
     experience: 'Experience',
@@ -1073,6 +1074,58 @@ const HonorText = ({ text, darkMode, subtle = false }) => {
         : part
     ));
 };
+
+const groupAwardsByYear = (awards = []) => {
+  const sortedAwards = [...awards].sort((a, b) => (
+    awardYearValue(b) - awardYearValue(a)
+    || String(a.title).localeCompare(String(b.title))
+  ));
+  const groups = new Map();
+  sortedAwards.forEach((award) => {
+    const year = String(awardYearValue(award) || award.year || 'N/A');
+    if (!groups.has(year)) groups.set(year, []);
+    groups.get(year).push(award);
+  });
+  return Array.from(groups.entries()).map(([year, yearAwards]) => ({
+    year,
+    awards: yearAwards,
+    totalCount: yearAwards.length,
+  }));
+};
+
+// One continuous list: one line per honor, year shown once per group.
+const HonorsList = ({ groups, darkMode, bordered = true }) => (
+  <ol className={`honors-list ${bordered ? `border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}` : ''}`}>
+    {groups.flatMap((group) => group.awards.map((award, idx) => (
+      <li
+        key={`${group.year}-${award.title}-${idx}`}
+        className={`grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 py-1.5 sm:grid-cols-[3rem_minmax(0,1fr)_5.5rem] ${idx === 0 ? `border-t first:border-t-0 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}` : ''}`}
+      >
+        <span className={`pt-px text-[13px] font-black tabular-nums ${idx === 0 ? (darkMode ? 'text-slate-100' : 'text-slate-900') : 'invisible'}`}>
+          {group.year}
+        </span>
+        <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+          <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{award.title}</strong>
+          {(award.title_zh || award.title_zh_note) && (
+            <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              ({[
+                award.title_zh,
+                ...[].concat(award.title_zh_note || []).map(note => (
+                  <span key={note} className="honor-note whitespace-nowrap font-bold">{note}</span>
+                )),
+              ].filter(Boolean).map((part, i) => <React.Fragment key={i}>{i > 0 && '，'}{part}</React.Fragment>)})
+            </span>
+          )}
+          {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
+          <span className={`ml-1.5 text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{award.level}</span>
+        </p>
+        <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+          {award.level}
+        </span>
+      </li>
+    )))}
+  </ol>
+);
 
 const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMode, size = "md" }) => {
   if (!href && !onClick) return null;
@@ -2235,23 +2288,11 @@ export default function AcademicProfile() {
     }));
   }, [filteredPubs]);
 
-  const groupedAwardYears = useMemo(() => {
-    const sortedAwards = [...content.awards].sort((a, b) => (
-      awardYearValue(b) - awardYearValue(a)
-      || String(a.title).localeCompare(String(b.title))
-    ));
-    const groups = new Map();
-    sortedAwards.forEach((award) => {
-      const year = String(awardYearValue(award) || award.year || 'N/A');
-      if (!groups.has(year)) groups.set(year, []);
-      groups.get(year).push(award);
-    });
-    return Array.from(groups.entries()).map(([year, awards]) => ({
-      year,
-      awards,
-      totalCount: awards.length,
-    }));
-  }, [content.awards]);
+  const groupedAwardYears = useMemo(() => groupAwardsByYear(content.awards), [content.awards]);
+  const groupedSelectedAwardYears = useMemo(
+    () => groupAwardsByYear(content.awards.filter(award => award.featured)),
+    [content.awards],
+  );
 
   const serviceReviewGroups = useMemo(() => {
     const items = content.service.reviewer.map((venue, index) => ({
@@ -2832,6 +2873,25 @@ export default function AcademicProfile() {
                 </ol>
               </div>
               )}
+
+              {groupedSelectedAwardYears.length > 0 && (
+              <div id="selected-honors" className={`selected-honors-panel p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
+                    <Trophy size={13} />
+                    {ui.selectedHonors}
+                  </h3>
+                  <a
+                    href="#awards"
+                    onClick={(event) => navigateToPage('awards', event)}
+                    className={`inline-flex items-center gap-1 text-[11px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}
+                  >
+                    {ui.viewAllHonors} ({content.awards.length}) <ChevronRight size={12} />
+                  </a>
+                </div>
+                <HonorsList groups={groupedSelectedAwardYears} darkMode={darkMode} bordered={false} />
+              </div>
+              )}
           </div>
         </section>
         )}
@@ -3056,36 +3116,7 @@ export default function AcademicProfile() {
               </div>
            </div>
 
-           {/* One continuous list: one line per honor, year shown once per group. */}
-           <ol className={`honors-list border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-             {groupedAwardYears.flatMap((group) => group.awards.map((award, idx) => (
-               <li
-                 key={`${group.year}-${award.title}-${idx}`}
-                 className={`grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 py-1.5 sm:grid-cols-[3rem_minmax(0,1fr)_5.5rem] ${idx === 0 ? `border-t first:border-t-0 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}` : ''}`}
-               >
-                 <span className={`pt-px text-[13px] font-black tabular-nums ${idx === 0 ? (darkMode ? 'text-slate-100' : 'text-slate-900') : 'invisible'}`}>
-                   {group.year}
-                 </span>
-                 <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                   <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{award.title}</strong>
-                   {(award.title_zh || award.title_zh_note) && (
-                     <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                       ({[
-                         award.title_zh,
-                         ...[].concat(award.title_zh_note || []).map(note => (
-                           <span key={note} className="honor-note whitespace-nowrap font-bold">{note}</span>
-                         )),
-                       ].filter(Boolean).map((part, i) => <React.Fragment key={i}>{i > 0 && '，'}{part}</React.Fragment>)})
-                     </span>
-                   )}
-                   {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
-                   <span className={`ml-1.5 text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{award.level}</span>                 </p>
-                 <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                   {award.level}
-                 </span>
-               </li>
-             )))}
-           </ol>
+           <HonorsList groups={groupedAwardYears} darkMode={darkMode} />
         </section>
         )}
 
