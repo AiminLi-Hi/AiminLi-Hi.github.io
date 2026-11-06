@@ -775,13 +775,13 @@ export const PROFILE_DATA = {
       }
     ],
     awards: [
-      { year: "2025", title: "Best Dissertation Award Nomination", title_zh: "哈工大最佳博士学位论文提名", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
+      { year: "2025", title: "Best Dissertation Award Nomination", title_zh: "哈工大最佳博士学位论文提名", title_zh_note: "全系共1人", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
       { year: "2024", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
       { year: "2020", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
       { year: "2025", title: "Provincial Outstanding Graduate Award", title_zh: "黑龙江省优秀毕业生", desc: "Top 0.4% in Heilongjiang Province", level: "Provincial", featured: true },
       { year: "2020", title: "Best Undergraduate Thesis Award", title_zh: "哈工大校优秀本科毕业论文", title_zh_note: "全系共2人", desc: "One of 2 recipients in the EE Department.", level: "University", featured: true },
       { year: "2025", title: "Award for HIT Outstanding Graduate Students", title_zh: "哈工大优秀博士毕业生", desc: "Top 10% in Harbin Institute of Technology", level: "University" },
-      { year: "2024", title: "IEEE Globecom 4MT Thesis Competition (3rd Prize)", desc: "Ranked 5th out of 15 finalists worldwide. Awarded by IEEE ComSoc President.", level: "Global", featured: true },
+      { year: "2024", title: "IEEE Globecom 4MT Thesis Competition (3rd Prize)", title_zh_note: "全球共15人进入决赛", desc: "One of 15 finalists worldwide; presented by the IEEE ComSoc President.", level: "Global", featured: true },
       { year: "2024", title: "IEEE Globecom Travel Grant", desc: "Top 15 Ph.D. Students Worldwide", level: "Global" },
       { year: "2024", title: "Candidate for NSFC Youth Project", title_zh: "国家自然科学基金青年学生项目候选人", desc: "One of fewer than 600 Ph.D. candidates selected nationwide in the first cohort.", level: "National" },
       { year: "2023", title: "Granted HIT 'Dianzi' Research Fund Project", title_zh: "获批哈工大“点子”基金项目", desc: "Sole Ph.D. student recipient in the EE Department.", level: "University", featured: true },

@@ -3062,9 +3062,9 @@ export default function AcademicProfile() {
                  </span>
                  <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                    <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{award.title}</strong>
-                   {award.title_zh && (
+                   {(award.title_zh || award.title_zh_note) && (
                      <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                       ({award.title_zh}{award.title_zh_note && <>，<span className="honor-note font-bold">{award.title_zh_note}</span></>})
+                       ({award.title_zh}{award.title_zh && award.title_zh_note && '，'}{award.title_zh_note && <span className="honor-note whitespace-nowrap font-bold">{award.title_zh_note}</span>})
                      </span>
                    )}
                    {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
