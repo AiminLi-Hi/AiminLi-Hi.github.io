@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from '../src/data/homepageData.js';
 import { CITATION_METADATA } from '../src/data/citationMetadata.js';
+import { REVIEWER_JOURNAL_METRICS, REVIEWER_METRICS_CHECKED_ON } from '../src/data/reviewerJournalMetrics.js';
 import { generateBibtex, generateIeeeCitation } from '../src/utils/citations.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,30 +64,43 @@ if (mobihoc?.links?.poster !== '/papers/mobihoc_poster.pdf') fail('MobiHoc poste
 else pass('MobiHoc poster is linked and covered by the local asset audit.');
 
 const en = PROFILE_DATA.en;
-const zh = PROFILE_DATA.zh;
-const parityChecks = [
-  ['navigation entries', Object.keys(en.nav).length, Object.keys(zh.nav).length],
-  ['news entries', en.news.length, zh.news.length],
-  ['timeline entries', en.timeline.length, zh.timeline.length],
-  ['honors', en.awards.length, zh.awards.length],
-  ['review venues', en.service.reviewer.length, zh.service.reviewer.length],
-  ['teaching entries', en.teaching.length, zh.teaching.length],
-  ['talks', en.talks.length, zh.talks.length],
-  ['mentoring groups', en.mentoring.groups.length, zh.mentoring.groups.length],
-  [
-    'mentoring people',
-    en.mentoring.groups.flatMap((group) => group.students).length,
-    zh.mentoring.groups.flatMap((group) => group.students).length,
-  ],
-];
-for (const [label, enCount, zhCount] of parityChecks) {
-  if (enCount !== zhCount) fail(`${label} differ between English (${enCount}) and Chinese (${zhCount}).`);
-  else pass(`${label}: bilingual parity (${enCount}).`);
+if (Object.keys(PROFILE_DATA).join('|') !== 'en') {
+  fail(`The site is English-only, but PROFILE_DATA has: ${Object.keys(PROFILE_DATA).join(', ')}.`);
+}
+const untranslatedHonors = en.awards.filter((award) => !award.title_zh && !/^IEEE\b/.test(award.title));
+if (untranslatedHonors.length) {
+  fail(`Honors missing a Chinese name (title_zh): ${untranslatedHonors.map((award) => award.title).join('; ')}`);
+} else {
+  pass(`${en.awards.length} honors: every non-IEEE honor carries its Chinese name.`);
 }
 
-if (Object.keys(en.nav).join('|') !== Object.keys(zh.nav).join('|')) {
-  fail('English and Chinese navigation keys differ.');
+const selectedIds = en.selectedPublications || [];
+const missingSelected = selectedIds.filter((id) => !publicationIds.has(id));
+if (!selectedIds.length) fail('Homepage has no selected publications.');
+else if (missingSelected.length) fail(`Selected publications not found: ${missingSelected.join(', ')}`);
+else if (new Set(selectedIds).size !== selectedIds.length) fail('Selected publications contain duplicates.');
+else pass(`${selectedIds.length} selected publications resolve to publication entries.`);
+
+if (!/^\d{4}-\d{2}-\d{2}$/.test(REVIEWER_METRICS_CHECKED_ON)) {
+  fail('Reviewer journal metrics need a verification date.');
 }
+for (const [journal, metric] of Object.entries(REVIEWER_JOURNAL_METRICS)) {
+  const checkedOn = metric.checkedOn || REVIEWER_METRICS_CHECKED_ON;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(checkedOn)) fail(`Invalid JIF verification date: ${journal}`);
+  for (const [language, profile] of Object.entries(PROFILE_DATA)) {
+    if (!profile.service.reviewer.includes(journal)) fail(`${language}: journal metric has no matching reviewer entry: ${journal}`);
+  }
+  if (/Conference|Symposium|Workshop/i.test(journal)) fail(`Conference must not receive an impact factor: ${journal}`);
+  if (metric.value !== null && (!Number.isFinite(metric.value) || metric.value <= 0)) {
+    fail(`Invalid journal impact factor: ${journal}`);
+  }
+  if (metric.value === null && !metric.note) fail(`Unverified JIF requires a reason: ${journal}`);
+  if (metric.year !== null && (!Number.isInteger(metric.year) || metric.year >= Number(checkedOn.slice(0, 4)))) {
+    fail(`Invalid JIF metric year: ${journal}`);
+  }
+  if (!/^https:\/\//.test(metric.source) || !metric.sourceLabel) fail(`Journal metric is missing its source: ${journal}`);
+}
+pass(`${Object.values(REVIEWER_JOURNAL_METRICS).filter(metric => Number.isFinite(metric.value)).length} reviewer JIFs have sources and matching reviewer venues; unverified values remain unset.`);
 
 const publicationAnchors = new Set(BASE_PUBLICATIONS.map((publication) => `#pub-${publication.id}`));
 for (const [language, profile] of Object.entries(PROFILE_DATA)) {

@@ -8,6 +8,21 @@ const getIEEEUrl = (title) => `https://ieeexplore.ieee.org/search/searchresult.j
 export const BASE_PUBLICATIONS = [
   // --- Journal Articles ---
   {
+    id: "j20",
+    year: 2026,
+    title: "Permanent Connection Guaranteed Resilient LEO Constellation for Remote Area Communications",
+    authors: "Guoquan Chen, Yajing Deng, Aimin Li, Shaohua Wu",
+    venue: "IEEE Transactions on Wireless Communications",
+    venue_short: "IEEE TWC",
+    type: "Journal",
+    if: "10.7",
+    jcr: "Q1",
+    tag: "Co-Author",
+    studentOutcome: false,
+    keywords: ["LEO Constellations", "Remote Area Communications", "Resilience", "Connectivity"],
+    summary: "Studies resilient LEO constellations with guaranteed permanent connectivity for remote area communications."
+  },
+  {
     id: "j17",
     year: 2026,
     title: "AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach",
@@ -341,6 +356,21 @@ export const BASE_PUBLICATIONS = [
 
   // --- Conference Proceedings ---
   {
+    id: "c22",
+    year: 2026,
+    title: "Worse Routes, Fresher Information: Preemption Redefines Which Route is Best",
+    authors: "Adem Utku Atasayar, Aimin Li, Elif Uysal",
+    venue: "ACM MobiHoc Workshop",
+    venue_short: "ACM MobiHoc",
+    type: "Conference",
+    tag: "Co-Author",
+    studentOutcome: true,
+    keywords: ["Age of Information", "Preemption", "Routing", "Sampling"],
+    summary: "Studies joint sampling, route activation, and preemption, showing how preemption can reverse routing preferences under an age-of-information objective.",
+    links: { pdf: "https://arxiv.org/pdf/2609.13622" },
+    url: "https://arxiv.org/abs/2609.13622"
+  },
+  {
     id: "c21",
     year: 2026,
     title: "On the Multi-Weight Shift-Sum Iterative Decoding of Short BCH Codes",
@@ -666,14 +696,14 @@ const SUBMITTED = [];
 
 export const PROFILE_DATA = {
   en: {
-    meta_title: "Aimin Li | Postdoc Researcher | METU",
-    meta_desc: "Academic profile and research portfolio of Aimin Li (Eamon), Postdoctoral Researcher at Middle East Technical University (METU), Türkiye.",
+    meta_title: "Aimin Li | Postdoctoral Researcher | KTH",
+    meta_desc: "Academic profile and research portfolio of Aimin Li (Eamon), Postdoctoral Researcher at KTH Royal Institute of Technology, Stockholm, Sweden, working with IEEE Fellow Prof. Mikael Skoglund.",
     name: "Aimin Li (黎爱民)",
     role: "Postdoctoral Researcher",
-    org: "Middle East Technical University (METU)",
-    org_full: "Middle East Technical University (METU)",
-    bio: "Welcome to my homepage!\n\nI am Aimin Li, a Postdoctoral Researcher at METU, working with IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal) on the ERC Advanced Grant project **GO-SPACE**. You can also call me **Eamon**.\n\nMy research explores how future communication systems can become more goal-oriented, timely, and intelligent. My interests lie in **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**, with a focus on communication systems that deliver information not only reliably, but also at the right time and for the right purpose.\n\nI received my Ph.D. from Harbin Institute of Technology, Shenzhen, under the supervision of [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
-    location: "Ankara, Türkiye",
+    org: "KTH Royal Institute of Technology",
+    org_full: "KTH Royal Institute of Technology",
+    bio: "Welcome to my homepage!\n\nI am Aimin Li, a Postdoctoral Researcher at **KTH Royal Institute of Technology**, Sweden, working with IEEE Fellow [Prof. Mikael Skoglund](https://www.kth.se/profile/skoglund). I joined KTH in October 2026. You can also call me **Eamon**.\n\nMy research develops information-theoretic foundations for future communication systems that are more goal-oriented, timely, and intelligent. My interests lie in **Information Theory**, **Semantic Communications**, **Age of Information (AoI)**, **Channel Coding**, and **Network Optimization**, with a focus on communication systems that deliver information not only reliably, but also at the right time and for the right purpose.\n\nPreviously, I worked at Middle East Technical University (METU), collaborating with IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal) on the ERC Advanced Grant project **GO-SPACE**. I received my Ph.D. from Harbin Institute of Technology, Shenzhen, under the supervision of [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua), and was a visiting researcher at A*STAR I²R in Singapore under the guidance of IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
+    location: "Stockholm, Sweden",
     social: {
       scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=en",
       orcid: "https://orcid.org/0000-0003-3687-4378",
@@ -685,7 +715,13 @@ export const PROFILE_DATA = {
     },
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
+    // Publication ids shown on the homepage, in display order (one per research line).
+    selectedPublications: ["j16", "c14", "c1", "j6", "j1"],
     news: [
+      { date: "2026-10", label: "New Start", content: "I joined <strong>KTH Royal Institute of Technology</strong> in Stockholm, Sweden, as a <strong>Postdoctoral Researcher</strong>, working with IEEE Fellow <strong>Prof. Mikael Skoglund</strong>.", link: "#timeline" },
+      { date: "2026-09", label: "MobiHoc", content: "🎉 Our paper <strong>Worse Routes, Fresher Information: Preemption Redefines Which Route is Best</strong> was accepted by an <strong>ACM MobiHoc 2026 Workshop</strong>. Congratulations to our student, <strong>Adem Utku Atasayar</strong>!", link: "#pub-c22" },
+      { date: "2026-09", label: "TWC", content: "🎉 Our paper <strong>Permanent Connection Guaranteed Resilient LEO Constellation for Remote Area Communications</strong> was accepted by <strong>IEEE Transactions on Wireless Communications (TWC)</strong>. Congratulations to my collaborator, <strong>Guoquan Chen</strong>!", link: "#pub-j20" },
+      { date: "2026-09", label: "Editorial", content: "📣 We are organizing the <strong>Entropy</strong> Special Issue <strong>Information Freshness and Semantic Communications</strong> as Guest Editors. The special issue is now open for submissions through <strong>June 30, 2027</strong>. Submissions and inquiries are warmly welcome!", link: "https://www.mdpi.com/journal/entropy/special_issues/6A0E8Q2WQ3" },
   { date: "2026-08", label: "ITW", content: "🏅 Congratulations to our student, <strong>Burak Karasakal</strong>, on receiving the <strong>IEEE ITW Student Travel Grant</strong>!", link: "#pub-c19" },
       { date: "2026-07", label: "GLOBECOM", content: "🎉 Our paper <strong>On the Multi-Weight Shift-Sum Iterative Decoding of Short BCH Codes</strong> was accepted by the <strong>2026 IEEE Global Communications Conference (GLOBECOM 2026)</strong>. Congratulations to <strong>Yinglei Yang</strong>!", link: "#pub-c21" },
       { date: "2026-07", label: "ComMag", content: "🌌 Our paper <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> was accepted by <strong>IEEE Communications Magazine</strong>. Congratulations to my advisor, <strong>Prof. Elif Uysal</strong>, and heartfelt thanks for her guidance - I learned so much from her throughout this work.", link: "#pub-j19" },
@@ -708,8 +744,11 @@ export const PROFILE_DATA = {
       { date: "2024-12", label: "Scholar", content: "I received the National Scholarship for PhD students.", link: "#awards" }
     ],
     timeline: [
-      { year: "2025 - Present", location: "Ankara, Türkiye", role: "Postdoctoral Researcher", org: "Middle East Technical University (METU)", 
-        desc: "Project: ERC Advanced Grant GO-SPACE. Advisor: IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal).\nI currently focus on information-theoretic foundations for goal-oriented and timely communication systems.",
+      { year: "2026.10 - Present", location: "Stockholm, Sweden", role: "Postdoctoral Researcher", org: "KTH Royal Institute of Technology",
+        desc: "Working with IEEE Fellow [Prof. Mikael Skoglund](https://www.kth.se/profile/skoglund).",
+        type: "work" },
+      { year: "2025 - 2026", location: "Ankara, Türkiye", role: "Researcher", org: "Middle East Technical University (METU)", 
+        desc: "I collaborated with IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal) on the ERC Advanced Grant project GO-SPACE.\nMy research focused on information-theoretic foundations for goal-oriented and timely communication systems.",
         reflection: "Research is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love the warmth of Turkish people and Türkiye’s distinct four seasons.",
         lineage: [
           { name: "Claude Shannon", title: "A Mathematical Theory of Communication (1948) — laid the mathematical foundation of information theory", era: "1948", role: "ancestor", highlight: false },
@@ -736,32 +775,44 @@ export const PROFILE_DATA = {
       }
     ],
     awards: [
-      { year: "2025", title: "Best Dissertation Award Nomination", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
-      { year: "2024", title: "National Scholarship of China", desc: "Top 0.2% nationwide", level: "National", featured: true },
-      { year: "2020", title: "National Scholarship of China", desc: "Top 0.2% nationwide", level: "National", featured: true },
-      { year: "2025", title: "Provincial Outstanding Graduate Award", desc: "Top 0.4% in Heilongjiang Province", level: "Provincial", featured: true },
-      { year: "2020", title: "Best Undergraduate Thesis Award", desc: "One of two recipients in the EE Department.", level: "University", featured: true },
-      { year: "2025", title: "Award for HIT Outstanding Graduate Students", desc: "Top 10% in Harbin Institute of Technology", level: "University" },
+      { year: "2025", title: "Best Dissertation Award Nomination", title_zh: "哈工大最佳博士学位论文提名", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
+      { year: "2024", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
+      { year: "2020", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
+      { year: "2025", title: "Provincial Outstanding Graduate Award", title_zh: "黑龙江省普通高校优秀博士毕业生", desc: "Top 0.4% in Heilongjiang Province", level: "Provincial", featured: true },
+      { year: "2020", title: "Best Undergraduate Thesis Award", title_zh: "哈工大校优秀本科毕业论文", desc: "One of two recipients in the EE Department.", level: "University", featured: true },
+      { year: "2025", title: "Award for HIT Outstanding Graduate Students", title_zh: "哈工大优秀博士毕业生", desc: "Top 10% in Harbin Institute of Technology", level: "University" },
       { year: "2024", title: "IEEE Globecom 4MT Thesis Competition (3rd Prize)", desc: "Ranked 5th out of 15 finalists worldwide. Awarded by IEEE ComSoc President.", level: "Global", featured: true },
       { year: "2024", title: "IEEE Globecom Travel Grant", desc: "Top 15 Ph.D. Students Worldwide", level: "Global" },
-      { year: "2024", title: "Candidate for NSFC Youth Project", desc: "One of fewer than 600 Ph.D. candidates selected nationwide in the first cohort.", level: "National" },
-      { year: "2023", title: "HIT 'Dianzi' Research Student Program (Independent PI Project)", desc: "Sole Ph.D. student recipient in the EE Department.", level: "University", featured: true },
-      { year: "2020", title: "Special Merit Doctoral Scholarship", desc: "Awarded by the HIT President to only 8 Ph.D. students university-wide.", level: "University", featured: true },
-      { year: "2019", title: "HIT Outstanding Student Award", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
-      { year: "2017", title: "HIT Outstanding Student Award", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
-      { year: "2019", title: "Outstanding Participant, Tsinghua University Summer Camp", desc: "Received early admission to Tsinghua University", level: "University", featured: true },
-      { year: "2018", title: "Gongjin Scholarship for Overall Excellence", desc: "Only 3 recipients in EE Dept.", level: "University" },
-      { year: "2018", title: "Provincial Merit Student", desc: "Top 1% in Heilongjiang Province.", level: "Provincial", featured: true },
-      { year: "2017", title: "First Prize of Chinese College Student Math Competition", desc: "National-level mathematics competition.", level: "National" },
-      { year: "2016", title: "First Prize of Chinese College Student Math Competition", desc: "National-level mathematics competition.", level: "National" },
-      { year: "2017", title: "First Class Scholarship for Comprehensive Excellence", desc: "Top 5% in Harbin Institute of Technology.", level: "National" },
+      { year: "2024", title: "Candidate for NSFC Youth Project", title_zh: "国家自然科学基金青年学生项目候选人", desc: "One of fewer than 600 Ph.D. candidates selected nationwide in the first cohort.", level: "National" },
+      { year: "2023", title: "HIT 'Dianzi' Research Student Program (Independent PI Project)", title_zh: "哈工大“点子”基金项目负责人", desc: "Sole Ph.D. student recipient in the EE Department.", level: "University", featured: true },
+      { year: "2020", title: "Special Merit Doctoral Scholarship", title_zh: "哈工大特等博士研究生奖学金", desc: "Awarded by the HIT President to only 8 Ph.D. students university-wide.", level: "University", featured: true },
+      { year: "2019", title: "HIT Outstanding Student Award", title_zh: "哈工大年度优秀学生", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
+      { year: "2017", title: "HIT Outstanding Student Award", title_zh: "哈工大年度优秀学生", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
+      { year: "2019", title: "Outstanding Participant, Tsinghua University Summer Camp", title_zh: "清华大学电子系推免夏令营优秀营员", desc: "Received early admission to Tsinghua University", level: "University", featured: true },
+      { year: "2018", title: "Gongjin Scholarship for Overall Excellence", title_zh: "共进奖学金", desc: "Only 3 recipients in EE Dept.", level: "University" },
+      { year: "2018", title: "Provincial Merit Student", title_zh: "黑龙江省三好学生", desc: "Top 1% in Heilongjiang Province.", level: "Provincial", featured: true },
+      { year: "2017", title: "First Prize of Chinese College Student Math Competition", title_zh: "全国大学生数学竞赛一等奖", desc: "National-level mathematics competition.", level: "National" },
+      { year: "2016", title: "First Prize of Chinese College Student Math Competition", title_zh: "全国大学生数学竞赛一等奖", desc: "National-level mathematics competition.", level: "National" },
+      { year: "2017", title: "First Class Scholarship for Comprehensive Excellence", title_zh: "综合优秀一等奖学金", desc: "Top 5% in Harbin Institute of Technology.", level: "National" },
     ],
     service: {
+      editorial: [
+        {
+          text: "Guest Editor, Entropy Special Issue \"Information Freshness and Semantic Communications\" — 2026",
+          link: "https://www.mdpi.com/journal/entropy/special_issues/6A0E8Q2WQ3"
+        },
+        {
+          text: "Guest Editor, MDPI Electronics — 2026"
+        }
+      ],
       reviewer: [ 
         "IEEE Transactions on Information Theory (TIT)", 
         "IEEE Journal on Selected Areas in Communications (JSAC)", 
         "IEEE Transactions on Mobile Computing (TMC)", 
         "IEEE Internet of Things Journal (IoTJ)",
+        "MDPI Electronics",
+        "Scientific Reports",
+        "Elsevier Knowledge-Based Systems (KnoSys)",
         "IEEE Transactions on Communications (TCOM)", 
         "IEEE Transactions on Wireless Communications (TWC)",
         "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
@@ -771,9 +822,9 @@ export const PROFILE_DATA = {
         "IEEE Wireless Communications Letters (WCL)",
         "Engineering",
         "ACM/IEEE Transactions on Networking (ToN)",
-        "Journal of Engineering, Project, and Production Management",
         "Elsevier Computer Networks",
         "Elsevier Computer Communications",
+        "Elsevier Ad Hoc Networks",
         "AEÜ - International Journal of Electronics and Communications",
         "IEEE International Symposium on Information Theory (ISIT) — 2023, 2026",
         "IEEE Information Theory Workshop (ITW) — 2026",
@@ -854,7 +905,7 @@ export const PROFILE_DATA = {
     mentoring: {
       title: "Student Mentorship and Collaboration",
       leadershipTitle: "Research Leadership",
-      leadershipSummary: "I have been fortunate to work with many talented junior students during my Ph.D. and postdoctoral stages. In these collaborations, I helped shape research questions, mathematical models, and solution frameworks, and mentored analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
+      leadershipSummary: "I have been fortunate to work with many talented junior students during my Ph.D. and current research work. In these collaborations, I helped shape research questions, mathematical models, and solution frameworks, and mentored analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
       studentListOpen: "Show full student list",
       studentListClose: "Show concise list",
       collaborationTitle: "Student mentorship and research collaboration",
@@ -877,9 +928,9 @@ export const PROFILE_DATA = {
         {
           title: "Middle East Technical University",
           shortTitle: "METU",
-          note: "Student collaborations during postdoctoral research at METU.",
+          note: "Student mentorship and research collaborations during my work at METU.",
           students: [
-            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / IEEE TMC papers; METU Ph.D." },
+            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / ACM MobiHoc Workshop / IEEE TMC papers; METU Ph.D." },
             { name: "Çağrı Arı", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; ACM MobiHoc paper; Aselsan." },
             { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper; Caltech Ph.D. admission." },
             { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; IAC paper; NUS M.S. admission." },
@@ -901,239 +952,6 @@ export const PROFILE_DATA = {
             { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. research collaboration; IEEE VTC paper; HKU Ph.D. admission." },
             { name: "Yinglei Yang", period: "2026", stage: "M.S.", outcome: "M.S. research collaboration; IEEE Globecom paper." },
             { name: "Mingxiao Sun", period: "2025", stage: "M.S.", outcome: "M.S. research collaboration; IEEE TCOM / IEEE ICCT papers." }
-          ]
-        }
-      ]
-    }
-  },
-  zh: {
-    meta_title: "黎爱民 | 博士后研究员 | 土耳其中东技术大学 (METU)",
-    meta_desc: "黎爱民（Eamon）的个人学术主页与研究成果档案。",
-    name: "黎爱民",
-    role: "博士后研究员",
-    org: "土耳其中东技术大学 (METU)",
-    org_full: "土耳其中东技术大学 (METU)",
-    bio: "欢迎来到我的个人主页！\n\n我是黎爱民，现为土耳其中东技术大学 (METU) 博士后研究员，与 IEEE Fellow [Elif Uysal 教授](https://eee.metu.edu.tr/personel/elif-uysal) 合作参与 ERC Advanced Grant 项目 **GO-SPACE**。我的英文名是 **Eamon**，也欢迎大家这样称呼我。\n\n我的研究探索未来通信系统如何变得更加目标导向、及时与智能。我的研究兴趣包括**信息理论**、**语义通信**、**信息时效 (AoI)**、**信道编码**与**网络优化**，重点关注不仅可靠传递信息，而且能够在正确时间、服务正确目标的通信系统。\n\n我博士毕业于哈尔滨工业大学（深圳），师从[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)，并曾在新加坡科技研究局（A*STAR I²R）访问研究，期间受 IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei) 指导。",
-    location: "土耳其安卡拉",
-    social: {
-      scholar: "https://scholar.google.com/citations?user=nyl1-EMAAAAJ&hl=zh-CN",
-      orcid: "https://orcid.org/0000-0003-3687-4378",
-      github: "https://github.com/aiminli-hi",
-      linkedin: "https://linkedin.com",
-      xiaohongshu: "https://xhslink.com/m/2CfyBndWr4f",
-      email: "mailto:hitliaimin@163.com"
-    },
-    nav: { about: "关于我", news: "最新动态", timeline: "个人履历", publications: "发表论文", awards: "荣誉奖项", service: "学术服务", teaching: "教学经历", mentoring: "学生指导", talks: "学术报告" },
-    cvDownload: "简历",
-    news: [
-  { date: "2026-08", label: "ITW", content: "🏅 恭喜我们的学生 <strong>Burak Karasakal</strong> 获得 <strong>IEEE ITW Student Travel Grant</strong>！", link: "#pub-c19" },
-      { date: "2026-07", label: "GLOBECOM", content: "🎉 我们的论文 <strong>On the Multi-Weight Shift-Sum Iterative Decoding of Short BCH Codes</strong> 被 <strong>2026 IEEE Global Communications Conference（GLOBECOM 2026）</strong>录用。恭喜 <strong>Yinglei Yang</strong>！", link: "#pub-c21" },
-      { date: "2026-07", label: "ComMag", content: "🌌 我们的论文 <strong>Goal-Oriented Communications for Interplanetary and Non-Terrestrial Networks</strong> 被 <strong>IEEE Communications Magazine</strong> 录用。恭喜并衷心感谢我的导师 <strong>Elif Uysal 教授</strong>；在这项工作中，我从她身上学到了很多。", link: "#pub-j19" },
-      { date: "2026-07", label: "Asilomar", content: "🛰️ 我们的论文 <strong>ASTRA: Asynchronous Age-Aware Satellite Random Access via Mean-Field Control</strong> 被<strong>第 60 届 Asilomar Conference on Signals, Systems, and Computers</strong>录用。恭喜 <strong>Sayam Chakraborty</strong>！", link: "#pub-c20" },
-      { date: "2026-07", label: "ITW", content: "🎉 我们的论文 <strong>Age of Information in Time-Varying Multi-Priority Queues</strong> 被 <strong>2026 IEEE Information Theory Workshop（ITW 2026）</strong> 录用，审稿评分为 <span class=\"news-mobihoc-count\">5/5、4/5、4/5</span>。恭喜 <strong>Burak Karasakal</strong>！", link: "#pub-c19" },
-      { date: "2026-07-20", label: "WiSEE", content: "🛰️ 我们的论文 <strong>In-Orbit Intelligence or Ground Offloading? Inference Freshness Under Intermittent Satellite Connectivity</strong> 被 <strong>2026 IEEE International Conference on Wireless for Space and Extreme Environments（WiSEE 2026）</strong> 录用。恭喜 <strong>Ayşe（艾雪）</strong>！", link: "#pub-c18" },
-      { date: "2026-07", label: "报告", content: "🎤 7月，我在<strong>中山大学深圳</strong>作学术报告，分享我们的工作 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong>。", link: "#talks" },
-      { date: "2026-06", label: "IROS", content: "🤖 我们的论文 <strong>SCORP: Scene-Consistent Multi-agent Diffusion Planning with Stable Online Reinforcement Post-Training for Cooperative Driving</strong> 被 <strong>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2026)</strong> 录用。恭喜我的合作者、伙伴 <strong>Haojie</strong> ✌️", link: "#pub-c16" },
-      { date: "2026-06", label: "TMC", content: "🚁 我们的论文 <strong>AoI-Aware Joint Sampling-Buffering-Routing Optimization for Autonomous UAV Swarms via a MARL Approach</strong> 发表/上线于 <strong>IEEE Transactions on Mobile Computing (TMC)</strong>。恭喜 <strong>吴豪旭</strong>！", link: "#pub-j17" },
-      { date: "2026-05", label: "IoTJ", content: "我们的论文 <strong>Entropy-Driven Sampling for Remote Estimation in Internet of Things Systems</strong> 发表/上线于 <strong>IEEE Internet of Things Journal (IoTJ)</strong>。恭喜 <strong>霄萌</strong>！", link: "#pub-j18" },
-      { date: "2026-04", label: "IAC", content: "🚀 我们的论文 <strong>Goal-Oriented Bundle Management and Flow Control for Deep-Space Communications via Reinforcement Learning</strong> 被 <strong>第 77 届国际宇航大会（IAC 2026）</strong> 录用。恭喜我的伙伴 <strong>Sajjad Baghaee</strong>！", link: "#pub-c17" },
-      { date: "2026-03", label: "VTC", content: "我们的论文 <strong>Capacity Analysis of Weibull Fading Channels for Satellite-Ground Integrated Communications</strong> 被 <strong>IEEE VTC2026-Spring</strong> 录用。恭喜 <strong>璦玮</strong>！", link: "#pub-c15" },
-      { date: "2026-02", label: "TIT", content: "我们的论文 <strong>From Freshness to Effectiveness: Goal-oriented Sampling for Remote Decision Making</strong> 被 <strong>IEEE Transactions on Information Theory (TIT)</strong> 接收。我的第一篇 TIT 论文。😊", link: "#pub-j16" },
-      { date: "2026-01", label: "ISIT", content: "📈 我们的论文 <strong>Taming the Heavy Tail: Age-Optimal Preemption</strong> 被 <strong>IEEE International Symposium on Information Theory (ISIT 2026)</strong> 录用，审稿评分为 <span class=\"news-mobihoc-count\">5/5、5/5、4/5</span>。", link: "#pub-c14" },
-      { date: "2025-11", label: "荣誉", content: "🏅 我获得哈尔滨工业大学最佳学位论文提名奖。", link: "#awards" },
-      { date: "2025-11", label: "Allerton", content: "📈 我们的论文 <strong>Optimal Sampling and Scheduling for Remote Fusion Estimation of Correlated Wiener Processes</strong> 被 Allerton Conference 2025 录用。我的第一篇 Allerton 论文。😊 欢迎交流与合作。", link: "#pub-c1" },
-      { date: "2025-11", label: "MobiHoc", content: "🌐 我们的论文 <strong>Fresh Data Delivery: Joint Sampling and Routing for Minimizing the Age of Information</strong> 被 <strong>ACM MobiHoc 2025</strong> 录用，<strong>录用率23%</strong>（<span class=\"news-mobihoc-count\">全球共录用39篇</span>）。✨ 这是我们第一次尝试投稿 MobiHoc。欢迎交流与合作。", link: "#pub-c2" },
-      { date: "2025-09", label: "博士", content: "😊 我完成博士学位论文答辩，论文题目为 <strong>面向感知-决策闭环实效性的空天通信关键技术研究</strong>，外审成绩为 <span class=\"news-mobihoc-count\">3A：A/A/A</span>。", link: "#pub-t1" },
-      { date: "2024-12", label: "4MT", content: "🥉 我在南非开普敦参加 IEEE Globecom 四分钟博士学位论文竞赛并作演讲，获得三等奖，<span class=\"news-mobihoc-count\">全球共7人获奖</span>。", link: "#awards" },
-      { date: "2024-12", label: "国奖", content: "我获得博士研究生国家奖学金。", link: "#awards" }      
-    ],
-    timeline: [
-      { year: "2025 - 至今", location: "土耳其，安卡拉", role: "博士后研究员", org: "土耳其中东技术大学 (METU)", 
-        desc: "我参与 ERC Advanced Grant 项目 GO-SPACE。合作导师：IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal)。\n我当前研究聚焦于目标导向与时效通信系统的信息论基础。",
-        reflection: "科研不仅是一条独自前行的道路，也是一束可以传递给他人的光。从 Elif Uysal 教授身上，我学到了关于科研视野、学生指导与责任感的许多东西；CNG 大家庭也给我留下了许多我会一生珍视的回忆。我喜欢土耳其人的热情，和土耳其的四季分明。",
-        lineage: [
-          { name: "Claude Shannon", title: "《通信的数学理论》(1948) — 奠定信息论的数学基础", era: "1948", role: "ancestor", highlight: false },
-          { name: "Robert Gallager", title: "LDPC 码提出者 (1960)", era: "MIT", role: "ancestor", highlight: false },
-          { name: "Elif Uysal", title: "信息时效领域先驱；IEEE Fellow；ERC Advanced Grant GO-SPACE", era: "合作导师", role: "advisor", highlight: true },
-        ],
-        type: "work" },
-      { year: "2023.10 - 2024.10", location: "新加坡", role: "访问研究员", org: "新加坡资讯通信研究院 (I2R), A*STAR", 
-        desc: "我主要研究目标导向的语义通信。\n导师：IEEE Fellow [Sumei Sun 教授](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei)。",
-        reflection: "新加坡在我最需要光的时候来到我的生命里。它给了我方向、信心，也让我重新相信科研。在 Sumei Sun 教授和 Gary Lee 博士的指导下，我逐渐成长为更加独立的研究者。这段旅程将永远是我生命中温暖而明亮的一章。",
-        type: "work" },
-      { year: "2020.09 - 2025", location: "中国，深圳", role: "工学博士 (信息与通信工程)", org: "哈尔滨工业大学（深圳）", 
-        desc: "本博连读（直博）。导师：[吴绍华 教授](https://faculty.hitsz.edu.cn/wushaohua)。",
-        reflection: "我在哈工大度过了自己 9 年的青春，在学习与探索中慢慢找到自己的道路；也正是在这里，我第一次真正走进科研世界，并学会以坚持与严谨面对问题。",
-        type: "edu" },
-      { year: "2017", location: "美国，加州", role: "访问学生", org: "加州大学河滨分校 (UCR)", desc: "国际交换生项目。", type: "edu" },
-      { year: "2016.09 - 2020.06", location: "中国，深圳", role: "工学学士 (通信工程)", org: "哈尔滨工业大学（深圳）", desc: "获得清华大学提前录取。获哈尔滨工业大学校优秀毕业论文、黑龙江省三好学生。", type: "edu" }
-    ],
-    awards: [
-      { year: "2025", title: "哈工大最佳博士学位论文提名", desc: "电子系唯一入选者", level: "University", featured: true },
-      { year: "2024", title: "博士研究生国家奖学金", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
-      { year: "2020", title: "博士研究生国家奖学金", desc: "中国教育部颁发最高学生荣誉，全国前 0.2%", level: "National", featured: true },
-      { year: "2025", title: "黑龙江省普通高校优秀博士毕业生", desc: "黑龙江省前0.4%", level: "Provincial",  featured: true },
-      { year: "2020", title: "哈工大特等博士研究生奖学金", desc: "校长特别颁发（全校博士生仅 8 人）", level: "University", featured: true },
-      { year: "2020", title: "哈工大校优秀本科毕业论文", desc: "电子系仅 2 名", level: "University",  featured: true },
-      { year: "2025", title: "哈工大优秀博士毕业生", desc: "哈尔滨工业大学博士生前10%", level: "University" },
-      { year: "2024", title: "IEEE Globecom 4MT 论文竞赛 (三等奖)", desc: "全球决赛第 5 名。由 IEEE ComSoc 主席颁奖", level: "International", featured: true },
-      { year: "2024", title: "IEEE Globecom 旅行奖", desc: "全球共 15 名博士生获奖。", level: "International" },
-      { year: "2024", title: "国家自然科学基金青年学生项目候选人", desc: "电子系唯一入选，首批全国少于 600 名博士生进入候选", level: "National" },
-      { year: "2023", title: "哈工大“点子”基金项目负责人 (PI)", desc: "获得独立科研经费资助", level: "University", featured: true },
-      { year: "2019", title: "哈工大年度优秀学生", desc: "校前10%", level: "University" },
-      { year: "2017", title: "哈工大年度优秀学生", desc: "校前10%", level: "University" },
-      { year: "2019", title: "清华大学电子系推免夏令营优秀营员", desc: "获得清华大学提前录取。", level: "University", featured: true },
-      { year: "2018", title: "黑龙江省三好学生", desc: "黑龙江省前1%", level: "Provincial", featured: true },
-      { year: "2018", title: "共进奖学金", desc: "电子系仅3名", level: "University" },
-      { year: "2017", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
-      { year: "2016", title: "全国大学生数学竞赛一等奖", desc: "国家级数学竞赛奖项。", level: "National" },
-      { year: "2017", title: "综合优秀一等奖学金", desc: "哈尔滨工业大学前5%", level: "National" },
-    ],
-    service: {
-      reviewer:[ 
-        "IEEE Transactions on Information Theory (TIT)", 
-        "IEEE Journal on Selected Areas in Communications (JSAC)", 
-        "IEEE Transactions on Mobile Computing (TMC)", 
-        "IEEE Internet of Things Journal (IoTJ)",
-        "IEEE Transactions on Communications (TCOM)", 
-        "IEEE Transactions on Wireless Communications (TWC)",
-        "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
-        "IEEE Transactions on Vehicular Technology (TVT)",
-        "IEEE Transactions on Cognitive Communications and Networking (TCCN)",
-        "IEEE Communications Letters (CL)",
-        "IEEE Wireless Communications Letters (WCL)",
-        "Engineering",
-        "ACM/IEEE Transactions on Networking (ToN)",
-        "Journal of Engineering, Project, and Production Management",
-        "Elsevier Computer Networks",
-        "Elsevier Computer Communications",
-        "AEÜ - International Journal of Electronics and Communications",
-        "IEEE International Symposium on Information Theory (ISIT) — 2023, 2026",
-        "IEEE Information Theory Workshop (ITW) — 2026",
-        "IEEE Conference on Computer Communications (INFOCOM) — 2024",
-        "IEEE International Conference on Computer and Communications (ICCC) — 2023",
-        "IEEE Global Communications Conference (GLOBECOM) — 2022–2026",
-        "IEEE Wireless Communications and Networking Conference (WCNC) — 2022, 2024, 2026",
-        "IEEE Vehicular Technology Conference (VTC) — 2022",
-        "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS) — 2026",
-        "The 7th International Conference on Computer Science and Application Engineering (CSAE) — 2023",
-        "IEEE International Conference on Machine Learning in Communications and Networking (ICMLCN) — 2024",
-        "International Conference on the Frontiers of Electronic, Electrical and Information Engineering (ICFEEIE) — 2024"
-      ],
-      chair: [ "分会主席, IEEE ITW 2024信息年龄分会", "分会主席, IEEE Globecom 2024分布式学习分会" ],
-      tpc: [ "技术程序委员会委员，ICFEEIE 2024" ],
-      volunteer: [ "IEEE VTC-Spring 2024", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
-    },
-    teaching: [
-      { role: "助教", course: "通信原理 (本科)", org: "哈尔滨工业大学（深圳）", period: "2020 秋", desc: "合作教师：吴绍华教授" },
-      { role: "助教", course: "信息论基础 (研究生)", org: "哈尔滨工业大学（深圳）", period: "2022 秋", desc: "合作教师：吴绍华教授" }
-    ],
-    talks: [
-      {
-        date: "2026-07",
-        type: "会议与邀请报告",
-        title: "Taming the Heavy Tail: Age-Optimal Preemption",
-        link: "#pub-c14",
-        appearances: [
-          {
-            event: "IEEE International Symposium on Information Theory (ISIT 2026)",
-            location: "中国广州"
-          },
-          {
-            event: "中山大学学术报告",
-            location: "中国深圳"
-          }
-        ]
-      },
-      {
-        date: "2024-12",
-        type: "竞赛报告",
-        title: "4MT Thesis Presentation",
-        event: "IEEE Globecom 2024 四分钟博士学位论文竞赛",
-        location: "南非开普敦"
-      },
-      {
-        date: "2024-11",
-        type: "会议报告",
-        title: "Sampling to Achieve the Goal: An Age-aware Remote Markov Decision Process",
-        event: "IEEE Information Theory Workshop (ITW 2024)",
-        location: "中国深圳",
-        link: "#pub-c3"
-      },
-      {
-        date: "2024-04",
-        type: "会议报告",
-        title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
-        event: "IEEE Wireless Communications and Networking Conference (WCNC)",
-        location: "阿拉伯联合酋长国迪拜"
-      },
-      {
-        date: "2022-12",
-        type: "线上会议报告",
-        title: "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result",
-        event: "IEEE Global Communications Conference (GLOBECOM 2022)",
-        location: "巴西里约热内卢（线上）",
-        link: "#pub-c10"
-      },
-      {
-        date: "2020-05",
-        type: "线上会议报告",
-        title: "Spinal Codes over BSC: Error Probability Analysis and the Puncturing Design",
-        event: "IEEE Vehicular Technology Conference (VTC2020-Spring)",
-        location: "比利时安特卫普（线上）",
-        link: "#pub-c13"
-      }
-    ],
-    mentoring: {
-      title: "学生指导与合作",
-      leadershipTitle: "科研领导力",
-      leadershipSummary: "我很荣幸在读博和博士后期间，与许多低年级优秀学生一起开展科研合作。我主要帮助他们凝练研究问题、建立数学模型与求解框架，并指导分析、仿真与实现，推动形成论文成果及后续升学或职业发展。",
-      studentListOpen: "展开完整名单",
-      studentListClose: "收起为简表",
-      collaborationTitle: "学生指导与科研合作",
-      columns: { student: "学生 / 合作时间", stage: "阶段", outcome: "指导 / 成果" },
-      groups: [
-        {
-          title: "哈尔滨工业大学（深圳）",
-          shortTitle: "HIT",
-          note: "博士阶段在哈尔滨工业大学（深圳）开展的学生科研合作。",
-          students: [
-            { name: "Siqi Meng", period: "2020-2024", stage: "本科 + 博士", outcome: "本科毕业论文指导、博士科研指导；IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT 论文。" },
-            { name: "Xiaomeng Chen", period: "2023-2026", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士毕业论文指导；IEEE TWC / IEEE ISIT / IEEE ITW 论文；获瑞典皇家理工学院博士录取。" },
-            { name: "Haoxu Wu", period: "2025-2026", stage: "博士", outcome: "博士科研指导；IEEE TMC 论文。" },
-            { name: "Haojie Bai", period: "", stage: "博士", outcome: "博士科研合作；IEEE IROS 论文录用、IEEE TMC 投稿；现就职于华为。" },
-            { name: "Kunpeng Liu", period: "2024-2026", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士毕业论文指导；IEEE ICC / IEEE INFOCOM Workshop 论文；现就职于华为。" },
-            { name: "Jiaming Zhang", period: "2022-2025", stage: "本科 + 硕士", outcome: "本科毕业论文指导、硕士科研指导；IEEE VTC 论文。" },
-            { name: "Xin Jin", period: "2022", stage: "本科", outcome: "本科毕业论文指导。" }
-          ]
-        },
-        {
-          title: "土耳其中东技术大学",
-          shortTitle: "METU",
-          note: "博士后阶段在土耳其中东技术大学开展的学生科研指导。",
-          students: [
-            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "硕士", outcome: "硕士毕业论文指导；ACM MobiHoc / IEEE TMC 论文；现于中东技术大学攻读博士。" },
-            { name: "Çağrı Arı", period: "", stage: "博士", outcome: "博士科研合作；ACM MobiHoc 论文；现就职于 Aselsan。" },
-            { name: "Burak Karasakal", period: "2025-2026", stage: "本科", outcome: "本科科研指导；IEEE ITW 论文；获加州理工学院博士录取。" },
-            { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "本科", outcome: "本科毕业论文指导；IAC 论文；获新加坡国立大学硕士录取。" },
-            { name: "Yiğit İnce", period: "2025-2026", stage: "硕士", outcome: "硕士科研指导；IEEE ISIT 论文。" },
-            { name: "Süleyman Çıtır", period: "", stage: "硕士", outcome: "硕士科研合作；中东技术大学硕士生。" },
-            { name: "Sayam Chakraborty", period: "2026", stage: "本科", outcome: "本科毕业论文指导；Asilomar 论文。" },
-            { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "本科 + 硕士", outcome: "本科/硕士科研指导；IEEE WiSEE 论文。" },
-            { name: "Selay Nisa Şahin", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
-            { name: "Yusuf", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" },
-            { name: "Aral", period: "2026", stage: "本科实习生", outcome: "本科研究实习指导。" }
-          ]
-        },
-        {
-          title: "郑州大学",
-          shortTitle: "ZZU",
-          note: "郑州大学学生科研合作。",
-          students: [
-            { name: "Lulu Song", period: "2026", stage: "博士", outcome: "博士科研合作。" },
-            { name: "Aiwei Lei", period: "2026", stage: "本科", outcome: "本科科研合作；IEEE VTC 论文；获香港大学博士录取。" },
-            { name: "Yinglei Yang", period: "2026", stage: "硕士", outcome: "硕士科研合作；IEEE Globecom 论文。" },
-            { name: "Mingxiao Sun", period: "2025", stage: "硕士", outcome: "硕士科研合作；IEEE TCOM / IEEE ICCT 论文。" }
           ]
         }
       ]

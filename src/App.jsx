@@ -12,6 +12,7 @@ import {
   Maximize2, Menu, X, FileImage
 } from 'lucide-react';
 import { BASE_PUBLICATIONS, PROFILE_DATA } from './data/homepageData';
+import { REVIEWER_JOURNAL_METRICS, REVIEWER_METRICS_CHECKED_ON } from './data/reviewerJournalMetrics';
 import { getAuthorList, getCitationFormats } from './utils/citations';
 import { getVisitorSnapshotUpdatedAt, shouldApplyVisitorSnapshot } from './utils/visitorSnapshot';
 
@@ -145,6 +146,7 @@ const UI_COPY = {
     moreVenues: 'More Venues',
     venueFilter: 'Venue',
     selectedPublications: 'Selected Publications',
+    viewAllPublications: 'All publications',
     viewMorePublications: 'View More Publications',
     remaining: 'remaining',
     noPapers: 'No papers found matching your criteria.',
@@ -179,7 +181,7 @@ const UI_COPY = {
       timeline: 'Research path and academic heritage',
       mentoring: 'Student mentoring and collaborations',
       awards: 'Honors and recognitions',
-      service: 'Reviewing, chairing, and service',
+      service: 'Editorial work, reviewing, chairing, and service',
       teaching: 'Teaching assistant experience',
       cv: 'Download my curriculum vitae',
     },
@@ -232,6 +234,7 @@ const UI_COPY = {
     regionalCountrySelect: 'Country',
     regionalShare: 'Regional share',
     serviceReviewerTitle: 'Invited Reviewer',
+    serviceEditorialTitle: 'Editorial Service',
     serviceJournals: 'Journals & Letters',
     serviceConferences: 'Conferences',
     serviceChairTitle: 'Session Chair',
@@ -245,117 +248,6 @@ const UI_COPY = {
     closeCitation: 'Close citation dialog',
     poster: 'Poster',
     slides: 'Slides',
-  },
-  zh: {
-    publicationDesc: '精选论文与学术成果。',
-    searchPlaceholder: '搜索题目、作者或期刊会议...',
-    newestFirst: '最新优先',
-    oldestFirst: '最早优先',
-    toggleSort: '切换时间排序',
-    allPapers: '全部论文',
-    moreVenues: '更多期刊会议',
-    venueFilter: '期刊/会议',
-    selectedPublications: '精选论文',
-    viewMorePublications: '查看更多论文',
-    remaining: '篇未显示',
-    noPapers: '没有找到符合条件的论文。',
-    papersInYear: '篇论文',
-    expandYear: '展开论文',
-    collapseYear: '收起论文',
-    acceptanceRate: '录用率',
-    acceptedWorldwide: '全球录用',
-    firstAuthorBadge: '一作',
-    coFirstAuthorBadge: '共同一作',
-    soleAuthorBadge: '独著',
-    studentOutcomeBadge: '学生指导成果',
-    featuredBadge: '精选',
-    journalShort: '刊',
-    conferenceShort: '会',
-    thesisShort: '学位论文',
-    selected: '精选',
-    openArticle: '打开论文链接',
-    expandAbstract: '展开摘要',
-    collapseAbstract: '收起摘要',
-    abstract: '摘要',
-    noAbstract: '暂无摘要。',
-    moreNews: '更多动态',
-    fewerNews: '收起动态',
-    homeNavTitle: '快速浏览主页',
-    homeNavDesc: '直接进入不同内容页。',
-    homeNavCards: {
-      about: '主页简介与最新动态',
-      news: '最新科研与职业动态',
-      publications: '论文、项目、代码与引用',
-      talks: '邀请报告与会议报告',
-      timeline: '科研经历与学术谱系',
-      mentoring: '学生指导与科研合作',
-      awards: '代表性荣誉与奖励',
-      service: '审稿、分会主席与学术服务',
-      teaching: '课程助教与教学经历',
-      cv: '下载我的简历',
-    },
-    awardsDesc: '科研表现与学术成长中的代表性荣誉。',
-    selectedHonors: '代表性荣誉',
-    otherAwards: '其他奖项与认可',
-    viewMoreAwards: '查看更多奖项',
-    experience: '经历',
-    education: '教育',
-    contactDesc: '欢迎就科研合作、学生指导，以及信息理论与通信相关机会进行交流。',
-    locationLabel: '所在地',
-    emailLabel: '邮箱',
-    globalVisitors: '全球访客',
-    globalVisitorsDesc: '按国家聚合的主页访问统计。',
-    loadingVisitors: '正在更新访客统计...',
-    viewStats: '查看统计',
-    hideStats: '收起统计',
-    visitorMap: '访客地图',
-    expandVisitorMap: '放大地图',
-    closeVisitorMap: '关闭地图',
-    visitorMapModalTitle: '全球访客地图',
-    topVisitorCountries: '访问国家排名',
-    showRemainingCountries: '展开其余',
-    showTopVisitorCountriesOnly: '只显示前五名',
-    activeVisitorRegions: '访客足迹',
-    visitorIntensity: '访问次数',
-    visitorMapSummary: '点亮已有访客国家和地区的世界地图。',
-    loadingVisitorMap: '正在加载访客地图...',
-    visitorMapAllTime: '全部',
-    visitorMapThisWeek: '本周',
-    visitorMapAllTimeLabel: '全部访问足迹',
-    visitorMapThisWeekLabel: '本周访客来源',
-    pageviews: '次访问',
-    countries: '个国家',
-    visitorUpdated: '更新于（伊斯坦布尔）',
-    weeklyNewVisitors: '本周访问',
-    weeklyVisitorSources: '本周访客来源',
-    weeklySource: '个来源',
-    weeklySources: '个来源',
-    weeklyFirstVisits: '统计本周主页访问记录。',
-    weeklyNoVisitors: '本周暂未记录到主页访问。',
-    statsTotalViews: '访问次数',
-    statsCountries: '访问国家',
-    statsTopCountry: '最高国家',
-    statsLastUpdate: '最近更新',
-    statsCountryShare: '国家占比',
-    regionalDetails: '地区细分',
-    regionalDetailsHint: '新访问产生州/省级数据后自动显示。',
-    regionalNoData: '该国家的新访问产生后，会显示州/省级聚合数据。',
-    regionalCountrySelect: '国家',
-    regionalShare: '地区占比',
-    serviceReviewerTitle: '受邀审稿',
-    serviceJournals: '期刊与快报',
-    serviceConferences: '会议',
-    serviceChairTitle: '分会主席',
-    serviceTpcTitle: 'TPC 委员',
-    serviceVolunteerTitle: '志愿服务',
-    citationTitle: '引用此论文',
-    ieeeCitation: 'IEEE 格式',
-    bibtexCitation: 'BibTeX',
-    copyCitation: '复制',
-    copiedCitation: '已复制',
-    closeCitation: '关闭引用对话框',
-    poster: '海报',
-    slides: '幻灯片',
   },
 };
 
@@ -805,10 +697,12 @@ const awardYearValue = (award = {}) => (
 const getServiceVenueMeta = (venue = '') => {
   const isConference = /Conference|Symposium|Workshop|VTC|ISIT|Infocom|IWCMC|APWCS/i.test(venue);
   const isJournal = !isConference
-    && /Transactions|Journal|Letters|Computer Networks|Computer Communications|^Engineering$/i.test(venue);
+    && (Object.hasOwn(REVIEWER_JOURNAL_METRICS, venue)
+      || /Transactions|Journal|Letters|Computer Networks|Computer Communications|Ad Hoc Networks|Electronics|^Engineering$/i.test(venue));
   return {
     full: venue,
     type: isJournal ? 'journal' : 'conference',
+    metric: isJournal ? REVIEWER_JOURNAL_METRICS[venue] : null,
   };
 };
 
@@ -1157,8 +1051,11 @@ const HONOR_VALUE_PATTERN = [
 const HONOR_VALUE_SPLIT_RE = new RegExp(`(${HONOR_VALUE_PATTERN})`, 'giu');
 const HONOR_VALUE_TEST_RE = new RegExp(`^(?:${HONOR_VALUE_PATTERN})$`, 'iu');
 
-const HonorText = ({ text, darkMode }) => {
+const HonorText = ({ text, darkMode, subtle = false }) => {
   if (!text) return null;
+  const valueClass = subtle
+    ? `font-bold ${darkMode ? 'text-amber-200' : 'text-amber-800'}`
+    : `rounded px-1 font-black ${darkMode ? 'bg-amber-400/10 text-amber-200' : 'bg-amber-50 text-amber-800'}`;
   return String(text)
     .split(HONOR_VALUE_SPLIT_RE)
     .filter(Boolean)
@@ -1167,7 +1064,7 @@ const HonorText = ({ text, darkMode }) => {
         ? (
           <strong
             key={`${part}-${index}`}
-            className={`rounded px-1 font-black ${darkMode ? 'bg-amber-400/10 text-amber-200' : 'bg-amber-50 text-amber-800'}`}
+            className={valueClass}
           >
             {part}
           </strong>
@@ -1215,21 +1112,45 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   );
 };
 
-const LanguageToggle = ({ lang, darkMode, onToggle, fullWidth = false }) => {
-  const nextLangLabel = lang === 'en' ? '切换为中文' : 'Switch to English';
+const ServiceListGroup = ({ groupKey, label, Icon, items = [], darkMode }) => {
+  if (!items.length) return null;
 
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      className={`language-switcher ${fullWidth ? 'language-switcher--full' : ''} ${darkMode ? 'language-switcher--dark' : ''}`}
-      title={nextLangLabel}
-      aria-label={nextLangLabel}
-    >
-      <span className="language-switcher__label">{lang === 'en' ? 'Language' : '语言'}</span>
-      <span className={`language-switcher__option ${lang === 'en' ? 'language-switcher__option--active' : ''}`}>EN</span>
-      <span className={`language-switcher__option ${lang === 'zh' ? 'language-switcher__option--active' : ''}`}>中文</span>
-    </button>
+    <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+      <div>
+        <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
+          {React.createElement(Icon, { size: 14 })} {label}
+        </div>
+      </div>
+      <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+        {items.map((item, index) => {
+          const entry = typeof item === 'string' ? { text: item } : item;
+          return (
+            <article
+              key={`${groupKey}-${entry.text}-${index}`}
+              className={`service-row border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10' : 'border-b-slate-200'}`}
+            >
+              <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
+                {entry.link ? (
+                  <a
+                    href={entry.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`inline-flex min-w-0 items-start gap-1.5 underline-offset-2 hover:underline ${darkMode ? 'hover:text-cyan-200' : 'hover:text-emerald-800'}`}
+                  >
+                    <span>{entry.text}</span>
+                    <ExternalLink size={13} className="mt-0.5 shrink-0 opacity-60" />
+                  </a>
+                ) : (
+                  <span>{entry.text}</span>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 
@@ -1346,6 +1267,27 @@ const JcrBadge = ({ zone, ifVal, darkMode }) => {
       {zone && <span className="bg-emerald-500 text-white px-1 rounded-[3px]">{zone}</span>}
       {ifVal && <span>IF: {ifVal}</span>}
     </div>
+  );
+};
+
+const ReviewerImpactBadge = ({ metric, journal, lang }) => {
+  if (!Number.isFinite(metric?.value)) return null;
+  const value = metric.value.toFixed(1);
+  const checkedOn = metric.checkedOn || REVIEWER_METRICS_CHECKED_ON;
+  const description = lang === 'zh'
+    ? `${metric.year ? `${metric.year} 年` : '出版方公布的'}期刊影响因子：${value}。来源：${metric.sourceLabel}。核对日期：${checkedOn}${metric.year ? '' : '；来源未注明指标年份'}。在新标签页查看来源。`
+    : `${metric.year ? `${metric.year} ` : 'Publisher-reported '}Journal Impact Factor: ${value}. Source: ${metric.sourceLabel}. Checked ${checkedOn}${metric.year ? '' : '; metric year not specified by source'}. Open source in a new tab.`;
+  return (
+    <a
+      href={metric.source}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="service-impact-factor"
+      title={description}
+      aria-label={`${journal}. ${description}`}
+    >
+      IF: {value}
+    </a>
   );
 };
 
@@ -2141,11 +2083,8 @@ export default function AcademicProfile() {
         )
       : false
   ));
-  const [lang, setLang] = useState(() => (
-    typeof window !== 'undefined' && window.localStorage.getItem('aimin-homepage-language') === 'zh'
-      ? 'zh'
-      : 'en'
-  ));
+  // The site is English-only; `lang` stays as a constant so shared helpers keep their signature.
+  const lang = 'en';
   const [activeCitation, setActiveCitation] = useState(null);
   const citationReturnFocusIdRef = useRef('');
   const closeCitation = useCallback(() => {
@@ -2188,6 +2127,11 @@ export default function AcademicProfile() {
     : `${content.nav[activeSection] || content.name}. ${ui.homeNavCards[activeSection] || content.meta_desc}`;
   useSEO(pageTitle, pageDescription, lang, darkMode);
   const visibleNewsItems = showAllNews ? newsItems : newsItems.slice(0, 6);
+  const selectedPublications = useMemo(() => (
+    (content.selectedPublications || [])
+      .map(id => publications.find(pub => pub.id === id))
+      .filter(Boolean)
+  ), [content.selectedPublications, publications]);
   const matchesMentoredStudent = useMemo(
     () => createStudentMatcher(getMentoringStudentNames(content.mentoring)),
     [content.mentoring]
@@ -2345,10 +2289,6 @@ export default function AcademicProfile() {
   useEffect(() => {
     window.localStorage.setItem('aimin-homepage-theme', darkMode ? 'dark' : 'light');
   }, [darkMode]);
-
-  useEffect(() => {
-    window.localStorage.setItem('aimin-homepage-language', lang);
-  }, [lang]);
 
   useEffect(() => {
     displaySectionRef.current = displaySection;
@@ -2759,11 +2699,6 @@ export default function AcademicProfile() {
                 <span>{content.cvDownload}</span>
               </a>
             </div>
-            <LanguageToggle
-              lang={lang}
-              darkMode={darkMode}
-              onToggle={() => setLang(l => l === 'en' ? 'zh' : 'en')}
-            />
             <button type="button" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? (lang === 'zh' ? '切换到浅色模式' : 'Switch to light mode') : (lang === 'zh' ? '切换到深色模式' : 'Switch to dark mode')} title={darkMode ? (lang === 'zh' ? '浅色模式' : 'Light mode') : (lang === 'zh' ? '深色模式' : 'Dark mode')} className={`theme-toggle inline-flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 transition-colors ${darkMode ? 'hover:bg-cyan-400/10 text-cyan-200' : 'hover:bg-gray-100 text-slate-600'}`}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
             
             {/* Mobile Menu Button */}
@@ -2803,17 +2738,6 @@ export default function AcademicProfile() {
               <Download size={16} />
               <span>{lang === 'en' ? 'Download CV' : '简历下载'}</span>
             </a>
-            <div className="mt-2">
-              <LanguageToggle
-                lang={lang}
-                darkMode={darkMode}
-                fullWidth
-                onToggle={() => {
-                  setLang(l => l === 'en' ? 'zh' : 'en');
-                  setIsMobileMenuOpen(false);
-                }}
-              />
-            </div>
           </div>
         )}
       </div>
@@ -2863,6 +2787,51 @@ export default function AcademicProfile() {
                    </div>
                  )}
               </div>
+
+              {selectedPublications.length > 0 && (
+              <div id="selected-publications" className={`selected-publications-panel p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${darkMode ? 'text-cyan-200' : 'text-purple-700'}`}>
+                    <BookOpen size={13} />
+                    {ui.selectedPublications}
+                  </h3>
+                  <a
+                    href="#publications"
+                    onClick={(event) => navigateToPage('publications', event)}
+                    className={`inline-flex items-center gap-1 text-[11px] font-bold rounded-full px-2.5 py-1 transition-colors ${darkMode ? 'text-cyan-200 hover:bg-cyan-400/10' : 'text-purple-700 hover:bg-purple-50'}`}
+                  >
+                    {ui.viewAllPublications} ({publications.length}) <ChevronRight size={12} />
+                  </a>
+                </div>
+                <ol className={`divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-gray-100'}`}>
+                  {selectedPublications.map(pub => (
+                    <li key={pub.id} className="py-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-cyan-200 bg-cyan-50 text-cyan-800'}`} title={pub.venue}>
+                          {pub.venue_short} {pub.year}
+                        </span>
+                        {pub.type === 'Journal' && pub.if && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
+                        {[['PDF', pub.links?.pdf], ['Code', pub.links?.code], ['Project', pub.links?.project]]
+                          .filter(([, href]) => href)
+                          .map(([label, href]) => (
+                            <a key={label} href={href} target="_blank" rel="noreferrer" className={`text-[11px] font-bold underline-offset-2 hover:underline ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                              {label}
+                            </a>
+                          ))}
+                      </div>
+                      <h4 className={`mt-1 text-[14px] font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                        <a href={`#${getPublicationAnchorId(pub)}`} className={darkMode ? 'hover:text-cyan-300' : 'hover:text-cyan-700'}>
+                          {getPublicationTitle(pub, lang)}
+                        </a>
+                      </h4>
+                      {pub.summary && (
+                        <p className={`mt-0.5 text-[12.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{pub.summary}</p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              )}
           </div>
         </section>
         )}
@@ -3081,39 +3050,28 @@ export default function AcademicProfile() {
               </div>
            </div>
 
-           <div className="space-y-4">
-             {groupedAwardYears.map((group) => (
-               <section key={group.year} className={`grid gap-2 border-t pt-3 md:grid-cols-[5rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                 <div>
-                   <div className={`text-2xl font-black leading-none tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                     {group.year}
-                   </div>
-                 </div>
-                 <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                   {group.awards.map((award, idx) => (
-                   <article
-                     key={`${group.year}-${award.title}-${idx}`}
-                       className={`grid gap-1.5 border-b border-l-2 py-2 pl-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10 border-l-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 border-l-transparent hover:bg-slate-50/75'}`}
-                     >
-                       <div className="flex flex-wrap items-center gap-1.5">
-                         <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
-                           {award.level}
-                         </span>
-                       </div>
-                       <h3 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                         {award.title}
-                       </h3>
-                       {award.desc && (
-                         <p className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                           <HonorText text={award.desc} darkMode={darkMode} />
-                         </p>
-                       )}
-                     </article>
-                   ))}
-                 </div>
-               </section>
-             ))}
-           </div>
+           {/* One continuous list: one line per honor, year shown once per group. */}
+           <ol className={`honors-list border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+             {groupedAwardYears.flatMap((group) => group.awards.map((award, idx) => (
+               <li
+                 key={`${group.year}-${award.title}-${idx}`}
+                 className={`grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 py-1.5 sm:grid-cols-[3rem_minmax(0,1fr)_5.5rem] ${idx === 0 ? `border-t first:border-t-0 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}` : ''}`}
+               >
+                 <span className={`pt-px text-[13px] font-black tabular-nums ${idx === 0 ? (darkMode ? 'text-slate-100' : 'text-slate-900') : 'invisible'}`}>
+                   {group.year}
+                 </span>
+                 <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                   <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{award.title}</strong>
+                   {award.title_zh && <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>({award.title_zh})</span>}
+                   {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
+                   <span className={`ml-1.5 text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{award.level}</span>
+                 </p>
+                 <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                   {award.level}
+                 </span>
+               </li>
+             )))}
+           </ol>
         </section>
         )}
 
@@ -3151,6 +3109,14 @@ export default function AcademicProfile() {
               </div>
           </div>
           <div className="space-y-5">
+            <ServiceListGroup
+              groupKey="editorial"
+              label={ui.serviceEditorialTitle}
+              Icon={BookOpen}
+              items={content.service.editorial || []}
+              darkMode={darkMode}
+            />
+
             <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
               <div>
                 <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
@@ -3180,9 +3146,12 @@ export default function AcademicProfile() {
                         title={item.full}
                         className={`service-row border-t border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-t-cyan-400/10' : 'border-t-slate-200'}`}
                       >
-                        <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                          <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
-                          <span>{item.full}</span>
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3">
+                          <div className={`flex min-w-0 items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                            <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
+                            <span className="min-w-0 break-words">{item.full}</span>
+                          </div>
+                          <ReviewerImpactBadge metric={item.metric} journal={item.full} lang={lang} />
                         </div>
                       </article>
                     ))}
@@ -3195,31 +3164,16 @@ export default function AcademicProfile() {
               { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair },
               { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [] },
               { key: 'volunteer', label: ui.serviceVolunteerTitle, icon: User, items: content.service.volunteer },
-            ].map((group) => {
-              const Icon = group.icon;
-              return (
-                <section key={group.key} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                  <div>
-                    <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
-                      <Icon size={14} /> {group.label}
-                    </div>
-                  </div>
-                  <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                    {group.items.map((item, i) => (
-                      <article
-                        key={`${group.key}-${i}`}
-                        className={`service-row border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10' : 'border-b-slate-200'}`}
-                      >
-                        <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                          <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
-                          <span>{item}</span>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
+            ].map((group) => (
+              <ServiceListGroup
+                key={group.key}
+                groupKey={group.key}
+                label={group.label}
+                Icon={group.icon}
+                items={group.items}
+                darkMode={darkMode}
+              />
+            ))}
           </div>
         </section>
         )}

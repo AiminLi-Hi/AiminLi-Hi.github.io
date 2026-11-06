@@ -1,6 +1,17 @@
 // Formal publication metadata used only for citations. Display years may retain
 // an acceptance/online-first year while IEEE references use the final issue year.
 export const CITATION_METADATA = {
+  j20: {
+    containerTitle: 'IEEE Transactions on Wireless Communications',
+    abbreviation: 'IEEE Trans. Wireless Commun.',
+    year: 2026,
+    status: 'accepted',
+  },
+  c22: {
+    containerTitle: 'ACM MobiHoc Workshop',
+    year: 2026,
+    status: 'accepted',
+  },
   j17: {
     containerTitle: 'IEEE Transactions on Mobile Computing',
     abbreviation: 'IEEE Trans. Mobile Comput.',

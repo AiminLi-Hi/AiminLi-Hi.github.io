@@ -513,6 +513,47 @@
 }
 
 /* Academic-service rows share one quiet visual language across all roles. */
+.service-impact-factor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 4.75rem;
+  padding: 2px 8px;
+  border: 1px solid #ccdcca;
+  border-radius: 6px;
+  background: #edf4e8;
+  color: #46604c;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.service-impact-factor:hover {
+  border-color: #78987b;
+  background: #dfead8;
+}
+
+.service-impact-factor:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.theme-dark-ink .service-impact-factor {
+  border-color: rgba(103, 232, 249, 0.24);
+  background: rgba(34, 211, 238, 0.08);
+  color: #b9ecdf;
+}
+
+.theme-dark-ink .service-impact-factor:hover {
+  border-color: rgba(103, 232, 249, 0.55);
+  background: rgba(34, 211, 238, 0.16);
+}
+
 .theme-soft-sage .service-group-heading {
   color: #55715a;
 }
