@@ -1727,3 +1727,13 @@
     transition: none;
   }
 }
+
+/* Highlighted note inside an honor's Chinese name (e.g. 拟录取), in
+   Tsinghua purple and outside the theme's purple/violet remapping. */
+.honor-note {
+  color: #660874;
+}
+
+.theme-dark-ink .honor-note {
+  color: #e3b6eb;
+}
