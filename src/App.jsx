@@ -1158,6 +1158,33 @@ const ActionButton = ({ icon, label, href, onClick, id, type = "default", darkMo
   );
 };
 
+// Self-hosted flag SVGs (flag-icons, MIT). Each flag is emitted as its own
+// file and only fetched when a country actually appears in a list.
+const FLAG_URLS = Object.fromEntries(
+  Object.entries(import.meta.glob('../node_modules/flag-icons/flags/4x3/*.svg', {
+    eager: true,
+    query: '?no-inline',
+    import: 'default',
+  })).map(([file, url]) => [file.match(/([a-z-]+)\.svg$/)[1], url])
+);
+
+const CountryFlag = ({ code, name, className = '' }) => {
+  const url = FLAG_URLS[String(code || '').trim().toLowerCase()];
+  if (!url) return <span className={`inline-block h-[0.9rem] w-[1.2rem] shrink-0 ${className}`} aria-hidden="true" />;
+  return (
+    <img
+      src={url}
+      alt=""
+      title={name}
+      width="20"
+      height="15"
+      loading="lazy"
+      decoding="async"
+      className={`inline-block h-[0.9rem] w-[1.2rem] shrink-0 rounded-[2px] object-cover shadow-[0_0_0_1px_rgba(15,23,42,0.12)] ${className}`}
+    />
+  );
+};
+
 const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   return (
     <a href={href} target={href.startsWith('mailto:') ? undefined : '_blank'} rel={href.startsWith('mailto:') ? undefined : 'noreferrer'} className={`social-button social-button--${colorType} ${darkMode ? 'social-button--dark' : ''}`} title={label} aria-label={label}>
@@ -1565,7 +1592,7 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                 aria-pressed={isSelected}
                 title={hasRegions ? country.name : ui.regionalNoData}
               >
-                <span>{country.code}</span>
+                <span className="inline-flex items-center gap-1"><CountryFlag code={country.code} name={country.name} />{country.code}</span>
                 <strong>{country.count}</strong>
                 {hasRegions && <i aria-hidden="true" />}
               </button>
@@ -1973,8 +2000,8 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                         {weeklySnapshot.ranking.length ? (
                           <div className={`mt-3 divide-y ${darkMode ? 'divide-cyan-300/10' : 'divide-slate-100'}`}>
                             {weeklySnapshot.ranking.slice(0, 8).map(country => (
-                              <div key={`weekly-${country.code}`} className="grid grid-cols-[2.4rem_minmax(0,1fr)_2rem] items-center gap-2 py-2 text-sm">
-                                <span className={darkMode ? 'font-black text-cyan-300' : 'font-black text-emerald-700'}>{country.code}</span>
+                              <div key={`weekly-${country.code}`} className="grid grid-cols-[3.6rem_minmax(0,1fr)_2rem] items-center gap-2 py-2 text-sm">
+                                <span className={`inline-flex items-center gap-1.5 ${darkMode ? 'font-black text-cyan-300' : 'font-black text-emerald-700'}`}><CountryFlag code={country.code} name={country.name} />{country.code}</span>
                                 <span className="min-w-0 truncate font-semibold">{country.name}</span>
                                 <span className="text-right font-black tabular-nums">{country.count}</span>
                               </div>
@@ -2024,8 +2051,8 @@ const GlobalVisitors = ({ syncData, darkMode, ui, lang }) => {
                     </div>
                   ))
                   : displayedVisitorCountries.map(country => (
-                    <div key={country.code} className={`grid grid-cols-[2.7rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-[#0b1b2b]/80 border-cyan-400/10 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
-                      <span className={darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}>{country.code}</span>
+                    <div key={country.code} className={`grid grid-cols-[3.9rem_minmax(0,1fr)_2rem] items-center gap-3 rounded-xl border px-3 py-2 text-sm ${darkMode ? 'bg-[#0b1b2b]/80 border-cyan-400/10 text-slate-200' : 'bg-white border-slate-200 text-slate-700'}`}>
+                      <span className={`inline-flex items-center gap-1.5 ${darkMode ? 'font-extrabold text-cyan-300' : 'font-extrabold text-blue-600'}`}><CountryFlag code={country.code} name={country.name} />{country.code}</span>
                       <span className="min-w-0 truncate font-semibold">{country.name}</span>
                       <span className={`text-right font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{country.count}</span>
                     </div>
