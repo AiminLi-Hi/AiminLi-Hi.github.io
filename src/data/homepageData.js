@@ -775,6 +775,8 @@ export const PROFILE_DATA = {
       }
     ],
     awards: [
+      { year: "2026", title: "IEEE ITW Travel Grant", level: "Global" },
+      { year: "2026", title: "TÜBİTAK Postdoctoral Research Scholarship", title_zh: "土耳其科学技术研究理事会博士后奖学金", desc: "Awarded under the TÜBİTAK 2247-A National Leading Researchers Program (GÖREV project) at Middle East Technical University.", level: "National" },
       { year: "2025", title: "Best Dissertation Award Nomination", title_zh: "哈工大最佳博士学位论文提名", title_zh_note: "全系共1人", desc: "Sole nominee from the EE Department.", level: "University", featured: true },
       { year: "2024", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
       { year: "2020", title: "National Scholarship of China", title_zh: "博士研究生国家奖学金", desc: "Top 0.2% nationwide", level: "National", featured: true },
