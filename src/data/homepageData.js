@@ -105,7 +105,7 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     image: "/images/TWCSpinal.png",
     keywords: ["Channel Coding", "Spinal Codes", "Fading Channels"],
-    summary: "Derives the first unified tight upper bound for spinal codes in fading channels.",
+    summary: "Derives BLER upper bounds for ML-decoded Spinal codes over general fast-fading channels in the finite-blocklength regime, including a bound that is provably tight over a wide SNR range; gives explicit Rayleigh, Nakagami-m, and Rician cases and proves that the tail transmission pattern is reliability-optimal.",
     links: { pdf: "/papers/paper25TWC.pdf" },
     url: getIEEEUrl("Unified Upper Bounds on the ML decoding Error Probability of Spinal Codes over Fading Channels")
   },
@@ -225,7 +225,7 @@ export const BASE_PUBLICATIONS = [
     featured: true,
     keywords: ["Semantic Comm", "AoI", "Tensor"],
     image: "/images/TCOMGOT.gif",
-    summary: "Introduces 'Goal-Oriented Tensor' to capture the multidimensional value of information.",
+    summary: "Proposes the Goal-oriented Tensor (GoT), a metric that directly quantifies how semantic mismatches affect decision utility, and co-designs the sampler and decision maker as a Dec-POMDP, outperforming state-of-the-art sampling policies in goal-achievement utility.",
     links: { pdf: "/papers/paper11TCOM.pdf" },
     url: getIEEEUrl("Goal-Oriented Tensor: Beyond Age of Information Towards Semantics-Empowered Goal-Oriented Communications")
   },
@@ -641,7 +641,7 @@ export const BASE_PUBLICATIONS = [
     title: "Analyzing Age Performance of Hybrid-ARQ: A Unified Explicit Result",
     authors: "Aimin Li, Shaohua Wu, Yajing Deng, Jian Jiao, Ning Zhang, Qinyu Zhang",
     venue: "IEEE Global Communications Conference",
-    venue_short: "IEEE Globecom",
+    venue_short: "IEEE GLOBECOM",
     type: "Conference",
     tag: "First Author",
     image: "/images/TCOMAoI.gif",
@@ -711,7 +711,7 @@ export const PROFILE_DATA = {
       linkedin: "https://linkedin.com", 
       xiaohongshu: "https://xhslink.com/m/2CfyBndWr4f",
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
-      email: "mailto:hitliaimin@163.com"
+      email: "mailto:aiminl@kth.se"
     },
     nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
     cvDownload: "CV",
@@ -797,7 +797,7 @@ export const PROFILE_DATA = {
       { year: "2017", title: "First Prize of Chinese College Student Math Competition", title_zh: "全国大学生数学竞赛一等奖", desc: "National-level mathematics competition.", level: "National" },
       { year: "2016", title: "Top Ten Emcees of HIT Shenzhen", title_zh: "哈工大深圳校十佳主持人", level: "University" },
       { year: "2016", title: "First Prize of Chinese College Student Math Competition", title_zh: "全国大学生数学竞赛一等奖", desc: "National-level mathematics competition.", level: "National" },
-      { year: "2017", title: "HIT First-Class Academic Scholarship", title_zh: "哈工大学业一等奖学金", title_zh_note: "全系共3人", desc: "One of 3 recipients in the EE Department.", level: "National" },
+      { year: "2017", title: "HIT First-Class Academic Scholarship", title_zh: "哈工大学业一等奖学金", title_zh_note: "全系共3人", desc: "One of 3 recipients in the EE Department.", level: "University" },
     ],
     service: {
       editorial: [

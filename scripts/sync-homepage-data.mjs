@@ -63,10 +63,10 @@ const VENUE_PATTERNS = [
   [/open journal of the communications society/i, 'IEEE OJ-COMS', 'OJ-COMS'],
   [/network/i, 'IEEE Network', 'Network'],
   [/allerton/i, 'Allerton', 'Allerton'],
-  [/mobihoc/i, 'ACM Mobihoc', 'Mobihoc'],
+  [/mobihoc/i, 'ACM MobiHoc', 'MobiHoc'],
   [/wcnc/i, 'IEEE WCNC', 'WCNC'],
   [/infocom/i, 'IEEE INFOCOM', 'INFOCOM'],
-  [/globecom/i, 'IEEE Globecom', 'Globecom'],
+  [/globecom/i, 'IEEE GLOBECOM', 'GLOBECOM'],
   [/icct/i, 'IEEE ICCT', 'ICCT'],
   [/arxiv/i, 'arXiv', 'arXiv']
 ];

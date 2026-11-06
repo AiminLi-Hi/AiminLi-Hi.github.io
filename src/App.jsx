@@ -169,6 +169,7 @@ const UI_COPY = {
     collapseAbstract: 'Collapse abstract',
     abstract: 'Abstract',
     noAbstract: 'No abstract available.',
+    readReflection: 'Personal reflection',
     moreNews: 'More News',
     fewerNews: 'Fewer News',
     homeNavTitle: 'Explore my profile',
@@ -2946,9 +2947,15 @@ export default function AcademicProfile() {
                             </div>
                           )}
                           {item.reflection && (
-                            <blockquote className={`mt-2 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-amber-300 text-slate-800'}`}>
-                              {item.reflection}
-                            </blockquote>
+                            <details className="timeline-reflection group/reflection mt-2">
+                              <summary className={`inline-flex cursor-pointer list-none items-center gap-1 rounded-full text-[11px] font-bold transition-colors [&::-webkit-details-marker]:hidden ${darkMode ? 'text-cyan-300 hover:text-cyan-100' : 'text-amber-700 hover:text-amber-900'}`}>
+                                {ui.readReflection}
+                                <ChevronDown size={12} className="transition-transform group-open/reflection:rotate-180" />
+                              </summary>
+                              <blockquote className={`mt-1.5 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-amber-300 text-slate-800'}`}>
+                                {item.reflection}
+                              </blockquote>
+                            </details>
                           )}
                           {item.lineage?.length > 0 && (
                             <div className="mt-4">
@@ -3386,8 +3393,8 @@ export default function AcademicProfile() {
               darkMode ? 'text-slate-300' : 'text-slate-600'
             }`}>
               {lang === 'zh'
-                ? '如果你对合作感兴趣，欢迎给我发邮件：hitliaimin AT 163.com'
-                : 'Drop me an email if you are interested in collaborations: hitliaimin AT 163.com'}
+                ? '如果你对合作感兴趣，欢迎给我发邮件：aiminl AT kth.se'
+                : 'Drop me an email if you are interested in collaborations: aiminl AT kth.se'}
             </p>
             <div className={`collaboration-callout__rule mx-auto mt-1.5 h-px w-12 ${darkMode ? 'bg-cyan-300/55' : 'bg-cyan-500/55'}`} />
         </div>
@@ -3416,16 +3423,16 @@ export default function AcademicProfile() {
               Order in complexity
             </p>
             <a
-              href="mailto:hitliaimin@163.com"
-              title="Email: hitliaimin@163.com"
-              aria-label="Send email to hitliaimin@163.com"
+              href="mailto:aiminl@kth.se"
+              title="Email: aiminl@kth.se"
+              aria-label="Send email to aiminl@kth.se"
               className={`mt-4 inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.16em] transition-colors ${
                 darkMode
                   ? 'border-cyan-300/25 bg-[#071827]/35 text-slate-200 hover:border-cyan-300/60 hover:text-cyan-100'
                   : 'border-slate-700/10 bg-white/45 text-slate-700 hover:border-purple-400/45 hover:text-purple-700'
               }`}
             >
-              E-mail: hitliaimin AT 163.com
+              E-mail: aiminl AT kth.se
             </a>
           </div>
         </div>
