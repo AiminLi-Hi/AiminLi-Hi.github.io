@@ -950,13 +950,13 @@ export const PROFILE_DATA = {
           logo: "/images/logos/hit.svg",
           note: "Student collaborations during doctoral research at HIT.",
           students: [
-            { name: "Siqi Meng", name_zh: "孟思齐", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. thesis supervision and Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
-            { name: "Xiaomeng Chen", name_zh: "陈霄萌", period: "2023-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE TWC / IEEE ISIT / IEEE ITW papers.", admission: "Ph.D. admission, KTH Royal Institute of Technology" },
+            { name: "Siqi Meng", name_zh: "孟思齐", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. thesis co-supervision and Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
+            { name: "Xiaomeng Chen", name_zh: "陈霄萌", period: "2023-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis co-supervision; IEEE TWC / IEEE ISIT / IEEE ITW papers.", admission: "Ph.D. admission, KTH Royal Institute of Technology" },
             { name: "Haoxu Wu", name_zh: "吴豪旭", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
             { name: "Haojie Bai", name_zh: "白浩杰", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; IEEE IROS paper and IEEE TMC submission; Huawei." },
-            { name: "Kunpeng Liu", name_zh: "刘昆朋", period: "2024-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
-            { name: "Jiaming Zhang", name_zh: "张家铭", period: "2022-2025", stage: "B.S. + M.S.", outcome: "B.S. thesis supervision and M.S. research mentorship; IEEE VTC paper." },
-            { name: "Xin Jin", name_zh: "金鑫", period: "2022", stage: "B.S.", outcome: "B.S. thesis supervision." }
+            { name: "Kunpeng Liu", name_zh: "刘昆朋", period: "2024-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis co-supervision; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
+            { name: "Jiaming Zhang", name_zh: "张家铭", period: "2022-2025", stage: "B.S. + M.S.", outcome: "B.S. thesis co-supervision and M.S. research mentorship; IEEE VTC paper." },
+            { name: "Xin Jin", name_zh: "金鑫", period: "2022", stage: "B.S.", outcome: "B.S. thesis co-supervision." }
           ]
         },
         {
@@ -966,17 +966,17 @@ export const PROFILE_DATA = {
           logo: "/images/logos/metu.svg",
           note: "Student mentorship and research collaborations during my work at METU.",
           students: [
-            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / ACM MobiHoc Workshop / IEEE TMC papers.", admission: "Ph.D. admission, METU" },
+            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis co-supervision; ACM MobiHoc / ACM MobiHoc Workshop / IEEE TMC papers.", admission: "Ph.D. admission, METU" },
             { name: "Çağrı Arı", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; ACM MobiHoc paper; Aselsan." },
             { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper.", admission: "Ph.D. admission, Caltech" },
-            { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; IAC paper.", admission: "M.S. admission, National University of Singapore" },
+            { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis co-supervision; IAC paper.", admission: "M.S. admission, National University of Singapore" },
             { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
             { name: "Süleyman Çıtır", period: "", stage: "M.S.", outcome: "M.S. research collaboration; METU M.S. student." },
-            { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; Asilomar paper." },
+            { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis co-supervision; Asilomar paper." },
             { name: "Ayşe Nur Pehlivanoğlu", period: "2025-2026", stage: "B.S. + M.S.", outcome: "B.S./M.S. research mentorship; IEEE WiSEE paper." },
-            { name: "Selay Nisa Şahin", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
-            { name: "Yusuf", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." },
-            { name: "Aral", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship supervision." }
+            { name: "Selay Nisa Şahin", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship co-supervision." },
+            { name: "Yusuf", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship co-supervision." },
+            { name: "Aral", period: "2026", stage: "B.S. Intern", outcome: "B.S. research internship co-supervision." }
           ]
         },
         {
