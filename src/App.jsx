@@ -1021,17 +1021,16 @@ const HighlightText = ({ text, darkMode }) => {
 };
 
 const BioText = ({ text, darkMode }) => {
-  const bioText = String(text || '')
+  const paragraphs = String(text || '')
     .split(/\n{2,}/)
     .map(part => part.trim())
-    .filter(Boolean)
-    .join(' ');
+    .filter(Boolean);
 
   return (
-    <div className={`text-[15px] leading-7 md:text-base md:leading-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-      <p>
-        <HighlightText text={bioText} darkMode={darkMode} />
-      </p>
+    <div className={`space-y-3 text-[15px] leading-7 md:text-base md:leading-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+      {paragraphs.map((paragraph, index) => (
+        <p key={index}><HighlightText text={paragraph} darkMode={darkMode} /></p>
+      ))}
     </div>
   );
 };
@@ -2802,15 +2801,11 @@ export default function AcademicProfile() {
               <div>
                 <h1 className={`text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r ${darkMode ? 'from-white to-slate-400' : 'from-gray-900 to-slate-600'}`}>{content.name}</h1>
                 <div className={`profile-role text-xl md:text-2xl font-medium mb-6 flex flex-wrap items-center gap-2 ${darkMode ? 'text-cyan-300' : 'text-purple-600'}`}>{content.role} <span className="opacity-30 font-light">|</span> <span className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{content.org}</span></div>
-                <a
-                  href="/files/Aimin_Li_CV.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`about-cv-button mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-extrabold shadow-sm transition-all hover:-translate-y-0.5 hover:shadow ${darkMode ? 'border-cyan-300/30 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20' : 'border-slate-900 bg-slate-900 text-white hover:bg-black'}`}
-                >
-                  <Download size={16} /> {content.cvButton || content.cvDownload}
-                </a>
                 <BioText text={content.bio} darkMode={darkMode} />
+                <p className={`mt-3 text-[15px] leading-7 md:text-base ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  You can also find my{' '}
+                  <a href="/files/Aimin_Li_CV.pdf" target="_blank" rel="noreferrer" className={`content-link font-bold underline decoration-2 underline-offset-2 transition-colors ${darkMode ? 'text-blue-400 decoration-blue-400/50 hover:text-blue-300' : 'text-blue-600 decoration-blue-600/30 hover:text-blue-700'}`}>CV here</a> (PDF).
+                </p>
               </div>
               
               <div id="news" className={`news-panel p-4 rounded-2xl border ${darkMode ? 'bg-[#0b1b2b]/70 border-cyan-400/15 shadow-[0_0_0_1px_rgba(34,211,238,0.03)]' : 'bg-white border-gray-100 shadow-sm'}`}>
@@ -2939,6 +2934,9 @@ export default function AcademicProfile() {
                     </strong>
                     {appearances.map((appearance) => (
                       <span key={`${appearance.event}-${appearance.location}`} className="block">
+                        {(appearance.invited || (talk.invited && appearances.length === 1)) && (
+                          <span className="talk-invited mr-1.5 whitespace-nowrap rounded px-1.5 py-px align-[1px] text-[9.5px] font-black uppercase tracking-wide">Invited Talk</span>
+                        )}
                         {appearance.event}<span className={darkMode ? 'text-slate-500' : 'text-slate-400'}> · {appearance.location}</span>
                       </span>
                     ))}

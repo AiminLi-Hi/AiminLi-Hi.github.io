@@ -889,8 +889,9 @@ export const PROFILE_DATA = {
             location: "Guangzhou, China"
           },
           {
-            event: "Research Seminar, Sun Yat-sen University",
-            location: "Shenzhen, China"
+            event: "Sun Yat-sen University",
+            location: "Shenzhen, China",
+            invited: true
           }
         ]
       },
@@ -915,6 +916,14 @@ export const PROFILE_DATA = {
         title: "Goal-oriented tensor: Beyond AoI towards semantics-empowered goal-oriented communications",
         event: "IEEE Wireless Communications and Networking Conference (WCNC)",
         location: "Dubai, United Arab Emirates"
+      },
+      {
+        date: "2023-05",
+        type: "Invited Talk",
+        title: "Sampling and Scheduling for Goal-Oriented Communications",
+        event: "Harbin Institute of Technology and Peng Cheng Laboratory",
+        location: "Shenzhen, China",
+        invited: true
       },
       {
         date: "2022-12",

@@ -1709,3 +1709,8 @@
 .theme-dark-ink .service-venue__lead { color: #f1f5f9; }
 .service-venue__years { font-size: 12px; font-weight: 500; color: #64748b; font-variant-numeric: tabular-nums; }
 .theme-dark-ink .service-venue__years { color: #94a3b8; }
+
+/* Talks: invited-talk tag in the accent purple (outside the theme's purple remap). */
+.talk-invited { color: #fff; background: #660874; }
+.theme-dark-ink .talk-invited { color: #2a0f30; background: #e3b6eb; }
+
