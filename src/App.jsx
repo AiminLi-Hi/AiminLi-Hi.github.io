@@ -84,7 +84,6 @@ const VISITOR_REFRESH_MS = 60_000;
 const VISITOR_BEACON_TIMEOUT_MS = 3_000;
 const VISITOR_API_TIMEOUT_MS = 4_000;
 const VISITOR_COUNTRY_PREVIEW_LIMIT = 5;
-const MENTORING_GROUP_PREVIEW_LIMIT = 1;
 const PAGE_FADE_OUT_MS = 220;
 const PAGE_FADE_IN_MS = 520;
 let visitorHitRecordedForPage = false;
@@ -93,7 +92,9 @@ const VISITOR_PAGE_ENTRY_ID = (
     ? crypto.randomUUID()
     : `${Date.now()}-${Math.random().toString(36).slice(2)}`
 ).replace(/[^A-Za-z0-9_-]/g, '');
-const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'teaching', 'mentoring', 'talks'];
+const PAGE_KEYS = ['about', 'news', 'timeline', 'publications', 'awards', 'service', 'mentoring', 'talks'];
+// Teaching now lives on the Mentoring page; keep old #teaching links working.
+const PAGE_ALIASES = { teaching: 'mentoring' };
 const PUBLICATION_HASH_PREFIX = 'pub-';
 const getCurrentHashValue = () => (
   typeof window === 'undefined'
@@ -106,6 +107,7 @@ const resolvePageFromHash = () => {
   const hash = getCurrentHashValue();
   if (hash === 'submitted') return 'publications';
   if (isPublicationHashValue(hash)) return 'publications';
+  if (PAGE_ALIASES[hash]) return PAGE_ALIASES[hash];
   return PAGE_KEYS.includes(hash) ? hash : 'about';
 };
 const HOMEPAGE_ALLOWED_SYNC_PATTERNS = [
@@ -180,10 +182,9 @@ const UI_COPY = {
       publications: 'Papers, projects, code, and citations',
       talks: 'Invited and conference presentations',
       timeline: 'Research path and academic heritage',
-      mentoring: 'Student mentoring and collaborations',
+      mentoring: 'Teaching, student mentoring, and collaborations',
       awards: 'Honors and recognitions',
       service: 'Editorial work, reviewing, chairing, and service',
-      teaching: 'Teaching assistant experience',
       cv: 'Download my curriculum vitae',
     },
     awardsDesc: 'Recognition for research excellence and academic achievements.',
@@ -1007,7 +1008,7 @@ const HighlightText = ({ text, darkMode }) => {
               href={url} 
               target="_blank" 
               rel="noreferrer" 
-              className={`content-link font-bold underline decoration-2 underline-offset-2 transition-colors mx-1 ${darkMode ? 'text-blue-400 decoration-blue-400/50 hover:text-blue-300' : 'text-blue-600 decoration-blue-600/30 hover:text-blue-700'}`}
+              className={`content-link font-bold underline decoration-2 underline-offset-2 transition-colors ${darkMode ? 'text-blue-400 decoration-blue-400/50 hover:text-blue-300' : 'text-blue-600 decoration-blue-600/30 hover:text-blue-700'}`}
             >
               {label}
             </a>
@@ -1094,6 +1095,17 @@ const groupAwardsByYear = (awards = []) => {
 };
 
 // One continuous list: one line per honor, year shown once per group.
+// Small uppercase heading used above the compact lists (Service, Teaching & Mentoring).
+const CompactHeading = ({ icon, label, count, darkMode, id, tone }) => (
+  <h2 id={id} className={`mb-1.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-[0.16em] ${tone || (darkMode ? 'text-cyan-300' : 'text-emerald-700')}`}>
+    {React.createElement(icon, { size: 14 })} {label}
+    {count != null && <span className={`ml-1 text-[10px] font-bold tracking-wide ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{count}</span>}
+  </h2>
+);
+
+// Shared one-line row grid for the Teaching & Mentoring lists (mirrors HonorsList).
+const MENTOR_ROW = 'grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 py-1 sm:grid-cols-[4.75rem_minmax(0,1fr)_5.5rem]';
+
 const HonorsList = ({ groups, darkMode, bordered = true }) => (
   <ol className={`honors-list ${bordered ? `border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}` : ''}`}>
     {groups.flatMap((group) => group.awards.map((award, idx) => (
@@ -1117,7 +1129,7 @@ const HonorsList = ({ groups, darkMode, bordered = true }) => (
             </span>
           )}
           {award.desc && <> — <HonorText text={award.desc} darkMode={darkMode} subtle /></>}
-          <span className={`ml-1.5 text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{award.level}</span>
+          {' '}<span className={`whitespace-nowrap text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{award.level}</span>
         </p>
         <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
           {award.level}
@@ -1193,44 +1205,49 @@ const SocialButton = ({ icon, href, label, colorType, darkMode }) => {
   );
 };
 
-const ServiceListGroup = ({ groupKey, label, Icon, items = [], darkMode }) => {
-  if (!items.length) return null;
+// "IEEE Transactions on Communications (TCOM) — 2023" -> name / abbreviation / years.
+const parseServiceVenue = (text = '') => {
+  const [main, years] = String(text).split(/\s+—\s+/);
+  const match = main.match(/^(.*?)\s*\(([^()]+)\)$/);
+  return { name: match ? match[1] : main, abbr: match ? match[2] : '', years: years || '' };
+};
 
+const ServiceVenueText = ({ text }) => {
+  const { name, abbr, years } = parseServiceVenue(text);
   return (
-    <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-      <div>
-        <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
-          {React.createElement(Icon, { size: 14 })} {label}
-        </div>
-      </div>
-      <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+    <span className="service-venue">
+      {name}
+      {abbr && <> <span className="service-accent font-bold">({abbr})</span></>}
+      {years && <span className="service-venue__years"> · {years}</span>}
+    </span>
+  );
+};
+
+const SERVICE_HEADING_TONE = 'service-accent text-[12.5px]';
+
+const ServiceListGroup = ({ groupKey, label, Icon, items = [], darkMode, stripPrefix }) => {
+  if (!items.length) return null;
+  return (
+    <section>
+      <CompactHeading icon={Icon} label={label} darkMode={darkMode} tone={SERVICE_HEADING_TONE} />
+      <ul className={`border-y ${darkMode ? 'divide-y divide-cyan-400/10 border-cyan-400/10' : 'divide-y divide-slate-100 border-slate-200'}`}>
         {items.map((item, index) => {
           const entry = typeof item === 'string' ? { text: item } : item;
+          const text = stripPrefix ? entry.text.replace(stripPrefix, '') : entry.text;
+          // Lead phrase (venue) in bold; any trailing "(…)" detail stays muted.
+          const detail = text.match(/^(.*?)\s*(\([^()]+\))$/);
+          const body = detail ? <><strong className="service-venue__lead">{detail[1]}</strong> <span className="service-venue__years">{detail[2]}</span></> : text;
           return (
-            <article
-              key={`${groupKey}-${entry.text}-${index}`}
-              className={`service-row border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 ${darkMode ? 'border-b-cyan-400/10' : 'border-b-slate-200'}`}
-            >
-              <div className={`flex items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
-                {entry.link ? (
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`inline-flex min-w-0 items-start gap-1.5 underline-offset-2 hover:underline ${darkMode ? 'hover:text-cyan-200' : 'hover:text-emerald-800'}`}
-                  >
-                    <span>{entry.text}</span>
-                    <ExternalLink size={13} className="mt-0.5 shrink-0 opacity-60" />
-                  </a>
-                ) : (
-                  <span>{entry.text}</span>
-                )}
-              </div>
-            </article>
+            <li key={`${groupKey}-${entry.text}-${index}`} className="service-venue py-1">
+              {entry.link ? (
+                <a href={entry.link} target="_blank" rel="noreferrer" className="underline-offset-2 hover:underline">
+                  {body}<ExternalLink size={11} className="ml-1 inline-block align-[-1px] opacity-60" />
+                </a>
+              ) : body}
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 };
@@ -2180,7 +2197,6 @@ export default function AcademicProfile() {
   }));
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [expandedMentoringGroups, setExpandedMentoringGroups] = useState({});
   const [pendingPublicationAnchor, setPendingPublicationAnchor] = useState(() => {
     const hash = getCurrentHashValue();
     return isPublicationHashValue(hash) ? hash : '';
@@ -2224,28 +2240,6 @@ export default function AcademicProfile() {
   const mentoringGroups = content.mentoring.groups?.length
     ? content.mentoring.groups
     : [{ title: content.mentoring.collaborationTitle, shortTitle: '', note: '', students: content.mentoring.students }];
-  const visibleMentoringGroups = mentoringGroups
-    .map((group, index) => {
-      const groupKey = group.shortTitle || group.title || `group-${index}`;
-      const isExpanded = Boolean(expandedMentoringGroups[groupKey]);
-      const previewLimit = group.previewLimit || MENTORING_GROUP_PREVIEW_LIMIT;
-      const visibleStudents = isExpanded ? group.students : group.students.slice(0, previewLimit);
-      return {
-        ...group,
-        groupKey,
-        isExpanded,
-        totalCount: group.students.length,
-        hiddenCount: Math.max(group.students.length - visibleStudents.length, 0),
-        students: visibleStudents,
-      };
-    })
-    .filter(group => group.students.length);
-  const toggleMentoringGroup = (groupKey) => {
-    setExpandedMentoringGroups((current) => ({
-      ...current,
-      [groupKey]: !current[groupKey],
-    }));
-  };
 
   const venueStats = useMemo(() => {
     const counts = {};
@@ -2523,11 +2517,6 @@ export default function AcademicProfile() {
       accent: darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/20' : 'border-purple-200 bg-purple-50 text-purple-800 shadow-purple-100/70',
     },
     {
-      key: 'teaching',
-      icon: Presentation,
-      accent: darkMode ? 'border-pink-400/25 bg-pink-400/10 text-pink-200 shadow-pink-950/25' : 'border-pink-200 bg-pink-50 text-pink-800 shadow-pink-100/70',
-    },
-    {
       key: 'mentoring',
       icon: Users,
       accent: darkMode ? 'border-cyan-400/25 bg-cyan-400/10 text-cyan-200 shadow-cyan-950/25' : 'border-cyan-200 bg-cyan-50 text-cyan-800 shadow-cyan-100/70',
@@ -2626,10 +2615,10 @@ export default function AcademicProfile() {
     return (
       <article
         id={getPublicationAnchorId(pub)}
-        className={`publication-row ${emphasisClass} scroll-mt-28 border-b border-l-2 border-l-transparent py-2 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
+        className={`publication-row ${emphasisClass} scroll-mt-28 border-b border-l-2 border-l-transparent py-1.5 pl-3 pr-3 transition-colors target:ring-2 target:ring-cyan-400/35 last:border-b-0 ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
       >
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
             <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
               {typeLabel}
             </span>
@@ -2670,6 +2659,26 @@ export default function AcademicProfile() {
             )}
             {pub.type === 'Journal' && pub.if && <JcrBadge zone={pub.jcr} ifVal={pub.if} darkMode={darkMode} />}
           </div>
+          <div className="flex flex-wrap items-center gap-1">
+            {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} size="sm" />}
+            {pub.links?.poster && <ActionButton icon={FileImage} label={ui.poster} href={pub.links.poster} type="poster" darkMode={darkMode} size="sm" />}
+            {pub.links?.slides && <ActionButton icon={Presentation} label={ui.slides} href={pub.links.slides} type="slides" darkMode={darkMode} size="sm" />}
+            {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} size="sm" />}
+            {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} size="sm" />}
+            {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} size="sm" />}
+            <ActionButton
+              icon={Quote}
+              label="Cite"
+              id={`cite-${pub.id}`}
+              onClick={() => {
+                citationReturnFocusIdRef.current = `cite-${pub.id}`;
+                setActiveCitation(getCitationFormats(pub));
+              }}
+              type="bibtex"
+              darkMode={darkMode}
+              size="sm"
+            />
+          </div>
         </div>
 
         <div className="mt-1 min-w-0">
@@ -2681,17 +2690,7 @@ export default function AcademicProfile() {
             ) : displayTitle}
           </h3>
 
-          {(pub.venue || pub.venue_short) && (
-            <div
-              className={`publication-venue-line mt-1 flex w-full max-w-full items-start gap-1.5 text-[10px] font-black leading-snug tracking-[0.08em] ${darkMode ? 'text-cyan-300/80' : 'text-cyan-700/80'}`}
-              title={pub.venue_short}
-            >
-              <span className={`publication-venue-dot mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${darkMode ? 'bg-cyan-300/70' : 'bg-cyan-600/70'}`} />
-              <span className="min-w-0 whitespace-normal break-words">{pub.venue || pub.venue_short}</span>
-            </div>
-          )}
-
-          <div className={`mt-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+          <div className={`mt-0.5 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
             {getAuthorList(pub.authors).map((author, i, arr) => (
               <span key={`${pub.id}-author-${i}`}>
                 {author.includes('Aimin Li') ? (
@@ -2707,26 +2706,9 @@ export default function AcademicProfile() {
                 {i < arr.length - 1 ? ', ' : ''}
               </span>
             ))}
-          </div>
-
-          <div className="mt-2 flex max-w-full flex-wrap items-center gap-1.5">
-            {pub.links?.pdf && <ActionButton icon={FileText} label="PDF" href={pub.links.pdf} type="pdf" darkMode={darkMode} />}
-            {pub.links?.poster && <ActionButton icon={FileImage} label={ui.poster} href={pub.links.poster} type="poster" darkMode={darkMode} />}
-            {pub.links?.slides && <ActionButton icon={Presentation} label={ui.slides} href={pub.links.slides} type="slides" darkMode={darkMode} />}
-            {pub.links?.project && <ActionButton icon={Presentation} label="Project" href={pub.links.project} type="project" darkMode={darkMode} />}
-            {pub.url && <ActionButton icon={ExternalLink} label="Link" href={pub.url} type="external" darkMode={darkMode} />}
-            {pub.links?.code && <ActionButton icon={Github} label="Code" href={pub.links.code} type="code" darkMode={darkMode} />}
-            <ActionButton
-              icon={Quote}
-              label="Cite"
-              id={`cite-${pub.id}`}
-              onClick={() => {
-                citationReturnFocusIdRef.current = `cite-${pub.id}`;
-                setActiveCitation(getCitationFormats(pub));
-              }}
-              type="bibtex"
-              darkMode={darkMode}
-            />
+            {pub.venue && (
+              <span className={`italic ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>. {pub.venue}</span>
+            )}
           </div>
         </div>
       </article>
@@ -2926,7 +2908,7 @@ export default function AcademicProfile() {
         {/* --- Talks Section --- */}
         {displaySection === 'talks' && (
         <section id="talks" className="scroll-mt-32 animate-fade-in">
-          <div className="mb-8 flex items-center gap-4">
+          <div className="mb-6 flex items-center gap-4">
             <div className={`p-3 rounded-xl ${darkMode ? 'bg-teal-400/10 text-teal-300' : 'bg-teal-50 text-teal-700'}`}>
               <Mic2 size={24} />
             </div>
@@ -2936,125 +2918,77 @@ export default function AcademicProfile() {
             </div>
           </div>
 
-          <div className="space-y-4 animate-fade-in">
+          <ol className={`border-y ${darkMode ? 'divide-y divide-cyan-400/10 border-cyan-400/10' : 'divide-y divide-slate-200 border-slate-200'}`}>
             {talkRows.map((talk, idx) => {
               const appearances = talk.appearances || [{ event: talk.event, location: talk.location }];
-              const isGroupedTalk = appearances.length > 1;
-
+              const type = String(talk.type || '').replace(/\s*Talks?$/, '');
               return (
-              <section key={`${talk.date}-${talk.title}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                <div className="flex items-baseline justify-between gap-2 md:block">
-                  <div className={`font-mono text-lg font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                    {talk.date}
-                  </div>
-                  {talk.type && (
-                    <div className={`mt-1 inline-flex rounded-md border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider md:mt-2 ${darkMode ? 'border-teal-400/25 bg-teal-400/10 text-teal-200' : 'border-teal-200 bg-teal-50 text-teal-800'}`}>
-                      {talk.type}
-                    </div>
-                  )}
-                </div>
-                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                  <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-teal-400/70 bg-teal-400/[0.03] hover:bg-teal-400/[0.045]' : 'border-l-teal-400 bg-teal-50/35 hover:bg-slate-50/75'}`}>
-                    <h3 className={`text-[15px] font-extrabold leading-snug md:text-base ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
+                <li key={`${talk.date}-${talk.title}-${idx}`} className="grid grid-cols-[4rem_minmax(0,1fr)] gap-x-3 py-1.5 sm:grid-cols-[4.25rem_minmax(0,1fr)_7rem]">
+                  <span className={`pt-px text-[12px] font-black tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{talk.date}</span>
+                  <div className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
                       {talk.link ? (
-                        <a href={talk.link} className={`transition-colors hover:underline hover:underline-offset-4 ${darkMode ? 'hover:text-teal-200' : 'hover:text-teal-800'}`}>
-                          {talk.title}
-                        </a>
+                        <a href={talk.link} className={`hover:underline hover:underline-offset-2 ${darkMode ? 'hover:text-teal-200' : 'hover:text-teal-800'}`}>{talk.title}</a>
                       ) : talk.title}
-                    </h3>
-                    <div className={`mt-1.5 text-[12px] font-semibold leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'} ${isGroupedTalk ? `divide-y ${darkMode ? 'divide-cyan-400/10' : 'divide-slate-200'}` : ''}`}>
-                      {appearances.map((appearance, appearanceIdx) => (
-                        <div key={`${appearance.event}-${appearance.location}`} className={`grid gap-1 ${isGroupedTalk ? 'py-1.5 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4' : 'sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4'}`}>
-                          <span className="inline-flex min-w-0 items-start gap-1.5">
-                            {isGroupedTalk && (
-                              <span className={`mt-px shrink-0 font-mono text-[10px] font-black tabular-nums ${darkMode ? 'text-teal-300/80' : 'text-teal-700/80'}`}>
-                                {String(appearanceIdx + 1).padStart(2, '0')}
-                              </span>
-                            )}
-                            <Presentation size={13} className={`mt-px shrink-0 ${darkMode ? 'text-teal-300' : 'text-teal-700'}`} />
-                            <span>{appearance.event}</span>
-                          </span>
-                          <span className="inline-flex items-start gap-1.5 sm:justify-self-end">
-                            <MapPin size={13} className={`mt-px shrink-0 ${darkMode ? 'text-teal-300' : 'text-teal-700'}`} />
-                            <span>{appearance.location}</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </article>
-                </div>
-              </section>
+                    </strong>
+                    {appearances.map((appearance) => (
+                      <span key={`${appearance.event}-${appearance.location}`} className="block">
+                        {appearance.event}<span className={darkMode ? 'text-slate-500' : 'text-slate-400'}> · {appearance.location}</span>
+                      </span>
+                    ))}
+                    {type && <span className={`text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{type}</span>}
+                  </div>
+                  <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase leading-tight tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{type}</span>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </section>
         )}
 
         {/* --- Timeline Section (Optimized) --- */}
         {displaySection === 'timeline' && (
         <section id="timeline" className="scroll-mt-32 animate-fade-in">
-           <div className="flex items-center gap-3 mb-8">
+           <div className="flex items-center gap-3 mb-6">
             <div className={`p-2.5 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-amber-50 text-amber-700'}`}><Plane size={20} /></div>
 	            <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.timeline}</h1>
           </div>
           
-          <div className="space-y-8">
-            <div className="relative pl-7">
-              <div className={`absolute left-[0.42rem] top-2 bottom-2 w-px ${darkMode ? 'bg-cyan-400/15' : 'bg-slate-200'}`}></div>
-              <div className="space-y-5">
-                {content.timeline.map((item, idx) => {
-                   const isWork = item.type === 'work';
-                   const advisor = item.lineage?.find(person => person.highlight) || item.lineage?.[item.lineage.length - 1];
-                   
-                   return (
-                     <div key={idx} className="group relative">
-                        <div className={`absolute -left-[1.63rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 transition-transform duration-200 group-hover:scale-110 ${
-                          isWork
-                            ? (darkMode ? 'border-cyan-200 bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.12)]' : 'border-amber-200 bg-amber-500 shadow-[0_0_0_4px_rgba(217,166,73,0.12)]')
-                            : (darkMode ? 'border-emerald-300 bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]' : 'border-emerald-200 bg-emerald-600 shadow-[0_0_0_4px_rgba(5,150,105,0.10)]')
-                        }`}></div>
-                        <div className={`pb-5 ${idx === content.timeline.length - 1 ? '' : (darkMode ? 'border-b border-cyan-400/10' : 'border-b border-slate-200')}`}>
-                          <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-                            <span className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{item.year}</span>
-                            <span className={`inline-flex items-center gap-1 text-[11px] font-bold ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                              <MapPin size={11} /> {item.location}
-                            </span>
-                          </div>
-                          <h3 className={`text-base font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{item.role}</h3>
-                          <div className={`mt-0.5 text-sm font-semibold ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>{item.org}</div>
-                          {advisor && (
-                            <div className={`mt-1 text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                              {lang === 'zh' ? '合作导师' : 'Advisor'}: {advisor.name} · {advisor.title}
-                            </div>
-                          )}
-                          {item.desc && (
-                            <div className={`mt-2 text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                              <HighlightText text={item.desc} darkMode={darkMode} />
-                            </div>
-                          )}
-                          {item.reflection && (
-                            <details className="timeline-reflection group/reflection mt-2">
-                              <summary className={`inline-flex cursor-pointer list-none items-center gap-1 rounded-full text-[11px] font-bold transition-colors [&::-webkit-details-marker]:hidden ${darkMode ? 'text-cyan-300 hover:text-cyan-100' : 'text-amber-700 hover:text-amber-900'}`}>
-                                {ui.readReflection}
-                                <ChevronDown size={12} className="transition-transform group-open/reflection:rotate-180" />
-                              </summary>
-                              <blockquote className={`mt-1.5 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed tracking-[0.005em] ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-amber-300 text-slate-800'}`}>
-                                {item.reflection}
-                              </blockquote>
-                            </details>
-                          )}
-                          {item.lineage?.length > 0 && (
-                            <div className="mt-4">
-                              <AcademicLineage lineage={item.lineage} darkMode={darkMode} lang={lang} />
-                            </div>
-                          )}
-                        </div>
-                     </div>
-                   )
-                })}
-              </div>
-            </div>
-          </div>
+          <ol className={`border-y ${darkMode ? 'divide-y divide-cyan-400/10 border-cyan-400/10' : 'divide-y divide-slate-200 border-slate-200'}`}>
+            {content.timeline.map((item, idx) => (
+              <li key={idx} className="grid grid-cols-1 gap-x-3 gap-y-0.5 py-2 sm:grid-cols-[7.5rem_minmax(0,1fr)_8.5rem]">
+                <span className={`pt-px text-[12px] font-black leading-snug tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                  {item.year.replace(/\s*-\s*/, ' – ')}
+                </span>
+                <div className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <p>
+                    <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{item.role}</strong>
+                    {', '}
+                    <span className={`font-semibold ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>{item.org}</span>
+                    {item.desc && <> — <HighlightText text={item.desc.replace(/\n+/g, ' ')} darkMode={darkMode} /></>}
+                    {' '}<span className={`whitespace-nowrap text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{item.location}</span>
+                  </p>
+                  {item.reflection && (
+                    <details className="timeline-reflection group/reflection mt-1">
+                      <summary className={`inline-flex cursor-pointer list-none items-center gap-1 text-[11px] font-bold transition-colors [&::-webkit-details-marker]:hidden ${darkMode ? 'text-cyan-300 hover:text-cyan-100' : 'text-amber-700 hover:text-amber-900'}`}>
+                        {ui.readReflection}
+                        <ChevronDown size={12} className="transition-transform group-open/reflection:rotate-180" />
+                      </summary>
+                      <blockquote className={`mt-1 border-l-2 pl-3 font-serif text-sm font-medium italic leading-relaxed ${darkMode ? 'border-cyan-300/45 text-slate-100' : 'border-amber-300 text-slate-800'}`}>
+                        {item.reflection}
+                      </blockquote>
+                    </details>
+                  )}
+                  {item.lineage?.length > 0 && (
+                    <div className="mt-3">
+                      <AcademicLineage lineage={item.lineage} darkMode={darkMode} lang={lang} />
+                    </div>
+                  )}
+                </div>
+                <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase leading-tight tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{item.location}</span>
+              </li>
+            ))}
+          </ol>
         </section>
         )}
 
@@ -3173,7 +3107,7 @@ export default function AcademicProfile() {
         {/* --- Service & Contact --- */}
         {displaySection === 'service' && (
         <section id="service" className="scroll-mt-32 animate-fade-in">
-          <div className="mb-8 flex items-center gap-4">
+          <div className="mb-6 flex items-center gap-4">
               <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-400/10' : 'bg-purple-50 text-purple-600'}`}><Star size={24} /></div>
               <div>
 	                <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.service}</h1>
@@ -3181,258 +3115,113 @@ export default function AcademicProfile() {
               </div>
           </div>
           <div className="space-y-5">
-            <ServiceListGroup
-              groupKey="editorial"
-              label={ui.serviceEditorialTitle}
-              Icon={BookOpen}
-              items={content.service.editorial || []}
-              darkMode={darkMode}
-            />
+            {[
+              { key: 'editorial', label: ui.serviceEditorialTitle, icon: BookOpen, items: content.service.editorial || [] },
+              { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [], stripPrefix: /^Technical Program Committee Member,\s*/ },
+              { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair || [], stripPrefix: /^Session Chair,\s*/ },
+            ].map((group) => (
+              <ServiceListGroup key={group.key} groupKey={group.key} label={group.label} Icon={group.icon} items={group.items} darkMode={darkMode} stripPrefix={group.stripPrefix} />
+            ))}
 
-            <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-              <div>
-                <div className="service-group-heading flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em]">
-                  <Star size={14} /> {ui.serviceReviewerTitle}
-                </div>
-                <div className={`mt-1 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                  {serviceReviewGroups.total} {lang === 'en' ? 'venues' : '项'}
-                </div>
-              </div>
-              <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                {[
-                  { key: 'journals', label: ui.serviceJournals, items: serviceReviewGroups.journals },
-                  { key: 'conferences', label: ui.serviceConferences, items: serviceReviewGroups.conferences },
-                ].map(group => (
-                  <div key={group.key} className={darkMode ? 'border-b border-cyan-400/10 last:border-b-0' : 'border-b border-slate-200 last:border-b-0'}>
-                    <div className={`flex items-center justify-between gap-3 px-3 py-2 ${darkMode ? 'bg-[#071827]/48' : 'bg-slate-50/65'}`}>
-                      <h3 className={`flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                        <Tag size={12} /> {group.label}
-                      </h3>
-                      <span className="service-group-count rounded-md border px-2 py-0.5 text-[10px] font-black">
-                        {group.items.length}
-                      </span>
-                    </div>
+            <section>
+              <CompactHeading icon={Star} label={ui.serviceReviewerTitle} darkMode={darkMode} tone={SERVICE_HEADING_TONE} />
+              {[
+                { key: 'journals', label: ui.serviceJournals, items: serviceReviewGroups.journals },
+                { key: 'conferences', label: ui.serviceConferences, items: serviceReviewGroups.conferences },
+              ].map(group => (
+                <div key={group.key} className="mb-2.5 last:mb-0">
+                  <h3 className="service-subheading mb-0.5 text-[11px] font-extrabold uppercase tracking-wider">{group.label}</h3>
+                  <ul className={`grid border-y sm:grid-cols-2 sm:gap-x-6 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
                     {group.items.map(item => (
-                      <article
-                        key={item.full}
-                        title={item.full}
-                        className={`service-row border-t border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-t-cyan-400/10' : 'border-t-slate-200'}`}
-                      >
-                        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3">
-                          <div className={`flex min-w-0 items-start gap-2 text-[13px] font-semibold leading-snug md:text-sm ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
-                            <CheckCircle2 size={14} className="service-row__icon mt-0.5 shrink-0" />
-                            <span className="min-w-0 break-words">{item.full}</span>
-                          </div>
-                          <ReviewerImpactBadge metric={item.metric} journal={item.full} lang={lang} />
-                        </div>
-                      </article>
+                      <li key={item.full} title={item.full} className={`flex items-baseline justify-between gap-2 border-t py-1 first:border-t-0 sm:[&:nth-child(2)]:border-t-0 ${darkMode ? 'border-cyan-400/10' : 'border-slate-100'}`}>
+                        <span className="min-w-0"><ServiceVenueText text={item.full} /></span>
+                        <ReviewerImpactBadge metric={item.metric} journal={item.full} lang={lang} />
+                      </li>
                     ))}
-                  </div>
-                ))}
-              </div>
+                  </ul>
+                </div>
+              ))}
             </section>
 
-            {[
-              { key: 'chair', label: ui.serviceChairTitle, icon: Mic2, items: content.service.chair },
-              { key: 'tpc', label: ui.serviceTpcTitle, icon: Users, items: content.service.tpc || [] },
-              { key: 'volunteer', label: ui.serviceVolunteerTitle, icon: User, items: content.service.volunteer },
-            ].map((group) => (
-              <ServiceListGroup
-                key={group.key}
-                groupKey={group.key}
-                label={group.label}
-                Icon={group.icon}
-                items={group.items}
-                darkMode={darkMode}
-              />
-            ))}
+            <ServiceListGroup groupKey="volunteer" label={ui.serviceVolunteerTitle} Icon={User} items={content.service.volunteer || []} darkMode={darkMode} />
           </div>
         </section>
         )}
 
-        {/* --- Teaching Section --- */}
-        {displaySection === 'teaching' && (
-        <section id="teaching" className="scroll-mt-32 animate-fade-in">
-          <div className="mb-8 flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-amber-50 text-amber-700'}`}>
-              <Presentation size={24} />
-            </div>
-            <div>
-	              <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{content.nav.teaching}</h1>
-              <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.teaching}</p>
-            </div>
-          </div>
-          <div className="space-y-4 animate-fade-in">
-            {teachingRows.map((item, idx) => (
-              <section key={`${item.period}-${item.course}-${idx}`} className={`grid gap-2 border-t pt-3 md:grid-cols-[6.5rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                <div className="flex items-baseline justify-between gap-2 md:block">
-                  <div className={`text-xl font-black leading-tight tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                    {item.period}
-                  </div>
-                </div>
-                <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                  <article className={`border-l-2 py-2 pl-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 border-b-cyan-400/10 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-amber-400 border-b-slate-200 bg-amber-50/40 hover:bg-slate-50/75'}`}>
-                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                      <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black uppercase ${darkMode ? 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
-                        {item.role}
-                      </span>
-                      {item.desc && (
-                        <span className={`rounded-md border px-2 py-0.5 text-[10px] font-black ${darkMode ? 'border-cyan-400/10 bg-[#0e2032] text-slate-300' : 'border-slate-200 bg-white text-slate-700'}`}>
-                          {item.desc}
-                        </span>
-                      )}
-                    </div>
-                    <h3 className={`text-[15px] font-extrabold leading-snug ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                      {item.course}
-                    </h3>
-                    <div className={`mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                      <span className="inline-flex items-center gap-1.5">
-                        <School size={13} className={darkMode ? 'text-cyan-200' : 'text-amber-700'} />
-                        {item.org}
-                      </span>
-                    </div>
-                  </article>
-                </div>
-              </section>
-            ))}
-          </div>
-        </section>
-        )}
-
-        {/* --- Student Mentoring Section --- */}
+        {/* --- Teaching & Mentoring Section --- */}
         {displaySection === 'mentoring' && (
         <section id="mentoring" className="scroll-mt-32 animate-fade-in">
-          <div className="mb-8 flex items-center gap-4">
+          <span id="teaching" className="sr-only" aria-hidden="true" />
+          <div className="mb-6 flex items-center gap-4">
             <div className={`p-3 rounded-xl ${darkMode ? 'bg-cyan-400/10 text-cyan-300' : 'bg-emerald-50 text-emerald-700'}`}>
               <Users size={24} />
             </div>
             <div>
-	              <h1 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h1>
+              <h1 className={`text-2xl md:text-3xl font-extrabold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>{content.mentoring.title}</h1>
               <p className={`mt-1 text-sm ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ui.homeNavCards.mentoring}</p>
             </div>
           </div>
 
+          <p className={`mb-5 border-l-2 py-1 pl-3 text-[13px] font-medium leading-relaxed md:text-sm ${darkMode ? 'border-cyan-400/55 text-slate-300' : 'border-emerald-400 text-slate-600'}`}>
+            {content.mentoring.leadershipSummary}
+          </p>
+
           <div className="space-y-5">
-            <section className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-              <div>
-                <div className={`flex items-center gap-1.5 text-sm font-black uppercase tracking-[0.16em] ${darkMode ? 'text-cyan-300' : 'text-emerald-700'}`}>
-                  <Network size={14} /> {content.mentoring.leadershipTitle}
-                </div>
-              </div>
-              <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-                <article className={`border-l-2 py-2 pl-3 pr-3 transition-colors ${darkMode ? 'border-l-cyan-400/55 bg-cyan-400/[0.03] hover:bg-cyan-400/[0.035]' : 'border-l-emerald-400 bg-emerald-50/30 hover:bg-slate-50/75'}`}>
-                  <p className={`text-[13px] font-medium leading-relaxed md:text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                    {content.mentoring.leadershipSummary}
-                  </p>
-                </article>
-              </div>
+            {/* Teaching */}
+            <section aria-labelledby="teaching-heading">
+              <CompactHeading id="teaching-heading" icon={Presentation} label={content.mentoring.teachingTitle} darkMode={darkMode} />
+              <ol className={`border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                {teachingRows.map((item, idx) => (
+                  <li key={`${item.period}-${item.course}-${idx}`} className={MENTOR_ROW}>
+                    <span className={`pt-px text-[12px] font-black tabular-nums ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{item.period}</span>
+                    <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{item.course}</strong>
+                      {' — '}{item.role}{item.org_zh ? <>, {item.org} <span lang="zh-CN" className="whitespace-nowrap text-slate-500">({[item.role_zh, item.org_zh].filter(Boolean).join('，')})</span></> : `, ${item.org}`}
+                      {' '}<span className={`whitespace-nowrap text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{String(item.desc || '').replace(/ Course$/, '')}</span>
+                    </p>
+                    <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{String(item.desc || '').replace(/ Course$/, '')}</span>
+                  </li>
+                ))}
+              </ol>
             </section>
 
-            {visibleMentoringGroups.map((group) => {
-              const accent = group.shortTitle === 'METU'
-                ? {
-                    text: darkMode ? 'text-cyan-200' : 'text-emerald-800',
-                    border: darkMode ? 'border-cyan-400/25' : 'border-emerald-200',
-                    bg: darkMode ? 'bg-cyan-400/10' : 'bg-emerald-50',
-                    side: darkMode ? 'border-cyan-400' : 'border-emerald-500',
-                    dot: darkMode ? 'bg-cyan-300' : 'bg-emerald-600',
-                  }
-                : group.shortTitle === 'ZZU'
-                  ? {
-                      text: darkMode ? 'text-amber-200' : 'text-amber-800',
-                      border: darkMode ? 'border-amber-300/25' : 'border-amber-200',
-                      bg: darkMode ? 'bg-amber-300/10' : 'bg-amber-50',
-                      side: darkMode ? 'border-amber-300' : 'border-amber-500',
-                      dot: darkMode ? 'bg-amber-200' : 'bg-amber-600',
-                    }
-                  : {
-                      text: darkMode ? 'text-cyan-200' : 'text-slate-700',
-                      border: darkMode ? 'border-cyan-400/20' : 'border-slate-200',
-                      bg: darkMode ? 'bg-cyan-400/10' : 'bg-slate-50',
-                      side: darkMode ? 'border-cyan-400/55' : 'border-slate-400',
-                      dot: darkMode ? 'bg-cyan-300' : 'bg-slate-500',
-                    };
-
-              return (
-                <section key={group.title} className={`grid gap-2 border-t pt-3 md:grid-cols-[7rem_minmax(0,1fr)] ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                  <div>
-                    {group.shortTitle && (
-                      <div className={`inline-flex rounded-lg border px-2.5 py-1 text-xl font-black leading-none tracking-tight ${accent.border} ${accent.bg} ${accent.text}`}>
-                        {group.shortTitle}
-                      </div>
-                    )}
-                    <div className={`mt-2 text-[10px] font-black uppercase tracking-[0.16em] ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                      {group.totalCount} {lang === 'en' ? 'students' : '位学生'}
-                    </div>
-                  </div>
-
-                  <div className={`overflow-hidden border-y md:border-y-0 md:border-l ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                    <div className={`border-b px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/48' : 'border-slate-200 bg-slate-50/65'}`}>
-                      <div className={`text-sm font-extrabold leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>{group.title}</div>
-                      {group.note && (
-                        <div className={`mt-0.5 text-[11px] font-medium leading-snug ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                          {group.note}
-                        </div>
+            {/* Mentoring, grouped by institution */}
+            <section aria-labelledby="mentoring-heading">
+              <CompactHeading id="mentoring-heading" icon={Network} label={content.mentoring.leadershipTitle} darkMode={darkMode} />
+              <div className={`border-y ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                {mentoringGroups.map((group) => (
+                  <section key={group.title} className={`border-t first:border-t-0 pb-1 pt-2.5 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
+                    <header className="mb-1 flex items-center gap-2">
+                      {group.logo && (
+                        <img src={group.logo} alt={`${group.title} emblem`} width="26" height="26" loading="lazy" decoding="async" className="h-[26px] w-[26px] shrink-0 rounded-full bg-white object-contain p-px" />
                       )}
-                    </div>
-
-                    {group.students.map((student) => (
-                      <article
-                        key={`${group.title}-${student.name}`}
-                        className={`grid gap-2 border-b border-l-2 py-2 pl-3 pr-3 transition-colors last:border-b-0 md:grid-cols-[7.5rem_minmax(0,1fr)] md:items-start ${accent.side} ${darkMode ? 'border-b-cyan-400/10 hover:bg-cyan-400/[0.035]' : 'border-b-slate-200 hover:bg-slate-50/75'}`}
-                      >
-                        <div className="flex flex-wrap items-center gap-1.5 md:block">
-                          {student.period && (
-                            <div className={`font-mono text-[11px] font-black tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                              {student.period}
-                            </div>
-                          )}
-                          {student.stage && (
-                            <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-black leading-none md:mt-1 ${accent.border} ${accent.bg} ${accent.text}`}>
-                              {student.stage}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5">
-                            <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${accent.dot}`} />
-                            <h4 className={`text-[14px] font-extrabold leading-snug md:text-[15px] ${darkMode ? 'text-slate-100' : 'text-slate-950'}`}>
-                              {student.name}
-                            </h4>
-                          </div>
-                          {student.outcome && (
-                            <div className={`text-[12px] font-medium leading-snug md:text-[13px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                              {student.outcome}
-                            </div>
-                          )}
-                        </div>
-                      </article>
-                    ))}
-
-                    {(group.isExpanded || group.hiddenCount > 0) && (
-                      <div className={`border-t px-3 py-2 ${darkMode ? 'border-cyan-400/10 bg-[#071827]/60' : 'border-slate-100 bg-slate-50/70'}`}>
-                        <button
-                          type="button"
-                          onClick={() => toggleMentoringGroup(group.groupKey)}
-                          className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-extrabold transition-all ${accent.border} ${accent.bg} ${accent.text}`}
-                          aria-expanded={group.isExpanded}
-                          aria-label={`${group.title}: ${group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}`}
-                          title={group.isExpanded ? content.mentoring.studentListClose : content.mentoring.studentListOpen}
-                        >
-                          <span>
-                            {group.isExpanded
-                              ? (lang === 'en' ? 'Less' : '收起')
-                              : (lang === 'en' ? `Show ${group.hiddenCount} more` : `展开 ${group.hiddenCount} 位`)}
-                          </span>
-                          {group.isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </section>
-              );
-            })}
+                      <h3 className={`min-w-0 text-[14px] font-black leading-tight ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                        {group.title}
+                        {group.title_zh && <span lang="zh-CN" className={`ml-1 whitespace-nowrap font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>({group.title_zh})</span>}
+                      </h3>
+                      <span className={`ml-auto shrink-0 text-[10px] font-bold uppercase tracking-wide ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{group.students.length} students</span>
+                    </header>
+                    <ol>
+                      {group.students.map((student) => (
+                        <li key={`${group.title}-${student.name}`} className={MENTOR_ROW}>
+                          <span className={`pt-px text-[12px] font-bold tabular-nums ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{student.period}</span>
+                          <p className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                            <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{student.name}</strong>
+                            {student.name_zh && <span lang="zh-CN" className={`ml-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>({student.name_zh})</span>}
+                            {student.outcome && <> — {student.outcome}</>}
+                            {student.admission && (
+                              <> <span className="honor-note font-bold"><GraduationCap size={13} className="mr-0.5 inline-block align-[-2px]" aria-hidden="true" />{student.admission}</span></>
+                            )}
+                            {' '}<span className={`whitespace-nowrap text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{student.stage}</span>
+                          </p>
+                          <span className={`hidden pt-0.5 text-right text-[10px] font-bold uppercase tracking-wide sm:block ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{student.stage}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                ))}
+              </div>
+            </section>
           </div>
         </section>
         )}

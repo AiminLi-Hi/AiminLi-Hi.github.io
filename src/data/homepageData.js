@@ -713,7 +713,7 @@ export const PROFILE_DATA = {
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
       email: "mailto:aiminl@kth.se"
     },
-    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", teaching: "Teaching", mentoring: "Mentoring", talks: "Talks" },
+    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", mentoring: "Teaching & Mentoring", talks: "Talks" },
     cvDownload: "CV",
     // Publication ids shown on the homepage, in display order (one per research line).
     selectedPublications: ["j16", "c14", "c1", "j6", "j1"],
@@ -809,46 +809,46 @@ export const PROFILE_DATA = {
           text: "Guest Editor, MDPI Electronics — 2026"
         }
       ],
-      reviewer: [ 
-        "IEEE Transactions on Information Theory (TIT)", 
-        "IEEE Journal on Selected Areas in Communications (JSAC)", 
-        "IEEE Transactions on Mobile Computing (TMC)", 
-        "IEEE Internet of Things Journal (IoTJ)",
-        "MDPI Electronics",
-        "Scientific Reports",
-        "Elsevier Knowledge-Based Systems (KnoSys)",
-        "IEEE Transactions on Communications (TCOM)", 
+      reviewer: [
+        "IEEE Transactions on Information Theory (TIT)",
+        "IEEE Journal on Selected Areas in Communications (JSAC)",
+        "IEEE Transactions on Communications (TCOM)",
         "IEEE Transactions on Wireless Communications (TWC)",
+        "ACM/IEEE Transactions on Networking (ToN)",
+        "IEEE Transactions on Mobile Computing (TMC)",
         "IEEE Transactions on Neural Networks and Learning Systems (TNNLS)",
+        "Engineering",
+        "IEEE Internet of Things Journal (IoTJ)",
         "IEEE Transactions on Vehicular Technology (TVT)",
         "IEEE Transactions on Cognitive Communications and Networking (TCCN)",
         "IEEE Communications Letters (CL)",
         "IEEE Wireless Communications Letters (WCL)",
-        "Engineering",
-        "ACM/IEEE Transactions on Networking (ToN)",
+        "Elsevier Knowledge-Based Systems (KnoSys)",
         "Elsevier Computer Networks",
         "Elsevier Computer Communications",
         "Elsevier Ad Hoc Networks",
+        "Scientific Reports",
         "AEÜ - International Journal of Electronics and Communications",
+        "MDPI Electronics",
         "IEEE International Symposium on Information Theory (ISIT) — 2023, 2026",
         "IEEE Information Theory Workshop (ITW) — 2026",
         "IEEE Conference on Computer Communications (INFOCOM) — 2024",
-        "IEEE International Conference on Computer and Communications (ICCC) — 2023",
         "IEEE Global Communications Conference (GLOBECOM) — 2022–2026",
         "IEEE Wireless Communications and Networking Conference (WCNC) — 2022, 2024, 2026",
+        "IEEE International Conference on Machine Learning in Communications and Networking (ICMLCN) — 2024",
         "IEEE Vehicular Technology Conference (VTC) — 2022",
+        "IEEE International Conference on Computer and Communications (ICCC) — 2023",
         "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS) — 2026",
         "The 7th International Conference on Computer Science and Application Engineering (CSAE) — 2023",
-        "IEEE International Conference on Machine Learning in Communications and Networking (ICMLCN) — 2024",
         "International Conference on the Frontiers of Electronic, Electrical and Information Engineering (ICFEEIE) — 2024"
       ],
-      chair: [ "Session Chair, IEEE ITW 2024 (AoI Session)", "Session Chair, IEEE Globecom 2024 (Distributed Learning Session)" ],
+      chair: [ "Session Chair, IEEE ITW 2024 (AoI Session)", "Session Chair, IEEE GLOBECOM 2024 (Distributed Learning Session)" ],
       tpc: [ "Technical Program Committee Member, ICFEEIE 2024" ],
       volunteer: [ "IEEE VTC-Spring 2024 Singapore", "IEEE 6G Summit 2024 Singapore", "IEEE 6G Summit 2023 Singapore" ]
     },
     teaching: [
-      { role: "Teaching Assistant", course: "Communication Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2020", desc: "Undergraduate Course" },
-      { role: "Teaching Assistant", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", period: "Fall 2022", desc: "Graduate Course" }
+      { role: "Teaching Assistant", role_zh: "教学助理", course: "Communication Theory", org: "Harbin Institute of Technology, Shenzhen", org_zh: "哈尔滨工业大学（深圳）", period: "Fall 2020", desc: "Undergraduate Course" },
+      { role: "Teaching Assistant", role_zh: "教学助理", course: "Foundations of Information Theory", org: "Harbin Institute of Technology, Shenzhen", org_zh: "哈尔滨工业大学（深圳）", period: "Fall 2022", desc: "Graduate Course" }
     ],
     talks: [
       {
@@ -871,7 +871,7 @@ export const PROFILE_DATA = {
         date: "2024-12",
         type: "Competition Talk",
         title: "4MT Thesis Presentation",
-        event: "IEEE Globecom 2024 4MT Thesis Competition",
+        event: "IEEE GLOBECOM 2024 4MT Thesis Competition",
         location: "Cape Town, South Africa"
       },
       {
@@ -907,8 +907,9 @@ export const PROFILE_DATA = {
       }
     ],
     mentoring: {
-      title: "Student Mentorship and Collaboration",
-      leadershipTitle: "Research Leadership",
+      title: "Teaching and Mentorship",
+      teachingTitle: "Teaching",
+      leadershipTitle: "Student Mentorship",
       leadershipSummary: "I have been fortunate to work with many talented junior students during my Ph.D. and current research work. In these collaborations, I helped shape research questions, mathematical models, and solution frameworks, and mentored analysis, simulations, and implementation toward publishable outcomes and graduate or career placements.",
       studentListOpen: "Show full student list",
       studentListClose: "Show concise list",
@@ -917,27 +918,31 @@ export const PROFILE_DATA = {
       groups: [
         {
           title: "Harbin Institute of Technology, Shenzhen",
+          title_zh: "哈尔滨工业大学（深圳）",
           shortTitle: "HIT",
+          logo: "/images/logos/hit.svg",
           note: "Student collaborations during doctoral research at HIT.",
           students: [
-            { name: "Siqi Meng", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. thesis supervision and Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
-            { name: "Xiaomeng Chen", period: "2023-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE TWC / IEEE ISIT / IEEE ITW papers; KTH Ph.D. admission." },
-            { name: "Haoxu Wu", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
-            { name: "Haojie Bai", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; IEEE IROS paper and IEEE TMC submission; Huawei." },
-            { name: "Kunpeng Liu", period: "2024-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
-            { name: "Jiaming Zhang", period: "2022-2025", stage: "B.S. + M.S.", outcome: "B.S. thesis supervision and M.S. research mentorship; IEEE VTC paper." },
-            { name: "Xin Jin", period: "2022", stage: "B.S.", outcome: "B.S. thesis supervision." }
+            { name: "Siqi Meng", name_zh: "孟思齐", period: "2020-2024", stage: "B.S. + Ph.D.", outcome: "B.S. thesis supervision and Ph.D. research mentorship; IEEE WCM / IEEE TCOM / IEEE TVT / IEEE JSAIT papers." },
+            { name: "Xiaomeng Chen", name_zh: "陈霄萌", period: "2023-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE TWC / IEEE ISIT / IEEE ITW papers.", admission: "Ph.D. admission, KTH Royal Institute of Technology" },
+            { name: "Haoxu Wu", name_zh: "吴豪旭", period: "2025-2026", stage: "Ph.D.", outcome: "Ph.D. research mentorship; IEEE TMC paper." },
+            { name: "Haojie Bai", name_zh: "白浩杰", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; IEEE IROS paper and IEEE TMC submission; Huawei." },
+            { name: "Kunpeng Liu", name_zh: "刘昆朋", period: "2024-2026", stage: "B.S. + M.S.", outcome: "B.S. and M.S. thesis supervision; IEEE ICC / IEEE INFOCOM Workshop papers; Huawei." },
+            { name: "Jiaming Zhang", name_zh: "张家铭", period: "2022-2025", stage: "B.S. + M.S.", outcome: "B.S. thesis supervision and M.S. research mentorship; IEEE VTC paper." },
+            { name: "Xin Jin", name_zh: "金鑫", period: "2022", stage: "B.S.", outcome: "B.S. thesis supervision." }
           ]
         },
         {
           title: "Middle East Technical University",
+          title_zh: "土耳其中东技术大学",
           shortTitle: "METU",
+          logo: "/images/logos/metu.svg",
           note: "Student mentorship and research collaborations during my work at METU.",
           students: [
-            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / ACM MobiHoc Workshop / IEEE TMC papers; METU Ph.D." },
+            { name: "Adem Utku Atasayar", period: "2025-2026", stage: "M.S.", outcome: "M.S. thesis supervision; ACM MobiHoc / ACM MobiHoc Workshop / IEEE TMC papers.", admission: "Ph.D. admission, METU" },
             { name: "Çağrı Arı", period: "", stage: "Ph.D.", outcome: "Ph.D. research collaboration; ACM MobiHoc paper; Aselsan." },
-            { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper; Caltech Ph.D. admission." },
-            { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; IAC paper; NUS M.S. admission." },
+            { name: "Burak Karasakal", period: "2025-2026", stage: "B.S.", outcome: "B.S. research mentorship; IEEE ITW paper.", admission: "Ph.D. admission, Caltech" },
+            { name: "Shanmugarajan Balasubramanian", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; IAC paper.", admission: "M.S. admission, National University of Singapore" },
             { name: "Yiğit İnce", period: "2025-2026", stage: "M.S.", outcome: "M.S. research mentorship; IEEE ISIT paper." },
             { name: "Süleyman Çıtır", period: "", stage: "M.S.", outcome: "M.S. research collaboration; METU M.S. student." },
             { name: "Sayam Chakraborty", period: "2026", stage: "B.S.", outcome: "B.S. thesis supervision; Asilomar paper." },
@@ -949,13 +954,15 @@ export const PROFILE_DATA = {
         },
         {
           title: "Zhengzhou University",
+          title_zh: "郑州大学",
           shortTitle: "ZZU",
+          logo: "/images/logos/zzu.svg",
           note: "Research collaborations with Zhengzhou University students.",
           students: [
-            { name: "Lulu Song", period: "2026", stage: "Ph.D.", outcome: "Ph.D. research collaboration." },
-            { name: "Aiwei Lei", period: "2026", stage: "B.S.", outcome: "B.S. research collaboration; IEEE VTC paper; HKU Ph.D. admission." },
-            { name: "Yinglei Yang", period: "2026", stage: "M.S.", outcome: "M.S. research collaboration; IEEE Globecom paper." },
-            { name: "Mingxiao Sun", period: "2025", stage: "M.S.", outcome: "M.S. research collaboration; IEEE TCOM / IEEE ICCT papers." }
+            { name: "Lulu Song", name_zh: "宋璐璐", period: "2026", stage: "Ph.D.", outcome: "Ph.D. research collaboration." },
+            { name: "Aiwei Lei", name_zh: "雷瑷玮", period: "2026", stage: "B.S.", outcome: "B.S. research collaboration; IEEE VTC paper.", admission: "Ph.D. admission, University of Hong Kong" },
+            { name: "Yinglei Yang", name_zh: "杨英磊", period: "2026", stage: "M.S.", outcome: "M.S. research collaboration; IEEE GLOBECOM paper." },
+            { name: "Mingxiao Sun", name_zh: "孙明晓", period: "2025", stage: "M.S.", outcome: "M.S. research collaboration; IEEE TCOM / IEEE ICCT papers." }
           ]
         }
       ]

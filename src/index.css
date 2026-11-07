@@ -1737,3 +1737,15 @@
 .theme-dark-ink .honor-note {
   color: #e3b6eb;
 }
+
+/* Academic Service: accent headings / abbreviations (kept out of the theme's purple remap). */
+.service-accent { color: #660874; }
+.theme-dark-ink .service-accent { color: #e3b6eb; }
+.service-subheading { color: #8a4a94; letter-spacing: 0.08em; }
+.theme-dark-ink .service-subheading { color: #c99bd1; }
+.service-venue { font-size: 13.5px; line-height: 1.4; font-weight: 500; color: #334155; }
+.theme-dark-ink .service-venue { color: #cbd5e1; }
+.service-venue__lead { font-weight: 700; color: #0f172a; }
+.theme-dark-ink .service-venue__lead { color: #f1f5f9; }
+.service-venue__years { font-size: 12px; font-weight: 500; color: #64748b; font-variant-numeric: tabular-nums; }
+.theme-dark-ink .service-venue__years { color: #94a3b8; }
