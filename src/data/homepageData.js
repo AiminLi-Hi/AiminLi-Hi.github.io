@@ -136,6 +136,7 @@ export const BASE_PUBLICATIONS = [
     venue_short: "Ph.D. Dissertation",
     type: "Thesis",
     tag: "Sole Author",
+    award: "Best Dissertation Award Nomination",
     showSoleAuthorBadge: false,
     keywords: ["Ph.D. Dissertation", "Space-Air Communications", "Perception-Decision Loop", "Effectiveness"],
     summary: "Ph.D. dissertation on key technologies for timeliness-enhanced space-air communications in perception-decision closed-loop systems.",
@@ -143,6 +144,21 @@ export const BASE_PUBLICATIONS = [
       pdf: "https://aiminli-hi.github.io/papers/Aimin-Li-PhD-Dissertation-2025.pdf",
       slides: "https://aiminli-hi.github.io/slides/Aimin-Li-PhD-Defense-Slides-2025.pdf"
     }
+  },
+  {
+    id: "t0",
+    year: 2020,
+    title: "Performance Analysis and Encoding Algorithm Design of Spinal Codes in the Finite Blocklength Regime",
+    authors: "Aimin Li",
+    venue: "B.S. Thesis, Harbin Institute of Technology",
+    venue_short: "B.S. Thesis",
+    type: "Thesis",
+    degree: "B.S.",
+    tag: "Sole Author",
+    showSoleAuthorBadge: false,
+    award: "Best Undergraduate Thesis Award",
+    keywords: ["B.S. Thesis", "Spinal Codes", "Finite Blocklength"],
+    summary: "Undergraduate thesis on the performance analysis and encoding design of Spinal codes in the finite blocklength regime."
   },
   {
     id: "j15",
@@ -477,7 +493,8 @@ export const BASE_PUBLICATIONS = [
     studentOutcome: true,
     keywords: ["Satellite Random Access", "Age of Information", "Mean-Field Control", "Asynchronous Access"],
     summary: "Develops ASTRA, an asynchronous age-aware satellite random-access framework using mean-field control.",
-    url: "https://arxiv.org/abs/2605.18282"
+    url: "https://arxiv.org/abs/2605.18282",
+    links: { poster: "/papers/astra_asilomar_poster.pdf" }
   },
   {
     id: "c15",
@@ -713,9 +730,18 @@ export const PROFILE_DATA = {
       researchgate: "https://www.researchgate.net/profile/Aimin-Li-15?ev=hdr_xprf", 
       email: "mailto:aiminl@kth.se"
     },
-    nav: { about: "About", news: "News", timeline: "Timeline", publications: "Publications", awards: "Honors", service: "Academic Service", mentoring: "Teaching & Mentoring", talks: "Talks" },
+    nav: { about: "About", news: "News", timeline: "Education & Research", publications: "Publications", awards: "Honors", service: "Academic Service", mentoring: "Teaching & Mentoring", talks: "Talks" },
     cvDownload: "CV",
+    cvButton: "Download CV (PDF)",
     // Publication ids shown on the homepage, in display order (one per research line).
+    // Journal articles under review, newest first (numbered J24-J21 to match the CV).
+    // Double-blind conference submissions (e.g. INFOCOM) must NOT be listed here.
+    submitted: [
+      { title: "Multi-Agent Diffusion Planning with Stable Online Reinforcement Fine-Tuning for Cooperative Driving", authors: "Haojie Bai, Aimin Li, Ruoyu Yao, Xiongwei Zhao, Tingting Zhang, Xing Zhang, C. Li, Lin Gao, Jun Ma", coFirst: true, venue: "IEEE Transactions on Mobile Computing", venue_short: "IEEE TMC", year: 2026 },
+      { title: "ASTRA: Asynchronous Age-Aware Satellite Random Access with Correlated Multi-Satellite Fusion", authors: "Sayam Chakraborty, Aimin Li, Yiğit İnce, Sajjad Baghaee, Elif Uysal", venue: "IEEE Transactions on Wireless Communications", venue_short: "IEEE TWC", year: 2026 },
+      { title: "Age-Optimal Sampling and Routing under Intermittent Links and Energy Constraints", authors: "Adem Utku Atasayar, Aimin Li, Çağrı Arı, Elif Uysal", venue: "IEEE Transactions on Mobile Computing", venue_short: "IEEE TMC", year: 2026 },
+      { title: "Source PAC Coding for Low-Latency Secret Key Generation in the Short-Blocklength Regime", authors: "Lulu Song, Di Zhang, Aimin Li, Tingting Zhang", venue: "IEEE Transactions on Information Theory", venue_short: "IEEE TIT", year: 2025 }
+    ],
     selectedPublications: ["j16", "c14", "c1", "j6", "j1"],
     news: [
       { date: "2026-10", label: "New Start", content: "I joined <strong>KTH Royal Institute of Technology</strong> in Stockholm, Sweden, as a <strong>Postdoctoral Researcher</strong>, working with IEEE Fellow <strong>Prof. Mikael Skoglund</strong>.", link: "#timeline" },
@@ -743,6 +769,7 @@ export const PROFILE_DATA = {
       { date: "2024-12", label: "4MT", content: "🥉 I presented my Ph.D. thesis at IEEE Globecom 4MT in Cape Town, South Africa, and won the 3rd Prize, with <span class=\"news-mobihoc-count\">7 awardees worldwide</span>.", link: "#awards" },
       { date: "2024-12", label: "Scholar", content: "I received the National Scholarship for PhD students.", link: "#awards" }
     ],
+    timelineTitle: "Education Background and Research Experience",
     timeline: [
       { year: "2026.10 - Present", location: "Stockholm, Sweden", role: "Postdoctoral Researcher", org: "KTH Royal Institute of Technology",
         desc: "Working with IEEE Fellow [Prof. Mikael Skoglund](https://www.kth.se/profile/skoglund).",
@@ -760,7 +787,7 @@ export const PROFILE_DATA = {
         desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
         reflection: "Singapore came to me when I needed light the most. It gave me direction, confidence, and a renewed belief in research. Under the guidance of Prof. Sumei Sun and Dr. Gary Lee, I gradually grew into a more independent researcher. This journey will always remain a warm and luminous chapter in my life.",
         type: "work" },
-      { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Info. & Comm. Eng.", org: "Harbin Institute of Technology, Shenzhen", 
+      { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Information and Communication Engineering", org: "Harbin Institute of Technology, Shenzhen", 
         desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).",
         reflection: "I spent nine years of my youth, learning, searching, and finding my own path at HIT. I was introduced to the world of research and learned to face problems with persistence and discipline.",
         type: "edu" },
@@ -768,7 +795,7 @@ export const PROFILE_DATA = {
       { 
         year: "2016.09 - 2020.06", 
         location: "Shenzhen, China", 
-        role: "B.Eng. in Comm. Eng.", 
+        role: "B.Eng. in Communication Engineering", 
         org: "Harbin Institute of Technology, Shenzhen", 
         desc: "Received early admission to Tsinghua University. Awarded Best Undergraduate Thesis of HIT and Provincial Merit Student of Heilongjiang Province.", 
         type: "edu" 

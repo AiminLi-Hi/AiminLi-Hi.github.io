@@ -61,6 +61,12 @@ export const CITATION_METADATA = {
     pages: '2237-2276',
     doi: '10.1109/TIT.2026.3663678',
   },
+  t0: {
+    year: 2020,
+    school: 'Harbin Institute of Technology',
+    address: 'Shenzhen, China',
+    thesisType: 'B.S. thesis',
+  },
   t1: {
     year: 2025,
     school: 'Harbin Institute of Technology',

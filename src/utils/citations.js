@@ -32,7 +32,7 @@ const bibtexField = (name, value) => value ? `  ${name} = {${escapeBibtex(value)
 
 export const generateBibtex = (publication = {}) => {
   const data = getCitationData(publication);
-  const entryType = data.type === 'Journal' ? 'article' : data.type === 'Thesis' ? 'phdthesis' : 'inproceedings';
+  const entryType = data.type === 'Journal' ? 'article' : data.type === 'Thesis' ? (data.thesisType ? 'mastersthesis' : 'phdthesis') : 'inproceedings';
   const fields = [
     `  title = {${protectBibtexTitle(data.title)}}`,
     bibtexField('author', getAuthorList(data.authors).join(' and ')),
@@ -42,6 +42,7 @@ export const generateBibtex = (publication = {}) => {
   if (data.type === 'Conference') fields.push(bibtexField('booktitle', data.containerTitle || data.venue));
   if (data.type === 'Thesis') {
     fields.push(bibtexField('school', data.school || data.venue?.replace(/^Ph\.D\. Dissertation,\s*/i, '')));
+    if (data.thesisType) fields.push(bibtexField('type', data.thesisType));
     fields.push(bibtexField('address', data.address));
   }
 
@@ -92,7 +93,7 @@ export const generateIeeeCitation = (publication = {}) => {
   const year = data.year || publication.year;
 
   if (data.type === 'Thesis') {
-    return `${authors}, ${title} Ph.D. dissertation, ${data.school}, ${data.address}, ${year}.`;
+    return `${authors}, ${title} ${data.thesisType || 'Ph.D. dissertation'}, ${data.school}, ${data.address}, ${year}.`;
   }
 
   if (data.type === 'Conference' && data.status === 'accepted') {

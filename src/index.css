@@ -380,46 +380,6 @@
   background: var(--social-accent);
 }
 
-.theme-soft-sage .publication-row--lead {
-  border-left-color: #c8a453;
-}
-
-.theme-soft-sage .publication-row--mentorship {
-  border-left-color: #89a971;
-}
-
-.theme-soft-sage .publication-row--standard {
-  border-left-color: transparent;
-}
-
-.theme-soft-sage .publication-row--lead:hover {
-  background: rgba(248, 241, 220, 0.52);
-}
-
-.theme-soft-sage .publication-row--mentorship:hover {
-  background: rgba(235, 243, 232, 0.62);
-}
-
-.theme-dark-ink .publication-row--lead {
-  border-left-color: #d2b26a;
-}
-
-.theme-dark-ink .publication-row--mentorship {
-  border-left-color: #91b879;
-}
-
-.theme-dark-ink .publication-row--standard {
-  border-left-color: rgba(103, 232, 249, 0.1);
-}
-
-.theme-dark-ink .publication-row--lead:hover {
-  background: rgba(210, 178, 106, 0.055);
-}
-
-.theme-dark-ink .publication-row--mentorship:hover {
-  background: rgba(145, 184, 121, 0.055);
-}
-
 .theme-soft-sage .profile-page-nav {
   border-color: #dce5d8;
   background: rgba(253, 254, 250, 0.92);

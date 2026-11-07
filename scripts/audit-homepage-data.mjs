@@ -50,7 +50,7 @@ for (const publication of BASE_PUBLICATIONS) {
   const ieee = generateIeeeCitation(publication);
   const bibtex = generateBibtex(publication);
   if (!ieee || /undefined|null/.test(ieee)) fail(`${publication.id} generated an invalid IEEE reference.`);
-  if (!/^@(article|inproceedings|phdthesis)\{/.test(bibtex) || /undefined|null/.test(bibtex)) {
+  if (!/^@(article|inproceedings|phdthesis|mastersthesis)\{/.test(bibtex) || /undefined|null/.test(bibtex)) {
     fail(`${publication.id} generated invalid BibTeX.`);
   }
   if (publication.type === 'Journal' && !/journal = \{/.test(bibtex)) fail(`${publication.id} BibTeX is missing journal metadata.`);
@@ -73,6 +73,12 @@ if (untranslatedHonors.length) {
 } else {
   pass(`${en.awards.length} honors: every non-IEEE honor carries its Chinese name.`);
 }
+
+const submitted = en.submitted || [];
+const badSubmitted = submitted.filter((item) => !item.title || !item.authors || !item.venue || !item.year);
+if (badSubmitted.length) fail(`Submitted papers missing title/authors/venue/year: ${badSubmitted.length}`);
+else if (submitted.some((item) => /INFOCOM|double-blind/i.test(`${item.venue} ${item.venue_short || ''}`))) fail('A double-blind conference submission is listed publicly.');
+else pass(`${submitted.length} journal articles under review are listed (no double-blind submissions).`);
 
 const selectedIds = en.selectedPublications || [];
 const missingSelected = selectedIds.filter((id) => !publicationIds.has(id));
