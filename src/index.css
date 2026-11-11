@@ -1714,3 +1714,7 @@
 .talk-invited { color: #fff; background: #660874; }
 .theme-dark-ink .talk-invited { color: #2a0f30; background: #e3b6eb; }
 
+
+/* Education & Research: institution names in the accent purple. */
+.org-name { color: #660874; }
+.theme-dark-ink .org-name { color: #e3b6eb; }

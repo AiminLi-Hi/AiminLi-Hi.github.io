@@ -1235,7 +1235,10 @@ const ServiceListGroup = ({ groupKey, label, Icon, items = [], darkMode, stripPr
           const text = stripPrefix ? entry.text.replace(stripPrefix, '') : entry.text;
           // Lead phrase (venue) in bold; any trailing "(…)" detail stays muted.
           const detail = text.match(/^(.*?)\s*(\([^()]+\))$/);
-          const body = detail ? <><strong className="service-venue__lead">{detail[1]}</strong> <span className="service-venue__years">{detail[2]}</span></> : text;
+          const lead = entry.highlight && text.startsWith(entry.highlight)
+            ? <><strong className="service-accent font-extrabold">{entry.highlight}</strong>{text.slice(entry.highlight.length)}</>
+            : text;
+          const body = detail ? <><strong className="service-venue__lead">{detail[1]}</strong> <span className="service-venue__years">{detail[2]}</span></> : lead;
           return (
             <li key={`${groupKey}-${entry.text}-${index}`} className="service-venue py-1">
               {entry.link ? (
@@ -2336,21 +2339,9 @@ export default function AcademicProfile() {
     [content.awards],
   );
 
-  const serviceReviewGroups = useMemo(() => {
-    const items = content.service.reviewer.map((venue, index) => ({
-      ...getServiceVenueMeta(venue),
-      index,
-    }));
-    const journals = items
-      .filter(item => item.type === 'journal')
-      .sort((a, b) => a.index - b.index);
-    const conferences = items.filter(item => item.type === 'conference');
-    return {
-      journals,
-      conferences,
-      total: items.length,
-    };
-  }, [content.service.reviewer]);
+  const serviceReviewGroups = useMemo(() => ({
+    journals: content.service.reviewer.map(venue => getServiceVenueMeta(venue)),
+  }), [content.service.reviewer]);
 
   const teachingRows = useMemo(() => (
     [...content.teaching].sort((a, b) => (
@@ -2965,10 +2956,14 @@ export default function AcademicProfile() {
                   {item.year.replace(/\s*-\s*/, ' – ')}
                 </span>
                 <div className={`min-w-0 text-[13.5px] leading-snug ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                  <p>
-                    <strong className={`font-extrabold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{item.role}</strong>
-                    {', '}
-                    <span className={`font-semibold ${darkMode ? 'text-cyan-200' : 'text-emerald-800'}`}>{item.org}</span>
+                  <p className="flex items-center gap-2">
+                    {item.logo && (
+                      <img src={item.logo} alt="" width="26" height="26" loading="lazy" decoding="async" className="h-[26px] w-auto max-w-[3.6rem] shrink-0 rounded bg-white object-contain p-px" />
+                    )}
+                    <strong className="org-name text-[15px] font-extrabold leading-tight">{item.org}</strong>
+                  </p>
+                  <p className="mt-0.5">
+                    <strong className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>{item.role}</strong>
                     {item.desc && <> — <HighlightText text={item.desc.replace(/\n+/g, ' ')} darkMode={darkMode} /></>}
                     {' '}<span className={`whitespace-nowrap text-[10px] font-bold uppercase tracking-wide sm:hidden ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>{item.location}</span>
                   </p>
@@ -3113,22 +3108,32 @@ export default function AcademicProfile() {
 
             <section>
               <CompactHeading icon={Star} label={ui.serviceReviewerTitle} darkMode={darkMode} tone={SERVICE_HEADING_TONE} />
-              {[
-                { key: 'journals', label: ui.serviceJournals, items: serviceReviewGroups.journals },
-                { key: 'conferences', label: ui.serviceConferences, items: serviceReviewGroups.conferences },
-              ].map(group => (
-                <div key={group.key} className="mb-2.5 last:mb-0">
-                  <h3 className="service-subheading mb-0.5 text-[11px] font-extrabold uppercase tracking-wider">{group.label}</h3>
-                  <ul className={`grid border-y sm:grid-cols-2 sm:gap-x-6 ${darkMode ? 'border-cyan-400/10' : 'border-slate-200'}`}>
-                    {group.items.map(item => (
-                      <li key={item.full} title={item.full} className={`flex items-baseline justify-between gap-2 border-t py-1 first:border-t-0 sm:[&:nth-child(2)]:border-t-0 ${darkMode ? 'border-cyan-400/10' : 'border-slate-100'}`}>
-                        <span className="min-w-0"><ServiceVenueText text={item.full} /></span>
-                        <ReviewerImpactBadge metric={item.metric} journal={item.full} lang={lang} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              <div className="mb-3">
+                <h3 className="service-subheading mb-0.5 text-[11px] font-extrabold uppercase tracking-wider">{ui.serviceJournals}</h3>
+                <ul className={`border-y ${darkMode ? 'divide-y divide-cyan-400/10 border-cyan-400/10' : 'divide-y divide-slate-100 border-slate-200'}`}>
+                  {serviceReviewGroups.journals.map(item => (
+                    <li key={item.full} title={item.full} className="flex items-baseline justify-between gap-3 py-1">
+                      <span className="min-w-0"><ServiceVenueText text={item.full} /></span>
+                      <ReviewerImpactBadge metric={item.metric} journal={item.full} lang={lang} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="service-subheading mb-0.5 text-[11px] font-extrabold uppercase tracking-wider">{ui.serviceConferences}</h3>
+                <ul className={`border-y ${darkMode ? 'divide-y divide-cyan-400/10 border-cyan-400/10' : 'divide-y divide-slate-100 border-slate-200'}`}>
+                  {(content.service.conferenceReviews || []).map(review => (
+                    <li key={`${review.abbr}-${review.date}-${review.location}`} className="grid gap-x-3 py-1 sm:grid-cols-[minmax(0,1fr)_auto]">
+                      <span className="service-venue min-w-0">
+                        {review.name} <span className="service-accent font-bold">({review.abbr})</span>
+                      </span>
+                      <span className="service-venue__years sm:text-right">
+                        {[review.location, review.date].filter(Boolean).join(' · ')}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </section>
 
             <ServiceListGroup groupKey="volunteer" label={ui.serviceVolunteerTitle} Icon={User} items={content.service.volunteer || []} darkMode={darkMode} />

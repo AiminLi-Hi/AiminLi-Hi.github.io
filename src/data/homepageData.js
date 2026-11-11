@@ -772,10 +772,10 @@ export const PROFILE_DATA = {
     ],
     timelineTitle: "Education Background and Research Experience",
     timeline: [
-      { year: "2026.10 - Present", location: "Stockholm, Sweden", role: "Postdoctoral Researcher", org: "KTH Royal Institute of Technology",
+      { year: "2026.10 - Present", location: "Stockholm, Sweden", role: "Postdoctoral Researcher", org: "KTH Royal Institute of Technology", logo: "/images/logos/kth.svg",
         desc: "Working with IEEE Fellow [Prof. Mikael Skoglund](https://www.kth.se/profile/skoglund).",
         type: "work" },
-      { year: "2025 - 2026", location: "Ankara, Türkiye", role: "Researcher", org: "Middle East Technical University (METU)", 
+      { year: "2025 - 2026", location: "Ankara, Türkiye", role: "Researcher", org: "Middle East Technical University (METU)", logo: "/images/logos/metu.svg", 
         desc: "I collaborated with IEEE Fellow [Prof. Elif Uysal](https://eee.metu.edu.tr/personel/elif-uysal) on the ERC Advanced Grant project GO-SPACE.\nMy research focused on information-theoretic foundations for goal-oriented and timely communication systems.",
         reflection: "Research is not only a path one walks alone, but also a light one can pass on to others. From Prof. Elif Uysal, I learned a lot about vision, mentorship, and responsibility, and the CNG family has left me with memories I will always hold in my life. I also love the warmth of Turkish people and Türkiye’s distinct four seasons.",
         lineage: [
@@ -784,20 +784,20 @@ export const PROFILE_DATA = {
           { name: "Elif Uysal", title: "Pioneer in Age of Information; IEEE Fellow; ERC Advanced Grant GO-SPACE", era: "Advisor", role: "advisor", highlight: true },
         ],
         type: "work" },
-      { year: "2023.10 - 2024.10", location: "Singapore", role: "Visiting Researcher", org: "Institute for Infocomm Research (I2R), A*STAR", 
+      { year: "2023.10 - 2024.10", location: "Singapore", role: "Visiting Researcher", org: "Institute for Infocomm Research (I2R), A*STAR", logo: "/images/logos/astar.png", 
         desc: "I worked on goal-oriented semantic communications.\nAdvisor: IEEE Fellow [Prof. Sumei Sun](https://www.a-star.edu.sg/i2r/about-i2r/i2r-management/sun-sumei).",
         reflection: "Singapore came to me when I needed light the most. It gave me direction, confidence, and a renewed belief in research. Under the guidance of Prof. Sumei Sun and Dr. Gary Lee, I gradually grew into a more independent researcher. This journey will always remain a warm and luminous chapter in my life.",
         type: "work" },
-      { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Information and Communication Engineering", org: "Harbin Institute of Technology, Shenzhen", 
+      { year: "2020.09 - 2025", location: "Shenzhen, China", role: "Ph.D. in Information and Communication Engineering", org: "Harbin Institute of Technology, Shenzhen", logo: "/images/logos/hit.svg", 
         desc: "Advisor: [Prof. Shaohua Wu](https://faculty.hitsz.edu.cn/wushaohua).",
         reflection: "I spent nine years of my youth, learning, searching, and finding my own path at HIT. I was introduced to the world of research and learned to face problems with persistence and discipline.",
         type: "edu" },
-      { year: "2017.07 - 2017.08", location: "California, USA", role: "Visiting Student", org: "University of California, Riverside (UCR)", desc: "International exchange program.", type: "edu" },
+      { year: "2017.07 - 2017.08", location: "California, USA", role: "Visiting Student", org: "University of California, Riverside (UCR)", logo: "/images/logos/ucr.svg", desc: "International exchange program.", type: "edu" },
       { 
         year: "2016.09 - 2020.06", 
         location: "Shenzhen, China", 
         role: "B.Eng. in Communication Engineering", 
-        org: "Harbin Institute of Technology, Shenzhen", 
+        org: "Harbin Institute of Technology, Shenzhen", logo: "/images/logos/hit.svg", 
         desc: "Received early admission to Tsinghua University. Awarded Best Undergraduate Thesis of HIT and Provincial Merit Student of Heilongjiang Province.", 
         type: "edu" 
       }
@@ -830,11 +830,12 @@ export const PROFILE_DATA = {
     service: {
       editorial: [
         {
-          text: "Guest Editor, Entropy Special Issue \"Information Freshness and Semantic Communications\" — 2026",
-          link: "https://www.mdpi.com/journal/entropy/special_issues/6A0E8Q2WQ3"
+          text: "Leading Guest Editor, MDPI Electronics Special Issue \"From Bits to Decisions\" — 2026",
+          highlight: "Leading Guest Editor"
         },
         {
-          text: "Guest Editor, MDPI Electronics — 2026"
+          text: "Guest Editor, MDPI Entropy Special Issue \"Information Freshness and Semantic Communications\" — 2026 – 2027",
+          link: "https://www.mdpi.com/journal/entropy/special_issues/6A0E8Q2WQ3"
         }
       ],
       reviewer: [
@@ -857,18 +858,28 @@ export const PROFILE_DATA = {
         "Elsevier Ad Hoc Networks",
         "Scientific Reports",
         "AEÜ - International Journal of Electronics and Communications",
-        "MDPI Electronics",
-        "IEEE International Symposium on Information Theory (ISIT) — 2023, 2026",
-        "IEEE Information Theory Workshop (ITW) — 2026",
-        "IEEE Conference on Computer Communications (INFOCOM) — 2024",
-        "IEEE Global Communications Conference (GLOBECOM) — 2022–2026",
-        "IEEE Wireless Communications and Networking Conference (WCNC) — 2022, 2024, 2026",
-        "IEEE International Conference on Machine Learning in Communications and Networking (ICMLCN) — 2024",
-        "IEEE Vehicular Technology Conference (VTC) — 2022",
-        "IEEE International Conference on Computer and Communications (ICCC) — 2023",
-        "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS) — 2026",
-        "The 7th International Conference on Computer Science and Application Engineering (CSAE) — 2023",
-        "International Conference on the Frontiers of Electronic, Electrical and Information Engineering (ICFEEIE) — 2024"
+        "MDPI Electronics"
+      ],
+      // Conference reviewing, one row per instance (same detail as the CV), most prestigious venue first.
+      conferenceReviews: [
+        { name: "IEEE International Symposium on Information Theory", abbr: "ISIT", location: "Guangzhou, China", date: "Jun. 2026" },
+        { name: "IEEE International Symposium on Information Theory", abbr: "ISIT", location: "Taipei, Taiwan", date: "Jun. 2023" },
+        { name: "IEEE Information Theory Workshop", abbr: "ITW", location: "Tempe, AZ, USA", date: "Nov. 2026" },
+        { name: "IEEE Conference on Computer Communications", abbr: "INFOCOM", location: "Vancouver, Canada", date: "May 2024" },
+        { name: "IEEE Global Communications Conference", abbr: "GLOBECOM", location: "Macau, China", date: "Dec. 2026" },
+        { name: "IEEE Global Communications Conference", abbr: "GLOBECOM", location: "Taipei, Taiwan", date: "Dec. 2025" },
+        { name: "IEEE Global Communications Conference", abbr: "GLOBECOM", location: "Cape Town, South Africa", date: "Dec. 2024" },
+        { name: "IEEE Global Communications Conference", abbr: "GLOBECOM", location: "Kuala Lumpur, Malaysia", date: "Dec. 2023" },
+        { name: "IEEE Global Communications Conference", abbr: "GLOBECOM", location: "Rio de Janeiro, Brazil", date: "Dec. 2022" },
+        { name: "IEEE Wireless Communications and Networking Conference", abbr: "WCNC", location: "Kuala Lumpur, Malaysia", date: "Apr. 2026" },
+        { name: "IEEE Wireless Communications and Networking Conference", abbr: "WCNC", location: "Dubai, UAE", date: "Apr. 2024" },
+        { name: "IEEE Wireless Communications and Networking Conference", abbr: "WCNC", location: "Austin, TX, USA", date: "Apr. 2022" },
+        { name: "IEEE International Conference on Machine Learning in Communications and Networking", abbr: "ICMLCN", location: "Stockholm, Sweden", date: "May 2024" },
+        { name: "IEEE Vehicular Technology Conference", abbr: "VTC", location: "", date: "2022" },
+        { name: "IEEE/CIC International Conference on Communications in China", abbr: "ICCC", location: "Dalian, China", date: "Aug. 2023" },
+        { name: "IEEE VTS Asia Pacific Wireless Communications Symposium", abbr: "APWCS", location: "Seoul, Korea", date: "Aug. 2026" },
+        { name: "International Conference on Computer Science and Application Engineering", abbr: "CSAE", location: "Virtual Event, China", date: "Oct. 2023" },
+        { name: "International Conference on the Frontiers of Electronic, Electrical and Information Engineering", abbr: "ICFEEIE", location: "Huangshan, China", date: "Jun. 2024" }
       ],
       chair: [ "Session Chair, IEEE ITW 2024 (AoI Session)", "Session Chair, IEEE GLOBECOM 2024 (Distributed Learning Session)" ],
       tpc: [ "Technical Program Committee Member, ICFEEIE 2024" ],
