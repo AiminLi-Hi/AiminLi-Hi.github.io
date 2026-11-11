@@ -737,6 +737,7 @@ export const PROFILE_DATA = {
     // Journal articles under review, newest first (numbered J24-J21 to match the CV).
     // Double-blind conference submissions (e.g. INFOCOM) must NOT be listed here.
     submitted: [
+      { title: "Self-Adaptive Threshold ALOHA", authors: "A. Topbas, Aimin Li, E. T. Ceran", venue: "IEEE Wireless Communications Letters", venue_short: "IEEE WCL", year: 2026 },
       { title: "Multi-Agent Diffusion Planning with Stable Online Reinforcement Fine-Tuning for Cooperative Driving", authors: "Haojie Bai, Aimin Li, Ruoyu Yao, Xiongwei Zhao, Tingting Zhang, Xing Zhang, C. Li, Lin Gao, Jun Ma", coFirst: true, venue: "IEEE Transactions on Mobile Computing", venue_short: "IEEE TMC", year: 2026 },
       { title: "ASTRA: Asynchronous Age-Aware Satellite Random Access with Correlated Multi-Satellite Fusion", authors: "Sayam Chakraborty, Aimin Li, Yiğit İnce, Sajjad Baghaee, Elif Uysal", venue: "IEEE Transactions on Wireless Communications", venue_short: "IEEE TWC", year: 2026 },
       { title: "Age-Optimal Sampling and Routing under Intermittent Links and Energy Constraints", authors: "Adem Utku Atasayar, Aimin Li, Çağrı Arı, Elif Uysal", venue: "IEEE Transactions on Mobile Computing", venue_short: "IEEE TMC", year: 2026 },
