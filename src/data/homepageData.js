@@ -737,6 +737,7 @@ export const PROFILE_DATA = {
     // Journal articles under review, newest first (numbered J24-J21 to match the CV).
     // Double-blind conference submissions (e.g. INFOCOM) must NOT be listed here.
     submitted: [
+      { title: "Optimal Preemption: Guaranteeing Information Freshness in Mean Age and Beyond", authors: "Aimin Li, Yiğit İnce, Elif Uysal", venue: "IEEE/ACM Transactions on Networking", venue_short: "IEEE/ACM ToN", year: 2026 },
       { title: "Self-Adaptive Threshold ALOHA", authors: "A. Topbas, Aimin Li, E. T. Ceran", venue: "IEEE Wireless Communications Letters", venue_short: "IEEE WCL", year: 2026 },
       { title: "Multi-Agent Diffusion Planning with Stable Online Reinforcement Fine-Tuning for Cooperative Driving", authors: "Haojie Bai, Aimin Li, Ruoyu Yao, Xiongwei Zhao, Tingting Zhang, Xing Zhang, C. Li, Lin Gao, Jun Ma", coFirst: true, venue: "IEEE Transactions on Mobile Computing", venue_short: "IEEE TMC", year: 2026 },
       { title: "ASTRA: Asynchronous Age-Aware Satellite Random Access with Correlated Multi-Satellite Fusion", authors: "Sayam Chakraborty, Aimin Li, Yiğit İnce, Sajjad Baghaee, Elif Uysal", venue: "IEEE Transactions on Wireless Communications", venue_short: "IEEE TWC", year: 2026 },
@@ -745,6 +746,7 @@ export const PROFILE_DATA = {
     ],
     selectedPublications: ["j16", "c14", "c1", "j6", "j1"],
     news: [
+      { date: "2026-11", label: "Editorial", content: "📣 We are organizing the <strong>Electronics</strong> Special Issue <strong>From Bits to Decisions</strong> as <strong>Leading Guest Editor</strong>. Submissions and inquiries are warmly welcome!", link: "https://www.mdpi.com/journal/electronics/special_issues/US42V06GII" },
       { date: "2026-10", label: "New Start", content: "I joined <strong>KTH Royal Institute of Technology</strong> in Stockholm, Sweden, as a <strong>Postdoctoral Researcher</strong>, working with IEEE Fellow <strong>Prof. Mikael Skoglund</strong>.", link: "#timeline" },
       { date: "2026-09", label: "MobiHoc", content: "🎉 Our paper <strong>Worse Routes, Fresher Information: Preemption Redefines Which Route is Best</strong> was accepted by an <strong>ACM MobiHoc 2026 Workshop</strong>. Congratulations to our student, <strong>Adem Utku Atasayar</strong>!", link: "#pub-c22" },
       { date: "2026-09", label: "TWC", content: "🎉 Our paper <strong>Permanent Connection Guaranteed Resilient LEO Constellation for Remote Area Communications</strong> was accepted by <strong>IEEE Transactions on Wireless Communications (TWC)</strong>. Congratulations to my collaborator, <strong>Guoquan Chen</strong>!", link: "#pub-j20" },
@@ -831,6 +833,7 @@ export const PROFILE_DATA = {
       editorial: [
         {
           text: "Leading Guest Editor, MDPI Electronics Special Issue \"From Bits to Decisions\" — 2026",
+          link: "https://www.mdpi.com/journal/electronics/special_issues/US42V06GII",
           highlight: "Leading Guest Editor"
         },
         {
