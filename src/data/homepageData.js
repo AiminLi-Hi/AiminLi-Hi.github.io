@@ -894,6 +894,15 @@ export const PROFILE_DATA = {
     ],
     talks: [
       {
+        date: "2026-11",
+        type: "Invited Talk",
+        title: "From Age of Information to Goal-Oriented Communication",
+        event: "KTH–LiU Decentralized AI and Computing Workshop",
+        location: "Stockholm, Sweden",
+        link: "https://shudi3.github.io/KTH_LiU_DAI_WORKSHOP/",
+        invited: true
+      },
+      {
         date: "2026-07",
         type: "Conference & Invited Talks",
         title: "Taming the Heavy Tail: Age-Optimal Preemption",
