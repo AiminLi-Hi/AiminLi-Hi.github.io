@@ -817,7 +817,7 @@ export const PROFILE_DATA = {
       { year: "2024", title: "IEEE Globecom Travel Grant", desc: "Top 15 Ph.D. Students Worldwide", level: "Global" },
       { year: "2024", title: "Candidate for NSFC Youth Project", title_zh: "国家自然科学基金青年学生项目候选人", desc: "One of fewer than 600 Ph.D. candidates selected nationwide in the first cohort.", level: "National" },
       { year: "2023", title: "Granted HIT 'Dianzi' Research Fund Project", title_zh: "获批哈工大“点子”基金项目", title_zh_note: "全系博士生共1人", desc: "Sole Ph.D. student recipient in the EE Department.", level: "University", featured: true },
-      { year: "2020", title: "Special Merit Doctoral Scholarship", title_zh: "哈工大博士研究生特等奖学金", title_zh_note: "全校共8人", desc: "One of 8 Ph.D. recipients across HIT, awarded by the President.", level: "University", featured: true },
+      { year: "2020", title: "Special Merit Doctoral Scholarship", title_zh: "哈工大博士研究生特等奖学金", title_zh_note: "哈工大哈尔滨、深圳、威海三校区共8人", desc: "One of 8 Ph.D. recipients across all HIT campuses (Harbin, Shenzhen, and Weihai), awarded by the President.", level: "University", featured: true },
       { year: "2019", title: "HIT Outstanding Student Award", title_zh: "哈工大年度优秀学生", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
       { year: "2017", title: "HIT Outstanding Student Award", title_zh: "哈工大年度优秀学生", desc: "Top 10% at Harbin Institute of Technology", level: "University" },
       { year: "2019", title: "Outstanding Participant, Tsinghua University Summer Camp", title_zh: "清华大学电子系推免夏令营优秀营员", desc: "One of 8 outstanding participants nationwide; offered exam-exempt admission to a master's program at Tsinghua University.", title_zh_note: ["全国共8人", "获推荐免试攻读清华大学硕士资格"], level: "University", featured: true },
